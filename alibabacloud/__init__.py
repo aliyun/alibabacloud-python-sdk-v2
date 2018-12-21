@@ -15,12 +15,11 @@
 __version__ = "0.1.0"
 
 from aliyunsdkcore.acs_exception.exceptions import ClientException
-
 from alibabacloud.services.ecs import ECSResource
 
 
 def get_resource(service_name, **kwargs):
-    if service_name == "ecs":
+    if service_name.lower() == "ecs":
         return ECSResource(**kwargs)
     else:
         # TODO refine this error code & error message
