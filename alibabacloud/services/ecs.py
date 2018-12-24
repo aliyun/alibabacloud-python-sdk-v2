@@ -34,14 +34,12 @@ class ECSInstanceResource:
     def start(self):
         request = StartInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        response = self.client.do_action_with_exception(request)
-        return response
+        self.client.do_action_with_exception(request)
 
     def stop(self):
         request = StopInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        response = self.client.do_action_with_exception(request)
-        return response
+        self.client.do_action_with_exception(request)
 
     def reboot(self):
         request = RebootInstanceRequest()
@@ -84,15 +82,13 @@ class ResourceCollection(object):
 
     def __iter__(self):
         params = copy.deepcopy(self._params)
-        query = params.get('query', None)
-        if query is not None:
-            for item in self.elements():
-                if query == item.instance_id:
-                    yield item
-            return
         limit = params.get('limit', None)
+        query = params.get('query', None)
         count = 0
         for item in self.elements():
+            if query and query == item.instance_id:
+                yield item
+                return
             yield item
             count += 1
             if limit is not None and count >= limit:
@@ -107,30 +103,12 @@ class ResourceCollection(object):
             ecs_obj = ECSInstanceResource(client=self.client, **instance)
             yield ecs_obj
 
-    def _clone(self):
-        params = copy.deepcopy(self._params)
-        clone = self.__class__(self.client, **params)
-        return clone
-
-    def all(self):
-        return self._clone()
-
-    def filter(self, instance_id):
-        return self._clone(query=instance_id)
-
-    def limit(self, count):
-        return self._clone(limit=count)
-
-    def page_size(self):
-        pass
-
 
 class ECSInstancesResource:
     _collection_cls = ResourceCollection
 
-    def __init__(self, client, **kwargs):
+    def __init__(self, client):
         self.client = client
-        self._params = kwargs
 
     def iterator(self, **kwargs):
         return self._collection_cls(self.client, **kwargs)
@@ -139,18 +117,7 @@ class ECSInstancesResource:
         return self.iterator()
 
     def filter(self, instance_id):
-        self.iterator(query=instance_id)
-
-    # def get(self, instance_id):
-    #     request = DescribeInstancesRequest()
-    #     response = self.client.do_action_with_exception(request)
-    #     response_obj = json.loads(response.decode('utf-8'))
-    #     instances = response_obj.get('Instances')['Instance']
-    #     for instance in instances:
-    #         if instance.get('InstanceId') == instance_id:
-    #             ecs_obj = ECSInstanceResource(client=self.client, **instance)
-    #             return ecs_obj
-    #     return
+        return self.iterator(query=instance_id)
 
     def limit(self, count):
         return self.iterator(limit=count)

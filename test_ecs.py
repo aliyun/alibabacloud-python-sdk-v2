@@ -4,20 +4,26 @@ import os
 import alibabacloud
 
 
-sdk_config_path = os.path.join(os.path.expanduser("~"), "aliyun_sdk_config.json")
+sdk_config_path = os.path.join(
+    os.path.expanduser("~"),
+    "aliyun_sdk_config.json")
 with open(sdk_config_path) as fp:
     config = json.loads(fp.read())
     access_key_id = config['access_key_id']
     access_key_secret = config['access_key_secret']
     region_id = config['region_id']
 
-resource = alibabacloud.get_resource('ecs', ak=access_key_id, secret=access_key_secret, region_id=region_id)
+resource = alibabacloud.get_resource(
+    'ecs',
+    ak=access_key_id,
+    secret=access_key_secret,
+    region_id=region_id)
 # print(resource.instances.all())
 
 
 # for instance in resource.instances.all():
-    # print(instance.instance_id)
-    # instance.start()
+# print(instance.instance_id)
+# instance.start()
 
 
 # ecs_objs = resource.instances.filter('i-bp162a07bhoj5skna4zj')
@@ -46,14 +52,20 @@ resource = alibabacloud.get_resource('ecs', ak=access_key_id, secret=access_key_
 #     ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd', InstanceType='ecs.n2.small', SecurityGroupId='sg-bp12zdiq3r9dqbaaq717')
 # print(response)
 
-objs = resource.instances.limit(1)
-print('hi', objs)
-# for obj in objs:
-    # print(obj.instance_id)
-    # obj.stop()
 
-# obj = resource.instances.get('i-bp162a07bhoj5skna4zj')
+objs = resource.instances.limit(10)
+print('hi', objs)
+for obj in objs:
+    print(obj)
+    print(obj.instance_id)
+# obj.stop()
+
+# filter 查询
+# objs = resource.instances.filter('i-bp1gww16t3wo63s4sh7o')
+# print('hi', objs)
+# for obj in objs:
+#     print(obj)
+#     obj.stop()
+#     print(obj.instance_id)
 # # obj.start()
 # obj.reactivate(Period=1)
-
-
