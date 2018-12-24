@@ -44,14 +44,12 @@ class ECSInstanceResource:
     def reboot(self):
         request = RebootInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        response = self.client.do_action_with_exception(request)
-        return response
+        self.client.do_action_with_exception(request)
 
     def delete(self):
         request = DeleteInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        response = self.client.do_action_with_exception(request)
-        return response
+        self.client.do_action_with_exception(request)
 
     def renew(self, **kwargs):
         request = RenewInstanceRequest()
@@ -60,8 +58,7 @@ class ECSInstanceResource:
             if hasattr(request, 'set_'+key):
                 func = getattr(request, 'set_' + key)
                 func(value)
-        response = self.client.do_action_with_exception(request)
-        return response
+        self.client.do_action_with_exception(request)
 
     def reactivate(self, **kwargs):
         request = RenewInstanceRequest()
@@ -70,38 +67,54 @@ class ECSInstanceResource:
             if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
                 func(value)
-        response = self.client.do_action_with_exception(request)
-        return response
+        self.client.do_action_with_exception(request)
 
 
-class ResourceCollection(object):
+class ResourceCollection:
 
     def __init__(self, client=None, **kwargs):
         self.client = client
         self._params = kwargs
+        self.page_size = kwargs.get('page_size', 100)
 
     def __iter__(self):
         params = copy.deepcopy(self._params)
         limit = params.get('limit', None)
         query = params.get('query', None)
         count = 0
-        for item in self.elements():
-            if query and query == item.instance_id:
+        for page in self.pages():
+            for item in page:
+                if query and query == item.instance_id:
+                    yield item
+                    return
                 yield item
-                return
-            yield item
-            count += 1
-            if limit is not None and count >= limit:
-                return
+                count += 1
+                if limit is not None and count >= limit:
+                    return
 
-    def elements(self):
+    def _handler(self, page_num=1):
         request = DescribeInstancesRequest()
+        request.set_PageSize(self.page_size)
+        request.set_PageNumber(page_num)
         response = self.client.do_action_with_exception(request)
         response_obj = json.loads(response.decode('utf-8'))
-        instances = response_obj.get('Instances')['Instance']
-        for instance in instances:
-            ecs_obj = ECSInstanceResource(client=self.client, **instance)
-            yield ecs_obj
+        return response_obj
+
+    def pages(self):
+        response_obj = self._handler()
+        # 分页
+        total = response_obj.get('TotalCount')
+        quotient, remainder = divmod(total, self.page_size)
+        if remainder > 0:
+            quotient += 1
+        for i in range(1, quotient + 1):
+            response_obj = self._handler(page_num=i)
+            instances = response_obj.get('Instances')['Instance']
+            page_items = []
+            for instance in instances:
+                ecs_obj = ECSInstanceResource(client=self.client, **instance)
+                page_items.append(ecs_obj)
+            yield page_items
 
 
 class ECSInstancesResource:
@@ -123,7 +136,10 @@ class ECSInstancesResource:
         return self.iterator(limit=count)
 
     def page_size(self, count):
-        pass
+        return self.iterator(page_size=count)
+
+    def pages(self):
+        return self.iterator().pages()
 
 
 class ECSClient:

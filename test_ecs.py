@@ -52,12 +52,12 @@ resource = alibabacloud.get_resource(
 #     ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd', InstanceType='ecs.n2.small', SecurityGroupId='sg-bp12zdiq3r9dqbaaq717')
 # print(response)
 
-
-objs = resource.instances.limit(10)
-print('hi', objs)
-for obj in objs:
-    print(obj)
-    print(obj.instance_id)
+# limit
+# objs = resource.instances.limit(1)
+# print('hi', objs)
+# for obj in objs:
+#     print(obj)
+#     print(obj.instance_id)
 # obj.stop()
 
 # filter 查询
@@ -69,3 +69,20 @@ for obj in objs:
 #     print(obj.instance_id)
 # # obj.start()
 # obj.reactivate(Period=1)
+
+# pages
+# pages = resource.instances.pages()
+# print('hi', pages)
+# for page in pages:
+#     print(page)
+#     for item in page:
+#         print(item.instance_id)
+
+
+# page_size
+pages = resource.instances.page_size(2)
+print('hi', pages)
+for obj in pages:
+    print(obj)
+    # print(obj.instance_id)
+
