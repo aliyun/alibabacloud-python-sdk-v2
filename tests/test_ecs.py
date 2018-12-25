@@ -1,3 +1,4 @@
+import sys
 import time
 import unittest
 import json
@@ -7,7 +8,10 @@ import alibabacloud
 from aliyunsdkcore.acs_exception.exceptions import ClientException, ServerException
 from alibabacloud.services.ecs import ECSInstancesResource, ResourceCollection, ResourceCollection, ECSResource
 
-from collections.abc import Iterable
+if sys.version_info[0] == 2:
+    from collections import Iterable
+else:
+    from collections.abc import Iterable
 
 
 class TestGetResource(unittest.TestCase):
@@ -107,8 +111,9 @@ class TestECSInstanceResource(BaseTest):
 
     def get_test_obj(self, instance_id):
         ecs_instance_list = self.resource.instances.filter(instance_id)
-        obj = list(ecs_instance_list)[0]
-        return obj
+        if len(list(ecs_instance_list)) > 0:
+            obj = list(ecs_instance_list)[0]
+            return obj
 
     def test_ecs_instances(self):
         self.assertTrue(self.get_test_obj('i-bp162a07bhoj5skna4zj').instance_name)
