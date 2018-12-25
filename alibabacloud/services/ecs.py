@@ -118,7 +118,7 @@ class ResourceCollection:
                     if limit is not None and count >= limit:
                         return
 
-    def _handler(self, page_num=1):
+    def handler_desc_instance_request(self, page_num=1):
         request = DescribeInstancesRequest()
         request.set_PageSize(self.page_size)
         request.set_PageNumber(page_num)
@@ -127,13 +127,13 @@ class ResourceCollection:
         return response_obj
 
     def pages(self):
-        response_obj = self._handler()
+        response_obj = self.handler_desc_instance_request()
         total = response_obj.get('TotalCount')
         quotient, remainder = divmod(total, self.page_size)
         if remainder > 0:
             quotient += 1
         for i in range(1, quotient + 1):
-            response_obj = self._handler(page_num=i)
+            response_obj = self.handler_desc_instance_request(page_num=i)
             instances = response_obj.get('Instances')['Instance']
             page_items = []
             for instance in instances:
@@ -148,27 +148,27 @@ class ECSInstancesResource:
     def __init__(self, client):
         self.client = client
 
-    def iterator(self, **kwargs):
+    def _iterator(self, **kwargs):
         return self._collection_cls(self.client, **kwargs)
 
     def all(self):
-        return self.iterator()
+        return self._iterator()
 
     def filter(self, **kwargs):
-        return self.iterator(**kwargs)
+        return self._iterator(**kwargs)
 
     def limit(self, count):
         if isinstance(count, int) and int(count) > 0:
-            return self.iterator(limit=count)
+            return self._iterator(limit=count)
         raise ValueError("The params of limit must be positive integers")
 
     def page_size(self, count=None):
         if isinstance(count, int) and int(count) > 0:
-            return self.iterator(page_size=count)
+            return self._iterator(page_size=count)
         raise ValueError("The params of page_size must be positive integers")
 
     def pages(self):
-        return self.iterator().pages()
+        return self._iterator().pages()
 
 
 class ECSClient:

@@ -128,7 +128,6 @@ class TestECSInstanceResource(BaseTest):
 
     def test_start(self):
         obj = self.get_test_obj("i-bp162a07bhoj5skna4zj")
-        print(obj.status)
         try:
             obj.start()
             assert False
@@ -191,7 +190,7 @@ class TestECSInstancesResource(BaseTest):
         self.assertIsInstance(self.resource.instances, ECSInstancesResource)
 
     def test_iterator(self):
-        self.assertIsInstance(self.resource.instances.iterator(), ResourceCollection)
+        self.assertIsInstance(self.resource.instances._iterator(), ResourceCollection)
 
     def test_all(self):
         response = self.resource.instances.all()
@@ -259,7 +258,7 @@ class TestResourceCollection(BaseTest):
     def test_handler(self):
         client = self.resource._raw_client
         resource_collections = ResourceCollection(client)
-        response = resource_collections._handler()
+        response = resource_collections.handler_desc_instance_request()
         self.assertEqual(response.get("PageNumber"), 1)
 
     def test_pages(self):
