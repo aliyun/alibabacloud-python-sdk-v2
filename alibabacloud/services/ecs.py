@@ -23,6 +23,7 @@ from aliyunsdkecs.request.v20140526.DeleteInstanceRequest import DeleteInstanceR
 from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesRequest
 from aliyunsdkecs.request.v20140526.RebootInstanceRequest import RebootInstanceRequest
 from aliyunsdkecs.request.v20140526.RenewInstanceRequest import RenewInstanceRequest
+from aliyunsdkecs.request.v20140526.DescribeInstanceStatusRequest import DescribeInstanceStatusRequest
 
 
 class ECSInstanceResource:
@@ -30,6 +31,20 @@ class ECSInstanceResource:
     def __init__(self, client=None, **kwargs):
         self.client = client
         self.instance_id = kwargs.get('InstanceId', None)
+        self.instance_name = kwargs.get('InstanceName', None)
+        self.host_name = kwargs.get('HostName', None)
+        self._status = kwargs.get('Status', None)
+
+    @property
+    def status(self):
+        request = DescribeInstanceStatusRequest()
+        response = self.client.do_action_with_exception(request)
+        response = json.loads(response.decode('utf-8'))
+        status = response.get('InstanceStatuses')
+        for item in status.get('InstanceStatus'):
+            if item.get('InstanceId') == self.instance_id:
+                self._status = item.get('Status')
+        return self._status
 
     def start(self):
         request = StartInstanceRequest()
@@ -77,6 +92,10 @@ class ResourceCollection:
         self._params = kwargs
         self.page_size = kwargs.get('page_size', 100)
 
+    def __repr__(self):
+        # <QuerySet [{'name__lower': 'beatles blog'}]>
+        return '<{0} {1}>'.format(self.__class__.__name__, list(self))
+
     def __iter__(self):
         params = copy.deepcopy(self._params)
         limit = params.get('limit', None)
@@ -84,13 +103,14 @@ class ResourceCollection:
         count = 0
         for page in self.pages():
             for item in page:
-                if query and query == item.instance_id:
+                if query is not None:
+                    if query == item.instance_id:
+                        yield item
+                else:
                     yield item
-                    return
-                yield item
-                count += 1
-                if limit is not None and count >= limit:
-                    return
+                    count += 1
+                    if limit is not None and count >= limit:
+                        return
 
     def _handler(self, page_num=1):
         request = DescribeInstancesRequest()
@@ -102,7 +122,6 @@ class ResourceCollection:
 
     def pages(self):
         response_obj = self._handler()
-        # 分页
         total = response_obj.get('TotalCount')
         quotient, remainder = divmod(total, self.page_size)
         if remainder > 0:
@@ -133,10 +152,14 @@ class ECSInstancesResource:
         return self.iterator(query=instance_id)
 
     def limit(self, count):
-        return self.iterator(limit=count)
+        if isinstance(count, int) and int(count) > 0:
+            return self.iterator(limit=count)
+        raise ValueError("The params of limit must be positive integers")
 
-    def page_size(self, count):
-        return self.iterator(page_size=count)
+    def page_size(self, count=None):
+        if isinstance(count, int) and int(count) > 0:
+            return self.iterator(page_size=count)
+        raise ValueError("The params of page_size must be positive integers")
 
     def pages(self):
         return self.iterator().pages()
@@ -159,12 +182,13 @@ class ECSClient:
 
 class ECSResource:
 
-    def __init__(self, ak=None, secret=None, region_id=None):
-        self._raw_client = AcsClient(ak, secret, region_id)
+    def __init__(self, access_key_id=None, access_key_secret=None, region_id=None):
+        self._raw_client = AcsClient(access_key_id, access_key_secret, region_id)
         self.instances = ECSInstancesResource(self._raw_client)
         # self.client = ECSClient()
 
     def create_instance(self, **kwargs):
+        # one+stop
         request = CreateInstanceRequest()
         for key, value in kwargs.items():
             if hasattr(request, 'set_'+key):
@@ -174,6 +198,7 @@ class ECSResource:
         return response
 
     def run_instances(self, **kwargs):
+        # many+running
         request = RunInstancesRequest()
         for key, value in kwargs.items():
             if hasattr(request, 'set_'+key):

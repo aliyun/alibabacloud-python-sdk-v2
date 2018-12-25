@@ -19,7 +19,7 @@ PACKAGE = "alibabacloud"
 VERSION = __import__(PACKAGE).__version__
 
 requires = [
-    'aliyun-python-sdk-core-v3>=2.11.2',
+    'aliyun-python-sdk-core',
     'aliyun-python-sdk-ecs>=4.15.0',
 ]
 

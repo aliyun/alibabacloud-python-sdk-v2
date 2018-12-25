@@ -23,4 +23,6 @@ def get_resource(service_name, **kwargs):
         return ECSResource(**kwargs)
     else:
         # TODO refine this error code & error message
-        raise ClientException("SDK.ServiceNameNotFound", "Service")
+        raise ClientException("SDK.ServiceNameNotFound", "You provide is not ECS Service")
+
+
