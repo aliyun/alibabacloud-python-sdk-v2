@@ -30,10 +30,13 @@ class ECSInstanceResource:
 
     def __init__(self, client=None, **kwargs):
         self.client = client
-        self.instance_id = kwargs.get('InstanceId', None)
-        self.instance_name = kwargs.get('InstanceName', None)
-        self.host_name = kwargs.get('HostName', None)
-        self._status = kwargs.get('Status', None)
+        self.InstanceId = kwargs.get('InstanceId', None)
+        self.InstanceName = kwargs.get('InstanceName', None)
+        self.HostName = kwargs.get('HostName', None)
+        self._Status = kwargs.get('Status', None)
+
+    def __getitem__(self, item):
+        return getattr(self, item, None)
 
     @property
     def status(self):
@@ -42,33 +45,33 @@ class ECSInstanceResource:
         response = json.loads(response.decode('utf-8'))
         status = response.get('InstanceStatuses')
         for item in status.get('InstanceStatus'):
-            if item.get('InstanceId') == self.instance_id:
-                self._status = item.get('Status')
-        return self._status
+            if item.get('InstanceId') == self.InstanceId:
+                self._Status = item.get('Status')
+        return self._Status
 
     def start(self):
         request = StartInstanceRequest()
-        request.set_InstanceId(self.instance_id)
+        request.set_InstanceId(self.InstanceId)
         self.client.do_action_with_exception(request)
 
     def stop(self):
         request = StopInstanceRequest()
-        request.set_InstanceId(self.instance_id)
+        request.set_InstanceId(self.InstanceId)
         self.client.do_action_with_exception(request)
 
     def reboot(self):
         request = RebootInstanceRequest()
-        request.set_InstanceId(self.instance_id)
+        request.set_InstanceId(self.InstanceId)
         self.client.do_action_with_exception(request)
 
     def delete(self):
         request = DeleteInstanceRequest()
-        request.set_InstanceId(self.instance_id)
+        request.set_InstanceId(self.InstanceId)
         self.client.do_action_with_exception(request)
 
     def renew(self, **kwargs):
         request = RenewInstanceRequest()
-        request.set_InstanceId(self.instance_id)
+        request.set_InstanceId(self.InstanceId)
         for key, value in kwargs.items():
             if hasattr(request, 'set_'+key):
                 func = getattr(request, 'set_' + key)
@@ -77,7 +80,7 @@ class ECSInstanceResource:
 
     def reactivate(self, **kwargs):
         request = RenewInstanceRequest()
-        request.set_InstanceId(self.instance_id)
+        request.set_InstanceId(self.InstanceId)
         for key, value in kwargs.items():
             if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
@@ -98,14 +101,17 @@ class ResourceCollection:
 
     def __iter__(self):
         params = copy.deepcopy(self._params)
-        limit = params.get('limit', None)
-        query = params.get('query', None)
+        limit = params.pop('limit', None)
+        params.pop('page_size', None)
         count = 0
         for page in self.pages():
             for item in page:
-                if query is not None:
-                    if query == item.instance_id:
-                        yield item
+                if params:
+                    for key, value in params.items():
+                        if key == 'Status':
+                            key = 'status'
+                        if value == item[key]:
+                            yield item
                 else:
                     yield item
                     count += 1
@@ -148,8 +154,8 @@ class ECSInstancesResource:
     def all(self):
         return self.iterator()
 
-    def filter(self, instance_id):
-        return self.iterator(query=instance_id)
+    def filter(self, **kwargs):
+        return self.iterator(**kwargs)
 
     def limit(self, count):
         if isinstance(count, int) and int(count) > 0:
@@ -206,4 +212,6 @@ class ECSResource:
                 func(value)
         response = self._raw_client.do_action_with_exception(request)
         return response
+
+
 
