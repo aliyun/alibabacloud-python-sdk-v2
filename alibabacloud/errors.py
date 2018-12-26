@@ -12,16 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__version__ = "0.1.0"
 
-from aliyunsdkcore.acs_exception.exceptions import ClientException
-from alibabacloud.services.ecs import ECSResource
-import alibabacloud.errors
-
-
-def get_resource(service_name, **kwargs):
-    if service_name.lower() == "ecs":
-        return ECSResource(**kwargs)
-    else:
-        raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
-                              "Service '{0}' is not currently supported.".format(service_name))
+ERROR_CODE_SERVICE_NOT_SUPPORTED = "SDK.ServiceNotSupported"
