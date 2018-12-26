@@ -46,8 +46,7 @@ class ECSInstanceResource:
         self.internet_charge_type = kwargs.get('InternetChargeType', None)
         self.spot_strategy = kwargs.get('SpotStrategy', None)
         self.stopped_mode = kwargs.get('StoppedMode', None)
-        self.stopped_mode = kwargs.get('SerialNumber', None)
-
+        self.serial_number = kwargs.get('SerialNumber', None)
 
     def __getitem__(self, item):
         return getattr(self, item, None)
