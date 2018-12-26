@@ -68,22 +68,23 @@ class BaseTest(unittest.TestCase):
             access_key_secret=self.access_key_secret,
             region_id=self.region_id)
 
-    def tearDown(self):
-        for instance_id in self.temp_instances:
-            item_list = self.resource.instances.filter(instance_id)
-            for item in item_list:
-                # Stopped
-                while True:
-                    if item.status in ("Stopping", "Starting"):
-                        item.stop()
-                        continue
-                    if item.status == "Running":
-                        item.stop()
-                        continue
-                    if item.status == "Stopped":
-                        item.delete()
-                        self.temp_instances.remove(instance_id)
-                        break
+    # def tearDown(self):
+    #     for instance_id in self.temp_instances:
+    #         items = self.resource.instances.filter(instance_id = instance_id)
+    #         for item in items:
+    #             # Stopped
+    #             from time import sleep
+    #             while True:
+    #                 print('111111111', item.status)
+    #                 if item.status in ("Stopping", "Starting", "Pending"):
+    #                     sleep(1)
+    #                     continue
+    #                 if item.status == "Running":
+    #                     item.stop()
+    #                     continue
+    #                 if item.status == "Stopped":
+    #                     item.delete()
+    #                     break
 
 
 class TestECSResource(BaseTest):
@@ -96,34 +97,34 @@ class TestECSResource(BaseTest):
     #         InstanceType="ecs.n2.small")
     #     response_obj = json.loads(response)
     #     self.assertTrue(response_obj.get("InstanceId"))
-    #     self.temp_instances.append(response_obj.get("InstanceId'))
+    #     self.temp_instances.append(response_obj.get("InstanceId"))
 
     # def test_run_instances(self):
     #     response = self.resource.run_instances(
-    #         ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd', Amount=10, InstanceType='ecs.n2.small', SecurityGroupId="sg-bp12zdiq3r9dqbaaq717")
+    #         ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd', Amount=1, InstanceType='ecs.n2.small', SecurityGroupId="sg-bp12zdiq3r9dqbaaq717")
     #     response_obj = json.loads(response.decode("utf-8"))
     #     instances_sets = response_obj.get("InstanceIdSets").get("InstanceIdSet")
-    #     self.assertEqual(len(instances_sets), 10)
+    #     self.assertEqual(len(instances_sets), 1)
     #     self.temp_instances.extend(instances_sets)
 
 
 class TestECSInstanceResource(BaseTest):
 
     def get_test_obj(self, instance_id):
-        ecs_instance_list = self.resource.instances.filter(InstanceId = instance_id)
+        ecs_instance_list = self.resource.instances.filter(instance_id = instance_id)
         if len(list(ecs_instance_list)) > 0:
             obj = list(ecs_instance_list)[0]
             return obj
 
     def test_ecs_instances(self):
-        self.assertTrue(self.get_test_obj("i-bp162a07bhoj5skna4zj").InstanceName)
+        self.assertTrue(self.get_test_obj("i-bp162a07bhoj5skna4zj").instance_name)
 
     def test_status(self):
         obj = self.get_test_obj("i-bp162a07bhoj5skna4zj")
         self.assertEqual(obj.status, "Stopping")
 
     # def test_delete(self):
-    #     obj = self.get_test_obj("i-bp1igpepkvn9onj9o42e")
+    #     obj = self.get_test_obj("i-bp1co6h13g4513burgav")
     #     obj.delete()
 
     def test_start(self):
@@ -179,10 +180,10 @@ class TestECSInstanceResource(BaseTest):
             obj.reactivate(Period=1)
             assert False
         except ServerException as e:
-            self.assertEqual(e.error_code, "ChargeTypeViolation")
+            self.assertEqual(e.error_code, "ReopenInstance.InstanceStatusNotValid")
             self.assertEqual(
                 e.get_error_msg(),
-                "The operation is not permitted due to charge type of the instance.")
+                "Instance status is not Expired, ImageExpired or EcsAndImageExpired.")
 
 
 class TestECSInstancesResource(BaseTest):
@@ -197,13 +198,13 @@ class TestECSInstancesResource(BaseTest):
         self.assertEqual(len(list(response)), 3)
 
     def test_filter_with_error_instance_id(self):
-        response = self.resource.instances.filter(InstanceId="11111111111")  # <ResourceCollection []>
+        response = self.resource.instances.filter(instance_id="11111111111")  # <ResourceCollection []>
         self.assertEqual(len(list(response)), 0)
-        response = self.resource.instances.filter(Status="Stopped")  # <ResourceCollection [...]>
+        response = self.resource.instances.filter(status="Stopped")  # <ResourceCollection [...]>
         self.assertEqual(len(list(response)), 2)
 
     def test_filter_with_instance_id(self):
-        response = self.resource.instances.filter(InstanceId="i-bp162a07bhoj5skna4zj")
+        response = self.resource.instances.filter(instance_id="i-bp162a07bhoj5skna4zj")
         self.assertEqual(len(list(response)), 1)
 
     def test_limit_with_error_data(self):

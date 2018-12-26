@@ -23,6 +23,7 @@ from aliyunsdkecs.request.v20140526.DeleteInstanceRequest import DeleteInstanceR
 from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesRequest
 from aliyunsdkecs.request.v20140526.RebootInstanceRequest import RebootInstanceRequest
 from aliyunsdkecs.request.v20140526.RenewInstanceRequest import RenewInstanceRequest
+from aliyunsdkecs.request.v20140526.ReActivateInstancesRequest import ReActivateInstancesRequest
 from aliyunsdkecs.request.v20140526.DescribeInstanceStatusRequest import DescribeInstanceStatusRequest
 
 
@@ -30,13 +31,29 @@ class ECSInstanceResource:
 
     def __init__(self, client=None, **kwargs):
         self.client = client
-        self.InstanceId = kwargs.get('InstanceId', None)
-        self.InstanceName = kwargs.get('InstanceName', None)
-        self.HostName = kwargs.get('HostName', None)
-        self._Status = kwargs.get('Status', None)
+        self.instance_id = kwargs.get('InstanceId', None)
+        self.instance_name = kwargs.get('InstanceName', None)
+        self.host_name = kwargs.get('HostName', None)
+        self._status = kwargs.get('Status', None)
+        self.image_id = kwargs.get('ImageId', None)
+        self.vlan_id = kwargs.get('VlanId', None)
+        self.inner_ip_address = kwargs.get('InnerIpAddress', None)
+        self.instance_type_family = kwargs.get('InstanceTypeFamily', None)
+        self.eip_address = kwargs.get('EipAddress', None)
+        self.internet_max_bandwidth_in = kwargs.get('InternetMaxBandwidthIn', None)
+        self.creditSpecification = kwargs.get('CreditSpecification', None)
+        self.zone_id = kwargs.get('ZoneId', None)
+        self.internet_charge_type = kwargs.get('InternetChargeType', None)
+        self.spot_strategy = kwargs.get('SpotStrategy', None)
+        self.stopped_mode = kwargs.get('StoppedMode', None)
+        self.stopped_mode = kwargs.get('SerialNumber', None)
+
 
     def __getitem__(self, item):
         return getattr(self, item, None)
+
+    def __setitem__(self, key, value):
+        return setattr(self, key, value)
 
     @property
     def status(self):
@@ -45,33 +62,33 @@ class ECSInstanceResource:
         response = json.loads(response.decode('utf-8'))
         status = response.get('InstanceStatuses')
         for item in status.get('InstanceStatus'):
-            if item.get('InstanceId') == self.InstanceId:
-                self._Status = item.get('Status')
-        return self._Status
+            if item.get('InstanceId') == self.instance_id:
+                self._status = item.get('Status')
+        return self._status
 
     def start(self):
         request = StartInstanceRequest()
-        request.set_InstanceId(self.InstanceId)
+        request.set_InstanceId(self.instance_id)
         self.client.do_action_with_exception(request)
 
     def stop(self):
         request = StopInstanceRequest()
-        request.set_InstanceId(self.InstanceId)
+        request.set_InstanceId(self.instance_id)
         self.client.do_action_with_exception(request)
 
     def reboot(self):
         request = RebootInstanceRequest()
-        request.set_InstanceId(self.InstanceId)
+        request.set_InstanceId(self.instance_id)
         self.client.do_action_with_exception(request)
 
     def delete(self):
         request = DeleteInstanceRequest()
-        request.set_InstanceId(self.InstanceId)
+        request.set_InstanceId(self.instance_id)
         self.client.do_action_with_exception(request)
 
     def renew(self, **kwargs):
         request = RenewInstanceRequest()
-        request.set_InstanceId(self.InstanceId)
+        request.set_InstanceId(self.instance_id)
         for key, value in kwargs.items():
             if hasattr(request, 'set_'+key):
                 func = getattr(request, 'set_' + key)
@@ -79,8 +96,8 @@ class ECSInstanceResource:
         self.client.do_action_with_exception(request)
 
     def reactivate(self, **kwargs):
-        request = RenewInstanceRequest()
-        request.set_InstanceId(self.InstanceId)
+        request = ReActivateInstancesRequest()
+        request.set_InstanceId(self.instance_id)
         for key, value in kwargs.items():
             if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
@@ -108,8 +125,6 @@ class ResourceCollection:
             for item in page:
                 if params:
                     for key, value in params.items():
-                        if key == 'Status':
-                            key = 'status'
                         if value == item[key]:
                             yield item
                 else:
