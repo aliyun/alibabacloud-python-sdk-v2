@@ -30,7 +30,7 @@ from aliyunsdkecs.request.v20140526.DescribeInstanceStatusRequest import Describ
 class ECSInstanceResource:
 
     def __init__(self, client=None, **kwargs):
-        self.client = client
+        self._client = client
         self.instance_id = kwargs.get('InstanceId', None)
         self.instance_name = kwargs.get('InstanceName', None)
         self.host_name = kwargs.get('HostName', None)
@@ -48,7 +48,6 @@ class ECSInstanceResource:
         self.stopped_mode = kwargs.get('StoppedMode', None)
         self.stopped_mode = kwargs.get('SerialNumber', None)
 
-
     def __getitem__(self, item):
         return getattr(self, item, None)
 
@@ -58,7 +57,7 @@ class ECSInstanceResource:
     @property
     def status(self):
         request = DescribeInstanceStatusRequest()
-        response = self.client.do_action_with_exception(request)
+        response = self._client.do_action_with_exception(request)
         response = json.loads(response.decode('utf-8'))
         status = response.get('InstanceStatuses')
         for item in status.get('InstanceStatus'):
@@ -69,22 +68,22 @@ class ECSInstanceResource:
     def start(self):
         request = StartInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def stop(self):
         request = StopInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def reboot(self):
         request = RebootInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def delete(self):
         request = DeleteInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def renew(self, **kwargs):
         request = RenewInstanceRequest()
@@ -93,7 +92,7 @@ class ECSInstanceResource:
             if hasattr(request, 'set_'+key):
                 func = getattr(request, 'set_' + key)
                 func(value)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def reactivate(self, **kwargs):
         request = ReActivateInstancesRequest()
@@ -102,7 +101,7 @@ class ECSInstanceResource:
             if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
                 func(value)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
 
 class ResourceCollection:
@@ -186,30 +185,13 @@ class ECSInstancesResource:
         return self._iterator().pages()
 
 
-class ECSClient:
-
-    # TODO decide whether we actually need a client level like this
-
-    def create_instance(self, **kwargs):
-        request = CreateInstanceRequest()
-        param = kwargs.get('ResourceOwnerId')
-        if param is not None:
-            request.set_ResourceOwnerId(param)
-        self.do_request(request)
-
-    def do_request(self, request):
-        pass
-
-
 class ECSResource:
 
     def __init__(self, access_key_id=None, access_key_secret=None, region_id=None):
         self._raw_client = AcsClient(access_key_id, access_key_secret, region_id)
         self.instances = ECSInstancesResource(self._raw_client)
-        # self.client = ECSClient()
 
     def create_instance(self, **kwargs):
-        # one+stop
         request = CreateInstanceRequest()
         for key, value in kwargs.items():
             if hasattr(request, 'set_'+key):
@@ -219,7 +201,6 @@ class ECSResource:
         return response
 
     def run_instances(self, **kwargs):
-        # many+running
         request = RunInstancesRequest()
         for key, value in kwargs.items():
             if hasattr(request, 'set_'+key):
@@ -227,6 +208,3 @@ class ECSResource:
                 func(value)
         response = self._raw_client.do_action_with_exception(request)
         return response
-
-
-
