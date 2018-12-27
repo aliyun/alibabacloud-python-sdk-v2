@@ -30,6 +30,7 @@ class ServiceResource(object):
                 func = getattr(request, 'set_' + key)
                 func(value)
         response = self._client.do_action_with_exception(request)
+        print(response)
         return json.loads(response.decode('utf-8'))
 
     @staticmethod
@@ -48,8 +49,8 @@ class ServiceResource(object):
         if keys:
             obj = response
             for key in keys:
-                self._check_server_response(response, key)
-                obj = response[key]
+                self._check_server_response(obj, key)
+                obj = obj[key]
             return obj
 
 
@@ -78,7 +79,7 @@ class ResourceCollection:
             self._resource_creator,
             limit=self._limit,
             page_size=self._page_size,
-            filter_params=self._filter_params,
+            filter_params=copy.deepcopy(self._filter_params),
         )
 
     def pages(self):
@@ -87,9 +88,15 @@ class ResourceCollection:
         page_num = 1
 
         while True:
-            params = {'PageNumber': page_num}
+
+            # prepare parameters
+            params = copy.deepcopy(self._filter_params)
+            if params is None:
+                params = {}
+            params['PageNumber'] = page_num
             if self._page_size:
                 params['PageSize'] = self._page_size
+
             total_count, page_size, page_num, items = self._page_handler(params)
 
             resources = []

@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import re
+import json
+import time
 
 from aliyunsdkecs.request.v20140526.CreateInstanceRequest import CreateInstanceRequest
 from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
@@ -68,6 +70,25 @@ class ECSInstanceResource(ServiceResource):
 
         for key, value in iteritems(attrs):
             setattr(self, convert(key), value)
+
+    def refresh(self):
+        request = DescribeInstancesRequest()
+        request.set_InstanceIds(json.dumps([self.instance_id]))
+        attrs = self._get_respone(request, {}, keys=['Instances', 'Instance'])[0]
+        self.set_instance_attributes(attrs)
+
+    def wait_until(self, target_status, timeout=60):
+        start_time = time.time()
+        while True:
+            end_time = time.time()
+            if end_time - start_time >= timeout:
+                raise Exception("Timed out: no {0} status after {1} seconds.".format(
+                    target_status, timeout))
+
+            self.refresh()
+            if self.status == target_status:
+                return
+            time.sleep(1)
 
     def start(self):
         request = StartInstanceRequest()
@@ -127,7 +148,7 @@ class ECSResource(ServiceResource):
             self._check_server_response(instance_data, 'InstanceId')
             instance_id = instance_data['InstanceId']
             del instance_data['InstanceId']
-            inst = ECSInstanceResource(self._client, instance_id)
+            inst = ECSInstanceResource(instance_id, client=self._client)
             inst.set_instance_attributes(instance_data)
             return inst
 
