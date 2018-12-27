@@ -116,6 +116,7 @@ class TestECSInstanceResource(BaseTest):
             obj = list(ecs_instance_list)[0]
             return obj
 
+
     def test_ecs_instances(self):
         self.assertTrue(self.get_test_obj("i-bp162a07bhoj5skna4zj").instance_name)
 

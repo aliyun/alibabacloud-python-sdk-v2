@@ -13,7 +13,7 @@
 # limitations under the License.
 import copy
 import json
-
+from aliyunsdkcore.vendored.six import iteritems
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkecs.request.v20140526.CreateInstanceRequest import CreateInstanceRequest
 from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
@@ -27,7 +27,15 @@ from aliyunsdkecs.request.v20140526.ReActivateInstancesRequest import ReActivate
 from aliyunsdkecs.request.v20140526.DescribeInstanceStatusRequest import DescribeInstanceStatusRequest
 
 
-class ECSInstanceResource:
+class ECSInstanceResource(object):
+
+    @staticmethod
+    def camel_to_underline(camel_format):
+        underline_format = ''
+        if isinstance(camel_format, str):
+            for _s_ in camel_format:
+                underline_format += _s_ if _s_.islower() else '_' + _s_.lower()
+        return underline_format[1:]
 
     def __init__(self, client=None, **kwargs):
         self.client = client
@@ -82,9 +90,6 @@ class ECSInstanceResource:
     def __getitem__(self, item):
         return getattr(self, item, None)
 
-    def __setitem__(self, key, value):
-        return setattr(self, key, value)
-
     @property
     def status(self):
         request = DescribeInstanceStatusRequest()
@@ -119,8 +124,8 @@ class ECSInstanceResource:
     def renew(self, **kwargs):
         request = RenewInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        for key, value in kwargs.items():
-            if hasattr(request, 'set_'+key):
+        for key, value in iteritems(kwargs):
+            if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
                 func(value)
         self.client.do_action_with_exception(request)
@@ -128,7 +133,7 @@ class ECSInstanceResource:
     def reactivate(self, **kwargs):
         request = ReActivateInstancesRequest()
         request.set_InstanceId(self.instance_id)
-        for key, value in kwargs.items():
+        for key, value in iteritems(kwargs):
             if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
                 func(value)
@@ -144,7 +149,7 @@ class ResourceCollection:
 
     def __repr__(self):
         # <QuerySet [{'name__lower': 'beatles blog'}]>
-        return '<{0} {1}>'.format(self.__class__.__name__, list(self))
+        return '<%s %s>' % (self.__class__.__name__, list(self))
 
     def __iter__(self):
         params = copy.deepcopy(self._params)
@@ -233,16 +238,21 @@ class ECSClient:
 
 class ECSResource:
 
-    def __init__(self, access_key_id=None, access_key_secret=None, region_id=None):
-        self._raw_client = AcsClient(access_key_id, access_key_secret, region_id)
+    def __init__(
+            self,
+            access_key_id=None,
+            access_key_secret=None,
+            region_id=None):
+        self._raw_client = AcsClient(
+            access_key_id, access_key_secret, region_id)
         self.instances = ECSInstancesResource(self._raw_client)
         # self.client = ECSClient()
 
     def create_instance(self, **kwargs):
         # one+stop
         request = CreateInstanceRequest()
-        for key, value in kwargs.items():
-            if hasattr(request, 'set_'+key):
+        for key, value in iteritems(kwargs):
+            if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
                 func(value)
         response = self._raw_client.do_action_with_exception(request)
@@ -251,12 +261,9 @@ class ECSResource:
     def run_instances(self, **kwargs):
         # many+running
         request = RunInstancesRequest()
-        for key, value in kwargs.items():
-            if hasattr(request, 'set_'+key):
+        for key, value in iteritems(kwargs):
+            if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
                 func(value)
         response = self._raw_client.do_action_with_exception(request)
         return response
-
-
-
