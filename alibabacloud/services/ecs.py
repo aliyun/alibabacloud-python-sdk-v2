@@ -38,7 +38,7 @@ class ECSInstanceResource(object):
         return underline_format[1:]
 
     def __init__(self, client=None, **kwargs):
-        self.client = client
+        self._client = client
         self.instance_id = kwargs.get('InstanceId', None)
         self.host_name = kwargs.get('HostName', None)
         self._status = kwargs.get('Status', None)
@@ -93,7 +93,7 @@ class ECSInstanceResource(object):
     @property
     def status(self):
         request = DescribeInstanceStatusRequest()
-        response = self.client.do_action_with_exception(request)
+        response = self._client.do_action_with_exception(request)
         response = json.loads(response.decode('utf-8'))
         status = response.get('InstanceStatuses')
         for item in status.get('InstanceStatus'):
@@ -104,22 +104,22 @@ class ECSInstanceResource(object):
     def start(self):
         request = StartInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def stop(self):
         request = StopInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def reboot(self):
         request = RebootInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def delete(self):
         request = DeleteInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def renew(self, **kwargs):
         request = RenewInstanceRequest()
@@ -128,7 +128,7 @@ class ECSInstanceResource(object):
             if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
                 func(value)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
     def reactivate(self, **kwargs):
         request = ReActivateInstancesRequest()
@@ -137,7 +137,7 @@ class ECSInstanceResource(object):
             if hasattr(request, 'set_' + key):
                 func = getattr(request, 'set_' + key)
                 func(value)
-        self.client.do_action_with_exception(request)
+        self._client.do_action_with_exception(request)
 
 
 class ResourceCollection:
@@ -221,21 +221,6 @@ class ECSInstancesResource:
         return self._iterator().pages()
 
 
-class ECSClient:
-
-    # TODO decide whether we actually need a client level like this
-
-    def create_instance(self, **kwargs):
-        request = CreateInstanceRequest()
-        param = kwargs.get('ResourceOwnerId')
-        if param is not None:
-            request.set_ResourceOwnerId(param)
-        self.do_request(request)
-
-    def do_request(self, request):
-        pass
-
-
 class ECSResource:
 
     def __init__(
@@ -246,10 +231,8 @@ class ECSResource:
         self._raw_client = AcsClient(
             access_key_id, access_key_secret, region_id)
         self.instances = ECSInstancesResource(self._raw_client)
-        # self.client = ECSClient()
 
     def create_instance(self, **kwargs):
-        # one+stop
         request = CreateInstanceRequest()
         for key, value in iteritems(kwargs):
             if hasattr(request, 'set_' + key):
@@ -259,7 +242,6 @@ class ECSResource:
         return response
 
     def run_instances(self, **kwargs):
-        # many+running
         request = RunInstancesRequest()
         for key, value in iteritems(kwargs):
             if hasattr(request, 'set_' + key):

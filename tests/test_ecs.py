@@ -29,14 +29,14 @@ class TestGetResource(unittest.TestCase):
     def test_get_resource_without_ecs(self):
         try:
             resource = alibabacloud.get_resource(
-                "rds",
+                "blah",
                 access_key_id=self.access_key_id,
                 access_key_secret=self.access_key_secret,
                 region_id=self.region_id)
             assert False
         except ClientException as e:
-            self.assertEqual(e.error_code, "SDK.ServiceNameNotFound")
-            self.assertEqual(e.get_error_msg(), "You provide is not ECS Service")
+            self.assertEqual(e.error_code, "SDK.ServiceNotSupported")
+            self.assertEqual(e.get_error_msg(), "Service 'blah' is not currently supported.")
 
     def test_get_resource_with_ecs(self):
         resource = alibabacloud.get_resource(
@@ -101,7 +101,8 @@ class TestECSResource(BaseTest):
 
     # def test_run_instances(self):
     #     response = self.resource.run_instances(
-    #         ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd', Amount=1, InstanceType='ecs.n2.small', SecurityGroupId="sg-bp12zdiq3r9dqbaaq717")
+    #         ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd', Amount=1, InstanceType='ecs.n2.small',
+    #         SecurityGroupId="sg-bp12zdiq3r9dqbaaq717")
     #     response_obj = json.loads(response.decode("utf-8"))
     #     instances_sets = response_obj.get("InstanceIdSets").get("InstanceIdSet")
     #     self.assertEqual(len(instances_sets), 1)
@@ -111,7 +112,7 @@ class TestECSResource(BaseTest):
 class TestECSInstanceResource(BaseTest):
 
     def get_test_obj(self, instance_id):
-        ecs_instance_list = self.resource.instances.filter(instance_id = instance_id)
+        ecs_instance_list = self.resource.instances.filter(instance_id=instance_id)
         if len(list(ecs_instance_list)) > 0:
             obj = list(ecs_instance_list)[0]
             return obj
