@@ -13,29 +13,21 @@
 # limitations under the License.
 import copy
 import json
-from aliyunsdkcore.vendored.six import iteritems
+from aliyunsdkcore.vendored import iteritems
 from aliyunsdkcore.client import AcsClient
-from aliyunsdkecs.request.v20140526.CreateInstanceRequest import CreateInstanceRequest
-from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
-from aliyunsdkecs.request.v20140526.StartInstanceRequest import StartInstanceRequest
+from aliyunsdkecs.request.v20140526 import CreateInstanceRequest
+from aliyunsdkecs.request.v20140526 import DescribeInstancesRequest
+from aliyunsdkecs.request.v20140526 import StartInstanceRequest
 from aliyunsdkecs.request.v20140526.StopInstanceRequest import StopInstanceRequest
-from aliyunsdkecs.request.v20140526.DeleteInstanceRequest import DeleteInstanceRequest
+from aliyunsdkecs.request.v20140526 import DeleteInstanceRequest
 from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesRequest
-from aliyunsdkecs.request.v20140526.RebootInstanceRequest import RebootInstanceRequest
-from aliyunsdkecs.request.v20140526.RenewInstanceRequest import RenewInstanceRequest
-from aliyunsdkecs.request.v20140526.ReActivateInstancesRequest import ReActivateInstancesRequest
+from aliyunsdkecs.request.v20140526 import RebootInstanceRequest
+from aliyunsdkecs.request.v20140526 import RenewInstanceRequest
+from aliyunsdkecs.request.v20140526 import ReActivateInstancesRequest
 from aliyunsdkecs.request.v20140526.DescribeInstanceStatusRequest import DescribeInstanceStatusRequest
 
 
 class ECSInstanceResource(object):
-
-    @staticmethod
-    def camel_to_underline(camel_format):
-        underline_format = ''
-        if isinstance(camel_format, str):
-            for _s_ in camel_format:
-                underline_format += _s_ if _s_.islower() else '_' + _s_.lower()
-        return underline_format[1:]
 
     def __init__(self, client=None, **kwargs):
         self._client = client
@@ -149,7 +141,7 @@ class ResourceCollection:
 
     def __repr__(self):
         # <QuerySet [{'name__lower': 'beatles blog'}]>
-        return '<%s %s>' % (self.__class__.__name__, list(self))
+        return '<{0} {1}>'.format(self.__class__.__name__, list(self))
 
     def __iter__(self):
         params = copy.deepcopy(self._params)
