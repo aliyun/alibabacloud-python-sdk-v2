@@ -11,10 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import copy
-import json
 
-from aliyunsdkcore.client import AcsClient
+import re
+
 from aliyunsdkecs.request.v20140526.CreateInstanceRequest import CreateInstanceRequest
 from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
 from aliyunsdkecs.request.v20140526.StartInstanceRequest import StartInstanceRequest
@@ -24,46 +23,51 @@ from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesReque
 from aliyunsdkecs.request.v20140526.RebootInstanceRequest import RebootInstanceRequest
 from aliyunsdkecs.request.v20140526.RenewInstanceRequest import RenewInstanceRequest
 from aliyunsdkecs.request.v20140526.ReActivateInstancesRequest import ReActivateInstancesRequest
-from aliyunsdkecs.request.v20140526.DescribeInstanceStatusRequest import DescribeInstanceStatusRequest
+from aliyunsdkcore.vendored.six import iteritems
+
+from alibabacloud.services import ServiceResource
+from alibabacloud.services import ResourceCollection
 
 
-class ECSInstanceResource:
+class ECSInstanceResource(ServiceResource):
 
-    def __init__(self, client=None, **kwargs):
-        self._client = client
-        self.instance_id = kwargs.get('InstanceId', None)
-        self.instance_name = kwargs.get('InstanceName', None)
-        self.host_name = kwargs.get('HostName', None)
-        self._status = kwargs.get('Status', None)
-        self.image_id = kwargs.get('ImageId', None)
-        self.vlan_id = kwargs.get('VlanId', None)
-        self.inner_ip_address = kwargs.get('InnerIpAddress', None)
-        self.instance_type_family = kwargs.get('InstanceTypeFamily', None)
-        self.eip_address = kwargs.get('EipAddress', None)
-        self.internet_max_bandwidth_in = kwargs.get('InternetMaxBandwidthIn', None)
-        self.creditSpecification = kwargs.get('CreditSpecification', None)
-        self.zone_id = kwargs.get('ZoneId', None)
-        self.internet_charge_type = kwargs.get('InternetChargeType', None)
-        self.spot_strategy = kwargs.get('SpotStrategy', None)
-        self.stopped_mode = kwargs.get('StoppedMode', None)
-        self.stopped_mode = kwargs.get('SerialNumber', None)
+    def __init__(self, instance_id, client=None):
+        ServiceResource.__init__(self, client)
+        self.instance_id = instance_id
+        self.region_id = None
+        self.inner_ip_address = None
+        self.creation_time = None
+        self.expired_time = None
+        self.io_optimized = None
+        self.public_ip_address = None
+        self.internet_charge_type = None
+        self.vpc_attributes = None
+        self.status = None
+        self.host_name = None
+        self.image_id = None
+        self.instance_charge_type = None
+        self.instance_network_type = None
+        self.instance_type = None
+        self.eip_address = None
+        self.serial_number = None
+        self.operation_locks = None
+        self.security_group_ids = None
+        self.internet_max_bandwidth_out = None
+        self.zone_id = None
+        self.instance_name = None
+        self.internet_max_bandwidth_in = None
+        self.device_available = None
 
-    def __getitem__(self, item):
-        return getattr(self, item, None)
+    def set_instance_attributes(self, attrs):
 
-    def __setitem__(self, key, value):
-        return setattr(self, key, value)
+        def convert(name):
+            # covert name from camel case to snake case
+            # e.g: InstanceName -> instance_name
+            s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+            return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
-    @property
-    def status(self):
-        request = DescribeInstanceStatusRequest()
-        response = self._client.do_action_with_exception(request)
-        response = json.loads(response.decode('utf-8'))
-        status = response.get('InstanceStatuses')
-        for item in status.get('InstanceStatus'):
-            if item.get('InstanceId') == self.instance_id:
-                self._status = item.get('Status')
-        return self._status
+        for key, value in iteritems(attrs):
+            setattr(self, convert(key), value)
 
     def start(self):
         request = StartInstanceRequest()
@@ -85,126 +89,64 @@ class ECSInstanceResource:
         request.set_InstanceId(self.instance_id)
         self._client.do_action_with_exception(request)
 
-    def renew(self, **kwargs):
+    def renew(self, **params):
         request = RenewInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        for key, value in kwargs.items():
-            if hasattr(request, 'set_'+key):
-                func = getattr(request, 'set_' + key)
-                func(value)
-        self._client.do_action_with_exception(request)
+        self._do_request(request, params)
 
-    def reactivate(self, **kwargs):
+    def reactivate(self, **params):
         request = ReActivateInstancesRequest()
         request.set_InstanceId(self.instance_id)
-        for key, value in kwargs.items():
-            if hasattr(request, 'set_' + key):
-                func = getattr(request, 'set_' + key)
-                func(value)
-        self._client.do_action_with_exception(request)
+        self._do_request(request, params)
 
 
-class ResourceCollection:
+class ECSResource(ServiceResource):
 
-    def __init__(self, client=None, **kwargs):
-        self.client = client
-        self._params = kwargs
-        self.page_size = kwargs.get('page_size', 100)
+    def __init__(self, client=None):
+        ServiceResource.__init__(self, client=client)
+        self.instances = self._init_instances()
 
-    def __repr__(self):
-        # <QuerySet [{'name__lower': 'beatles blog'}]>
-        return '<{0} {1}>'.format(self.__class__.__name__, list(self))
+    def _init_instances(self):
 
-    def __iter__(self):
-        params = copy.deepcopy(self._params)
-        limit = params.pop('limit', None)
-        params.pop('page_size', None)
-        count = 0
-        for page in self.pages():
-            for item in page:
-                if params:
-                    for key, value in params.items():
-                        if value == item[key]:
-                            yield item
-                else:
-                    yield item
-                    count += 1
-                    if limit is not None and count >= limit:
-                        return
+        def describe_instances_handler(params):
+            request = DescribeInstancesRequest()
+            response = self._do_request(request, params)
+            self._check_server_response(response, 'TotalCount')
+            self._check_server_response(response, 'PageSize')
+            self._check_server_response(response, 'PageNumber')
+            self._check_server_response(response, 'Instances')
+            self._check_server_response(response['Instances'], 'Instance')
+            return (
+                response['TotalCount'],
+                response['PageSize'],
+                response['PageNumber'],
+                response['Instances']['Instance'],
+            )
 
-    def handler_desc_instance_request(self, page_num=1):
-        request = DescribeInstancesRequest()
-        request.set_PageSize(self.page_size)
-        request.set_PageNumber(page_num)
-        response = self.client.do_action_with_exception(request)
-        response_obj = json.loads(response.decode('utf-8'))
-        return response_obj
+        def instance_creator(instance_data):
+            self._check_server_response(instance_data, 'InstanceId')
+            instance_id = instance_data['InstanceId']
+            del instance_data['InstanceId']
+            inst = ECSInstanceResource(self._client, instance_id)
+            inst.set_instance_attributes(instance_data)
+            return inst
 
-    def pages(self):
-        response_obj = self.handler_desc_instance_request()
-        total = response_obj.get('TotalCount')
-        quotient, remainder = divmod(total, self.page_size)
-        if remainder > 0:
-            quotient += 1
-        for i in range(1, quotient + 1):
-            response_obj = self.handler_desc_instance_request(page_num=i)
-            instances = response_obj.get('Instances')['Instance']
-            page_items = []
-            for instance in instances:
-                ecs_obj = ECSInstanceResource(client=self.client, **instance)
-                page_items.append(ecs_obj)
-            yield page_items
+        return ResourceCollection(
+            describe_instances_handler,
+            instance_creator,
+        )
 
-
-class ECSInstancesResource:
-    _collection_cls = ResourceCollection
-
-    def __init__(self, client):
-        self.client = client
-
-    def _iterator(self, **kwargs):
-        return self._collection_cls(self.client, **kwargs)
-
-    def all(self):
-        return self._iterator()
-
-    def filter(self, **kwargs):
-        return self._iterator(**kwargs)
-
-    def limit(self, count):
-        if isinstance(count, int) and int(count) > 0:
-            return self._iterator(limit=count)
-        raise ValueError("The params of limit must be positive integers")
-
-    def page_size(self, count=None):
-        if isinstance(count, int) and int(count) > 0:
-            return self._iterator(page_size=count)
-        raise ValueError("The params of page_size must be positive integers")
-
-    def pages(self):
-        return self._iterator().pages()
-
-
-class ECSResource:
-
-    def __init__(self, access_key_id=None, access_key_secret=None, region_id=None):
-        self._raw_client = AcsClient(access_key_id, access_key_secret, region_id)
-        self.instances = ECSInstancesResource(self._raw_client)
-
-    def create_instance(self, **kwargs):
+    def create_instance(self, **params):
         request = CreateInstanceRequest()
-        for key, value in kwargs.items():
-            if hasattr(request, 'set_'+key):
-                func = getattr(request, 'set_' + key)
-                func(value)
-        response = self._raw_client.do_action_with_exception(request)
-        return response
+        instance_id = self._get_respone(request, params, key='InstanceId')
+        return ECSInstanceResource(instance_id, client=self._client)
 
-    def run_instances(self, **kwargs):
+    def run_instances(self, **params):
         request = RunInstancesRequest()
-        for key, value in kwargs.items():
-            if hasattr(request, 'set_'+key):
-                func = getattr(request, 'set_' + key)
-                func(value)
-        response = self._raw_client.do_action_with_exception(request)
-        return response
+        instance_ids = self._get_respone(request, params, keys=['InstanceIdSets', 'InstanceIdSet'])
+
+        instances = []
+        for instance_id in instance_ids:
+            instance = ECSInstanceResource(instance_id, client=self._client)
+            instances.append(instance)
+        return instances

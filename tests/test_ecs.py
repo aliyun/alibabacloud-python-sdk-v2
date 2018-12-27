@@ -1,3 +1,17 @@
+# Copyright 2018 Alibaba Cloud Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import sys
 import time
 import unittest
@@ -6,29 +20,18 @@ import os
 
 import alibabacloud
 from aliyunsdkcore.acs_exception.exceptions import ClientException, ServerException
-from alibabacloud.services.ecs import ECSInstancesResource, ResourceCollection, ResourceCollection, ECSResource
+from alibabacloud.services.ecs import ResourceCollection
+from alibabacloud.services.ecs import ECSResource
 
-if sys.version_info[0] == 2:
-    from collections import Iterable
-else:
-    from collections.abc import Iterable
+from base import SDKTestBase
+from base import Iterable
 
 
-class TestGetResource(unittest.TestCase):
-
-    def setUp(self):
-        sdk_config_path = os.path.join(
-            os.path.expanduser("~"),
-            "aliyun_sdk_config.json")
-        with open(sdk_config_path) as fp:
-            config = json.loads(fp.read())
-            self.access_key_id = config["access_key_id"]
-            self.access_key_secret = config["access_key_secret"]
-            self.region_id = config["region_id"]
+class TestGetResource(SDKTestBase):
 
     def test_get_resource_without_ecs(self):
         try:
-            resource = alibabacloud.get_resource(
+            ecs = alibabacloud.get_resource(
                 "blah",
                 access_key_id=self.access_key_id,
                 access_key_secret=self.access_key_secret,
@@ -39,15 +42,16 @@ class TestGetResource(unittest.TestCase):
             self.assertEqual(e.get_error_msg(), "Service 'blah' is not currently supported.")
 
     def test_get_resource_with_ecs(self):
-        resource = alibabacloud.get_resource(
+        ecs = alibabacloud.get_resource(
             "ECS",
             access_key_id=self.access_key_id,
             access_key_secret=self.access_key_secret,
             region_id=self.region_id)
-        self.assertIsInstance(resource, ECSResource)
+        self.assertIsInstance(ecs, ECSResource)
 
 
 class BaseTest(unittest.TestCase):
+
     def setUp(self):
         self.temp_instances = []
         sdk_config_path = os.path.join(
@@ -101,7 +105,8 @@ class TestECSResource(BaseTest):
 
     # def test_run_instances(self):
     #     response = self.resource.run_instances(
-    #         ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd', Amount=1, InstanceType='ecs.n2.small',
+    #         ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd',
+    #         Amount=1, InstanceType='ecs.n2.small',
     #         SecurityGroupId="sg-bp12zdiq3r9dqbaaq717")
     #     response_obj = json.loads(response.decode("utf-8"))
     #     instances_sets = response_obj.get("InstanceIdSets").get("InstanceIdSet")
@@ -162,7 +167,8 @@ class TestECSInstanceResource(BaseTest):
             self.assertEqual(e.error_code, "MissingParameter")
             self.assertEqual(
                 e.get_error_msg(),
-                'The input parameter "Period" that is mandatory for processing this request is not supplied.')
+                'The input parameter "Period" that is mandatory for '
+                'processing this request is not supplied.')
 
     def test_renew(self):
         obj = self.get_test_obj("i-bp162a07bhoj5skna4zj")
@@ -188,6 +194,7 @@ class TestECSInstanceResource(BaseTest):
 
 
 class TestECSInstancesResource(BaseTest):
+
     def test_ecs_instances(self):
         self.assertIsInstance(self.resource.instances, ECSInstancesResource)
 
@@ -199,7 +206,8 @@ class TestECSInstancesResource(BaseTest):
         self.assertEqual(len(list(response)), 3)
 
     def test_filter_with_error_instance_id(self):
-        response = self.resource.instances.filter(instance_id="11111111111")  # <ResourceCollection []>
+        # <ResourceCollection []>
+        response = self.resource.instances.filter(instance_id="11111111111")
         self.assertEqual(len(list(response)), 0)
         response = self.resource.instances.filter(status="Stopped")  # <ResourceCollection [...]>
         self.assertEqual(len(list(response)), 2)

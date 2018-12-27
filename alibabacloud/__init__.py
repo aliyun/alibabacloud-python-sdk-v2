@@ -15,13 +15,15 @@
 __version__ = "0.1.0"
 
 from aliyunsdkcore.acs_exception.exceptions import ClientException
+from aliyunsdkcore.client import AcsClient
 from alibabacloud.services.ecs import ECSResource
 import alibabacloud.errors
 
 
-def get_resource(service_name, **kwargs):
+def get_resource(service_name, access_key_id=None, access_key_secret=None, region_id=None):
     if service_name.lower() == "ecs":
-        return ECSResource(**kwargs)
+        client = AcsClient(access_key_id, access_key_secret, region_id)
+        return ECSResource(client)
     else:
         raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
                               "Service '{0}' is not currently supported.".format(service_name))
