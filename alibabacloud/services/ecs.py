@@ -23,18 +23,21 @@ from aliyunsdkecs.request.v20140526.StopInstanceRequest import StopInstanceReque
 from aliyunsdkecs.request.v20140526.DeleteInstanceRequest import DeleteInstanceRequest
 from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesRequest
 from aliyunsdkecs.request.v20140526.RebootInstanceRequest import RebootInstanceRequest
-from aliyunsdkecs.request.v20140526.RenewInstanceRequest import RenewInstanceRequest
-from aliyunsdkecs.request.v20140526.ReActivateInstancesRequest import ReActivateInstancesRequest
 from aliyunsdkcore.vendored.six import iteritems
 
-from alibabacloud.services import ServiceResource
-from alibabacloud.services import ResourceCollection
+from alibabacloud.resources.base import ServiceResource
+from alibabacloud.resources.collection import ResourceCollection
 
 
 class ECSInstanceResource(ServiceResource):
 
+    STATUS_RUNNING = "Running"
+    STATUS_STARTING = "Starting"
+    STATUS_STOPPING = "Stopping"
+    STATUS_STOPPED = "Stopped"
+
     def __init__(self, instance_id, client=None):
-        ServiceResource.__init__(self, client)
+        ServiceResource.__init__(self, 'ecs-instance', client=client)
         self.instance_id = instance_id
         self.region_id = None
         self.inner_ip_address = None
@@ -77,7 +80,7 @@ class ECSInstanceResource(ServiceResource):
         attrs = self._get_respone(request, {}, keys=['Instances', 'Instance'])[0]
         self.set_instance_attributes(attrs)
 
-    def wait_until(self, target_status, timeout=60):
+    def wait_until(self, target_status, timeout=120):
         start_time = time.time()
         while True:
             end_time = time.time()
@@ -93,44 +96,53 @@ class ECSInstanceResource(ServiceResource):
     def start(self):
         request = StartInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self._client.do_action_with_exception(request)
+        self._do_request(request, {})
 
     def stop(self):
         request = StopInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self._client.do_action_with_exception(request)
+        self._do_request(request, {})
 
     def reboot(self):
         request = RebootInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self._client.do_action_with_exception(request)
+        self._do_request(request, {})
 
     def delete(self):
         request = DeleteInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self._client.do_action_with_exception(request)
-
-    def renew(self, **params):
-        request = RenewInstanceRequest()
-        request.set_InstanceId(self.instance_id)
-        self._do_request(request, params)
-
-    def reactivate(self, **params):
-        request = ReActivateInstancesRequest()
-        request.set_InstanceId(self.instance_id)
-        self._do_request(request, params)
+        self._do_request(request, {})
 
 
 class ECSResource(ServiceResource):
 
     def __init__(self, client=None):
-        ServiceResource.__init__(self, client=client)
+        ServiceResource.__init__(self, 'ecs', client=client)
         self.instances = self._init_instances()
 
     def _init_instances(self):
 
+        def _handle_instance_ids(params):
+            instance_ids_to_add = []
+
+            if 'instance_id' in params:
+                instance_ids_to_add = [params['instance_id']]
+                del params['instance_id']
+
+            if 'instance_ids' in params:
+                instance_ids_to_add = params['instance_ids']
+                del params['instance_ids']
+
+            if instance_ids_to_add:
+                instance_ids = []
+                if 'InstanceIds' in params:
+                    instance_ids = json.loads(params['InstanceIds'])
+                instance_ids.extend(instance_ids_to_add)
+                params['InstanceIds'] = json.dumps(instance_ids)
+
         def describe_instances_handler(params):
             request = DescribeInstancesRequest()
+            _handle_instance_ids(params)
             response = self._do_request(request, params)
             self._check_server_response(response, 'TotalCount')
             self._check_server_response(response, 'PageSize')

@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import re
 import sys
 import os
 import json
 from unittest import TestCase
+from aliyunsdkcore.client import AcsClient
 
 if sys.version_info[0] == 2:
     from collections import Iterable
@@ -34,6 +36,16 @@ class SDKTestBase(TestCase):
         self.access_key_id = self._read_key_from_env_or_config("ACCESS_KEY_ID")
         self.access_key_secret = self._read_key_from_env_or_config("ACCESS_KEY_SECRET")
         self.region_id = self._read_key_from_env_or_config("REGION_ID")
+        self.client = self._init_client()
+
+    def _init_client(self):
+        return AcsClient(self.access_key_id, self.access_key_secret, self.region_id)
+
+    def _convert_camel_to_snake(self, name):
+        # covert name from camel case to snake case
+        # e.g: InstanceName -> instance_name
+        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
     def _init_sdk_config(self):
         sdk_config_path = os.path.join(os.path.expanduser("~"), "aliyun_sdk_config.json")
