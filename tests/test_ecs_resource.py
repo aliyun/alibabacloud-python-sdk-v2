@@ -47,11 +47,9 @@ class EcsResourceTest(SDKTestBase):
             print(inst.instance_id)
             print(inst.instance_type)
 
-        print("===============================")
         for inst in ecs.instances.filter(InstanceType='ecs.g5.large'):
             print(inst.instance_id)
 
-        print("===============================")
         for inst in ecs.instances.filter(InstanceType='ecs.n2.small').limit(3):
             print(inst.instance_id)
 

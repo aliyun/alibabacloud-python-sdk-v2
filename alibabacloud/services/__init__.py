@@ -98,16 +98,17 @@ class ResourceCollection:
                 params['PageSize'] = self._page_size
 
             total_count, page_size, page_num, items = self._page_handler(params)
+            limit = min(total_count, self._limit)
 
             resources = []
             for item in items:
                 resource = self._resource_creator(item)
                 resources.append(resource)
                 count += 1
-                if count >= total_count:
+                if count >= limit:
                     break
             yield resources
-            if count >= total_count:
+            if count >= limit:
                 break
             page_num += 1
 
