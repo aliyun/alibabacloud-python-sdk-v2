@@ -28,6 +28,7 @@ setup(
     version=VERSION,
     description='Alibaba Cloud Python SDK 2.0',
     author='Alibaba Cloud',
+    author_email='alibaba-cloud-sdk-dev-team@list.alibaba-inc.com',
     url='https://github.com/aliyun/alibabacloud-python-sdk-v2',
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
