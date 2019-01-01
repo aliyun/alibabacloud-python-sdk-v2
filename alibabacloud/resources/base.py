@@ -27,6 +27,12 @@ class ServiceResource(object):
             if hasattr(request, 'set_'+key):
                 func = getattr(request, 'set_' + key)
                 func(value)
+            else:
+                raise ClientException(errors.ERROR_INVALID_PARAMETER,
+                                      "{0} has no parameter named {1}.".format(
+                                          request.__class__.__name__,
+                                          key,
+                                      ))
         response = self._client.do_action_with_exception(request)
         return json.loads(response.decode('utf-8'))
 
@@ -38,7 +44,7 @@ class ServiceResource(object):
                 "No '{0}' in server response.".format(key)
             )
 
-    def _get_respone(self, request, params, key=None, keys=None):
+    def _get_response(self, request, params, key=None, keys=None):
         response = self._do_request(request, params)
         if key:
             self._check_server_response(response, key)

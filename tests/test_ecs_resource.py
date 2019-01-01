@@ -228,7 +228,49 @@ class EcsResourceTest(SDKTestBase):
             self.assertEqual(ECSInstanceResource.STATUS_STOPPED, inst.status)
         self.assertEqual(7, count)
 
+    def test_run_instances(self):
+        ecs = self._get_ecs_resource()
+        ecs.run_instances(
+            Amount=5,
+            ImageId="coreos_1745_7_0_64_30G_alibase_20180705.vhd",
+            InstanceType="ecs.n2.small",
+        )
+
+    def test_invalid_parameter(self):
+
+        ecs = self._get_ecs_resource()
+
+        def test_func(func, error_message):
+            try:
+                func()
+                assert False
+            except ClientException as e:
+                self.assertEqual("SDK.InvalidParameter", e.get_error_code())
+                self.assertEqual(error_message, e.get_error_msg())
+
+        def bad_filter_param():
+            for i in ecs.instances.filter(InvalidParameter=1):
+                pass
+
+        test_func(bad_filter_param,
+                  "DescribeInstancesRequest has no parameter named InvalidParameter.")
+        test_func(lambda: ecs.instances.limit(0),
+                  "count must be a positive integer.")
+        test_func(lambda: ecs.instances.page_size(0),
+                  "count must be a positive integer.")
+        test_func(lambda: ecs.instances.page_size("blah"),
+                  "count must be a positive integer.")
+        test_func(lambda: ecs.run_instances(ImageId="blah", InvalidParameter=1),
+                  "RunInstancesRequest has no parameter named InvalidParameter.")
+        test_func(lambda: ecs.create_instance(InvalidParameter=1),
+                  "CreateInstanceRequest has no parameter named InvalidParameter.")
+
 
 if __name__ == '__main__':
     unittest.main()
+    # test = EcsResourceTest()
+    # test.test_run_instances()
+    # test.test_invalid_parameter()
+    # test.test_instance_resource_collection()
+    # test.test_empty_instances()
 

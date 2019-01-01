@@ -77,7 +77,7 @@ class ECSInstanceResource(ServiceResource):
     def refresh(self):
         request = DescribeInstancesRequest()
         request.set_InstanceIds(json.dumps([self.instance_id]))
-        attrs = self._get_respone(request, {}, keys=['Instances', 'Instance'])[0]
+        attrs = self._get_response(request, {}, keys=['Instances', 'Instance'])[0]
         self.set_instance_attributes(attrs)
 
     def wait_until(self, target_status, timeout=120):
@@ -171,12 +171,12 @@ class ECSResource(ServiceResource):
 
     def create_instance(self, **params):
         request = CreateInstanceRequest()
-        instance_id = self._get_respone(request, params, key='InstanceId')
+        instance_id = self._get_response(request, params, key='InstanceId')
         return ECSInstanceResource(instance_id, client=self._client)
 
     def run_instances(self, **params):
         request = RunInstancesRequest()
-        instance_ids = self._get_respone(request, params, keys=['InstanceIdSets', 'InstanceIdSet'])
+        instance_ids = self._get_response(request, params, keys=['InstanceIdSets', 'InstanceIdSet'])
 
         instances = []
         for instance_id in instance_ids:

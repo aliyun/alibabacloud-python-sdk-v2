@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import copy
+from aliyunsdkcore.acs_exception.exceptions import ClientException
+from alibabacloud.errors import ERROR_INVALID_PARAMETER
 
 
 class ResourceCollection:
@@ -88,7 +90,7 @@ class ResourceCollection:
 
     def _check_count(self, count):
         if not isinstance(count, int) or count <= 0:
-            raise ValueError("count must be a positive integer.")
+            raise ClientException(ERROR_INVALID_PARAMETER, "count must be a positive integer.")
 
     def limit(self, count):
         self._check_count(count)
