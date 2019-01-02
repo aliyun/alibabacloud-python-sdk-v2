@@ -27,13 +27,12 @@ class ResourceCollection:
         self._filter_params = filter_params
 
     def __iter__(self):
-        count = 0
         for page in self.pages():
             for item in page:
                 yield item
 
-                if self._limit is not None and count >= self._limit:
-                    return
+    def __next__(self):
+        return next(iter(self))
 
     def _clone(self):
         return ResourceCollection(

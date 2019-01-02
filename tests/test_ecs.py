@@ -245,6 +245,8 @@ class TestECSInstanceResource(BaseTest):
                 "Instance status is not Expired, ImageExpired or EcsAndImageExpired.")
 
 
+
+
 class TestECSInstancesResource(BaseTest):
 <<<<<<< HEAD
 
