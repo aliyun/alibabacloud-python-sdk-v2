@@ -11,16 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+__version__ = "0.1.0"
+
 from aliyunsdkcore.acs_exception.exceptions import ClientException
-from aliyunsdkcore.client import AcsClient
 from alibabacloud.services.ecs import ECSResource
 import alibabacloud.errors
 
 
-def get_resource(service_name, access_key_id=None, access_key_secret=None, region_id=None):
+def get_resource(service_name, **kwargs):
     if service_name.lower() == "ecs":
-        client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSResource(client)
+        return ECSResource(**kwargs)
     else:
         raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
                               "Service '{0}' is not currently supported.".format(service_name))

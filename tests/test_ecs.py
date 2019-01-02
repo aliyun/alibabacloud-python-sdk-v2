@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Copyright 2018 Alibaba Cloud Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+=======
+>>>>>>> 76c2357b009f6f52c6c442ce64a84e8e16d54ae2
 import sys
 import time
 import unittest
@@ -20,6 +23,7 @@ import os
 
 import alibabacloud
 from aliyunsdkcore.acs_exception.exceptions import ClientException, ServerException
+<<<<<<< HEAD
 from alibabacloud.services.ecs import ResourceCollection
 from alibabacloud.services.ecs import ECSResource
 
@@ -32,6 +36,31 @@ class TestGetResource(SDKTestBase):
     def test_get_resource_without_ecs(self):
         try:
             ecs = alibabacloud.get_resource(
+=======
+from alibabacloud.services.ecs import ECSInstancesResource, ResourceCollection, ResourceCollection, ECSResource
+
+if sys.version_info[0] == 2:
+    from collections import Iterable
+else:
+    from collections.abc import Iterable
+
+
+class TestGetResource(unittest.TestCase):
+
+    def setUp(self):
+        sdk_config_path = os.path.join(
+            os.path.expanduser("~"),
+            "aliyun_sdk_config.json")
+        with open(sdk_config_path) as fp:
+            config = json.loads(fp.read())
+            self.access_key_id = config["access_key_id"]
+            self.access_key_secret = config["access_key_secret"]
+            self.region_id = config["region_id"]
+
+    def test_get_resource_without_ecs(self):
+        try:
+            resource = alibabacloud.get_resource(
+>>>>>>> 76c2357b009f6f52c6c442ce64a84e8e16d54ae2
                 "blah",
                 access_key_id=self.access_key_id,
                 access_key_secret=self.access_key_secret,
@@ -42,16 +71,27 @@ class TestGetResource(SDKTestBase):
             self.assertEqual(e.get_error_msg(), "Service 'blah' is not currently supported.")
 
     def test_get_resource_with_ecs(self):
+<<<<<<< HEAD
         ecs = alibabacloud.get_resource(
+=======
+        resource = alibabacloud.get_resource(
+>>>>>>> 76c2357b009f6f52c6c442ce64a84e8e16d54ae2
             "ECS",
             access_key_id=self.access_key_id,
             access_key_secret=self.access_key_secret,
             region_id=self.region_id)
+<<<<<<< HEAD
         self.assertIsInstance(ecs, ECSResource)
 
 
 class BaseTest(unittest.TestCase):
 
+=======
+        self.assertIsInstance(resource, ECSResource)
+
+
+class BaseTest(unittest.TestCase):
+>>>>>>> 76c2357b009f6f52c6c442ce64a84e8e16d54ae2
     def setUp(self):
         self.temp_instances = []
         sdk_config_path = os.path.join(
@@ -105,8 +145,12 @@ class TestECSResource(BaseTest):
 
     # def test_run_instances(self):
     #     response = self.resource.run_instances(
+<<<<<<< HEAD
     #         ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd',
     #         Amount=1, InstanceType='ecs.n2.small',
+=======
+    #         ImageId='coreos_1745_7_0_64_30G_alibase_20180705.vhd', Amount=1, InstanceType='ecs.n2.small',
+>>>>>>> 76c2357b009f6f52c6c442ce64a84e8e16d54ae2
     #         SecurityGroupId="sg-bp12zdiq3r9dqbaaq717")
     #     response_obj = json.loads(response.decode("utf-8"))
     #     instances_sets = response_obj.get("InstanceIdSets").get("InstanceIdSet")
@@ -122,6 +166,10 @@ class TestECSInstanceResource(BaseTest):
             obj = list(ecs_instance_list)[0]
             return obj
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 76c2357b009f6f52c6c442ce64a84e8e16d54ae2
     def test_ecs_instances(self):
         self.assertTrue(self.get_test_obj("i-bp162a07bhoj5skna4zj").instance_name)
 
@@ -167,8 +215,12 @@ class TestECSInstanceResource(BaseTest):
             self.assertEqual(e.error_code, "MissingParameter")
             self.assertEqual(
                 e.get_error_msg(),
+<<<<<<< HEAD
                 'The input parameter "Period" that is mandatory for '
                 'processing this request is not supplied.')
+=======
+                'The input parameter "Period" that is mandatory for processing this request is not supplied.')
+>>>>>>> 76c2357b009f6f52c6c442ce64a84e8e16d54ae2
 
     def test_renew(self):
         obj = self.get_test_obj("i-bp162a07bhoj5skna4zj")
@@ -194,7 +246,10 @@ class TestECSInstanceResource(BaseTest):
 
 
 class TestECSInstancesResource(BaseTest):
+<<<<<<< HEAD
 
+=======
+>>>>>>> 76c2357b009f6f52c6c442ce64a84e8e16d54ae2
     def test_ecs_instances(self):
         self.assertIsInstance(self.resource.instances, ECSInstancesResource)
 
@@ -206,8 +261,12 @@ class TestECSInstancesResource(BaseTest):
         self.assertEqual(len(list(response)), 3)
 
     def test_filter_with_error_instance_id(self):
+<<<<<<< HEAD
         # <ResourceCollection []>
         response = self.resource.instances.filter(instance_id="11111111111")
+=======
+        response = self.resource.instances.filter(instance_id="11111111111")  # <ResourceCollection []>
+>>>>>>> 76c2357b009f6f52c6c442ce64a84e8e16d54ae2
         self.assertEqual(len(list(response)), 0)
         response = self.resource.instances.filter(status="Stopped")  # <ResourceCollection [...]>
         self.assertEqual(len(list(response)), 2)
