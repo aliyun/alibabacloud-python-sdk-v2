@@ -193,6 +193,8 @@ class TestECSInstanceResource(BaseTest):
                 "Instance status is not Expired, ImageExpired or EcsAndImageExpired.")
 
 
+
+
 class TestECSInstancesResource(BaseTest):
 
     def test_ecs_instances(self):
