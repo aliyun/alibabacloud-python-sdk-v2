@@ -23,6 +23,8 @@ from aliyunsdkecs.request.v20140526.StopInstanceRequest import StopInstanceReque
 from aliyunsdkecs.request.v20140526.DeleteInstanceRequest import DeleteInstanceRequest
 from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesRequest
 from aliyunsdkecs.request.v20140526.RebootInstanceRequest import RebootInstanceRequest
+from aliyunsdkecs.request.v20140526.ModifyInstanceAttributeRequest \
+    import ModifyInstanceAttributeRequest
 from aliyunsdkcore.vendored.six import iteritems
 
 from alibabacloud.resources.base import ServiceResource
@@ -112,6 +114,12 @@ class ECSInstanceResource(ServiceResource):
         request = DeleteInstanceRequest()
         request.set_InstanceId(self.instance_id)
         self._do_request(request, {})
+
+    def modify_attributes(self, **params):
+        request = ModifyInstanceAttributeRequest()
+        request.set_InstanceId(self.instance_id)
+        self._do_request(request, params)
+        self.refresh()
 
 
 class ECSResource(ServiceResource):

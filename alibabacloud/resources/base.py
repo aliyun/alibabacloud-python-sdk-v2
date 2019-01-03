@@ -34,6 +34,7 @@ class ServiceResource(object):
                                           key,
                                       ))
         response = self._client.do_action_with_exception(request)
+        print(response.decode('utf-8'))
         return json.loads(response.decode('utf-8'))
 
     @staticmethod
