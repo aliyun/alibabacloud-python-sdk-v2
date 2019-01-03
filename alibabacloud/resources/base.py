@@ -12,8 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
+import jmespath
 import alibabacloud.errors as errors
 from aliyunsdkcore.acs_exception.exceptions import ClientException
+
+
+_test_flag = False # FIXME when sdk-core has logging we won't need it
+
+
+class _SearchableDict(dict):
+
+    def search(self, expression):
+        return jmespath.search(expression, self)
 
 
 class ServiceResource(object):
@@ -33,9 +43,16 @@ class ServiceResource(object):
                                           request.__class__.__name__,
                                           key,
                                       ))
+        if _test_flag:
+            import time
+            print(time.time(), request.__class__.__name__, request.get_query_params())
+
         response = self._client.do_action_with_exception(request)
-        print(response.decode('utf-8'))
-        return json.loads(response.decode('utf-8'))
+
+        if _test_flag:
+            print(response.decode('utf-8'))
+
+        return json.loads(response.decode('utf-8'), object_hook=_SearchableDict)
 
     @staticmethod
     def _check_server_response(obj, key):
@@ -56,3 +73,4 @@ class ServiceResource(object):
                 self._check_server_response(obj, key)
                 obj = obj[key]
             return obj
+

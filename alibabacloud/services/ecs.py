@@ -65,7 +65,7 @@ class ECSInstanceResource(ServiceResource):
         self.internet_max_bandwidth_in = None
         self.device_available = None
 
-    def set_instance_attributes(self, attrs):
+    def _set_instance_attributes(self, attrs):
 
         def convert(name):
             # covert name from camel case to snake case
@@ -80,7 +80,7 @@ class ECSInstanceResource(ServiceResource):
         request = DescribeInstancesRequest()
         request.set_InstanceIds(json.dumps([self.instance_id]))
         attrs = self._get_response(request, {}, keys=['Instances', 'Instance'])[0]
-        self.set_instance_attributes(attrs)
+        self._set_instance_attributes(attrs)
 
     def wait_until(self, target_status, timeout=120):
         start_time = time.time()
@@ -169,7 +169,7 @@ class ECSResource(ServiceResource):
             instance_id = instance_data['InstanceId']
             del instance_data['InstanceId']
             inst = ECSInstanceResource(instance_id, client=self._client)
-            inst.set_instance_attributes(instance_data)
+            inst._set_instance_attributes(instance_data)
             return inst
 
         return ResourceCollection(

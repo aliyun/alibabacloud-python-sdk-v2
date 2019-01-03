@@ -31,26 +31,28 @@ class EcsResourceTest(SDKTestBase):
         ecs = self._get_ecs_resource()
         for inst in ecs.instances.all():
             if inst.status != inst.STATUS_STOPPED:
+                if inst.status == inst.STATUS_STARTING:
+                    inst.wait_until(inst.STATUS_RUNNING)
                 inst.stop()
 
-        for inst in ecs.instances.all():
+        for inst in list(ecs.instances.all()):
             inst.wait_until(inst.STATUS_STOPPED)
-
-        for inst in ecs.instances.all():
             inst.delete()
 
-        print("waiting all instance to be deleted")
-        while True:
-            if len(list(ecs.instances.all())) == 0:
-                time.sleep(1)
-                break
-        print("clean up finished")
+        # print("waiting all instance to be deleted")
+        # while True:
+        #    time.sleep(1)
+        #    if len(list(ecs.instances.all())) == 0:
+        #        break
+        # print("clean up finished")
 
     def setUp(self):
+        import alibabacloud.resources.base as base
+        base._test_flag = True
         self._instance_clean_up()
 
     def tearDown(self):
-        self._instance_clean_up()
+        pass
 
     def _get_ecs_resource(self):
         return alibabacloud.get_resource(
