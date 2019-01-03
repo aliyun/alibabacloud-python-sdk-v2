@@ -25,15 +25,15 @@ class ResourceCollection:
         self._limit = limit
         self._page_size = page_size
         self._filter_params = filter_params
+        self._iterator = iter(self)
 
     def __iter__(self):
-        count = 0
         for page in self.pages():
             for item in page:
                 yield item
 
-                if self._limit is not None and count >= self._limit:
-                    return
+    def __next__(self):
+        return next(self._iterator)
 
     def _clone(self):
         return ResourceCollection(
