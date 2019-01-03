@@ -113,6 +113,58 @@ class ECSInstanceResource(ServiceResource):
         request.set_InstanceId(self.instance_id)
         self._do_request(request, {})
 
+    def get_vnc_url(self):
+        from aliyunsdkecs.request.v20140526.DescribeInstanceVncUrlRequest import DescribeInstanceVncUrlRequest
+        request = DescribeInstanceVncUrlRequest()
+        request.set_InstanceId(self.instance_id)
+        response = self._do_request(request, {})
+        return response.get('VncUrl')
+
+    def get_user_data(self):
+        from aliyunsdkecs.request.v20140526.DescribeUserDataRequest import DescribeUserDataRequest
+        request = DescribeUserDataRequest()
+        request.set_InstanceId(self.instance_id)
+        response = self._do_request(request, {})
+        return response.get('UserData')
+
+    def get_instance_ram_role(self):
+        from aliyunsdkecs.request.v20140526.DescribeInstanceRamRoleRequest import DescribeInstanceRamRoleRequest
+        request = DescribeInstanceRamRoleRequest()
+        request.set_InstanceIds([self.instance_id])
+        response = self._do_request(request, {})
+        return response.get('InstanceRamRoleSets')
+
+    def get_auto_renew_attribute(self):
+        from aliyunsdkecs.request.v20140526.DescribeInstanceAutoRenewAttributeRequest import DescribeInstanceAutoRenewAttributeRequest
+        request = DescribeInstanceAutoRenewAttributeRequest()
+        request.set_InstanceId(self.instance_id)
+        response = self._do_request(request, {})
+        return response.get('Duration')
+
+    def modify_instance_vpc_attribute(self, **params):
+        from aliyunsdkecs.request.v20140526.ModifyInstanceVpcAttributeRequest import ModifyInstanceVpcAttributeRequest
+        request = ModifyInstanceVpcAttributeRequest()
+        request.set_InstanceId(self.instance_id)
+        self._do_request(request, params)
+
+    def modify_instance_attribute(self, **params):
+        from aliyunsdkecs.request.v20140526.ModifyInstanceAttributeRequest import ModifyInstanceAttributeRequest
+        request = ModifyInstanceAttributeRequest()
+        request.set_InstanceId(self.instance_id)
+        self._do_request(request, params)
+
+    def modify_instance_vnc_password(self, **params):
+        from aliyunsdkecs.request.v20140526.ModifyInstanceVncPasswdRequest import ModifyInstanceVncPasswdRequest
+        request = ModifyInstanceVncPasswdRequest()
+        request.set_InstanceId(self.instance_id)
+        self._do_request(request, params)
+
+    def modify_instance_auto_release(self, **params):
+        from aliyunsdkecs.request.v20140526.ModifyInstanceAutoReleaseTimeRequest import ModifyInstanceAutoReleaseTimeRequest
+        request = ModifyInstanceAutoReleaseTimeRequest()
+        request.set_InstanceId(self.instance_id)
+        self._do_request(request, params)
+
 
 class ECSResource(ServiceResource):
 
@@ -183,3 +235,15 @@ class ECSResource(ServiceResource):
             instance = ECSInstanceResource(instance_id, client=self._client)
             instances.append(instance)
         return instances
+
+    def get_instance_type_families(self, **params):
+        from aliyunsdkecs.request.v20140526.DescribeInstanceTypeFamiliesRequest import DescribeInstanceTypeFamiliesRequest
+        request = DescribeInstanceTypeFamiliesRequest()
+        response = self._do_request(request, params)
+        return response.get('InstanceTypeFamilies')
+
+    def get_instance_type(self):
+        from aliyunsdkecs.request.v20140526.DescribeInstanceTypesRequest import DescribeInstanceTypesRequest
+        request = DescribeInstanceTypesRequest()
+        response = self._do_request(request, {})
+        return response.get('InstanceTypes')
