@@ -23,6 +23,8 @@ from aliyunsdkecs.request.v20140526.StopInstanceRequest import StopInstanceReque
 from aliyunsdkecs.request.v20140526.DeleteInstanceRequest import DeleteInstanceRequest
 from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesRequest
 from aliyunsdkecs.request.v20140526.RebootInstanceRequest import RebootInstanceRequest
+from aliyunsdkecs.request.v20140526.ModifyInstanceAttributeRequest \
+    import ModifyInstanceAttributeRequest
 from aliyunsdkcore.vendored.six import iteritems
 
 from alibabacloud.resources.base import ServiceResource
@@ -63,7 +65,7 @@ class ECSInstanceResource(ServiceResource):
         self.internet_max_bandwidth_in = None
         self.device_available = None
 
-    def set_instance_attributes(self, attrs):
+    def _set_instance_attributes(self, attrs):
 
         def convert(name):
             # covert name from camel case to snake case
@@ -78,7 +80,7 @@ class ECSInstanceResource(ServiceResource):
         request = DescribeInstancesRequest()
         request.set_InstanceIds(json.dumps([self.instance_id]))
         attrs = self._get_response(request, {}, keys=['Instances', 'Instance'])[0]
-        self.set_instance_attributes(attrs)
+        self._set_instance_attributes(attrs)
 
     def wait_until(self, target_status, timeout=120):
         start_time = time.time()
@@ -147,12 +149,6 @@ class ECSInstanceResource(ServiceResource):
         request.set_InstanceId(self.instance_id)
         self._do_request(request, params)
 
-    def modify_instance_attribute(self, **params):
-        from aliyunsdkecs.request.v20140526.ModifyInstanceAttributeRequest import ModifyInstanceAttributeRequest
-        request = ModifyInstanceAttributeRequest()
-        request.set_InstanceId(self.instance_id)
-        self._do_request(request, params)
-
     def modify_instance_vnc_password(self, **params):
         from aliyunsdkecs.request.v20140526.ModifyInstanceVncPasswdRequest import ModifyInstanceVncPasswdRequest
         request = ModifyInstanceVncPasswdRequest()
@@ -164,6 +160,12 @@ class ECSInstanceResource(ServiceResource):
         request = ModifyInstanceAutoReleaseTimeRequest()
         request.set_InstanceId(self.instance_id)
         self._do_request(request, params)
+
+    def modify_attributes(self, **params):
+        request = ModifyInstanceAttributeRequest()
+        request.set_InstanceId(self.instance_id)
+        self._do_request(request, params)
+        self.refresh()
 
 
 class ECSResource(ServiceResource):
@@ -213,7 +215,7 @@ class ECSResource(ServiceResource):
             instance_id = instance_data['InstanceId']
             del instance_data['InstanceId']
             inst = ECSInstanceResource(instance_id, client=self._client)
-            inst.set_instance_attributes(instance_data)
+            inst._set_instance_attributes(instance_data)
             return inst
 
         return ResourceCollection(

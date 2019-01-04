@@ -27,28 +27,32 @@ from alibabacloud.services.ecs import ECSInstanceResource
 class EcsResourceTest(SDKTestBase):
 
     def _instance_clean_up(self):
+        print("instance clean up")
         ecs = self._get_ecs_resource()
         for inst in ecs.instances.all():
             if inst.status != inst.STATUS_STOPPED:
+                if inst.status == inst.STATUS_STARTING:
+                    inst.wait_until(inst.STATUS_RUNNING)
                 inst.stop()
 
-        for inst in ecs.instances.all():
+        for inst in list(ecs.instances.all()):
             inst.wait_until(inst.STATUS_STOPPED)
-
-        for inst in ecs.instances.all():
             inst.delete()
 
-        print("waiting all instance to be deleted")
-        while True:
-            if len(list(ecs.instances.all())) == 0:
-                break
-        print("clean up finished")
+        # print("waiting all instance to be deleted")
+        # while True:
+        #    time.sleep(1)
+        #    if len(list(ecs.instances.all())) == 0:
+        #        break
+        # print("clean up finished")
 
     def setUp(self):
+        import alibabacloud.resources.base as base
+        base._test_flag = True
         self._instance_clean_up()
 
     def tearDown(self):
-        self._instance_clean_up()
+        pass
 
     def _get_ecs_resource(self):
         return alibabacloud.get_resource(
@@ -96,13 +100,13 @@ class EcsResourceTest(SDKTestBase):
         self.assertEqual([], list(ecs.instances.limit(10)))
         self.assertEqual([], list(ecs.instances.page_size(5)))
 
-    def _create_a_lot_instances(self):
+    def _create_a_lot_instances(self, num):
         self._instance_clean_up()
         ecs = self._get_ecs_resource()
 
         starting_instances_to_wait = []
         for instance_type in ['ecs.n2.large', 'ecs.n2.small']:
-            for i in range(7):
+            for i in range(num):
                 ecs.create_instance(
                     ImageId="coreos_1745_7_0_64_30G_alibase_20180705.vhd",
                     InstanceType=instance_type,
@@ -119,14 +123,18 @@ class EcsResourceTest(SDKTestBase):
             instance.wait_until(instance.STATUS_RUNNING)
 
     def test_instance_resource_collection(self):
-        # self._create_a_lot_instances()
-
-        ecs = self._get_ecs_resource()
+        self._create_a_lot_instances(1)
         self._test_all()
         self._test_filter()
+        print("wait 60 sec to delete")
+        time.sleep(60)
+        self._instance_clean_up()
+        self._create_a_lot_instances(4)
         self._test_limit()
         self._test_page_size()
         self._test_iterator_joint()
+        print("wait 60 sec to delete")
+        time.sleep(60)
 
     def _get_ids(self, instance_iterable):
         return [i.instance_id for i in instance_iterable]
@@ -134,9 +142,9 @@ class EcsResourceTest(SDKTestBase):
     def _test_all(self):
         ecs = self._get_ecs_resource()
         instances = list(ecs.instances.all())
-        self.assertEqual(28, len(instances))
+        self.assertEqual(4, len(instances))
         instance_ids = self._get_ids(instances)
-        self.assertEqual(28, len(set(instance_ids)))   # make sure all instance ids are identical
+        self.assertEqual(4, len(set(instance_ids)))   # make sure all instance ids are identical
         for instance in instances:
             self.status_verify(instance)
 
@@ -146,13 +154,13 @@ class EcsResourceTest(SDKTestBase):
         for instance in ecs.instances.filter(InstanceType='ecs.n2.large'):
             self.assertEqual(instance.instance_type, 'ecs.n2.large')
             count += 1
-        self.assertEqual(14, count)
+        self.assertEqual(2, count)
 
         count = 0
         for instance in ecs.instances.filter(Status=ECSInstanceResource.STATUS_RUNNING):
             self.assertEqual(instance.status, instance.STATUS_RUNNING)
             count += 1
-        self.assertEqual(13, count)  # FIXME we started 14 instances, bug
+        self.assertEqual(2, count)
 
         count = 0
         for instance in ecs.instances.filter(InstanceType='ecs.n2.large',
@@ -160,7 +168,7 @@ class EcsResourceTest(SDKTestBase):
             self.assertEqual(instance.instance_type, 'ecs.n2.large')
             self.assertEqual(instance.status, instance.STATUS_RUNNING)
             count += 1
-        self.assertEqual(7, count)
+        self.assertEqual(1, count)
 
         all_ids = self._get_ids(ecs.instances.all())
         instance_id = all_ids[-1]
@@ -170,6 +178,15 @@ class EcsResourceTest(SDKTestBase):
 
         instance_ids = all_ids[:2]
         instances = list(ecs.instances.filter(instance_ids=instance_ids))
+        self.assertEqual(2, len(instances))
+        self.assertEqual(set(instance_ids), set(self._get_ids(instances)))
+
+        # test next()
+        instance_ids = all_ids[:2]
+        filter = ecs.instances.filter(instance_ids=instance_ids)
+        instances = []
+        instances.append(next(filter))
+        instances.append(next(filter))
         self.assertEqual(2, len(instances))
         self.assertEqual(set(instance_ids), set(self._get_ids(instances)))
 
@@ -197,28 +214,28 @@ class EcsResourceTest(SDKTestBase):
 
         all_ids = self._get_ids(ecs.instances.all())
         instances = list(ecs.instances.page_size(100))
-        self.assertEqual(28, len(instances))
+        self.assertEqual(16, len(instances))
         self.assertEqual(all_ids, self._get_ids(instances))
 
-        self.assertEqual(28, len(list(ecs.instances.page_size(28))))
-        self.assertEqual(28, len(list(ecs.instances.page_size(7))))
-        self.assertEqual(28, len(list(ecs.instances.page_size(13))))
+        self.assertEqual(16, len(list(ecs.instances.page_size(16))))
+        self.assertEqual(16, len(list(ecs.instances.page_size(7))))
+        self.assertEqual(16, len(list(ecs.instances.page_size(13))))
 
     def _test_iterator_joint(self):
         ecs = self._get_ecs_resource()
-        self.assertEqual(10, len(list(ecs.instances.page_size(28).limit(10))))
-        self.assertEqual(28, len(list(ecs.instances.page_size(28).limit(30))))
-        self.assertEqual(10, len(list(ecs.instances.limit(10).page_size(29))))
-        self.assertEqual(28, len(list(ecs.instances.limit(30).page_size(2))))
+        self.assertEqual(10, len(list(ecs.instances.page_size(16).limit(10))))
+        self.assertEqual(16, len(list(ecs.instances.page_size(16).limit(30))))
+        self.assertEqual(10, len(list(ecs.instances.limit(10).page_size(19))))
+        self.assertEqual(16, len(list(ecs.instances.limit(30).page_size(2))))
 
         self.assertEqual(10, len(list(ecs.instances.limit(20).limit(10))))
-        self.assertEqual(28, len(list(ecs.instances.page_size(28).page_size(100))))
+        self.assertEqual(16, len(list(ecs.instances.page_size(28).page_size(100))))
 
         count = 0
-        for inst in ecs.instances.page_size(5).limit(8).filter(InstanceType='ecs.n2.small'):
+        for inst in ecs.instances.page_size(5).limit(7).filter(InstanceType='ecs.n2.small'):
             count += 1
             self.assertEqual('ecs.n2.small', inst.instance_type)
-        self.assertEqual(8, count)
+        self.assertEqual(7, count)
 
         count = 0
         for inst in ecs.instances.filter(InstanceType='ecs.n2.large').filter(
@@ -226,8 +243,9 @@ class EcsResourceTest(SDKTestBase):
             count += 1
             self.assertEqual('ecs.n2.large', inst.instance_type)
             self.assertEqual(ECSInstanceResource.STATUS_STOPPED, inst.status)
-        self.assertEqual(7, count)
+        self.assertEqual(4, count)
 
+    @unittest.skip
     def test_run_instances(self):
         ecs = self._get_ecs_resource()
         ecs.run_instances(
@@ -268,9 +286,5 @@ class EcsResourceTest(SDKTestBase):
 
 if __name__ == '__main__':
     unittest.main()
-    # test = EcsResourceTest()
-    # test.test_run_instances()
-    # test.test_invalid_parameter()
-    # test.test_instance_resource_collection()
-    # test.test_empty_instances()
+
 

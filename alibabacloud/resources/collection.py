@@ -25,6 +25,7 @@ class ResourceCollection:
         self._limit = limit
         self._page_size = page_size
         self._filter_params = filter_params
+        self._iterator = iter(self)
 
     def __iter__(self):
         for page in self.pages():
@@ -32,7 +33,7 @@ class ResourceCollection:
                 yield item
 
     def __next__(self):
-        return next(iter(self))
+        return next(self._iterator)
 
     def _clone(self):
         return ResourceCollection(
