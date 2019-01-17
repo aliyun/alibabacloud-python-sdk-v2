@@ -39,16 +39,9 @@ class EcsResourceTest(SDKTestBase):
             inst.wait_until(inst.STATUS_STOPPED)
             inst.delete()
 
-        # print("waiting all instance to be deleted")
-        # while True:
-        #    time.sleep(1)
-        #    if len(list(ecs.instances.all())) == 0:
-        #        break
-        # print("clean up finished")
-
     def setUp(self):
-        import alibabacloud.resources.base as base
-        base._test_flag = True
+        import alibabacloud.utils
+        alibabacloud.utils._test_flag = True
         self._instance_clean_up()
 
     def tearDown(self):

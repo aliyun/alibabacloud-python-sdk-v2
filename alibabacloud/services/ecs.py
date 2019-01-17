@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import re
 import json
 import time
 
@@ -25,10 +24,12 @@ from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesReque
 from aliyunsdkecs.request.v20140526.RebootInstanceRequest import RebootInstanceRequest
 from aliyunsdkecs.request.v20140526.ModifyInstanceAttributeRequest \
     import ModifyInstanceAttributeRequest
-from aliyunsdkcore.vendored.six import iteritems
+from aliyunsdkecs.request.v20140526.DescribeInstanceHistoryEventsRequest \
+    import DescribeInstanceHistoryEventsRequest
 
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import ResourceCollection
+from alibabacloud.resources.collection import _create_resource_collection
+from alibabacloud.utils import _do_request, _get_response, _assert_is_not_none
 
 
 class ECSInstanceResource(ServiceResource):
@@ -38,9 +39,10 @@ class ECSInstanceResource(ServiceResource):
     STATUS_STOPPING = "Stopping"
     STATUS_STOPPED = "Stopped"
 
-    def __init__(self, instance_id, client=None):
-        ServiceResource.__init__(self, 'ecs-instance', client=client)
+    def __init__(self, instance_id, _client=None):
+        ServiceResource.__init__(self, 'ecs.instance', _client=_client)
         self.instance_id = instance_id
+        _assert_is_not_none(instance_id, "instance_id")
         self.region_id = None
         self.inner_ip_address = None
         self.creation_time = None
@@ -65,22 +67,11 @@ class ECSInstanceResource(ServiceResource):
         self.internet_max_bandwidth_in = None
         self.device_available = None
 
-    def _set_instance_attributes(self, attrs):
-
-        def convert(name):
-            # covert name from camel case to snake case
-            # e.g: InstanceName -> instance_name
-            s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-            return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
-
-        for key, value in iteritems(attrs):
-            setattr(self, convert(key), value)
-
     def refresh(self):
         request = DescribeInstancesRequest()
         request.set_InstanceIds(json.dumps([self.instance_id]))
-        attrs = self._get_response(request, {}, keys=['Instances', 'Instance'])[0]
-        self._set_instance_attributes(attrs)
+        attrs = _get_response(self._client, request, {}, 'Instances.Instance')[0]
+        self._assign_attributes(attrs)
 
     def wait_until(self, target_status, timeout=120):
         start_time = time.time()
@@ -95,99 +86,98 @@ class ECSInstanceResource(ServiceResource):
                 return
             time.sleep(1)
 
+    def wait_until_running(self):
+        self.wait_until(self.STATUS_RUNNING)
+
+    def wait_until_starting(self):
+        self.wait_until(self.STATUS_STARTING)
+
+    def wait_until_stopping(self):
+        self.wait_until(self.STATUS_STOPPING)
+
+    def wait_until_stopped(self):
+        self.wait_until(self.STATUS_STOPPED)
+
     def start(self):
         request = StartInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self._do_request(request, {})
+        _do_request(self._client, request, {})
 
     def stop(self):
         request = StopInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self._do_request(request, {})
+        _do_request(self._client, request, {})
 
     def reboot(self):
         request = RebootInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self._do_request(request, {})
+        _do_request(self._client, request, {})
 
     def delete(self):
         request = DeleteInstanceRequest()
         request.set_InstanceId(self.instance_id)
-        self._do_request(request, {})
+        _do_request(self._client, request, {})
 
     def modify_attributes(self, **params):
         request = ModifyInstanceAttributeRequest()
         request.set_InstanceId(self.instance_id)
-        self._do_request(request, params)
+        _do_request(self._client, request, params)
         self.refresh()
+
+
+class ECSEventResource(ServiceResource):
+
+    def __init__(self, event_id, _client=None):
+        self.event_id = event_id
+        _assert_is_not_none(event_id, "event_id")
+        ServiceResource.__init__(self, "ecs.event", _client=_client)
+
+    def refresh(self):
+        request = DescribeInstanceHistoryEventsRequest()
+        request.set_EventIds(json.dumps([self.event_id]))
+        attrs = _get_response(self._client, request, {},
+                              'InstanceSystemEventSet.InstanceSystemEventType')[0]
+        self._assign_attributes(attrs)
 
 
 class ECSResource(ServiceResource):
 
-    def __init__(self, client=None):
-        ServiceResource.__init__(self, 'ecs', client=client)
-        self.instances = self._init_instances()
-
-    def _init_instances(self):
-
-        def _handle_instance_ids(params):
-            instance_ids_to_add = []
-
-            if 'instance_id' in params:
-                instance_ids_to_add = [params['instance_id']]
-                del params['instance_id']
-
-            if 'instance_ids' in params:
-                instance_ids_to_add = params['instance_ids']
-                del params['instance_ids']
-
-            if instance_ids_to_add:
-                instance_ids = []
-                if 'InstanceIds' in params:
-                    instance_ids = json.loads(params['InstanceIds'])
-                instance_ids.extend(instance_ids_to_add)
-                params['InstanceIds'] = json.dumps(instance_ids)
-
-        def describe_instances_handler(params):
-            request = DescribeInstancesRequest()
-            _handle_instance_ids(params)
-            response = self._do_request(request, params)
-            self._check_server_response(response, 'TotalCount')
-            self._check_server_response(response, 'PageSize')
-            self._check_server_response(response, 'PageNumber')
-            self._check_server_response(response, 'Instances')
-            self._check_server_response(response['Instances'], 'Instance')
-            return (
-                response['TotalCount'],
-                response['PageSize'],
-                response['PageNumber'],
-                response['Instances']['Instance'],
-            )
-
-        def instance_creator(instance_data):
-            self._check_server_response(instance_data, 'InstanceId')
-            instance_id = instance_data['InstanceId']
-            del instance_data['InstanceId']
-            inst = ECSInstanceResource(instance_id, client=self._client)
-            inst._set_instance_attributes(instance_data)
-            return inst
-
-        return ResourceCollection(
-            describe_instances_handler,
-            instance_creator,
+    def __init__(self, _client=None):
+        ServiceResource.__init__(self, 'ecs', _client=_client)
+        self.instances = _create_resource_collection(
+            ECSInstanceResource, _client, DescribeInstancesRequest,
+            'Instances.Instance', 'InstanceId',
+            singular_param_to_json={'instance_id': 'InstanceIds'},
+            plural_param_to_json={
+                'instance_ids': 'InstanceIds',
+                'list_of_instance_id': 'InstanceIds',
+                'list_of_private_ip_address': 'PrivateIpAddresses',
+                'list_of_inner_ip_address': 'InnerIpAddresses',
+                'list_of_public_ip_address': 'PublicIpAddresses',
+                'list_of_eip_address': 'EipAddresses',
+            }
+        )
+        self.events = _create_resource_collection(
+            ECSEventResource, _client, DescribeInstanceHistoryEventsRequest,
+            'InstanceSystemEventSet.InstanceSystemEventType', 'EventId',
+            param_aliases={
+                'list_of_event_id': 'EventIds',
+                'list_of_instance_event_cycle_status': 'InstanceEventCycleStatuss',
+                'list_of_instance_event_type': 'InstanceEventTypes'
+            }
         )
 
     def create_instance(self, **params):
         request = CreateInstanceRequest()
-        instance_id = self._get_response(request, params, key='InstanceId')
-        return ECSInstanceResource(instance_id, client=self._client)
+        instance_id = _get_response(self._client, request, params, key='InstanceId')
+        return ECSInstanceResource(instance_id, _client=self._client)
 
     def run_instances(self, **params):
         request = RunInstancesRequest()
-        instance_ids = self._get_response(request, params, keys=['InstanceIdSets', 'InstanceIdSet'])
+        instance_ids = _get_response(self._client, request, params, 'InstanceIdSets.InstanceIdSet')
 
         instances = []
         for instance_id in instance_ids:
-            instance = ECSInstanceResource(instance_id, client=self._client)
+            instance = ECSInstanceResource(instance_id, _client=self._client)
             instances.append(instance)
         return instances

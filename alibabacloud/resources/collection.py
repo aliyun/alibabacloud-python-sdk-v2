@@ -12,8 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import copy
+import json
 from aliyunsdkcore.acs_exception.exceptions import ClientException
+from aliyunsdkcore.vendored.six import iteritems
 from alibabacloud.errors import ERROR_INVALID_PARAMETER
+from alibabacloud.utils import _assert_is_list_but_not_string
+from alibabacloud.utils import _do_request
+from alibabacloud.utils import _get_key_in_response
 
 
 class ResourceCollection:
@@ -103,3 +108,67 @@ class ResourceCollection:
         clone = self._clone()
         clone._page_size = count
         return clone
+
+
+def _param_expand_to_json(params, rules, singular=True):
+    for key, value in iteritems(rules):
+        # key is like: instance_id or instance_ids
+        # value is like: InstanceIds
+        if key in params:
+            if singular:
+                to_add = [params[key]]
+            else:
+                to_add = params[key]
+                _assert_is_list_but_not_string(to_add, key)
+            del params[key]
+
+            if value in params:
+                raise ClientException(ERROR_INVALID_PARAMETER,
+                                      "Param {0} is already set.".format(value))
+            params[value] = json.dumps(to_add)
+
+
+def _handle_param_aliases(params, aliases):
+    for key, value in iteritems(aliases):
+        if key in params:
+            if value in params:
+                raise ClientException(ERROR_INVALID_PARAMETER,
+                                      "Param {0} is already set.".format(value))
+            params[value] = params[key]
+
+
+def _create_resource_collection(resource_class, client, request_class,
+                                key_to_resource_items,
+                                key_to_resource_id,
+                                key_to_total_count="TotalCount",
+                                key_to_page_size="PageSize",
+                                key_to_page_number="PageNumber",
+                                singular_param_to_json=None,
+                                plural_param_to_json=None,
+                                param_aliases=None):
+
+    def page_handler(params):
+        request = request_class()
+        if singular_param_to_json:
+            _param_expand_to_json(params, singular_param_to_json)
+        if plural_param_to_json:
+            _param_expand_to_json(params, plural_param_to_json, singular=False)
+        if param_aliases:
+            _handle_param_aliases(params, param_aliases)
+
+        response = _do_request(client, request, params)
+        return (
+            _get_key_in_response(response, key_to_total_count),
+            _get_key_in_response(response, key_to_page_size),
+            _get_key_in_response(response, key_to_page_number),
+            _get_key_in_response(response, key_to_resource_items),
+        )
+
+    def resource_creator(resource_data_item):
+        resource_id = _get_key_in_response(resource_data_item, key_to_resource_id)
+        del resource_data_item[key_to_resource_id]
+        resource = resource_class(resource_id, _client=client)
+        resource._assign_attributes(resource_data_item)
+        return resource
+
+    return ResourceCollection(page_handler, resource_creator)

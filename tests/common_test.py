@@ -20,13 +20,18 @@ from aliyunsdkcore.acs_exception.exceptions import ClientException
 
 class CommonTest(SDKTestBase):
 
-    def test_get_resource_with_invalid_service_name(self):
+    def test_get_resource_with_invalid_resource_name(self):
         try:
             ecs = alibabacloud.get_resource("blah")
             assert False
         except ClientException as e:
             self.assertEqual(e.error_code, "SDK.ServiceNotSupported")
-            self.assertEqual(e.get_error_msg(), "Service 'blah' is not currently supported.")
+            self.assertEqual(e.get_error_msg(), "Resource 'blah' is not currently supported.")
+
+    def test_get_resource(self):
+        alibabacloud.get_resource("ecs")
+        alibabacloud.get_resource("ecs.instance")
+        alibabacloud.get_resource("ecs.event")
 
 
 if __name__ == '__main__':
