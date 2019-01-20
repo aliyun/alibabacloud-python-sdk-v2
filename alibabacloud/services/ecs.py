@@ -15,6 +15,8 @@
 import json
 import time
 
+from aliyunsdkcore.acs_exception.exceptions import ClientException
+
 from aliyunsdkecs.request.v20140526.CreateInstanceRequest import CreateInstanceRequest
 from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
 from aliyunsdkecs.request.v20140526.StartInstanceRequest import StartInstanceRequest
@@ -30,6 +32,7 @@ from aliyunsdkecs.request.v20140526.DescribeInstanceHistoryEventsRequest \
 from alibabacloud.resources.base import ServiceResource
 from alibabacloud.resources.collection import _create_resource_collection
 from alibabacloud.utils import _do_request, _get_response, _assert_is_not_none
+import alibabacloud.errors as errors
 
 
 class ECSInstanceResource(ServiceResource):
@@ -70,8 +73,11 @@ class ECSInstanceResource(ServiceResource):
     def refresh(self):
         request = DescribeInstancesRequest()
         request.set_InstanceIds(json.dumps([self.instance_id]))
-        attrs = _get_response(self._client, request, {}, 'Instances.Instance')[0]
-        self._assign_attributes(attrs)
+        items = _get_response(self._client, request, {}, 'Instances.Instance')
+        if not items:
+            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
+                                  "Failed to find instance data from DescribeInstances response.")
+        self._assign_attributes(items[0])
 
     def wait_until(self, target_status, timeout=120):
         start_time = time.time()
@@ -157,7 +163,7 @@ class ECSResource(ServiceResource):
                 'list_of_eip_address': 'EipAddresses',
             }
         )
-        self.events = _create_resource_collection(
+        self.instance_history_events = _create_resource_collection(
             ECSEventResource, _client, DescribeInstanceHistoryEventsRequest,
             'InstanceSystemEventSet.InstanceSystemEventType', 'EventId',
             param_aliases={

@@ -29,9 +29,29 @@ class CommonTest(SDKTestBase):
             self.assertEqual(e.get_error_msg(), "Resource 'blah' is not currently supported.")
 
     def test_get_resource(self):
-        alibabacloud.get_resource("ecs")
-        alibabacloud.get_resource("ecs.instance")
-        alibabacloud.get_resource("ecs.event")
+        alibabacloud.get_resource("ecs",
+                                  access_key_id=self.access_key_id,
+                                  access_key_secret=self.access_key_secret,
+                                  region_id=self.region_id)
+        alibabacloud.get_resource("ecs.instance", "i-instance-id",
+                                  access_key_id=self.access_key_id,
+                                  access_key_secret=self.access_key_secret,
+                                  region_id=self.region_id)
+        alibabacloud.get_resource("ecs.event", "e-event-id",
+                                  access_key_id=self.access_key_id,
+                                  access_key_secret=self.access_key_secret,
+                                  region_id=self.region_id)
+
+    def test_get_resource_failed(self):
+        try:
+            alibabacloud.get_resource("ecs.instance",
+                                      access_key_id=self.access_key_id,
+                                      access_key_secret=self.access_key_secret,
+                                      region_id=self.region_id)
+            assert False
+        except ClientException as e:
+            self.assertEqual(e.get_error_code(), "SDK.InvalidParameter")
+            self.assertEqual(e.get_error_msg(), "Parameter instance_id required.")
 
 
 if __name__ == '__main__':

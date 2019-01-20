@@ -18,19 +18,28 @@ import alibabacloud.errors
 from alibabacloud.utils import _assert_is_not_none
 
 
-def get_resource(resource_name, access_key_id=None, access_key_secret=None, region_id=None,
+def _get_param_from_args(args, index, name):
+    if len(args) <= index:
+        raise ClientException(alibabacloud.errors.ERROR_INVALID_PARAMETER,
+                              "Parameter {0} required.".format(name))
+    return args[index]
+
+
+def get_resource(*args, access_key_id=None, access_key_secret=None, region_id=None,
                  resource_id=None):
+    resource_name = _get_param_from_args(args, 0, "resource_name")
+
     if resource_name.lower() == "ecs":
         client = AcsClient(access_key_id, access_key_secret, region_id)
         return ECSResource(_client=client)
     elif resource_name.lower() == "ecs.instance":
-        _assert_is_not_none(resource_id, "resource_id")
+        instance_id = _get_param_from_args(args, 1, "instance_id")
         client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSInstanceResource(resource_id, _client=client)
+        return ECSInstanceResource(instance_id, _client=client)
     elif resource_name.lower() == "ecs.event":
-        _assert_is_not_none(resource_id, "resource_id")
+        event_id = _get_param_from_args(args, 1, "event_id")
         client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSEventResource(resource_id, _client=client)
+        return ECSEventResource(event_id, _client=client)
     else:
         raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
                               "Resource '{0}' is not currently supported.".format(resource_name))
