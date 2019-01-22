@@ -11,3 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import datetime
+import time
+
+
+def epoch_time_to_timestamp(epoch_time):
+    epoch_time += time.timezone
+    return datetime.datetime.fromtimestamp(float(epoch_time)).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+def timestamp_to_epoch_time(timestamp, time_format="%Y-%m-%dT%H:%M:%SZ"):
+    return time.mktime(
+        datetime.datetime.strptime(timestamp, time_format).timetuple()
+    ) - time.timezone
