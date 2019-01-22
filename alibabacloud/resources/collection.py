@@ -135,6 +135,7 @@ def _handle_param_aliases(params, aliases):
                 raise ClientException(ERROR_INVALID_PARAMETER,
                                       "Param {0} is already set.".format(value))
             params[value] = params[key]
+            del params[key]
 
 
 def _create_resource_collection(resource_class, client, request_class,

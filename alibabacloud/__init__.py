@@ -13,7 +13,7 @@
 # limitations under the License.
 from aliyunsdkcore.acs_exception.exceptions import ClientException
 from aliyunsdkcore.client import AcsClient
-from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSEventResource
+from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource
 import alibabacloud.errors
 from alibabacloud.utils import _assert_is_not_none
 
@@ -32,14 +32,17 @@ def get_resource(*args, access_key_id=None, access_key_secret=None, region_id=No
     if resource_name.lower() == "ecs":
         client = AcsClient(access_key_id, access_key_secret, region_id)
         return ECSResource(_client=client)
+
     elif resource_name.lower() == "ecs.instance":
         instance_id = _get_param_from_args(args, 1, "instance_id")
         client = AcsClient(access_key_id, access_key_secret, region_id)
         return ECSInstanceResource(instance_id, _client=client)
-    elif resource_name.lower() == "ecs.event":
+
+    elif resource_name.lower() == "ecs.system_event":
         event_id = _get_param_from_args(args, 1, "event_id")
         client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSEventResource(event_id, _client=client)
+        return ECSSystemEventResource(event_id, _client=client)
+
     else:
         raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
                               "Resource '{0}' is not currently supported.".format(resource_name))

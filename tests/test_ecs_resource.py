@@ -12,16 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
 import time
 import json
-import datetime
 from tests.base import SDKTestBase
 from aliyunsdkcore.acs_exception.exceptions import ClientException
 from aliyunsdkcore.acs_exception.exceptions import ServerException
 from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
 from aliyunsdkcore.vendored.six import iteritems
+
+import alibabacloud
 from alibabacloud.services.ecs import ECSInstanceResource
+import alibabacloud.errors as errors
+from tests import epoch_time_to_timestamp, timestamp_to_epoch_time
 
 
 class EcsResourceTest(SDKTestBase):
@@ -77,16 +79,15 @@ class EcsResourceTest(SDKTestBase):
         for instance in self.ecs.instances.filter(Status=status, ImageId=self.image_id,
                                                   InstanceType=instance_type):
             if to_delete:
-                create_time = time.mktime(datetime.datetime.strptime(
-                    instance.creation_time, "%Y-%m-%dT%H:%MZ"
-                ).timetuple()) + time.timezone
+                create_time = timestamp_to_epoch_time(instance.creation_time,
+                                                      time_format="%Y-%m-%dT%H:%MZ")
                 time_diff = time.time() - create_time
                 if time_diff > 65:
                     instances.append(instance)
             else:
                 instances.append(instance)
         self.assertGreaterEqual(len(instances), count, "Failed to find enough instances.")
-        return instances
+        return instances[:count]
 
     def _refresh_and_assert(self, instance, status, instance_type):
         instance.refresh()
@@ -308,6 +309,16 @@ class EcsResourceTest(SDKTestBase):
         instance.modify_attributes(InstanceName=name)
         self.assertEqual(name, instance.instance_name)
 
+    def test_instance_filter_params_alias(self):
+        instances = list(self.ecs.instances.limit(2))
+        instance_ids = [x.instance_id for x in instances]
+
+        self.assertEqual(
+            instance_ids[0],
+            next(self.ecs.instances.filter(instance_id=instance_ids[0])).instance_id
+        )
+        # self.assertEqual(instance_ids, [])
+
     def test_invalid_parameter(self):
 
         ecs = self._get_ecs_resource()
@@ -339,9 +350,138 @@ class EcsResourceTest(SDKTestBase):
 
     def test_resource_refresh_failed(self):
         res = self._get_resource("ecs.instance", "BadId")
-        res.refresh()
+        try:
+            res.refresh()
+            assert False
+        except ClientException as e:
+            self.assertEqual(errors.ERROR_INVALID_SERVER_RESPONSE, e.get_error_code())
+            self.assertEqual("Failed to find instance data from DescribeInstances response. "
+                             "InstanceId = BadId",
+                             e.get_error_msg())
+
+        res = self._get_resource("ecs.system_event", "BadId")
+        try:
+            res.refresh()
+            assert False
+        except ClientException as e:
+            self.assertEqual(errors.ERROR_INVALID_SERVER_RESPONSE, e.get_error_code())
+            self.assertEqual("Failed to find event data from "
+                             "DescribeInstanceHistoryEventsRequest response. EventId = BadId",
+                             e.get_error_msg())
+
+    def test_events(self):
+        # create simulated events
+        start_time = time.time()
+        start_time_str = epoch_time_to_timestamp(start_time)
+        instances = self.ecs.instances.all()
+        instance_ids = [x.instance_id for x in instances][:4]
+
+        created_event_ids = []
+        for event_type in ['SystemMaintenance.Reboot', 'SystemFailure.Reboot',
+                           'InstanceFailure.Reboot']:
+            time_str = epoch_time_to_timestamp(time.time() + 2)
+            events = self.ecs.create_simulated_system_events(InstanceIds=instance_ids,
+                                                             EventType=event_type,
+                                                             NotBefore=time_str)
+            created_event_ids.extend([x.event_id for x in events])
+        print("wait 60 seconds to let events to be executed")
+        time.sleep(60)
+
+        end_time = time.time()
+        end_time_str = epoch_time_to_timestamp(end_time)
+        # test get all events
+        event_ids = []
+        for event in self.ecs.system_events.all().filter(NotBeforeStart=start_time_str,
+                                                         NotBeforeEnd=end_time_str):
+            if timestamp_to_epoch_time(event.not_before) > start_time:
+                event_ids.append(event.event_id)
+        self.assertEqual(set(created_event_ids), set(event_ids))
+
+        # test page_size
+        event_ids = []
+        for event in self.ecs.system_events.page_size(100).filter(NotBeforeStart=start_time_str,
+                                                                  NotBeforeEnd=end_time_str):
+            if timestamp_to_epoch_time(event.not_before) > start_time:
+                event_ids.append(event.event_id)
+        self.assertEqual(set(created_event_ids), set(event_ids))
+
+        # test limit
+        self.assertEqual(11, len(list(self.ecs.system_events.limit(11))))
+
+        # test get events by instance id
+        instance_id = instance_ids[0]
+        events = []
+        for event in self.ecs.system_events.filter(InstanceId=instance_id,
+                                                   NotBeforeStart=start_time_str,
+                                                   NotBeforeEnd=end_time_str):
+            events.append(event)
+        self.assertEqual(3, len(events))
+        for event in events:
+            self.assertEqual(instance_id, event.instance_id)
+
+        # test get events by region id
+        event_ids = []
+        for event in self.ecs.system_events.filter(RegionId=self.region_id,
+                                                   NotBeforeStart=start_time_str,
+                                                   NotBeforeEnd=end_time_str):
+            event_ids.append(event.event_id)
+        self.assertEqual(set(created_event_ids), set(event_ids))
+
+        self.assertEqual(0, len(list(self.ecs.system_events.filter(RegionId="cn-shanghai",
+                                                                   NotBeforeStart=start_time_str,
+                                                                   NotBeforeEnd=end_time_str))))
+
+        # test get event by id
+        event_id = created_event_ids[0]
+        event = alibabacloud.get_resource("ecs.system_event", event_id,
+                                          access_key_id=self.access_key_id,
+                                          access_key_secret=self.access_key_secret,
+                                          region_id=self.region_id)
+        event.refresh()
+        self.assertEqual(event_id, event.event_id)
+        self.assertEqual(event.EventType.SYSTEM_MAINTENANCE_REBOOT, event.get_event_type())
+        self.assertEqual(event.EventCycleStatus.EXECUTED, event.get_event_cycle_status())
+
+        events = list(self.ecs.system_events.filter(list_of_event_id=[event_id]))
+        self.assertEqual(1, len(events))
+        event = events[0]
+        self.assertEqual(event_id, event.event_id)
+        self.assertEqual(event.EventType.SYSTEM_MAINTENANCE_REBOOT, event.get_event_type())
+        self.assertEqual(event.EventCycleStatus.EXECUTED, event.get_event_cycle_status())
+
+        # test param aliases
+
+        # # test list_of_event_cycle_status
+        count = 0
+        list_of_status = [event.EventCycleStatus.AVOIDED,
+                          event.EventCycleStatus.EXECUTED]
+        for event in self.ecs.system_events.filter(list_of_event_cycle_status=list_of_status,
+                                                   NotBeforeStart=start_time_str,
+                                                   NotBeforeEnd=end_time_str):
+            count += 1
+            self.assertEqual(event.EventCycleStatus.EXECUTED, event.get_event_cycle_status())
+        self.assertEqual(12, count)
+
+        list_of_status = [event.EventCycleStatus.AVOIDED]
+        events = list(self.ecs.system_events.filter(list_of_event_cycle_status=list_of_status,
+                                                    NotBeforeStart=start_time_str,
+                                                    NotBeforeEnd=end_time_str))
+        self.assertEqual(0, len(events))
+
+        # # test list_of_event_type
+        count = 0
+        list_of_type = [event.EventType.SYSTEM_MAINTENANCE_REBOOT,
+                        event.EventType.SYSTEM_FAILURE_REBOOT]
+        for event in self.ecs.system_events.filter(list_of_event_type=list_of_type,
+                                                   NotBeforeStart=start_time_str,
+                                                   NotBeforeEnd=end_time_str):
+            count += 1
+            self.assertIn(event.get_event_type(), list_of_type)
+        self.assertEqual(8, count)
 
 
 if __name__ == '__main__':
-    unittest.main()
-
+    # import unittest
+    # unittest.main()
+    test = EcsResourceTest()
+    test.test_instance_filter_params_alias()

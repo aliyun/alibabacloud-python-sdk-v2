@@ -31,6 +31,8 @@ def _do_request(client, request, params):
         if hasattr(request, 'set_' + key):
             func = getattr(request, 'set_' + key)
             func(value)
+        elif key == "RegionId":
+            request.add_query_param(key, value)
         else:
             raise ClientException(errors.ERROR_INVALID_PARAMETER,
                                   "{0} has no parameter named {1}.".format(
