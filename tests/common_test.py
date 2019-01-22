@@ -37,7 +37,7 @@ class CommonTest(SDKTestBase):
                                   access_key_id=self.access_key_id,
                                   access_key_secret=self.access_key_secret,
                                   region_id=self.region_id)
-        alibabacloud.get_resource("ecs.event", "e-event-id",
+        alibabacloud.get_resource("ecs.system_event", "e-event-id",
                                   access_key_id=self.access_key_id,
                                   access_key_secret=self.access_key_secret,
                                   region_id=self.region_id)

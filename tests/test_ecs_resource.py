@@ -312,12 +312,34 @@ class EcsResourceTest(SDKTestBase):
     def test_instance_filter_params_alias(self):
         instances = list(self.ecs.instances.limit(2))
         instance_ids = [x.instance_id for x in instances]
+        inner_ips = [x.inner_ip_address.search("IpAddress[0]") for x in instances]
 
-        self.assertEqual(
-            instance_ids[0],
-            next(self.ecs.instances.filter(instance_id=instance_ids[0])).instance_id
-        )
-        # self.assertEqual(instance_ids, [])
+        def _iterator_assert(iterator, expected_count, expected_instance_ids):
+            items = list(iterator)
+            self.assertEqual(expected_count, len(items))
+            self.assertEqual(set(expected_instance_ids), set([x.instance_id for x in items]))
+
+        _iterator_assert(
+            self.ecs.instances.filter(instance_id=instance_ids[0]),
+            1, instance_ids[:1])
+        _iterator_assert(
+            self.ecs.instances.filter(instance_ids=instance_ids),
+            2, instance_ids)
+        _iterator_assert(
+            self.ecs.instances.filter(list_of_instance_id=instance_ids),
+            2, instance_ids)
+        _iterator_assert(
+            self.ecs.instances.filter(list_of_private_ip_address=['10.10.10.10']),
+            0, [])
+        _iterator_assert(
+            self.ecs.instances.filter(list_of_inner_ip_address=inner_ips),
+            2, instance_ids)
+        _iterator_assert(
+            self.ecs.instances.filter(list_of_public_ip_address=['10.10.10.10']),
+            0, [])
+        _iterator_assert(
+            self.ecs.instances.filter(list_of_eip_address=['10.10.10.10']),
+            0, [])
 
     def test_invalid_parameter(self):
 
@@ -481,7 +503,5 @@ class EcsResourceTest(SDKTestBase):
 
 
 if __name__ == '__main__':
-    # import unittest
-    # unittest.main()
-    test = EcsResourceTest()
-    test.test_instance_filter_params_alias()
+    import unittest
+    unittest.main()
