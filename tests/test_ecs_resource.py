@@ -160,6 +160,9 @@ class EcsResourceTest(SDKTestBase):
         for instance in to_wait:
             instance.wait_until_running()
 
+        print("Wait for 60 seconds to let instance can be deleted")
+        time.sleep(60)
+
     def _get_ids(self, instance_iterable):
         return [i.instance_id for i in instance_iterable]
 

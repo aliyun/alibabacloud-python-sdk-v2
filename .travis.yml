@@ -1,0 +1,21 @@
+sudo: false
+
+language: python
+
+python:
+  - "3.6"
+
+install:
+  - pip install unittest2
+  - pip install coverage
+  - pip install pycodestyle
+  - pip install mock
+  - pip install jmespath
+  - pip install aliyun-python-sdk-core
+  - pip install aliyun-python-sdk-ecs
+
+script:
+  - sh -xe scripts/test.sh
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
