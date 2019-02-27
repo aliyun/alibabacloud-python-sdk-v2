@@ -1,6 +1,8 @@
 # Alibaba Cloud Python SDK 2.0
 
-
+[![PyPI Release](https://img.shields.io/pypi/v/alibaba-cloud-python-sdk-v2.svg?style=flat)](https://pypi.org/project/alibaba-cloud-python-sdk-v2)
+[![Build Status](https://api.travis-ci.org/aliyun/alibabacloud-python-sdk-v2.svg?branch=master)](https://travis-ci.org/aliyun/alibabacloud-python-sdk-v2)
+[![Code Coverage](https://codecov.io/gh/aliyun/alibabacloud-python-sdk-v2/branch/master/graph/badge.svg)](https://codecov.io/gh/aliyun/alibabacloud-python-sdk-v2)
 
 Alibaba Cloud Python SDK 2.0 is aimed to provide a Pythonic, object-oriented interface of Alibaba
 Cloud APIs. Now it's still under development, with a few ECS functions and resources available. By

@@ -16,10 +16,18 @@ import re
 import sys
 import os
 import json
-from unittest import TestCase
 from aliyunsdkcore.client import AcsClient
 import alibabacloud
 import alibabacloud.utils
+
+
+# The unittest module got a significant overhaul
+# in 2.7, so if we're in 2.6 we can use the backported
+# version unittest2.
+if sys.version_info[:2] == (2, 6):
+    from unittest2 import TestCase
+else:
+    from unittest import TestCase
 
 
 class SDKTestBase(TestCase):
