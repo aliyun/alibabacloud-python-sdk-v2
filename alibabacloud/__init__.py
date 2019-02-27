@@ -25,9 +25,13 @@ def _get_param_from_args(args, index, name):
     return args[index]
 
 
-def get_resource(*args, access_key_id=None, access_key_secret=None, region_id=None,
-                 resource_id=None):
+def resource(*args, **kwargs):
     resource_name = _get_param_from_args(args, 0, "resource_name")
+
+    # FIXME more checks
+    access_key_id = kwargs.get('access_key_id')
+    access_key_secret = kwargs.get('access_key_secret')
+    region_id = kwargs.get('region_id')
 
     if resource_name.lower() == "ecs":
         client = AcsClient(access_key_id, access_key_secret, region_id)
@@ -46,3 +50,7 @@ def get_resource(*args, access_key_id=None, access_key_secret=None, region_id=No
     else:
         raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
                               "Resource '{0}' is not currently supported.".format(resource_name))
+
+
+get_resource = resource
+

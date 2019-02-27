@@ -40,6 +40,8 @@ class ResourceCollection:
     def __next__(self):
         return next(self._iterator)
 
+    next = __next__  # For Python 2.x compatibility
+
     def _clone(self):
         return ResourceCollection(
             self._page_handler,
