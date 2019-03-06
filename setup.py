@@ -22,6 +22,7 @@ requires = [
     'aliyun-python-sdk-core>=2.11.4',
     'aliyun-python-sdk-ecs>=4.15.0',
     'jmespath>=0.9.3,<1.0.0',
+    'PyYAML>=3.13',
 ]
 
 setup(

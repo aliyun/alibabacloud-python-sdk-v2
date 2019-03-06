@@ -16,6 +16,7 @@ from aliyunsdkcore.client import AcsClient
 from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource
 import alibabacloud.errors
 from alibabacloud.utils import _assert_is_not_none
+from alibabacloud.session import Session
 
 
 def _get_param_from_args(args, index, name):
@@ -25,32 +26,38 @@ def _get_param_from_args(args, index, name):
     return args[index]
 
 
-def resource(*args, **kwargs):
-    resource_name = _get_param_from_args(args, 0, "resource_name")
+_sessions = {}
 
+
+def _get_session(**kwargs):
     # FIXME more checks
+    # TODO using sessions to manage credentials
     access_key_id = kwargs.get('access_key_id')
     access_key_secret = kwargs.get('access_key_secret')
     region_id = kwargs.get('region_id')
 
-    if resource_name.lower() == "ecs":
-        client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSResource(_client=client)
+    key = access_key_id + '@' + region_id
+    if key not in _sessions:
+        s = Session(**kwargs)
+        _sessions[key] = s
 
-    elif resource_name.lower() == "ecs.instance":
-        instance_id = _get_param_from_args(args, 1, "instance_id")
-        client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSInstanceResource(instance_id, _client=client)
-
-    elif resource_name.lower() == "ecs.system_event":
-        event_id = _get_param_from_args(args, 1, "event_id")
-        client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSSystemEventResource(event_id, _client=client)
-
-    else:
-        raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
-                              "Resource '{0}' is not currently supported.".format(resource_name))
+    return _sessions[key]
 
 
-get_resource = resource
+def get_service(service_name, **kwargs):
+    s = _get_session(**kwargs)
+    return s.get_service(service_name)
 
+
+def get_resource(*args, **kwargs):
+    resource_type = _get_param_from_args(args, 0, "resource_type")
+
+    if resource_type == "ecs":
+        # For backward compatibility
+        return get_service("ecs", **kwargs)
+
+    resource_type = _get_param_from_args(args, 0, "resource_type")
+    resource_id = _get_param_from_args(args, 1, "resource_id")
+
+    s = _get_session(**kwargs)
+    return s.get_resource(resource_type, resource_id)

@@ -46,7 +46,8 @@ def _do_request(client, request, params):
     response = client.do_action_with_exception(request)
 
     if _test_flag:
-        print(response.decode('utf-8'))
+        import time
+        print(time.time(), response.decode('utf-8'))
 
     return json.loads(response.decode('utf-8'), object_hook=_SearchableDict)
 
