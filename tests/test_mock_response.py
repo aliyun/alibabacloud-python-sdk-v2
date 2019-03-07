@@ -97,3 +97,7 @@ class MockResponseTest(SDKTestBase):
         for name in names:
             self._get_resource(name, 'resource-id')
 
+    def test_event_finish_time(self):
+        event = self._get_resource('ecs.system_event', 'event-id')
+        self.assertEqual(None, event.event_finish_time)
+

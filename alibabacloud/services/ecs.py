@@ -218,6 +218,7 @@ class ECSSystemEventResource(ServiceResource):
 
     def __init__(self, event_id, _client=None):
         self.event_id = event_id
+        self.event_finish_time = None
         _assert_is_not_none(event_id, "event_id")
         ServiceResource.__init__(self, "ecs.event", _client=_client)
 
