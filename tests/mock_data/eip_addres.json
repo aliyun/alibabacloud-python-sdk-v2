@@ -1,0 +1,22 @@
+{
+      "PageNumber":"1",
+      "EipAddresses":{
+          "EipAddress":{
+              "ChargeType":"PostPaid",
+              "Status":"Available",
+              "RegionId":"cn-beijing",
+              "ResourceGroupId":"rg-acfmxazb4ph6aiy",
+              "AllocationTime":"2018-01-15T11:17:30Z",
+              "IpAddress":"59.110.xx.xx",
+              "AllocationId":"eip-2ze88m67qx5zxxxxx",
+              "AvailableRegions":{
+                  "AvailableRegion":"cn-beijing"
+              },
+              "InternetChargeType":"PayByTraffic",
+              "Bandwidth":"1"
+          }
+      },
+      "TotalCount":"1",
+      "PageSize":"10",
+      "RequestId":"7EEF2D6B-D207-4197-AE37-01279C888757"
+}

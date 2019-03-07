@@ -504,6 +504,15 @@ class EcsResourceTest(SDKTestBase):
             self.assertIn(event.get_event_type(), list_of_type)
         self.assertEqual(8, count)
 
+        # test instance full status
+        count = 0
+        statuses = list(self.ecs.instance_full_statuses.filter(InstanceIds=instance_ids))
+        self.assertEqual(4, len(statuses))
+        status = statuses[0]
+        self.assertEqual(instance_ids[0], status.instance_id)
+        self.assertEqual(0, len(status.system_events))  # TODO Simulate real events
+        # self.assertEqual("SystemMaintenance.Reboot", status.system_events[0].get_event_type())
+
 
 if __name__ == '__main__':
     import unittest
