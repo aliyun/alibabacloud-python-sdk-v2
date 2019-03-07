@@ -13,7 +13,10 @@
 # limitations under the License.
 from aliyunsdkcore.acs_exception.exceptions import ClientException
 from aliyunsdkcore.client import AcsClient
-from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource
+from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource,\
+    ECSImageResource, ECSDiskResource
+from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
+from alibabacloud.services.slb import SLBResource, LoadBalancerResource
 import alibabacloud.errors
 from alibabacloud.utils import _assert_is_not_none
 
@@ -25,7 +28,7 @@ def _get_param_from_args(args, index, name):
     return args[index]
 
 
-def resource(*args, **kwargs):
+def get_resource(*args, **kwargs):
     resource_name = _get_param_from_args(args, 0, "resource_name")
 
     # FIXME more checks
@@ -33,24 +36,31 @@ def resource(*args, **kwargs):
     access_key_secret = kwargs.get('access_key_secret')
     region_id = kwargs.get('region_id')
 
-    if resource_name.lower() == "ecs":
-        client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSResource(_client=client)
+    service_resources = {
+        "ecs": ECSResource,
+        "vpc": VPCResource,
+        "slb": SLBResource,
+    }
 
-    elif resource_name.lower() == "ecs.instance":
-        instance_id = _get_param_from_args(args, 1, "instance_id")
-        client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSInstanceResource(instance_id, _client=client)
+    normal_resources = {
+        "ecs.instance": ECSInstanceResource,
+        "ecs.system_event": ECSSystemEventResource,
+        "ecs.disk": ECSDiskResource,
+        "ecs.image": ECSImageResource,
+        "vpc.eip_address": VPCEipAddressResource,
+        "slb.load_balancer": LoadBalancerResource,
+    }
 
-    elif resource_name.lower() == "ecs.system_event":
-        event_id = _get_param_from_args(args, 1, "event_id")
+    if resource_name.lower() in service_resources:
         client = AcsClient(access_key_id, access_key_secret, region_id)
-        return ECSSystemEventResource(event_id, _client=client)
+        return service_resources[resource_name](_client=client)
+
+    elif resource_name.lower() in normal_resources:
+        instance_id = _get_param_from_args(args, 1, "resource_id")
+        client = AcsClient(access_key_id, access_key_secret, region_id)
+        return normal_resources[resource_name](instance_id, _client=client)
 
     else:
         raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
                               "Resource '{0}' is not currently supported.".format(resource_name))
-
-
-get_resource = resource
 

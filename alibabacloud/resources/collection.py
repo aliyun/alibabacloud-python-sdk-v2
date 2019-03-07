@@ -17,8 +17,8 @@ from aliyunsdkcore.acs_exception.exceptions import ClientException
 from aliyunsdkcore.vendored.six import iteritems
 from alibabacloud.errors import ERROR_INVALID_PARAMETER
 from alibabacloud.utils import _assert_is_list_but_not_string
-from alibabacloud.utils import _do_request
 from alibabacloud.utils import _get_key_in_response
+import alibabacloud.utils as utils
 
 
 class ResourceCollection:
@@ -159,7 +159,7 @@ def _create_resource_collection(resource_class, client, request_class,
         if param_aliases:
             _handle_param_aliases(params, param_aliases)
 
-        response = _do_request(client, request, params)
+        response = utils._do_request(client, request, params)
         return (
             _get_key_in_response(response, key_to_total_count),
             _get_key_in_response(response, key_to_page_size),
@@ -174,4 +174,23 @@ def _create_resource_collection(resource_class, client, request_class,
         resource._assign_attributes(resource_data_item)
         return resource
 
-    return ResourceCollection(page_handler, resource_creator)
+    def resource_creator2(resource_data_item):
+        resource = resource_class(None, _client=client)
+        resource._assign_attributes(resource_data_item)
+        return resource
+
+    if key_to_resource_id is None:
+        return ResourceCollection(page_handler, resource_creator2)
+    else:
+        return ResourceCollection(page_handler, resource_creator)
+
+
+def _create_default_resource_collection(resource_class, client, request_class,
+                                        key_to_resource_items,
+                                        plural_param_to_json=None,
+                                        param_aliases=None):
+    from alibabacloud.resources.base import ServiceResource
+    return _create_resource_collection(resource_class, client, request_class,
+                                       key_to_resource_items, None,
+                                       plural_param_to_json=plural_param_to_json,
+                                       param_aliases=param_aliases)

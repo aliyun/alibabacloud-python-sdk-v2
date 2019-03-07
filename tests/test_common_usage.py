@@ -51,7 +51,7 @@ class CommonTest(SDKTestBase):
             assert False
         except ClientException as e:
             self.assertEqual(e.get_error_code(), "SDK.InvalidParameter")
-            self.assertEqual(e.get_error_msg(), "Parameter instance_id required.")
+            self.assertEqual(e.get_error_msg(), "Parameter resource_id required.")
 
 
 if __name__ == '__main__':
