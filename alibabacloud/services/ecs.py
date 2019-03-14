@@ -405,7 +405,7 @@ class ECSResource(ServiceResource):
 
         self.demands = _create_default_resource_collection(
             ECSDemand, _client, DescribeDemandsRequest,
-            'Demands',
+            'Demands.Demand',
         )
 
     def create_instance(self, **params):
