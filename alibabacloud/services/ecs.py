@@ -58,6 +58,8 @@ from aliyunsdkecs.request.v20140526.DeleteImageRequest import DeleteImageRequest
 from aliyunsdkecs.request.v20140526.DescribeImagesRequest import DescribeImagesRequest
 from aliyunsdkecs.request.v20140526.ModifyImageAttributeRequest import ModifyImageAttributeRequest
 
+from aliyunsdkecs.request.v20140526.DescribeDemandsRequest import DescribeDemandsRequest
+
 from alibabacloud.resources.base import ServiceResource
 from alibabacloud.resources.collection import _create_resource_collection
 from alibabacloud.resources.collection import _create_default_resource_collection
@@ -347,6 +349,10 @@ class ECSTagResource(ServiceResource):
     pass
 
 
+class ECSDemand(ServiceResource):
+    pass
+
+
 class ECSResource(ServiceResource):
 
     def __init__(self, _client=None):
@@ -395,6 +401,11 @@ class ECSResource(ServiceResource):
         self.tags = _create_default_resource_collection(
             ECSTagResource, _client, DescribeTagsRequest,
             'Tags.Tag',
+        )
+
+        self.demands = _create_default_resource_collection(
+            ECSDemand, _client, DescribeDemandsRequest,
+            'Demands',
         )
 
     def create_instance(self, **params):
