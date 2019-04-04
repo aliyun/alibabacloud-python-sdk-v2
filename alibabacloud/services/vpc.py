@@ -51,7 +51,7 @@ class VPCEipAddressResource(ServiceResource):
 
     def modify_attributes(self, **params):
         request = ModifyEipAddressAttributeRequest()
-        request.set_InstanceId(self.allocation_id)
+        request.set_AllocationId(self.allocation_id)
         _do_request(self._client, request, params)
         self.refresh()
 
