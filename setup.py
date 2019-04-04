@@ -16,7 +16,7 @@
 from setuptools import setup, find_packages
 
 PACKAGE = "alibaba-cloud-python-sdk-v2"
-VERSION = "0.4.1"
+VERSION = "0.4.2"
 
 requires = [
     'aliyun-python-sdk-core>=2.11.4',
