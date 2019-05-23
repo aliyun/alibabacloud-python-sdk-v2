@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class VpcClient(AlibabaCloudClient):
@@ -130,7 +131,7 @@ class VpcClient(AlibabaCloudClient):
                                              ),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassociate_network_acl(
         self,
@@ -160,7 +161,7 @@ class VpcClient(AlibabaCloudClient):
                 'Resource', list, dict, [
                     ('ResourceType', str, None, None), ('ResourceId', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_network_acl_attributes(
         self,
@@ -187,7 +188,7 @@ class VpcClient(AlibabaCloudClient):
             "NetworkAclName": network_acl_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_network_acls(
         self,
@@ -222,7 +223,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceType": resource_type,
             "VpcId": vpc_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_network_acl_attributes(
         self,
@@ -245,7 +246,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_network_acl(
         self,
@@ -264,7 +265,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_network_acl(
         self,
@@ -287,7 +288,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "VpcId": vpc_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def copy_network_acl_entries(
         self,
@@ -312,7 +313,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def associate_network_acl(
         self,
@@ -342,7 +343,7 @@ class VpcClient(AlibabaCloudClient):
                 'Resource', list, dict, [
                     ('ResourceType', str, None, None), ('ResourceId', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_common_bandwidth_package_ip_bandwidth(
         self,
@@ -369,7 +370,7 @@ class VpcClient(AlibabaCloudClient):
             "EipId": eip_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def cancel_common_bandwidth_package_ip_bandwidth(
         self,
@@ -394,7 +395,7 @@ class VpcClient(AlibabaCloudClient):
             "EipId": eip_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_vpn_pbr_route_entry(
         self,
@@ -431,7 +432,7 @@ class VpcClient(AlibabaCloudClient):
             "NextHop": next_hop,
             "PublishVpc": publish_vpc,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_vpn_route_entry(
         self,
@@ -466,7 +467,7 @@ class VpcClient(AlibabaCloudClient):
             "NextHop": next_hop,
             "PublishVpc": publish_vpc,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_vpn_pbr_route_entry(
         self,
@@ -499,7 +500,7 @@ class VpcClient(AlibabaCloudClient):
             "RouteDest": route_dest,
             "NextHop": next_hop,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_vpn_route_entry(
         self,
@@ -530,7 +531,7 @@ class VpcClient(AlibabaCloudClient):
             "RouteDest": route_dest,
             "NextHop": next_hop,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_vpn_route_entries(
         self,
@@ -557,7 +558,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_vpn_pbr_route_entries(
         self,
@@ -584,7 +585,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def publish_vpn_route_entry(
         self,
@@ -617,7 +618,7 @@ class VpcClient(AlibabaCloudClient):
             "NextHop": next_hop,
             "RouteType": route_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_vpn_route_entry_weight(
         self,
@@ -650,7 +651,7 @@ class VpcClient(AlibabaCloudClient):
             "RouteDest": route_dest,
             "NextHop": next_hop,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_vpn_pbr_route_entry_weight(
         self,
@@ -685,7 +686,7 @@ class VpcClient(AlibabaCloudClient):
             "RouteDest": route_dest,
             "NextHop": next_hop,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_physical_connection_loa(
         self,
@@ -710,7 +711,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_physical_connection_setup_order(
         self,
@@ -743,7 +744,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "LineOperator": line_operator,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_physical_connection_occupancy_order(
         self,
@@ -776,7 +777,7 @@ class VpcClient(AlibabaCloudClient):
             "InstanceChargeType": instance_charge_type,
             "PricingCycle": pricing_cycle,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def complete_physical_connection_loa(
         self,
@@ -805,7 +806,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def apply_physical_connection_loa(
         self,
@@ -871,7 +872,7 @@ class VpcClient(AlibabaCloudClient):
                                   ),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def convert_bandwidth_package(
         self,
@@ -894,7 +895,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_route_entry(
         self,
@@ -913,7 +914,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_i_pv6_translator_acl_list(
         self,
@@ -938,7 +939,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_i_pv6_translator_acl_list(
         self,
@@ -963,7 +964,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_i_pv6_translator_acl_list_entry(
         self,
@@ -990,7 +991,7 @@ class VpcClient(AlibabaCloudClient):
             "AclEntryComment": acl_entry_comment,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_i_pv6_translator_acl_lists(
         self,
@@ -1019,7 +1020,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_i_pv6_translator_acl_attribute(
         self,
@@ -1046,7 +1047,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_i_pv6_translator_acl_list_entry(
         self,
@@ -1073,7 +1074,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "AclEntryId": acl_entry_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_i_pv6_translator_acl_list_attributes(
         self,
@@ -1100,7 +1101,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_i_pv6_translator_acl_list_entry(
         self,
@@ -1127,7 +1128,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "AclEntryId": acl_entry_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_ipv6_internet_bandwidth(
         self,
@@ -1156,7 +1157,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Ipv6AddressId": ipv6_address_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_ipv6_gateway_spec(
         self,
@@ -1183,7 +1184,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Ipv6GatewayId": ipv6_gateway_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_ipv6_gateway_attribute(
         self,
@@ -1210,7 +1211,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6GatewayId": ipv6_gateway_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_ipv6_address_attribute(
         self,
@@ -1237,7 +1238,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6AddressId": ipv6_address_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ipv6_gateways(
         self,
@@ -1268,7 +1269,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6GatewayId": ipv6_gateway_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ipv6_gateway_attribute(
         self,
@@ -1291,7 +1292,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Ipv6GatewayId": ipv6_gateway_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ipv6_egress_only_rules(
         self,
@@ -1326,7 +1327,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6GatewayId": ipv6_gateway_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ipv6_addresses(
         self,
@@ -1369,7 +1370,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6Address": ipv6_address,
             "AssociatedInstanceId": associated_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_ipv6_internet_bandwidth(
         self,
@@ -1394,7 +1395,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Ipv6AddressId": ipv6_address_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_ipv6_gateway(
         self,
@@ -1417,7 +1418,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Ipv6GatewayId": ipv6_gateway_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_ipv6_egress_only_rule(
         self,
@@ -1442,7 +1443,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_ipv6_gateway(
         self,
@@ -1473,7 +1474,7 @@ class VpcClient(AlibabaCloudClient):
             "VpcId": vpc_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_ipv6_egress_only_rule(
         self,
@@ -1506,7 +1507,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6GatewayId": ipv6_gateway_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def allocate_ipv6_internet_bandwidth(
         self,
@@ -1537,7 +1538,7 @@ class VpcClient(AlibabaCloudClient):
             "InternetChargeType": internet_charge_type,
             "Ipv6GatewayId": ipv6_gateway_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_physical_connection_order(
         self,
@@ -1562,7 +1563,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_express_connect(
         self,
@@ -1589,7 +1590,7 @@ class VpcClient(AlibabaCloudClient):
             "RouterInterfaceId": router_interface_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_i_pv6_translator(
         self,
@@ -1626,7 +1627,7 @@ class VpcClient(AlibabaCloudClient):
             "PayType": pay_type,
             "PricingCycle": pricing_cycle,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_i_pv6_translators(
         self,
@@ -1667,7 +1668,7 @@ class VpcClient(AlibabaCloudClient):
             "PayType": pay_type,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_i_pv6_translator_attribute(
         self,
@@ -1696,7 +1697,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6TranslatorId": ipv6_translator_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_i_pv6_translator_bandwidth(
         self,
@@ -1725,7 +1726,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6TranslatorId": ipv6_translator_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_i_pv6_translator_entry(
         self,
@@ -1768,7 +1769,7 @@ class VpcClient(AlibabaCloudClient):
             "TransProtocol": trans_protocol,
             "Ipv6TranslatorId": ipv6_translator_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_i_pv6_translator_entry(
         self,
@@ -1795,7 +1796,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6TranslatorId": ipv6_translator_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_i_pv6_translator_entry(
         self,
@@ -1838,7 +1839,7 @@ class VpcClient(AlibabaCloudClient):
             "BackendIpv4Addr": backend_ipv4_addr,
             "TransProtocol": trans_protocol,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_i_pv6_translator_entries(
         self,
@@ -1887,7 +1888,7 @@ class VpcClient(AlibabaCloudClient):
             "TransProtocol": trans_protocol,
             "Ipv6TranslatorId": ipv6_translator_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_i_pv6_translator(
         self,
@@ -1912,7 +1913,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6TranslatorId": ipv6_translator_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_flow_log_attribute(
         self,
@@ -1939,7 +1940,7 @@ class VpcClient(AlibabaCloudClient):
             "FlowLogId": flow_log_id,
             "FlowLogName": flow_log_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_flow_logs(
         self,
@@ -1978,7 +1979,7 @@ class VpcClient(AlibabaCloudClient):
             "FlowLogName": flow_log_name,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_flow_log(
         self,
@@ -1997,7 +1998,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "FlowLogId": flow_log_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def deactive_flow_log(
         self,
@@ -2016,7 +2017,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "FlowLogId": flow_log_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_flow_log(
         self,
@@ -2047,7 +2048,7 @@ class VpcClient(AlibabaCloudClient):
             "TrafficType": traffic_type,
             "FlowLogName": flow_log_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def active_flow_log(
         self,
@@ -2066,7 +2067,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "FlowLogId": flow_log_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassociate_route_table(
         self,
@@ -2093,7 +2094,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "VSwitchId": v_switch_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_route_table(
         self,
@@ -2112,7 +2113,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_route_table(
         self,
@@ -2137,7 +2138,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "VpcId": vpc_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def associate_route_table(
         self,
@@ -2164,7 +2165,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "VSwitchId": v_switch_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_vpn_gateway(
         self,
@@ -2199,7 +2200,7 @@ class VpcClient(AlibabaCloudClient):
             "Name": name,
             "InstanceChargeType": instance_charge_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def revoke_instance_from_cen(
         self,
@@ -2230,7 +2231,7 @@ class VpcClient(AlibabaCloudClient):
             "CenOwnerId": cen_owner_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def grant_instance_to_cen(
         self,
@@ -2261,7 +2262,7 @@ class VpcClient(AlibabaCloudClient):
             "CenOwnerId": cen_owner_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_grant_rules_to_cen(
         self,
@@ -2290,7 +2291,7 @@ class VpcClient(AlibabaCloudClient):
             "InstanceType": instance_type,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_ssl_vpn_server(
         self,
@@ -2329,7 +2330,7 @@ class VpcClient(AlibabaCloudClient):
             "Proto": proto,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_ssl_vpn_client_cert(
         self,
@@ -2356,7 +2357,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "SslVpnClientCertId": ssl_vpn_client_cert_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ssl_vpn_servers(
         self,
@@ -2387,7 +2388,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ssl_vpn_client_certs(
         self,
@@ -2418,7 +2419,7 @@ class VpcClient(AlibabaCloudClient):
             "SslVpnClientCertId": ssl_vpn_client_cert_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ssl_vpn_client_cert(
         self,
@@ -2441,7 +2442,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "SslVpnClientCertId": ssl_vpn_client_cert_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_ssl_vpn_server(
         self,
@@ -2466,7 +2467,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_ssl_vpn_client_cert(
         self,
@@ -2491,7 +2492,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "SslVpnClientCertId": ssl_vpn_client_cert_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_ssl_vpn_server(
         self,
@@ -2530,7 +2531,7 @@ class VpcClient(AlibabaCloudClient):
             "Proto": proto,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_ssl_vpn_client_cert(
         self,
@@ -2557,7 +2558,7 @@ class VpcClient(AlibabaCloudClient):
             "Name": name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_global_acceleration_instance_ip(
         self,
@@ -2582,7 +2583,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "GlobalAccelerationInstanceId": global_acceleration_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_global_acceleration_instance_ip(
         self,
@@ -2607,7 +2608,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "GlobalAccelerationInstanceId": global_acceleration_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_route_table_list(
         self,
@@ -2651,7 +2652,7 @@ class VpcClient(AlibabaCloudClient):
                 'Tag', list, dict, [
                     ('Value', str, None, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_route_table_attributes(
         self,
@@ -2686,7 +2687,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceBid": resource_bid,
             "RouteTableId": route_table_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_bgp_networks(
         self,
@@ -2713,7 +2714,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_common_bandwidth_package_pay_type(
         self,
@@ -2752,7 +2753,7 @@ class VpcClient(AlibabaCloudClient):
             "PayType": pay_type,
             "PricingCycle": pricing_cycle,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassociate_global_acceleration_instance(
         self,
@@ -2777,7 +2778,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "GlobalAccelerationInstanceId": global_acceleration_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_global_acceleration_instance_spec(
         self,
@@ -2802,7 +2803,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "GlobalAccelerationInstanceId": global_acceleration_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_global_acceleration_instance_attributes(
         self,
@@ -2829,7 +2830,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "GlobalAccelerationInstanceId": global_acceleration_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_server_related_global_acceleration_instances(
         self,
@@ -2854,7 +2855,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ServerId": server_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_global_acceleration_instances(
         self,
@@ -2895,7 +2896,7 @@ class VpcClient(AlibabaCloudClient):
             "PageSize": page_size,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_global_acceleration_instance(
         self,
@@ -2918,7 +2919,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "GlobalAccelerationInstanceId": global_acceleration_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_global_acceleration_instance(
         self,
@@ -2953,7 +2954,7 @@ class VpcClient(AlibabaCloudClient):
             "InternetChargeType": internet_charge_type,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def associate_global_acceleration_instance(
         self,
@@ -2982,7 +2983,7 @@ class VpcClient(AlibabaCloudClient):
             "BackendServerRegionId": backend_server_region_id,
             "BackendServerType": backend_server_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_v_switch_attributes(
         self,
@@ -3005,7 +3006,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_common_bandwidth_package_ip(
         self,
@@ -3030,7 +3031,7 @@ class VpcClient(AlibabaCloudClient):
             "IpInstanceId": ip_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_common_bandwidth_package_spec(
         self,
@@ -3055,7 +3056,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_common_bandwidth_package_attribute(
         self,
@@ -3082,7 +3083,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_common_bandwidth_packages(
         self,
@@ -3115,7 +3116,7 @@ class VpcClient(AlibabaCloudClient):
             "IncludeReservationData": include_reservation_data,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_common_bandwidth_package(
         self,
@@ -3140,7 +3141,7 @@ class VpcClient(AlibabaCloudClient):
             "Force": force,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_common_bandwidth_package(
         self,
@@ -3179,7 +3180,7 @@ class VpcClient(AlibabaCloudClient):
             "Name": name,
             "Ratio": ratio,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_common_bandwidth_package_ip(
         self,
@@ -3204,7 +3205,7 @@ class VpcClient(AlibabaCloudClient):
             "IpInstanceId": ip_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_vpn_gateway_attribute(
         self,
@@ -3233,7 +3234,7 @@ class VpcClient(AlibabaCloudClient):
             "VpnGatewayId": vpn_gateway_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_vpn_connection_attribute(
         self,
@@ -3274,7 +3275,7 @@ class VpcClient(AlibabaCloudClient):
             "VpnConnectionId": vpn_connection_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_customer_gateway_attribute(
         self,
@@ -3303,7 +3304,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "CustomerGatewayId": customer_gateway_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def download_vpn_connection_config(
         self,
@@ -3326,7 +3327,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_vpn_gateways(
         self,
@@ -3359,7 +3360,7 @@ class VpcClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_vpn_gateway(
         self,
@@ -3382,7 +3383,7 @@ class VpcClient(AlibabaCloudClient):
             "VpnGatewayId": vpn_gateway_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_vpn_connections(
         self,
@@ -3413,7 +3414,7 @@ class VpcClient(AlibabaCloudClient):
             "CustomerGatewayId": customer_gateway_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_vpn_connection(
         self,
@@ -3436,7 +3437,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_customer_gateways(
         self,
@@ -3463,7 +3464,7 @@ class VpcClient(AlibabaCloudClient):
             "CustomerGatewayId": customer_gateway_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_customer_gateway(
         self,
@@ -3486,7 +3487,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "CustomerGatewayId": customer_gateway_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_vpn_gateway(
         self,
@@ -3507,7 +3508,7 @@ class VpcClient(AlibabaCloudClient):
             "VpnGatewayId": vpn_gateway_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_vpn_connection(
         self,
@@ -3532,7 +3533,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_customer_gateway(
         self,
@@ -3557,7 +3558,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "CustomerGatewayId": customer_gateway_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_vpn_connection(
         self,
@@ -3600,7 +3601,7 @@ class VpcClient(AlibabaCloudClient):
             "LocalSubnet": local_subnet,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_customer_gateway(
         self,
@@ -3629,7 +3630,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_nqa(
         self,
@@ -3651,7 +3652,7 @@ class VpcClient(AlibabaCloudClient):
             "NqaId": nqa_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_bgp_group_attribute(
         self,
@@ -3686,7 +3687,7 @@ class VpcClient(AlibabaCloudClient):
             "IsFakeAsn": is_fake_asn,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_nqas(
         self,
@@ -3712,7 +3713,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_bgp_peers(
         self,
@@ -3741,7 +3742,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_bgp_groups(
         self,
@@ -3772,7 +3773,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_nqa(
         self,
@@ -3792,7 +3793,7 @@ class VpcClient(AlibabaCloudClient):
             "NqaId": nqa_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_bgp_peer(
         self,
@@ -3813,7 +3814,7 @@ class VpcClient(AlibabaCloudClient):
             "BgpPeerId": bgp_peer_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_bgp_network(
         self,
@@ -3836,7 +3837,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "DstCidrBlock": dst_cidr_block,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_bgp_group(
         self,
@@ -3857,7 +3858,7 @@ class VpcClient(AlibabaCloudClient):
             "BgpGroupId": bgp_group_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_nqa(
         self,
@@ -3879,7 +3880,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_bgp_peer(
         self,
@@ -3902,7 +3903,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PeerIpAddress": peer_ip_address,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_bgp_group(
         self,
@@ -3933,7 +3934,7 @@ class VpcClient(AlibabaCloudClient):
             "RouterId": router_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_bgp_network(
         self,
@@ -3958,7 +3959,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "DstCidrBlock": dst_cidr_block,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def enable_vpc_classic_link(
         self,
@@ -3983,7 +3984,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def disable_vpc_classic_link(
         self,
@@ -4008,7 +4009,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_vpc_attribute(
         self,
@@ -4033,7 +4034,7 @@ class VpcClient(AlibabaCloudClient):
             "IsDefault": is_default,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassociate_physical_connection_from_virtual_border_router(
         self,
@@ -4060,7 +4061,7 @@ class VpcClient(AlibabaCloudClient):
             "VbrId": vbr_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_physical_connection_new(
         self,
@@ -4107,7 +4108,7 @@ class VpcClient(AlibabaCloudClient):
             "Name": name,
             "DeviceName": device_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def associate_physical_connection_to_virtual_border_router(
         self,
@@ -4144,7 +4145,7 @@ class VpcClient(AlibabaCloudClient):
             "PhysicalConnectionId": physical_connection_id,
             "LocalGatewayIp": local_gateway_ip,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_snat_entry(
         self,
@@ -4169,7 +4170,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "SnatIp": snat_ip,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_nat_gateway_spec(
         self,
@@ -4198,7 +4199,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Spec": spec,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_nat_gateway_attribute(
         self,
@@ -4225,7 +4226,7 @@ class VpcClient(AlibabaCloudClient):
             "NatGatewayId": nat_gateway_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_bandwidth_package_attribute(
         self,
@@ -4252,7 +4253,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_snat_table_entries(
         self,
@@ -4289,7 +4290,7 @@ class VpcClient(AlibabaCloudClient):
             "PageSize": page_size,
             "SnatEntryId": snat_entry_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_snat_entry(
         self,
@@ -4310,7 +4311,7 @@ class VpcClient(AlibabaCloudClient):
             "SnatEntryId": snat_entry_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_snat_entry(
         self,
@@ -4337,7 +4338,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "SnatIp": snat_ip,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_bandwidth_package(
         self,
@@ -4376,7 +4377,7 @@ class VpcClient(AlibabaCloudClient):
             "NatGatewayId": nat_gateway_id,
             "IpCount": ip_count,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassociate_ha_vip(
         self,
@@ -4401,7 +4402,7 @@ class VpcClient(AlibabaCloudClient):
             "Force": force,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassociate_eip_address(
         self,
@@ -4432,7 +4433,7 @@ class VpcClient(AlibabaCloudClient):
             "AllocationId": allocation_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def terminate_virtual_border_router(
         self,
@@ -4457,7 +4458,7 @@ class VpcClient(AlibabaCloudClient):
             "VbrId": vbr_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def terminate_physical_connection(
         self,
@@ -4482,7 +4483,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_bandwidth_package_ips(
         self,
@@ -4517,7 +4518,7 @@ class VpcClient(AlibabaCloudClient):
                 None),
         }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def release_eip_address(
         self,
@@ -4540,7 +4541,7 @@ class VpcClient(AlibabaCloudClient):
             "AllocationId": allocation_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def recover_virtual_border_router(
         self,
@@ -4565,7 +4566,7 @@ class VpcClient(AlibabaCloudClient):
             "VbrId": vbr_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_v_switch_attribute(
         self,
@@ -4594,7 +4595,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Ipv6CidrBlock": ipv6_cidr_block,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_v_router_attribute(
         self,
@@ -4621,7 +4622,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_vpc_attribute(
         self,
@@ -4652,7 +4653,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_virtual_border_router_attribute(
         self,
@@ -4693,7 +4694,7 @@ class VpcClient(AlibabaCloudClient):
             "Name": name,
             "LocalGatewayIp": local_gateway_ip,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_router_interface_spec(
         self,
@@ -4720,7 +4721,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Spec": spec,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_router_interface_attribute(
         self,
@@ -4759,7 +4760,7 @@ class VpcClient(AlibabaCloudClient):
             "OppositeRouterType": opposite_router_type,
             "OppositeInterfaceId": opposite_interface_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_physical_connection_attribute(
         self,
@@ -4800,7 +4801,7 @@ class VpcClient(AlibabaCloudClient):
             "PhysicalConnectionId": physical_connection_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_ha_vip_attribute(
         self,
@@ -4827,7 +4828,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_forward_entry(
         self,
@@ -4864,7 +4865,7 @@ class VpcClient(AlibabaCloudClient):
             "ExternalIp": external_ip,
             "ExternalPort": external_port,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_eip_address_attribute(
         self,
@@ -4893,7 +4894,7 @@ class VpcClient(AlibabaCloudClient):
             "AllocationId": allocation_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_bandwidth_package_spec(
         self,
@@ -4918,7 +4919,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def enable_physical_connection(
         self,
@@ -4943,7 +4944,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_zones(
         self,
@@ -4960,7 +4961,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_v_switches(
         self,
@@ -5006,7 +5007,7 @@ class VpcClient(AlibabaCloudClient):
                 'Tag', list, dict, [
                     ('Value', str, None, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_v_routers(
         self,
@@ -5029,7 +5030,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_vpcs(
         self,
@@ -5064,7 +5065,7 @@ class VpcClient(AlibabaCloudClient):
                 'Tag', list, dict, [
                     ('Value', str, None, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_virtual_border_routers_for_physical_connection(
         self,
@@ -5096,7 +5097,7 @@ class VpcClient(AlibabaCloudClient):
                 'Filter', list, dict, [
                     ('Value', list, str, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_virtual_border_routers(
         self,
@@ -5126,7 +5127,7 @@ class VpcClient(AlibabaCloudClient):
                 'Filter', list, dict, [
                     ('Value', list, str, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_route_tables(
         self,
@@ -5165,7 +5166,7 @@ class VpcClient(AlibabaCloudClient):
             "PageSize": page_size,
             "RouteTableId": route_table_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_router_interfaces(
         self,
@@ -5197,7 +5198,7 @@ class VpcClient(AlibabaCloudClient):
                 'Filter', list, dict, [
                     ('Value', list, str, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_regions(
         self,
@@ -5218,7 +5219,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ProductType": product_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_physical_connections(
         self,
@@ -5254,7 +5255,7 @@ class VpcClient(AlibabaCloudClient):
                 'Filter', list, dict, [
                     ('Value', list, str, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_nat_gateways(
         self,
@@ -5289,7 +5290,7 @@ class VpcClient(AlibabaCloudClient):
             "NatGatewayId": nat_gateway_id,
             "InstanceChargeType": instance_charge_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ha_vips(
         self,
@@ -5317,7 +5318,7 @@ class VpcClient(AlibabaCloudClient):
                 'Filter', list, dict, [
                     ('Value', list, str, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_forward_table_entries(
         self,
@@ -5358,7 +5359,7 @@ class VpcClient(AlibabaCloudClient):
             "ExternalIp": external_ip,
             "ExternalPort": external_port,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_eip_monitor_data(
         self,
@@ -5387,7 +5388,7 @@ class VpcClient(AlibabaCloudClient):
             "StartTime": start_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_eip_addresses(
         self,
@@ -5447,7 +5448,7 @@ class VpcClient(AlibabaCloudClient):
                 'Tag', list, dict, [
                     ('Value', str, None, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_bandwidth_packages(
         self,
@@ -5476,7 +5477,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_access_points(
         self,
@@ -5512,7 +5513,7 @@ class VpcClient(AlibabaCloudClient):
                 'Filter', list, dict, [
                     ('Value', list, str, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_v_switch(
         self,
@@ -5531,7 +5532,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_vpc(
         self,
@@ -5549,7 +5550,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_virtual_border_router(
         self,
@@ -5574,7 +5575,7 @@ class VpcClient(AlibabaCloudClient):
             "VbrId": vbr_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_router_interface(
         self,
@@ -5599,7 +5600,7 @@ class VpcClient(AlibabaCloudClient):
             "RouterInterfaceId": router_interface_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_route_entry(
         self,
@@ -5631,7 +5632,7 @@ class VpcClient(AlibabaCloudClient):
                 'NextHopList', list, dict, [
                     ('NextHopId', str, None, None), ('NextHopType', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_physical_connection(
         self,
@@ -5658,7 +5659,7 @@ class VpcClient(AlibabaCloudClient):
             "UserCidr": user_cidr,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_nat_gateway(
         self,
@@ -5679,7 +5680,7 @@ class VpcClient(AlibabaCloudClient):
             "NatGatewayId": nat_gateway_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_ha_vip(
         self,
@@ -5699,7 +5700,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_forward_entry(
         self,
@@ -5724,7 +5725,7 @@ class VpcClient(AlibabaCloudClient):
             "ForwardTableId": forward_table_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_bandwidth_package(
         self,
@@ -5749,7 +5750,7 @@ class VpcClient(AlibabaCloudClient):
             "Force": force,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def deactivate_router_interface(
         self,
@@ -5770,7 +5771,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_v_switch(
         self,
@@ -5801,7 +5802,7 @@ class VpcClient(AlibabaCloudClient):
             "CidrBlock": cidr_block,
             "ZoneId": zone_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_vpc(
         self,
@@ -5833,7 +5834,7 @@ class VpcClient(AlibabaCloudClient):
             "CidrBlock": cidr_block,
             "UserCidr": user_cidr,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_virtual_border_router(
         self,
@@ -5874,7 +5875,7 @@ class VpcClient(AlibabaCloudClient):
             "LocalGatewayIp": local_gateway_ip,
             "VbrOwnerId": vbr_owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_router_interface(
         self,
@@ -5935,7 +5936,7 @@ class VpcClient(AlibabaCloudClient):
             "Name": name,
             "PricingCycle": pricing_cycle,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_route_entry(
         self,
@@ -5973,7 +5974,7 @@ class VpcClient(AlibabaCloudClient):
                 'NextHopList', list, dict, [
                     ('Weight', str, None, None), ('NextHopId', str, None, None), ('NextHopType', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_physical_connection(
         self,
@@ -6016,7 +6017,7 @@ class VpcClient(AlibabaCloudClient):
             "LineOperator": line_operator,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_nat_gateway(
         self,
@@ -6083,7 +6084,7 @@ class VpcClient(AlibabaCloudClient):
             ),
         }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_ha_vip(
         self,
@@ -6107,7 +6108,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_forward_entry(
         self,
@@ -6142,7 +6143,7 @@ class VpcClient(AlibabaCloudClient):
             "ExternalIp": external_ip,
             "ExternalPort": external_port,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def connect_router_interface(
         self,
@@ -6163,7 +6164,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def cancel_physical_connection(
         self,
@@ -6188,7 +6189,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def associate_ha_vip(
         self,
@@ -6211,7 +6212,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def associate_eip_address(
         self,
@@ -6244,7 +6245,7 @@ class VpcClient(AlibabaCloudClient):
             "AllocationId": allocation_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def allocate_eip_address(
         self,
@@ -6285,7 +6286,7 @@ class VpcClient(AlibabaCloudClient):
             "PricingCycle": pricing_cycle,
             "InstanceChargeType": instance_charge_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_bandwidth_package_ips(
         self,
@@ -6312,7 +6313,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "IpCount": ip_count,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def activate_router_interface(
         self,
@@ -6333,4 +6334,4 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

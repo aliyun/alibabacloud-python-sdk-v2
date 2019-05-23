@@ -14,10 +14,10 @@
 
 import json
 
+from alibabacloud.exceptions import ServerException
 from alibabacloud.handlers import RequestHandler
 from alibabacloud.vendored.requests import codes
 from alibabacloud.vendored.requests.models import Response
-from alibabacloud.exceptions import ServerException
 
 SDK_UNKNOWN_SERVER_ERROR = 'SDK.UnknownServerError'
 
@@ -28,7 +28,8 @@ class ServerErrorHandler(RequestHandler):
         http_request = context.http_request
         response = context.http_response
         request_id = None
-        if isinstance(response, Response):
+        # if isinstance(response, Response):
+        if context.exception is None:
             try:
                 body_obj = json.loads(response.content)
                 request_id = body_obj.get('RequestId')
@@ -49,11 +50,10 @@ class ServerErrorHandler(RequestHandler):
                         server_error_code = 'InvalidAccessKeySecret'
                         server_error_message = 'The AccessKeySecret is incorrect. ' \
                                                'Please check your AccessKeyId and AccessKeySecret.'
-                exception = ServerException(server_error_code, server_error_message,
-                                            context.endpoint, context.client.product_code,
-                                            response.status_code, request_id,
-                                            context.client.product_version)
-                context.exception = exception
+                context.exception = ServerException(server_error_code, server_error_message,
+                                                    context.endpoint, context.client.product_code,
+                                                    response.status_code, request_id,
+                                                    context.client.product_version)
 
     @staticmethod
     def _parse_error_info_from_response_body(logger, response_body):

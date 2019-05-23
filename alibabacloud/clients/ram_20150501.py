@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class RamClient(AlibabaCloudClient):
@@ -40,7 +41,7 @@ class RamClient(AlibabaCloudClient):
             "UserAccessKeyId": user_access_key_id,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def upload_public_key(self, public_key_spec=None, user_name=None,):
         api_request = APIRequest(
@@ -53,7 +54,7 @@ class RamClient(AlibabaCloudClient):
             "PublicKeySpec": public_key_spec,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_public_key(
         self,
@@ -72,13 +73,13 @@ class RamClient(AlibabaCloudClient):
             "UserName": user_name,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_public_keys(self, user_name=None,):
         api_request = APIRequest(
             'ListPublicKeys', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_public_key(self, user_public_key_id=None, user_name=None,):
         api_request = APIRequest(
@@ -91,7 +92,7 @@ class RamClient(AlibabaCloudClient):
             "UserPublicKeyId": user_public_key_id,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_public_key(self, user_public_key_id=None, user_name=None,):
         api_request = APIRequest(
@@ -100,7 +101,7 @@ class RamClient(AlibabaCloudClient):
             "UserPublicKeyId": user_public_key_id,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def change_password(self, old_password=None, new_password=None,):
         api_request = APIRequest(
@@ -109,7 +110,7 @@ class RamClient(AlibabaCloudClient):
             "OldPassword": old_password,
             "NewPassword": new_password,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_role(
         self,
@@ -121,7 +122,7 @@ class RamClient(AlibabaCloudClient):
             "NewAssumeRolePolicyDocument": new_assume_role_policy_document,
             "RoleName": role_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_security_preference(
         self,
@@ -148,12 +149,12 @@ class RamClient(AlibabaCloudClient):
             "AllowUserToChangePassword": allow_user_to_change_password,
             "LoginSessionDuration": login_session_duration,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_roles(self, marker=None, max_items=None,):
         api_request = APIRequest('ListRoles', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"Marker": marker, "MaxItems": max_items, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_policies_for_role(self, role_name=None,):
         api_request = APIRequest(
@@ -163,18 +164,18 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"RoleName": role_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_security_preference(self,):
         api_request = APIRequest(
             'GetSecurityPreference', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_role(self, role_name=None,):
         api_request = APIRequest('GetRole', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"RoleName": role_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def detach_policy_from_role(
         self,
@@ -193,12 +194,12 @@ class RamClient(AlibabaCloudClient):
             "RoleName": role_name,
             "PolicyName": policy_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_role(self, role_name=None,):
         api_request = APIRequest('DeleteRole', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"RoleName": role_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_role(
         self,
@@ -212,7 +213,7 @@ class RamClient(AlibabaCloudClient):
             "Description": description,
             "AssumeRolePolicyDocument": assume_role_policy_document,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def attach_policy_to_role(
         self,
@@ -231,7 +232,7 @@ class RamClient(AlibabaCloudClient):
             "RoleName": role_name,
             "PolicyName": policy_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unbind_mfa_device(self, user_name=None,):
         api_request = APIRequest(
@@ -241,19 +242,19 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_virtual_mfa_devices(self,):
         api_request = APIRequest(
             'ListVirtualMFADevices', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_user_mfa_info(self, user_name=None,):
         api_request = APIRequest(
             'GetUserMFAInfo', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_virtual_mfa_device(self, serial_number=None,):
         api_request = APIRequest(
@@ -263,7 +264,7 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"SerialNumber": serial_number, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_virtual_mfa_device(self, virtual_mfa_device_name=None,):
         api_request = APIRequest(
@@ -274,7 +275,7 @@ class RamClient(AlibabaCloudClient):
             'query')
         api_request._params = {
             "VirtualMFADeviceName": virtual_mfa_device_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def bind_mfa_device(
         self,
@@ -291,7 +292,7 @@ class RamClient(AlibabaCloudClient):
             "AuthenticationCode1": authentication_code1,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_login_profile(
         self,
@@ -312,7 +313,7 @@ class RamClient(AlibabaCloudClient):
             "MFABindRequired": mfa_bind_required,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_login_profile(self, user_name=None,):
         api_request = APIRequest(
@@ -322,7 +323,7 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_login_profile(self, user_name=None,):
         api_request = APIRequest(
@@ -332,7 +333,7 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_login_profile(
         self,
@@ -353,7 +354,7 @@ class RamClient(AlibabaCloudClient):
             "MFABindRequired": mfa_bind_required,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_user(
         self,
@@ -373,22 +374,22 @@ class RamClient(AlibabaCloudClient):
             "NewEmail": new_email,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_users(self, marker=None, max_items=None,):
         api_request = APIRequest('ListUsers', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"Marker": marker, "MaxItems": max_items, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_user(self, user_name=None,):
         api_request = APIRequest('GetUser', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_user(self, user_name=None,):
         api_request = APIRequest('DeleteUser', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_user(
         self,
@@ -406,7 +407,7 @@ class RamClient(AlibabaCloudClient):
             "Email": email,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_access_key(
         self,
@@ -425,13 +426,13 @@ class RamClient(AlibabaCloudClient):
             "UserName": user_name,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_access_keys(self, user_name=None,):
         api_request = APIRequest(
             'ListAccessKeys', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_access_key(self, user_access_key_id=None, user_name=None,):
         api_request = APIRequest(
@@ -444,7 +445,7 @@ class RamClient(AlibabaCloudClient):
             "UserAccessKeyId": user_access_key_id,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_access_key(self, user_name=None,):
         api_request = APIRequest(
@@ -454,7 +455,7 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_password_policy(
         self,
@@ -485,7 +486,7 @@ class RamClient(AlibabaCloudClient):
             "RequireLowercaseCharacters": require_lowercase_characters,
             "RequireSymbols": require_symbols,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_account_alias(self, account_alias=None,):
         api_request = APIRequest(
@@ -495,24 +496,24 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"AccountAlias": account_alias, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_password_policy(self,):
         api_request = APIRequest(
             'GetPasswordPolicy', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_account_alias(self,):
         api_request = APIRequest('GetAccountAlias', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def clear_account_alias(self,):
         api_request = APIRequest(
             'ClearAccountAlias', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_default_policy_version(self, version_id=None, policy_name=None,):
         api_request = APIRequest(
@@ -525,7 +526,7 @@ class RamClient(AlibabaCloudClient):
             "VersionId": version_id,
             "PolicyName": policy_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_policy_versions(self, policy_type=None, policy_name=None,):
         api_request = APIRequest(
@@ -538,7 +539,7 @@ class RamClient(AlibabaCloudClient):
             "PolicyType": policy_type,
             "PolicyName": policy_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_policy_version(
         self,
@@ -557,7 +558,7 @@ class RamClient(AlibabaCloudClient):
             "PolicyType": policy_type,
             "PolicyName": policy_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_policy_version(self, version_id=None, policy_name=None,):
         api_request = APIRequest(
@@ -570,7 +571,7 @@ class RamClient(AlibabaCloudClient):
             "VersionId": version_id,
             "PolicyName": policy_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_policy_version(
         self,
@@ -589,7 +590,7 @@ class RamClient(AlibabaCloudClient):
             "PolicyName": policy_name,
             "PolicyDocument": policy_document,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_policies_for_user(self, user_name=None,):
         api_request = APIRequest(
@@ -599,7 +600,7 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_policies_for_group(self, group_name=None,):
         api_request = APIRequest(
@@ -609,7 +610,7 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"GroupName": group_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_entities_for_policy(self, policy_type=None, policy_name=None,):
         api_request = APIRequest(
@@ -622,7 +623,7 @@ class RamClient(AlibabaCloudClient):
             "PolicyType": policy_type,
             "PolicyName": policy_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def detach_policy_from_user(
         self,
@@ -641,7 +642,7 @@ class RamClient(AlibabaCloudClient):
             "PolicyName": policy_name,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def detach_policy_from_group(
         self,
@@ -660,7 +661,7 @@ class RamClient(AlibabaCloudClient):
             "PolicyName": policy_name,
             "GroupName": group_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def attach_policy_to_user(
         self,
@@ -679,7 +680,7 @@ class RamClient(AlibabaCloudClient):
             "PolicyName": policy_name,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def attach_policy_to_group(
         self,
@@ -698,7 +699,7 @@ class RamClient(AlibabaCloudClient):
             "PolicyName": policy_name,
             "GroupName": group_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_policies(self, policy_type=None, marker=None, max_items=None,):
         api_request = APIRequest(
@@ -708,7 +709,7 @@ class RamClient(AlibabaCloudClient):
             "Marker": marker,
             "MaxItems": max_items,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_policy(self, policy_type=None, policy_name=None,):
         api_request = APIRequest('GetPolicy', 'GET', 'https', 'RPC', 'query')
@@ -716,13 +717,13 @@ class RamClient(AlibabaCloudClient):
             "PolicyType": policy_type,
             "PolicyName": policy_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_policy(self, policy_name=None,):
         api_request = APIRequest(
             'DeletePolicy', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"PolicyName": policy_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_policy(
         self,
@@ -737,7 +738,7 @@ class RamClient(AlibabaCloudClient):
             "PolicyName": policy_name,
             "PolicyDocument": policy_document,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_user_from_group(self, group_name=None, user_name=None,):
         api_request = APIRequest(
@@ -750,7 +751,7 @@ class RamClient(AlibabaCloudClient):
             "GroupName": group_name,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_users_for_group(
         self,
@@ -769,7 +770,7 @@ class RamClient(AlibabaCloudClient):
             "MaxItems": max_items,
             "GroupName": group_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_groups_for_user(self, user_name=None,):
         api_request = APIRequest(
@@ -779,7 +780,7 @@ class RamClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"UserName": user_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_user_to_group(self, group_name=None, user_name=None,):
         api_request = APIRequest(
@@ -788,7 +789,7 @@ class RamClient(AlibabaCloudClient):
             "GroupName": group_name,
             "UserName": user_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_group(
         self,
@@ -802,24 +803,24 @@ class RamClient(AlibabaCloudClient):
             "NewComments": new_comments,
             "GroupName": group_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_groups(self, marker=None, max_items=None,):
         api_request = APIRequest('ListGroups', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"Marker": marker, "MaxItems": max_items, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_group(self, group_name=None,):
         api_request = APIRequest('GetGroup', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"GroupName": group_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_group(self, group_name=None,):
         api_request = APIRequest('DeleteGroup', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"GroupName": group_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_group(self, comments=None, group_name=None,):
         api_request = APIRequest('CreateGroup', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"Comments": comments, "GroupName": group_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

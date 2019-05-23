@@ -24,7 +24,7 @@ class SignerHandler(RequestHandler):
     content_length = "Content-Length"
     content_type = "Content-Type"
     """
-    handle signature，headers,params
+    handle signature, headers,params
     """
 
     def handle_request(self, context):

@@ -16,6 +16,7 @@
 # under the License.
 
 import time
+import copy
 
 from alibabacloud.vendored.six.moves.urllib.request import pathname2url
 from alibabacloud.vendored.six import iteritems
@@ -56,7 +57,6 @@ class ROASigner:
     def _prepare_headers(self):
         if self.credentials is None:
             raise ClientException(msg='Unable to locate credentials.')
-        import copy
         headers = copy.deepcopy(self.request._headers)
         headers['x-acs-version'] = self.version
         headers['x-acs-region-id'] = str(self.region_id)
@@ -81,7 +81,6 @@ class ROASigner:
         return parameters
 
     def _replace_occupied_parameters(self):
-        import copy
         uri_pattern = copy.deepcopy(self.request.uri_pattern)
         paths = self.request.path_params
         result = uri_pattern
@@ -227,7 +226,6 @@ class RPCSigner:
     def _canonicalized_query_string(self):
         if self.credentials is None:
             raise ClientException(msg='Unable to locate credentials.')
-        import copy
         parameters = copy.deepcopy(self.request._query_params)
         # TODO version :client level
         parameters['Version'] = self.version

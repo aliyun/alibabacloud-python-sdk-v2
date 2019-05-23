@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import platform
 
 from alibabacloud.compat import urlencode
+from alibabacloud.exceptions import ParamTypeInvalidException, ClientException
 from alibabacloud.handlers import RequestHandler
 from alibabacloud.utils import format_type
 from alibabacloud.vendored.requests.structures import CaseInsensitiveDict
@@ -34,10 +36,10 @@ def _user_agent_header():
 def _default_user_agent():
     default_agent = OrderedDict()
     default_agent['Python'] = platform.python_version()
-    # default_agent['Core'] = __import__('aliyunsdkcore').__version__
-    # default_agent['python-http_requests'] = __import__(
-    #     'aliyunsdkcore.vendored.requests.__version__', globals(), locals(),
-    #     ['vendored', 'requests', '__version__'], 0).__version__
+    default_agent['Alibabacloud'] = __import__('alibabacloud').__version__
+    default_agent['python-requests'] = __import__(
+        'alibabacloud.vendored.requests.__version__', globals(), locals(),
+        ['vendored', 'requests', '__version__'], 0).__version__
 
     return CaseInsensitiveDict(default_agent)
 
@@ -59,38 +61,42 @@ def _modify_user_agent(client_user_agent):
     base = _user_agent_header()
     default_agent = _default_user_agent()
     # merge default UA and client_UA
-    user_agent = _merge_user_agent(default_agent, client_user_agent)
+    user_agent = _merge_user_agent(default_agent, None)
     for key, value in user_agent.items():
         base += ' %s/%s' % (key, value)
+    if client_user_agent is not None:
+        if not isinstance(client_user_agent, str):
+            raise ParamTypeInvalidException(param='client_user_agent', param_type='str')
+        return ' '.join([base, client_user_agent])
     return base
 
 
-class PrepareHandler(RequestHandler):
+class APIProtocolHandler(RequestHandler):
 
-    def _filter_params(self, params):
+    @staticmethod
+    def _filter_params(params):
         # handle params
         new_params = {}
+
         def handle_params(params, prefix=''):
             if isinstance(params, list):
                 for i in range(len(params)):
-                    handle_params(params[i], prefix=prefix + '.' + str(i+1))
+                    handle_params(params[i], prefix=prefix + '.' + str(i + 1))
             elif isinstance(params, dict):
                 for item in params.keys():
                     handle_params(params.get(item), prefix=prefix + '.' + item)
-            # elif isinstance(params, str):
-            #     new_params[prefix.rstrip('.')] = params
             else:
                 new_params[prefix.rstrip('.')] = params
 
         # TODO None and [] are filer
+        if params is not None:
+            if not isinstance(params, dict):
+                raise ParamTypeInvalidException(params=params, param_type='dict')
+            for key, value in params.items():
+                if params[key] is not None:
+                    handle_params(params=value, prefix=key)
 
-        if not isinstance(params, dict):
-            raise
-        for key, value in params.items():
-            if params[key] is not None:
-                handle_params(params=value, prefix=key)
-
-        return new_params
+            return new_params
 
     def handle_request(self, context):
         http_request = context.http_request
@@ -108,8 +114,6 @@ class PrepareHandler(RequestHandler):
                 api_request.path_params.update(self._filter_params(api_request.params))
             elif api_request._param_position == "header":
                 api_request._headers.update(self._filter_params(api_request.params))
-            # elif api_request._param_position == "domain":
-            #     api_request._domain.update(self._filter_params(api_request.params))
 
         # handle api_request region_id, rpc and roa must
         if 'RegionId' not in api_request._query_params:
@@ -117,6 +121,8 @@ class PrepareHandler(RequestHandler):
 
         # handle headers
         body_params = api_request._body_params
+        # ROA GET POST PUT DEL
+        # RPC GET POST
 
         if body_params:
             body = urlencode(body_params)
@@ -143,7 +149,16 @@ class PrepareHandler(RequestHandler):
             if context.config.enable_https:
                 http_request.port = context.config.https_port
             else:
-                from alibabacloud.exceptions import ClientException
                 raise ClientException(msg='Please make sure the config enable_https is True.')
         else:
             http_request.port = context.config.http_port
+
+    def handle_response(self, context):
+        if not context.exception:
+            try:
+                context.result = json.loads(context.http_response.content, encoding='utf-8')
+            except ValueError:
+                # failed to parse body as json format
+                raise ClientException(
+                    msg='Failed to parse response as json format.Response:%s' % str(
+                        context.http_response.content))

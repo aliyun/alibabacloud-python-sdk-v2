@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class openanalyticsClient(AlibabaCloudClient):
@@ -40,7 +41,7 @@ class openanalyticsClient(AlibabaCloudClient):
             "TargetUid": target_uid,
             "TargetArnRole": target_arn_role,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result.result
 
     def close_product_account(
         self,
@@ -61,13 +62,13 @@ class openanalyticsClient(AlibabaCloudClient):
             "TargetUid": target_uid,
             "TargetArnRole": target_arn_role,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_region_status(self, target_uid=None,):
         api_request = APIRequest(
             'GetRegionStatus', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"TargetUid": target_uid, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def open_product_account(
         self,
@@ -88,19 +89,19 @@ class openanalyticsClient(AlibabaCloudClient):
             "TargetUid": target_uid,
             "TargetArnRole": target_arn_role,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_allow_ip(self, user_id=None, network_type=None,):
         api_request = APIRequest('GetAllowIP', 'GET', 'http', 'RPC', 'body')
         api_request._params = {
             "UserID": user_id, "NetworkType": network_type, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_region_list(self,):
         api_request = APIRequest(
             'DescribeRegionList', 'GET', 'http', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_end_point_by_domain(self, user_id=None, domain_url=None,):
         api_request = APIRequest(
@@ -110,13 +111,13 @@ class openanalyticsClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"UserID": user_id, "DomainURL": domain_url, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def query_end_point_list(self, user_id=None,):
         api_request = APIRequest(
             'QueryEndPointList', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"UserID": user_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_allow_ip(
         self,
@@ -132,4 +133,4 @@ class openanalyticsClient(AlibabaCloudClient):
             "AllowIP": allow_ip,
             "Append": append,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

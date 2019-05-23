@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
-
+from alibabacloud.utils.parameter_validation import verify_params
 
 class RdsClient(AlibabaCloudClient):
 
@@ -56,7 +56,7 @@ class RdsClient(AlibabaCloudClient):
             "TargetRegionId": target_region_id,
             "DbInstanceStorageType": db_instance_storage_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_vpc_migrate_info(
         self,
@@ -83,7 +83,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_read_db_instance_delay(
         self,
@@ -110,7 +110,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def allocate_instance_vpc_network_type(
         self,
@@ -141,7 +141,7 @@ class RdsClient(AlibabaCloudClient):
             "TargetVSwitchId": target_v_switch_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def restore_table(
         self,
@@ -167,7 +167,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def migrate_to_other_region(
         self,
@@ -202,7 +202,7 @@ class RdsClient(AlibabaCloudClient):
             "TargetRegionId": target_region_id,
             "SwitchTime": switch_time,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_meta_list(
         self,
@@ -235,7 +235,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "PageIndex": page_index,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_proxy_function_support(
         self,
@@ -260,7 +260,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_available_instance_class(
         self,
@@ -293,7 +293,7 @@ class RdsClient(AlibabaCloudClient):
             "InstanceChargeType": instance_charge_type,
             "OrderType": order_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def request_service_of_cloud_db_expert(
         self,
@@ -312,7 +312,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "ServiceRequestType": service_request_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cloud_db_expert_service(
         self,
@@ -341,7 +341,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ServiceRequestType": service_request_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_templates_list(
         self,
@@ -390,7 +390,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "MaxAvgScanRows": max_avg_scan_rows,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_my_sqldb_instance_delay(
         self,
@@ -413,7 +413,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def check_instance_exist(
         self,
@@ -434,7 +434,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_log_backup_files(
         self,
@@ -465,7 +465,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def migrate_security_ip_mode(
         self,
@@ -486,7 +486,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def switch_db_instance_vpc(
         self,
@@ -515,7 +515,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_collation_time_zones(
         self,
@@ -534,7 +534,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_collation_time_zone(
         self,
@@ -559,7 +559,7 @@ class RdsClient(AlibabaCloudClient):
             "Collation": collation,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_backup_database(
         self,
@@ -582,7 +582,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def copy_database_between_instances(
         self,
@@ -621,7 +621,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "PayType": pay_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def recovery_db_instance(
         self,
@@ -676,7 +676,7 @@ class RdsClient(AlibabaCloudClient):
             "PayType": pay_type,
             "InstanceNetworkType": instance_network_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_available_resource(
         self,
@@ -709,7 +709,7 @@ class RdsClient(AlibabaCloudClient):
             "InstanceChargeType": instance_charge_type,
             "OrderType": order_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_readonly_instance_delay_replication_time(
         self,
@@ -732,7 +732,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_proxy_configuration(
         self,
@@ -753,7 +753,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_online_database_task(
         self,
@@ -784,7 +784,7 @@ class RdsClient(AlibabaCloudClient):
             "CheckDBMode": check_db_mode,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def upgrade_db_instance_kernel_version(
         self,
@@ -809,7 +809,7 @@ class RdsClient(AlibabaCloudClient):
             "SwitchTime": switch_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_proxy_configuration(
         self,
@@ -834,7 +834,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_security_group_configuration(
         self,
@@ -855,7 +855,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_security_group_configuration(
         self,
@@ -878,7 +878,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_oss_downloads_for_sql_server(
         self,
@@ -901,7 +901,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_migrate_tasks_for_sql_server(
         self,
@@ -930,7 +930,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_migrate_task_for_sql_server(
         self,
@@ -959,7 +959,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "OSSUrls": oss_urls,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_migrate_task(
         self,
@@ -994,7 +994,7 @@ class RdsClient(AlibabaCloudClient):
             "BackupMode": backup_mode,
             "CheckDBMode": check_db_mode,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_oss_downloads(
         self,
@@ -1017,7 +1017,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_migrate_tasks(
         self,
@@ -1046,7 +1046,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def copy_database(
         self,
@@ -1060,7 +1060,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def reset_account(
         self,
@@ -1082,7 +1082,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instances_as_csv(
         self,
@@ -1103,7 +1103,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_network_expire_time(
         self,
@@ -1130,7 +1130,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_resource_group(
         self,
@@ -1157,7 +1157,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_replica_description(
         self,
@@ -1184,7 +1184,7 @@ class RdsClient(AlibabaCloudClient):
             "ReplicaId": replica_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_db_instance_replica(
         self,
@@ -1249,7 +1249,7 @@ class RdsClient(AlibabaCloudClient):
             "PayType": pay_type,
             "InstanceNetworkType": instance_network_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_renewal_price(
         self,
@@ -1292,7 +1292,7 @@ class RdsClient(AlibabaCloudClient):
             "BusinessInfo": business_info,
             "OrderType": order_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_price(
         self,
@@ -1335,7 +1335,7 @@ class RdsClient(AlibabaCloudClient):
             "PayType": pay_type,
             "OrderType": order_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def renew_instance(
         self,
@@ -1360,7 +1360,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "BusinessInfo": business_info,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_task_info(
         self,
@@ -1383,7 +1383,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "TaskId": task_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def check_recovery_conditions(
         self,
@@ -1412,7 +1412,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_auto_renewal_attribute(
         self,
@@ -1441,7 +1441,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_auto_renewal_attribute(
         self,
@@ -1472,7 +1472,7 @@ class RdsClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "proxyId": proxy_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def release_read_write_splitting_connection(
         self,
@@ -1495,7 +1495,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_read_write_splitting_connection(
         self,
@@ -1528,7 +1528,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "MaxDelayTime": max_delay_time,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def calculate_db_instance_weight(
         self,
@@ -1551,7 +1551,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def allocate_read_write_splitting_connection(
         self,
@@ -1586,7 +1586,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "MaxDelayTime": max_delay_time,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def check_resource(
         self,
@@ -1617,7 +1617,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceUseType": db_instance_use_type,
             "DBInstanceId": db_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_character_set_name(
         self,
@@ -1640,7 +1640,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_backup(
         self,
@@ -1660,7 +1660,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_diagnostic_report_list(self, db_instance_id=None,):
         api_request = APIRequest(
@@ -1670,7 +1670,7 @@ class RdsClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"DBInstanceId": db_instance_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_diagnostic_report(
         self,
@@ -1689,7 +1689,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "StartTime": start_time,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def clone_db_instance(
         self,
@@ -1740,7 +1740,7 @@ class RdsClient(AlibabaCloudClient):
             "PayType": pay_type,
             "InstanceNetworkType": instance_network_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_tags(
         self,
@@ -1764,7 +1764,7 @@ class RdsClient(AlibabaCloudClient):
             "proxyId": proxy_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_by_tags(
         self,
@@ -1795,7 +1795,7 @@ class RdsClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "proxyId": proxy_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def revoke_operator_permission(
         self,
@@ -1818,7 +1818,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_tde(
         self,
@@ -1849,7 +1849,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "TDEStatus": tde_status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_ssl(
         self,
@@ -1874,7 +1874,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def grant_operator_permission(
         self,
@@ -1901,7 +1901,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_tde(
         self,
@@ -1924,7 +1924,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_ssl(
         self,
@@ -1947,7 +1947,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_sql_log_files(
         self,
@@ -1976,7 +1976,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_monitor(
         self,
@@ -2003,7 +2003,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def switch_db_instance_ha(
         self,
@@ -2034,7 +2034,7 @@ class RdsClient(AlibabaCloudClient):
             "NodeId": node_id,
             "Operation": operation,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_monitor(
         self,
@@ -2059,7 +2059,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_sql_collector_policy(
         self,
@@ -2088,7 +2088,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_ha_config(
         self,
@@ -2115,7 +2115,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "HAMode": ha_mode,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_ha_config(
         self,
@@ -2138,7 +2138,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_sql_reports(
         self,
@@ -2169,7 +2169,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_ip_array_list(
         self,
@@ -2194,7 +2194,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_sql_log_report_list(
         self,
@@ -2225,7 +2225,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def reset_account_for_pg(
         self,
@@ -2252,7 +2252,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def allocate_instance_private_connection(
         self,
@@ -2279,7 +2279,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def upgrade_db_instance_engine_version(
         self,
@@ -2308,7 +2308,7 @@ class RdsClient(AlibabaCloudClient):
             "EngineVersion": engine_version,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def revoke_account_privilege(
         self,
@@ -2335,7 +2335,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def restore_db_instance(
         self,
@@ -2364,7 +2364,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def restart_db_instance(
         self,
@@ -2389,7 +2389,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def reset_account_password(
         self,
@@ -2416,7 +2416,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_tags_from_resource(
         self,
@@ -2465,7 +2465,7 @@ class RdsClient(AlibabaCloudClient):
             "Tag.3.value": tag3value,
             "proxyId": proxy_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def purge_db_instance_log(
         self,
@@ -2490,7 +2490,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_security_ips(
         self,
@@ -2529,7 +2529,7 @@ class RdsClient(AlibabaCloudClient):
             "SecurityIPType": security_ip_type,
             "DBInstanceId": db_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_parameter(
         self,
@@ -2554,7 +2554,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Parameters": parameters,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_spec(
         self,
@@ -2589,7 +2589,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "PayType": pay_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_maintain_time(
         self,
@@ -2616,7 +2616,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_description(
         self,
@@ -2643,7 +2643,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceDescription": db_instance_description,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_description(
         self,
@@ -2670,7 +2670,7 @@ class RdsClient(AlibabaCloudClient):
             "DBDescription": db_description,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_backup_policy(
         self,
@@ -2723,7 +2723,7 @@ class RdsClient(AlibabaCloudClient):
             "EnableBackupLog": enable_backup_log,
             "BackupPolicyMode": backup_policy_mode,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_account_description(
         self,
@@ -2750,7 +2750,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "AccountDescription": account_description,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def migrate_to_other_zone(
         self,
@@ -2787,7 +2787,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "Category": category,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def import_data_for_sql_server(
         self,
@@ -2812,7 +2812,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def import_database_between_instances(
         self,
@@ -2839,7 +2839,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def grant_account_privilege(
         self,
@@ -2868,7 +2868,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "AccountPrivilege": account_privilege,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_tasks(
         self,
@@ -2899,7 +2899,7 @@ class RdsClient(AlibabaCloudClient):
             "TaskAction": task_action,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_sql_log_reports(
         self,
@@ -2930,7 +2930,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_sql_log_records(
         self,
@@ -2973,7 +2973,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "User": user,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_slow_logs(
         self,
@@ -3004,7 +3004,7 @@ class RdsClient(AlibabaCloudClient):
             "PageSize": page_size,
             "DBInstanceId": db_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_slow_log_records(
         self,
@@ -3039,7 +3039,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "SQLHASH": sqlhash,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_resource_usage(
         self,
@@ -3064,7 +3064,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_regions(
         self,
@@ -3083,7 +3083,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_parameter_templates(
         self,
@@ -3112,7 +3112,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Category": category,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_parameters(
         self,
@@ -3137,7 +3137,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_modify_parameter_log(
         self,
@@ -3168,7 +3168,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_error_logs(
         self,
@@ -3199,7 +3199,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_performance(
         self,
@@ -3228,7 +3228,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Key": key,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_databases(
         self,
@@ -3259,7 +3259,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_binlog_files(
         self,
@@ -3290,7 +3290,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_backup_tasks(
         self,
@@ -3323,7 +3323,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "BackupJobStatus": backup_job_status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_backups(
         self,
@@ -3358,7 +3358,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "BackupMode": backup_mode,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_backup_policy(
         self,
@@ -3385,7 +3385,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "BackupPolicyMode": backup_policy_mode,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_accounts(
         self,
@@ -3410,7 +3410,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def descibe_imports_from_database(
         self,
@@ -3447,7 +3447,7 @@ class RdsClient(AlibabaCloudClient):
             "PageSize": page_size,
             "DBInstanceId": db_instance_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_db_instance(
         self,
@@ -3468,7 +3468,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_database(
         self,
@@ -3489,7 +3489,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_account(
         self,
@@ -3510,7 +3510,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_temp_db_instance(
         self,
@@ -3537,7 +3537,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_database(
         self,
@@ -3562,7 +3562,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "CharacterSetName": character_set_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_backup(
         self,
@@ -3588,7 +3588,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "BackupType": backup_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_account(
         self,
@@ -3615,7 +3615,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "AccountDescription": account_description,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def check_account_name_available(
         self,
@@ -3642,7 +3642,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def cancel_import(
         self,
@@ -3662,7 +3662,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_tags_to_resource(
         self,
@@ -3711,7 +3711,7 @@ class RdsClient(AlibabaCloudClient):
             "Tag.3.value": tag3value,
             "proxyId": proxy_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def switch_db_instance_net_type(
         self,
@@ -3742,7 +3742,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def release_instance_public_connection(
         self,
@@ -3767,7 +3767,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "CurrentConnectionString": current_connection_string,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_network_type(
         self,
@@ -3806,7 +3806,7 @@ class RdsClient(AlibabaCloudClient):
             "InstanceNetworkType": instance_network_type,
             "ReadWriteSplittingClassicExpiredDays": read_write_splitting_classic_expired_days,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_connection_string(
         self,
@@ -3835,7 +3835,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "CurrentConnectionString": current_connection_string,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_db_instance_connection_mode(
         self,
@@ -3860,7 +3860,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_net_info(
         self,
@@ -3889,7 +3889,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_read_only_db_instance(
         self,
@@ -3940,7 +3940,7 @@ class RdsClient(AlibabaCloudClient):
             "PayType": pay_type,
             "InstanceNetworkType": instance_network_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_db_instance(
         self,
@@ -4007,7 +4007,7 @@ class RdsClient(AlibabaCloudClient):
             "PayType": pay_type,
             "InstanceNetworkType": instance_network_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def allocate_instance_public_connection(
         self,
@@ -4034,7 +4034,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instances_by_performance(
         self,
@@ -4091,7 +4091,7 @@ class RdsClient(AlibabaCloudClient):
             "Tag.2.value": tag2value,
             "Tag.4.key": tag4key,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instances_by_expire_time(
         self,
@@ -4124,7 +4124,7 @@ class RdsClient(AlibabaCloudClient):
             "ExpirePeriod": expire_period,
             "proxyId": proxy_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instances(
         self,
@@ -4205,7 +4205,7 @@ class RdsClient(AlibabaCloudClient):
             "PayType": pay_type,
             "InstanceNetworkType": instance_network_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_db_instance_attribute(
         self,
@@ -4232,4 +4232,4 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

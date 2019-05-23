@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class EciClient(AlibabaCloudClient):
@@ -48,7 +49,7 @@ class EciClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_container_group_metric(
         self,
@@ -77,7 +78,7 @@ class EciClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_container_group_by_template(
         self,
@@ -102,7 +103,7 @@ class EciClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_container_group_from_template(
         self,
@@ -127,7 +128,7 @@ class EciClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def export_container_group_template(
         self,
@@ -150,7 +151,7 @@ class EciClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def restart_container_group(
         self,
@@ -175,7 +176,7 @@ class EciClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_container_group(
         self,
@@ -621,7 +622,7 @@ class EciClient(AlibabaCloudClient):
                                   ),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_container_group_price(
         self,
@@ -646,7 +647,7 @@ class EciClient(AlibabaCloudClient):
             "Cpu": cpu,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def exec_container_command(
         self,
@@ -673,7 +674,7 @@ class EciClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Command": command,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_container_log(
         self,
@@ -702,7 +703,7 @@ class EciClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_container_group(
         self,
@@ -1207,7 +1208,7 @@ class EciClient(AlibabaCloudClient):
                                   ),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_container_groups(
         self,
@@ -1249,7 +1250,7 @@ class EciClient(AlibabaCloudClient):
                 'Tag', list, dict, [
                     ('Key', str, None, None), ('Value', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_container_group(
         self,
@@ -1274,4 +1275,4 @@ class EciClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

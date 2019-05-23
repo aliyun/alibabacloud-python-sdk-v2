@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class CSClient(AlibabaCloudClient):
@@ -30,7 +31,7 @@ class CSClient(AlibabaCloudClient):
             'ScaleOutCluster', 'POST', 'http', 'ROA', 'path')
         api_request.uri_pattern = '/api/v2/clusters/[ClusterId]'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_cluster_cert_info(self, cluster_id=None,):
         api_request = APIRequest(
@@ -41,13 +42,13 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/clusters/[ClusterId]/hosts/certs'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_trigger_hook(self,):
         api_request = APIRequest('CreateTriggerHook', 'PUT', 'http', 'ROA', '')
         api_request.uri_pattern = '/hook/trigger'
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_cluster_by_resources_group(self, resource_group_id=None,):
         api_request = APIRequest(
@@ -58,7 +59,7 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/resource_groups/[ResourceGroupId]/clusters'
         api_request._params = {"ResourceGroupId": resource_group_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def pre_check_for_create_cluster(self,):
         api_request = APIRequest(
@@ -69,7 +70,7 @@ class CSClient(AlibabaCloudClient):
             '')
         api_request.uri_pattern = '/api/v1/ess/precheck'
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_kubernetes_version_metadata(
         self,
@@ -91,7 +92,7 @@ class CSClient(AlibabaCloudClient):
             "KubernetesVersion": kubernetes_version,
             "Region": region,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def upgrade_cluster_addons(self, cluster_id=None,):
         api_request = APIRequest(
@@ -102,7 +103,7 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/clusters/[ClusterId]/components/upgrade'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cluster_addons_version(self, cluster_id=None,):
         api_request = APIRequest(
@@ -113,7 +114,7 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/clusters/[ClusterId]/components/version'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_edge_cluster_attach_scripts(
             self, cluster_id=None, name_prefix=None,):
@@ -128,7 +129,7 @@ class CSClient(AlibabaCloudClient):
             "ClusterId": cluster_id,
             "NamePrefix": name_prefix,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_cluster_nodes(self, cluster_id=None,):
         api_request = APIRequest(
@@ -139,7 +140,7 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/clusters/[ClusterId]/nodes'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cluster_user_kubeconfig(
             self, private_ip_address=None, cluster_id=None,):
@@ -154,7 +155,7 @@ class CSClient(AlibabaCloudClient):
             "PrivateIpAddress": private_ip_address,
             "ClusterId": cluster_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cluster_endpoints(self, cluster_id=None,):
         api_request = APIRequest(
@@ -165,7 +166,7 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/clusters/[ClusterId]/endpoints'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def upgrade_cluster_components(self, component_id=None, cluster_id=None,):
         api_request = APIRequest(
@@ -179,7 +180,7 @@ class CSClient(AlibabaCloudClient):
             "ComponentId": component_id,
             "ClusterId": cluster_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cluster_nodes(
         self,
@@ -199,7 +200,7 @@ class CSClient(AlibabaCloudClient):
             "ClusterId": cluster_id,
             "pageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cluster_logs(self, cluster_id=None,):
         api_request = APIRequest(
@@ -210,14 +211,14 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/clusters/[ClusterId]/logs'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def check_aliyun_cs_service_role(self,):
         api_request = APIRequest(
             'CheckAliyunCSServiceRole', 'GET', 'http', 'ROA', '')
         api_request.uri_pattern = '/aliyuncsrole/status'
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def reset_cluster_node(self, instance_id=None, cluster_id=None,):
         api_request = APIRequest(
@@ -227,7 +228,7 @@ class CSClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "ClusterId": cluster_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_cluster_node(
         self,
@@ -249,7 +250,7 @@ class CSClient(AlibabaCloudClient):
             "force": force,
             "ClusterId": cluster_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def revoke_cluster_token(self, token=None,):
         api_request = APIRequest(
@@ -260,7 +261,7 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/token/[Token]/revoke'
         api_request._params = {"Token": token, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def download_cluster_node_certs(self, node_id=None, token=None,):
         api_request = APIRequest(
@@ -271,33 +272,33 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/token/[Token]/nodes/[NodeId]/certs'
         api_request._params = {"NodeId": node_id, "Token": token, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def attach_instances(self, cluster_id=None,):
         api_request = APIRequest(
             'AttachInstances', 'POST', 'http', 'ROA', 'path')
         api_request.uri_pattern = '/clusters/[ClusterId]/attach'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_cluster(self,):
         api_request = APIRequest('CreateCluster', 'POST', 'http', 'ROA', '')
         api_request.uri_pattern = '/clusters'
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def scale_cluster(self, cluster_id=None,):
         api_request = APIRequest('ScaleCluster', 'PUT', 'http', 'ROA', 'path')
         api_request.uri_pattern = '/clusters/[ClusterId]'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_clusters(self, cluster_type=None, name=None,):
         api_request = APIRequest(
             'DescribeClusters', 'GET', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/clusters'
         api_request._params = {"clusterType": cluster_type, "Name": name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cluster_detail(self, cluster_id=None,):
         api_request = APIRequest(
@@ -308,7 +309,7 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/clusters/[ClusterId]'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cluster_certs(self, cluster_id=None,):
         api_request = APIRequest(
@@ -319,18 +320,18 @@ class CSClient(AlibabaCloudClient):
             'path')
         api_request.uri_pattern = '/clusters/[ClusterId]/certs'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_cluster(self, cluster_id=None,):
         api_request = APIRequest(
             'DeleteCluster', 'DELETE', 'http', 'ROA', 'path')
         api_request.uri_pattern = '/clusters/[ClusterId]'
         api_request._params = {"ClusterId": cluster_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_api_version(self,):
         api_request = APIRequest(
             'DescribeApiVersion', 'GET', 'http', 'ROA', '')
         api_request.uri_pattern = '/version'
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

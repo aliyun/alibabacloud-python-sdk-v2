@@ -15,7 +15,6 @@
 import logging
 import os
 import time
-from collections import namedtuple
 
 import alibabacloud.retry.retry_policy as retry_policy
 from alibabacloud.credentials import AccessKeyCredentials
@@ -23,26 +22,16 @@ from alibabacloud.handlers import RequestContext
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
 from alibabacloud.handlers.endpoint_handler import EndpointHandler
 from alibabacloud.handlers.http_handler import HttpHandler
-from alibabacloud.handlers.prepare_handler import PrepareHandler
+from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.retry_handler import RetryHandler
 from alibabacloud.handlers.server_error_handler import ServerErrorHandler
 from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import HTTPRequest
 from alibabacloud.utils.ini_helper import load_config
-from alibabacloud.exceptions import ClientException, CheckParamsTypeException
+from alibabacloud.exceptions import ClientException, ParamTypeInvalidException
 from logging.handlers import RotatingFileHandler
 
-DEFAULT_HANDLERS = [
-    RetryHandler(),
-    PrepareHandler(),
-    CredentialsHandler(),
-    SignerHandler(),
-    TimeoutConfigReader(),
-    EndpointHandler(),
-    HttpHandler(),
-    ServerErrorHandler(),
-]
 
 DEFAULT_CONFIG_VARIABLES = {
     'max_retry_times': 3,
@@ -56,7 +45,7 @@ DEFAULT_CONFIG_VARIABLES = {
 
 class ClientConfig:
     """
-    处理client级别的所有的参数
+    handle client config
     """
 
     ENV_NAME_FOR_CONFIG_FILE = 'ALIBABA_CLOUD_CONFIG_FILE'
@@ -78,7 +67,7 @@ class ClientConfig:
         self.max_retry_times = max_retry_times
         self.endpoint = endpoint
 
-        # user-agent
+        # user-agent, user define ua
         self.user_agent = user_agent
         self.extra_user_agent = extra_user_agent
         # https
@@ -162,7 +151,16 @@ class AlibabaCloudClient:
         self.location_endpoint_type = None
 
         self.logger = self._init_logger()  # TODO initialize
-        self.handlers = DEFAULT_HANDLERS
+        self.handlers = [
+            RetryHandler(),
+            APIProtocolHandler(),
+            CredentialsHandler(),
+            SignerHandler(),
+            TimeoutConfigReader(),
+            EndpointHandler(),
+            HttpHandler(),
+            ServerErrorHandler(),
+        ]
 
         # client_config:ClientConfig,TODO
         self.config = get_merged_client_config(client_config)
@@ -180,46 +178,15 @@ class AlibabaCloudClient:
             from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
             self.credentials_provider = DefaultChainedCredentialsProvider(self.config)
 
-        from alibabacloud.endpoint.default_endpoint_resolver import DefaultEndpointResolver
-
-        self.endpoint_resolver = DefaultEndpointResolver(self.config,
-                                                         self.credentials_provider)
-        # TODO initialize
-        # retry
-        if self.config.enable_retry:
-            try:
-                max_retry_times = int(self.config.max_retry_times)
-            except ValueError:
-                raise ClientException(msg='max_retry_times must be an integer number')
-            else:
-                self.retry_policy = retry_policy.get_default_retry_policy(
-                    max_retry_times=max_retry_times)
-        else:
-            self.retry_policy = retry_policy.NO_RETRY_POLICY
+        self._init_endpoint_resolve()
+        self._init_retry()
 
     def _handle_config(self, client_config):
-
         self.config = get_merged_client_config(client_config)
-
-        from alibabacloud.endpoint.default_endpoint_resolver import DefaultEndpointResolver
-
-        self.endpoint_resolver = DefaultEndpointResolver(self.config,
-                                                         self.credentials_provider)
-        # TODO initialize
-        # retry
-        if self.config.enable_retry:
-            try:
-                max_retry_times = int(self.config.max_retry_times)
-            except ValueError:
-                raise ClientException(msg='max_retry_times must be an integer number')
-            else:
-                self.retry_policy = retry_policy.get_default_retry_policy(
-                    max_retry_times=max_retry_times)
-        else:
-            self.retry_policy = retry_policy.NO_RETRY_POLICY
+        self._init_endpoint_resolve()
+        self._init_retry()
 
     def _handle_request(self, api_request, _config=None, _raise_exception=True):
-
         if _config is not None:
             # for compat
             self._handle_config(_config)
@@ -241,8 +208,28 @@ class AlibabaCloudClient:
                 break
         if context.exception and _raise_exception:
             raise context.exception
-
+        # body
         return context
+
+    def _init_endpoint_resolve(self):
+        from alibabacloud.endpoint.default_endpoint_resolver import DefaultEndpointResolver
+
+        self.endpoint_resolver = DefaultEndpointResolver(self.config,
+                                                         self.credentials_provider)
+
+    def _init_retry(self):
+        # TODO initialize
+        # retry
+        if self.config.enable_retry:
+            try:
+                max_retry_times = int(self.config.max_retry_times)
+            except ValueError:
+                raise ParamTypeInvalidException(param='max_retry_times',param_type='int')
+            else:
+                self.retry_policy = retry_policy.get_default_retry_policy(
+                    max_retry_times=max_retry_times)
+        else:
+            self.retry_policy = retry_policy.NO_RETRY_POLICY
 
     def _init_logger(self):
         logger_name = 'alibabacloud-{}'.format(str(id(self)))
@@ -272,53 +259,3 @@ class AlibabaCloudClient:
         ch.setFormatter(formatter)
         if ch not in log.handlers:
             log.addHandler(ch)
-
-
-MetaParams = namedtuple('MetaParams', 'sname, stype, ctype, cparams')
-
-
-def handle_meta_params(cparams, aparams):
-    """
-    :param cparams:list
-    :param aparams:dict
-    :return:
-    """
-    for item in cparams:
-        meta_params = MetaParams._make(list(item))
-        if meta_params.stype == list:
-            if aparams.get(meta_params.sname) is not None:
-                if not isinstance(aparams.get(meta_params.sname), meta_params.stype):
-                    raise CheckParamsTypeException(param=meta_params.sname,
-                                                   param_type=meta_params.stype)
-                if meta_params.ctype == dict:
-                    for sub_item in aparams.get(meta_params.sname):
-                        if not isinstance(sub_item, dict):
-                            raise CheckParamsTypeException(param=sub_item,
-                                                           param_type='dict')
-                        handle_meta_params(meta_params.cparams, sub_item)
-
-
-def verify_params(api_params, repeat_info):
-    """
-    api_params
-    repeat_info = {
-    tag:('Tag', 'list', 'dict',()),
-
-    }
-    repeat_info = {'Tag': ('Tag', list, str, None,), }
-    repeat_info = {'Tag': ('Tag', list, dict, [('Key', str, None, None),('Value', str, None, None),],), }
-    """
-    for name, value in repeat_info.items():
-        formal_param = value
-        actual_param = api_params.get(name)
-        if actual_param is not None:
-            meta_params = MetaParams._make(list(formal_param))
-            if not isinstance(actual_param, list):
-                raise CheckParamsTypeException(param=meta_params.sname, param_type=meta_params.stype)
-
-            if meta_params.ctype == dict:
-                for item in actual_param:
-                    if not isinstance(item, meta_params.ctype):
-                        raise CheckParamsTypeException(param=item,
-                                                       param_type=meta_params.ctype)
-                    handle_meta_params(meta_params.cparams, item)

@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class LinkFaceClient(AlibabaCloudClient):
@@ -44,7 +45,7 @@ class LinkFaceClient(AlibabaCloudClient):
             "DeviceName": device_name,
             "ProductKey": product_key,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_device_all_group(
         self,
@@ -63,12 +64,12 @@ class LinkFaceClient(AlibabaCloudClient):
             "DeviceName": device_name,
             "ProductKey": product_key,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def search_face(self, image=None, group_id=None,):
         api_request = APIRequest('SearchFace', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"Image": image, "GroupId": group_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def query_licenses(
         self,
@@ -83,7 +84,7 @@ class LinkFaceClient(AlibabaCloudClient):
             "PageSize": page_size,
             "CurrentPage": current_page,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def query_authentication(
         self,
@@ -108,7 +109,7 @@ class LinkFaceClient(AlibabaCloudClient):
             "DeviceName": device_name,
             "ProductKey": product_key,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def query_add_user_info(
         self,
@@ -129,12 +130,12 @@ class LinkFaceClient(AlibabaCloudClient):
             "DeviceName": device_name,
             "ProductKey": product_key,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unlink_face(self, group_id=None, user_id=None,):
         api_request = APIRequest('UnlinkFace', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"GroupId": group_id, "UserId": user_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def query_all_groups(self, page_size=None, current_page=None,):
         api_request = APIRequest(
@@ -143,7 +144,7 @@ class LinkFaceClient(AlibabaCloudClient):
             "PageSize": page_size,
             "CurrentPage": current_page,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def sync_face_pictures(
         self,
@@ -164,7 +165,7 @@ class LinkFaceClient(AlibabaCloudClient):
             "DeviceName": device_name,
             "ProductKey": product_key,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def query_sync_pic_schedule(
         self,
@@ -185,7 +186,7 @@ class LinkFaceClient(AlibabaCloudClient):
             "DeviceName": device_name,
             "ProductKey": product_key,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def query_group_users(
         self,
@@ -204,12 +205,12 @@ class LinkFaceClient(AlibabaCloudClient):
             "PageSize": page_size,
             "CurrentPage": current_page,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def query_face(self, user_id=None,):
         api_request = APIRequest('QueryFace', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"UserId": user_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_face(self, image=None, user_id=None, user_info=None,):
         api_request = APIRequest('UpdateFace', 'POST', 'https', 'RPC', 'body')
@@ -218,12 +219,12 @@ class LinkFaceClient(AlibabaCloudClient):
             "UserId": user_id,
             "UserInfo": user_info,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_face(self, group_id=None, user_id=None,):
         api_request = APIRequest('DeleteFace', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"GroupId": group_id, "UserId": user_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def register_face(
         self,
@@ -240,19 +241,19 @@ class LinkFaceClient(AlibabaCloudClient):
             "UserId": user_id,
             "UserInfo": user_info,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def link_face(self, group_id=None, user_id=None,):
         api_request = APIRequest('LinkFace', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"GroupId": group_id, "UserId": user_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_group(self, group_id=None,):
         api_request = APIRequest('DeleteGroup', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"GroupId": group_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_group(self, group_id=None,):
         api_request = APIRequest('CreateGroup', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"GroupId": group_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

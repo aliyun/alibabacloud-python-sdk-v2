@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class SlbClient(AlibabaCloudClient):
@@ -50,7 +51,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "AddressIPVersion": address_ip_version,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_domain_extension_attribute(
         self,
@@ -79,7 +80,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "DomainExtensionId": domain_extension_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_extensions(
         self,
@@ -110,7 +111,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "DomainExtensionId": domain_extension_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_domain_extension(
         self,
@@ -137,7 +138,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "DomainExtensionId": domain_extension_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_domain_extension(
         self,
@@ -170,7 +171,7 @@ class SlbClient(AlibabaCloudClient):
             "ServerCertificateId": server_certificate_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_access_control_list_attribute(
         self,
@@ -199,7 +200,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_access_control_list_entry(
         self,
@@ -228,7 +229,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_access_control_lists(
         self,
@@ -270,7 +271,7 @@ class SlbClient(AlibabaCloudClient):
                 'Tag', list, dict, [
                     ('Value', str, None, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_access_control_list_attribute(
         self,
@@ -299,7 +300,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_access_control_list(
         self,
@@ -326,7 +327,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_access_control_list_entry(
         self,
@@ -355,7 +356,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_access_control_list(
         self,
@@ -386,7 +387,7 @@ class SlbClient(AlibabaCloudClient):
             "AddressIPVersion": address_ip_version,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_load_balancer_pay_type(
         self,
@@ -421,7 +422,7 @@ class SlbClient(AlibabaCloudClient):
             "PayType": pay_type,
             "PricingCycle": pricing_cycle,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_load_balancer_instance_spec(
         self,
@@ -452,7 +453,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_master_slave_server_groups(
         self,
@@ -481,7 +482,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_master_slave_server_group_attribute(
         self,
@@ -508,7 +509,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_master_slave_server_group(
         self,
@@ -535,7 +536,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_master_slave_server_group(
         self,
@@ -566,7 +567,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_master_slave_v_server_groups(
         self,
@@ -593,7 +594,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_master_slave_v_server_group_attribute(
         self,
@@ -620,7 +621,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_master_slave_v_server_group(
         self,
@@ -647,7 +648,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_master_slave_v_server_group(
         self,
@@ -678,7 +679,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def upload_ca_certificate(
         self,
@@ -707,7 +708,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_ca_certificate_name(
         self,
@@ -734,7 +735,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "CACertificateId": ca_certificate_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ca_certificates(
         self,
@@ -768,7 +769,7 @@ class SlbClient(AlibabaCloudClient):
                 'Tag', list, dict, [
                     ('Value', str, None, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_ca_certificate(
         self,
@@ -793,7 +794,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "CACertificateId": ca_certificate_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_tags(
         self,
@@ -815,7 +816,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_tags(
         self,
@@ -843,7 +844,7 @@ class SlbClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_tags(
         self,
@@ -865,7 +866,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_v_server_group_attribute(
         self,
@@ -896,7 +897,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "VServerGroupName": v_server_group_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_rule(
         self,
@@ -952,7 +953,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckConnectPort": health_check_connect_port,
             "HealthCheckHttpCode": health_check_http_code,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_v_server_group_backend_servers(
         self,
@@ -981,7 +982,7 @@ class SlbClient(AlibabaCloudClient):
             "BackendServers": backend_servers,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_v_server_group_backend_servers(
         self,
@@ -1012,7 +1013,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_v_server_groups(
         self,
@@ -1043,7 +1044,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_v_server_group_attribute(
         self,
@@ -1070,7 +1071,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_rules(
         self,
@@ -1097,7 +1098,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_rule_attribute(
         self,
@@ -1124,7 +1125,7 @@ class SlbClient(AlibabaCloudClient):
             "RuleId": rule_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_v_server_group(
         self,
@@ -1151,7 +1152,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_rules(
         self,
@@ -1173,7 +1174,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_v_server_group(
         self,
@@ -1204,7 +1205,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "VServerGroupName": v_server_group_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_rules(
         self,
@@ -1232,7 +1233,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_v_server_group_backend_servers(
         self,
@@ -1261,7 +1262,7 @@ class SlbClient(AlibabaCloudClient):
             "BackendServers": backend_servers,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_zones(
         self,
@@ -1282,7 +1283,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_load_balancer_udp_listener_attribute(
         self,
@@ -1351,7 +1352,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckConnectPort": health_check_connect_port,
             "VServerGroup": v_server_group,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_load_balancer_udp_listener_attribute(
         self,
@@ -1380,7 +1381,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_load_balancer_udp_listener(
         self,
@@ -1447,7 +1448,7 @@ class SlbClient(AlibabaCloudClient):
             "healthCheckExp": health_check_exp,
             "HealthCheckConnectPort": health_check_connect_port,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def upload_server_certificate(
         self,
@@ -1484,7 +1485,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "ServerCertificateName": server_certificate_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def stop_load_balancer_listener(
         self,
@@ -1515,7 +1516,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def start_load_balancer_listener(
         self,
@@ -1546,7 +1547,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_server_certificate_name(
         self,
@@ -1575,7 +1576,7 @@ class SlbClient(AlibabaCloudClient):
             "ServerCertificateName": server_certificate_name,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_load_balancer_tcp_listener_attribute(
         self,
@@ -1652,7 +1653,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckHttpCode": health_check_http_code,
             "VServerGroup": v_server_group,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_load_balancer_status(
         self,
@@ -1681,7 +1682,7 @@ class SlbClient(AlibabaCloudClient):
             "LoadBalancerStatus": load_balancer_status,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_load_balancer_name(
         self,
@@ -1710,7 +1711,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_load_balancer_https_listener_attribute(
         self,
@@ -1813,7 +1814,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckHttpCode": health_check_http_code,
             "VServerGroup": v_server_group,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_load_balancer_http_listener_attribute(
         self,
@@ -1906,7 +1907,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckHttpCode": health_check_http_code,
             "VServerGroup": v_server_group,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_listener_access_control_status(
         self,
@@ -1939,7 +1940,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_backend_servers(
         self,
@@ -1968,7 +1969,7 @@ class SlbClient(AlibabaCloudClient):
             "BackendServers": backend_servers,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_listener_white_list_item(
         self,
@@ -2001,7 +2002,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_backend_servers(
         self,
@@ -2030,7 +2031,7 @@ class SlbClient(AlibabaCloudClient):
             "BackendServers": backend_servers,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_load_balancer_internet_spec(
         self,
@@ -2065,7 +2066,7 @@ class SlbClient(AlibabaCloudClient):
             "InternetChargeType": internet_charge_type,
             "Ratio": ratio,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_server_certificates(
         self,
@@ -2101,7 +2102,7 @@ class SlbClient(AlibabaCloudClient):
                 'Tag', list, dict, [
                     ('Value', str, None, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_regions(
         self,
@@ -2124,7 +2125,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_load_balancer_tcp_listener_attribute(
         self,
@@ -2153,7 +2154,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_load_balancers(
         self,
@@ -2223,7 +2224,7 @@ class SlbClient(AlibabaCloudClient):
                 'Tag', list, dict, [
                     ('Value', str, None, None), ('Key', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_load_balancer_https_listener_attribute(
         self,
@@ -2252,7 +2253,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_load_balancer_http_listener_attribute(
         self,
@@ -2281,7 +2282,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_load_balancer_attribute(
         self,
@@ -2310,7 +2311,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_listener_access_control_attribute(
         self,
@@ -2341,7 +2342,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_health_status(
         self,
@@ -2372,7 +2373,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_server_certificate(
         self,
@@ -2399,7 +2400,7 @@ class SlbClient(AlibabaCloudClient):
             "ServerCertificateId": server_certificate_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_load_balancer_listener(
         self,
@@ -2430,7 +2431,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_load_balancer(
         self,
@@ -2457,7 +2458,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_load_balancer_tcp_listener(
         self,
@@ -2530,7 +2531,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckConnectPort": health_check_connect_port,
             "HealthCheckHttpCode": health_check_http_code,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_load_balancer_https_listener(
         self,
@@ -2633,7 +2634,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckConnectPort": health_check_connect_port,
             "HealthCheckHttpCode": health_check_http_code,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_load_balancer_http_listener(
         self,
@@ -2730,7 +2731,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckConnectPort": health_check_connect_port,
             "HealthCheckHttpCode": health_check_http_code,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_load_balancer(
         self,
@@ -2793,7 +2794,7 @@ class SlbClient(AlibabaCloudClient):
             "PricingCycle": pricing_cycle,
             "Ratio": ratio,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_listener_white_list_item(
         self,
@@ -2826,7 +2827,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerProtocol": listener_protocol,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_backend_servers(
         self,
@@ -2855,4 +2856,4 @@ class SlbClient(AlibabaCloudClient):
             "BackendServers": backend_servers,
             "Tags": tags,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

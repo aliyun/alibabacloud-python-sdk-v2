@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class CdnClient(AlibabaCloudClient):
@@ -35,7 +36,7 @@ class CdnClient(AlibabaCloudClient):
             'query')
         api_request._params = {
             "DomainName": domain_name, "OwnerId": owner_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result.result
 
     def describe_domain_real_time_src_traffic_data(
         self,
@@ -56,7 +57,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_real_time_src_bps_data(
         self,
@@ -77,7 +78,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_real_time_http_code_data(
         self,
@@ -102,7 +103,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cdn_user_quota(self, security_token=None, owner_id=None,):
         api_request = APIRequest(
@@ -115,7 +116,7 @@ class CdnClient(AlibabaCloudClient):
             "SecurityToken": security_token,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_fc_trigger(
         self,
@@ -136,7 +137,7 @@ class CdnClient(AlibabaCloudClient):
             "RoleARN": role_arn,
             "FunctionARN": function_arn,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_fc_trigger(self, trigger_arn=None, owner_id=None,):
         api_request = APIRequest(
@@ -147,14 +148,14 @@ class CdnClient(AlibabaCloudClient):
             'query')
         api_request._params = {
             "TriggerARN": trigger_arn, "OwnerId": owner_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_fc_trigger(self, trigger_arn=None, owner_id=None,):
         api_request = APIRequest(
             'DeleteFCTrigger', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "TriggerARN": trigger_arn, "OwnerId": owner_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_fc_trigger(
         self,
@@ -178,7 +179,7 @@ class CdnClient(AlibabaCloudClient):
             "EventMetaName": event_meta_name,
             "FunctionARN": function_arn,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_certificate_info(
             self, domain_name=None, owner_id=None,):
@@ -190,7 +191,7 @@ class CdnClient(AlibabaCloudClient):
             'query')
         api_request._params = {
             "DomainName": domain_name, "OwnerId": owner_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cdn_domain_configs(
         self,
@@ -211,7 +212,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_cname(self, domain_name=None, owner_id=None,):
         api_request = APIRequest(
@@ -222,7 +223,7 @@ class CdnClient(AlibabaCloudClient):
             'query')
         api_request._params = {
             "DomainName": domain_name, "OwnerId": owner_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_user_custom_log_config(self, owner_id=None,):
         api_request = APIRequest(
@@ -232,7 +233,7 @@ class CdnClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"OwnerId": owner_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_waiting_room_config(
         self,
@@ -259,7 +260,7 @@ class CdnClient(AlibabaCloudClient):
             "GapTime": gap_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_real_time_req_hit_rate_data(
         self,
@@ -280,7 +281,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_real_time_qps_data(
         self,
@@ -305,7 +306,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_real_time_byte_hit_rate_data(
         self,
@@ -326,7 +327,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_real_time_bps_data(
         self,
@@ -351,7 +352,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_slow_ratio(
         self,
@@ -376,7 +377,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_user_custom_log_config(
             self, owner_id=None, config_id=None, tag=None,):
@@ -391,7 +392,7 @@ class CdnClient(AlibabaCloudClient):
             "ConfigId": config_id,
             "Tag": tag,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_domain_custom_log_config(
         self,
@@ -410,7 +411,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ConfigId": config_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_domains_by_log_config_id(self, owner_id=None, config_id=None,):
         api_request = APIRequest(
@@ -420,7 +421,7 @@ class CdnClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"OwnerId": owner_id, "ConfigId": config_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_custom_log_config(
             self, domain_name=None, owner_id=None,):
@@ -432,7 +433,7 @@ class CdnClient(AlibabaCloudClient):
             'query')
         api_request._params = {
             "DomainName": domain_name, "OwnerId": owner_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_custom_log_config(self, owner_id=None, config_id=None,):
         api_request = APIRequest(
@@ -442,7 +443,7 @@ class CdnClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"OwnerId": owner_id, "ConfigId": config_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_ip_allow_list_config(
         self,
@@ -463,7 +464,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_user_green_manager_config(
         self,
@@ -484,7 +485,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Ratio": ratio,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_domain_green_manager_config(
         self,
@@ -503,7 +504,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Enable": enable,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_https_option_config(
         self,
@@ -524,7 +525,7 @@ class CdnClient(AlibabaCloudClient):
             "Http2": http2,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_l2_oss_key_config(
         self,
@@ -545,7 +546,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PrivateOssAuth": private_oss_auth,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_stream_bit_rate_data(
         self,
@@ -572,7 +573,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "StreamName": stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_average_response_time(
         self,
@@ -605,7 +606,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_ip_black_list_config(
         self,
@@ -626,7 +627,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "BlockIps": block_ips,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_path_data(
         self,
@@ -653,7 +654,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_remove_query_string_config(
         self,
@@ -676,7 +677,7 @@ class CdnClient(AlibabaCloudClient):
             "AliRemoveArgs": ali_remove_args,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_user_customer_labels(
         self,
@@ -695,7 +696,7 @@ class CdnClient(AlibabaCloudClient):
             "SecurityToken": security_token,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_dynamic_config(
         self,
@@ -720,7 +721,7 @@ class CdnClient(AlibabaCloudClient):
             "DynamicCacheControl": dynamic_cache_control,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_req_header_config(
         self,
@@ -745,7 +746,7 @@ class CdnClient(AlibabaCloudClient):
             "Value": value,
             "Key": key,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_pull_stream_config(
         self,
@@ -764,7 +765,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domains_by_source(
         self,
@@ -783,7 +784,7 @@ class CdnClient(AlibabaCloudClient):
             "SecurityToken": security_token,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_live_domain_mapping(
         self,
@@ -804,7 +805,7 @@ class CdnClient(AlibabaCloudClient):
             "PushDomain": push_domain,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_live_domain_mapping(
         self,
@@ -825,7 +826,7 @@ class CdnClient(AlibabaCloudClient):
             "PushDomain": push_domain,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_l2_vips_by_domain(
         self,
@@ -844,7 +845,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_http_error_page_config(
         self,
@@ -867,7 +868,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ErrorCode": error_code,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_specific_config(
         self,
@@ -890,7 +891,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def batch_set_cdn_domain_config(
         self,
@@ -913,7 +914,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def batch_delete_cdn_domain_config(
         self,
@@ -936,7 +937,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_range_data_by_locate_and_isp_service(
         self,
@@ -961,7 +962,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_live_app_snapshot_config(
         self,
@@ -992,7 +993,7 @@ class CdnClient(AlibabaCloudClient):
             "OverwriteOssObject": overwrite_oss_object,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_stream_snapshot_info(
         self,
@@ -1021,7 +1022,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "StreamName": stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_snapshot_config(
         self,
@@ -1050,7 +1051,7 @@ class CdnClient(AlibabaCloudClient):
             "StreamName": stream_name,
             "Order": order,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_live_app_snapshot_config(
         self,
@@ -1071,7 +1072,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_live_app_snapshot_config(
         self,
@@ -1102,7 +1103,7 @@ class CdnClient(AlibabaCloudClient):
             "OverwriteOssObject": overwrite_oss_object,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def stop_mix_streams_service(
         self,
@@ -1131,7 +1132,7 @@ class CdnClient(AlibabaCloudClient):
             "MixAppName": mix_app_name,
             "MainStreamName": main_stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def start_mix_streams_service(
         self,
@@ -1164,7 +1165,7 @@ class CdnClient(AlibabaCloudClient):
             "MixAppName": mix_app_name,
             "MainStreamName": main_stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_bps_data_by_time_stamp(
         self,
@@ -1187,7 +1188,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "TimePoint": time_point,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_max95_bps_data(
         self,
@@ -1208,7 +1209,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_streams_frame_rate_and_bit_rate_data(
         self,
@@ -1235,7 +1236,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "StreamName": stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_stream_record_index_files(
         self,
@@ -1262,7 +1263,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "StreamName": stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_stream_record_index_file(
         self,
@@ -1287,7 +1288,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "StreamName": stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_stream_record_content(
         self,
@@ -1314,7 +1315,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "StreamName": stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_record_config(
         self,
@@ -1333,7 +1334,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_live_app_record_config(
         self,
@@ -1354,7 +1355,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_live_stream_record_index_files(
         self,
@@ -1387,7 +1388,7 @@ class CdnClient(AlibabaCloudClient):
             "StreamName": stream_name,
             "OssObject": oss_object,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_live_app_record_config(
         self,
@@ -1414,7 +1415,7 @@ class CdnClient(AlibabaCloudClient):
             "OssObjectPrefix": oss_object_prefix,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_forward_scheme_config(
         self,
@@ -1439,7 +1440,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_user_configs(
         self,
@@ -1458,7 +1459,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Config": config,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_req_hit_rate_data(
         self,
@@ -1481,7 +1482,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cdn_region_and_isp(self, security_token=None, owner_id=None,):
         api_request = APIRequest(
@@ -1494,7 +1495,7 @@ class CdnClient(AlibabaCloudClient):
             "SecurityToken": security_token,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_stream_transcode_info(
         self,
@@ -1513,7 +1514,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "DomainTranscodeName": domain_transcode_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_live_stream_transcode(
         self,
@@ -1538,7 +1539,7 @@ class CdnClient(AlibabaCloudClient):
             "Domain": domain,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_live_stream_transcode(
         self,
@@ -1567,7 +1568,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Snapshot": snapshot,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_force_redirect_config(
         self,
@@ -1588,7 +1589,7 @@ class CdnClient(AlibabaCloudClient):
             "RedirectType": redirect_type,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_top_domains_by_flow(
         self,
@@ -1611,7 +1612,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domains_usage_by_day(
         self,
@@ -1632,7 +1633,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cdn_types(
         self,
@@ -1647,7 +1648,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_domain_server_certificate(
         self,
@@ -1680,7 +1681,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Region": region,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_cdn_domain(
         self,
@@ -1707,7 +1708,7 @@ class CdnClient(AlibabaCloudClient):
             "SourceType": source_type,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_video_seek_config(
         self,
@@ -1728,7 +1729,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_source_host_config(
         self,
@@ -1751,7 +1752,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "BackSrcDomain": back_src_domain,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_req_auth_config(
         self,
@@ -1776,7 +1777,7 @@ class CdnClient(AlibabaCloudClient):
             "TimeOut": time_out,
             "AuthType": auth_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_referer_config(
         self,
@@ -1799,7 +1800,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "AllowEmpty": allow_empty,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_range_config(
         self,
@@ -1816,7 +1817,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_path_cache_expired_config(
         self,
@@ -1841,7 +1842,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "TTL": ttl,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_page_compress_config(
         self,
@@ -1862,7 +1863,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_optimize_config(
         self,
@@ -1883,7 +1884,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_ignore_query_string_config(
         self,
@@ -1908,7 +1909,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_http_header_config(
         self,
@@ -1933,7 +1934,7 @@ class CdnClient(AlibabaCloudClient):
             "HeaderKey": header_key,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_file_cache_expired_config(
         self,
@@ -1958,7 +1959,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "TTL": ttl,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_error_page_config(
         self,
@@ -1981,7 +1982,7 @@ class CdnClient(AlibabaCloudClient):
             "CustomPageUrl": custom_page_url,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_cc_config(
         self,
@@ -1999,7 +2000,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "BlockIps": block_ips,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_path_cache_expired_config(
         self,
@@ -2026,7 +2027,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "TTL": ttl,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_http_header_config(
         self,
@@ -2051,7 +2052,7 @@ class CdnClient(AlibabaCloudClient):
             "HeaderKey": header_key,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_file_cache_expired_config(
         self,
@@ -2078,7 +2079,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "TTL": ttl,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_refresh_quota(self, security_token=None, owner_id=None,):
         api_request = APIRequest(
@@ -2091,7 +2092,7 @@ class CdnClient(AlibabaCloudClient):
             "SecurityToken": security_token,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ip_info(self, security_token=None, ip=None, owner_id=None,):
         api_request = APIRequest(
@@ -2101,7 +2102,7 @@ class CdnClient(AlibabaCloudClient):
             "IP": ip,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_uv_data(
         self,
@@ -2124,7 +2125,7 @@ class CdnClient(AlibabaCloudClient):
             "StartTime": start_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_top_url_visit(
         self,
@@ -2147,7 +2148,7 @@ class CdnClient(AlibabaCloudClient):
             "StartTime": start_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_top_refer_visit(
         self,
@@ -2170,7 +2171,7 @@ class CdnClient(AlibabaCloudClient):
             "StartTime": start_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_src_flow_data(
         self,
@@ -2197,7 +2198,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_src_bps_data(
         self,
@@ -2224,7 +2225,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_region_data(
         self,
@@ -2245,7 +2246,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_qps_data(
         self,
@@ -2276,7 +2277,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_pv_data(
         self,
@@ -2299,7 +2300,7 @@ class CdnClient(AlibabaCloudClient):
             "StartTime": start_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_isp_data(
         self,
@@ -2320,7 +2321,7 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_http_code_data(
         self,
@@ -2349,7 +2350,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_hit_rate_data(
         self,
@@ -2372,7 +2373,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_flow_data(
         self,
@@ -2403,7 +2404,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_file_size_proportion_data(
         self,
@@ -2426,7 +2427,7 @@ class CdnClient(AlibabaCloudClient):
             "StartTime": start_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_configs(
         self,
@@ -2447,7 +2448,7 @@ class CdnClient(AlibabaCloudClient):
             "ConfigList": config_list,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_cc_data(
         self,
@@ -2470,7 +2471,7 @@ class CdnClient(AlibabaCloudClient):
             "StartTime": start_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_cc_attack_info(
         self,
@@ -2493,7 +2494,7 @@ class CdnClient(AlibabaCloudClient):
             "StartTime": start_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_domain_bps_data(
         self,
@@ -2524,7 +2525,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_http_header_config(
         self,
@@ -2545,7 +2546,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_cache_expired_config(
         self,
@@ -2568,7 +2569,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def set_live_streams_notify_url_config(
         self,
@@ -2589,7 +2590,7 @@ class CdnClient(AlibabaCloudClient):
             "NotifyUrl": notify_url,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_stream_online_user_num(
         self,
@@ -2618,7 +2619,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "StreamName": stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def resume_live_stream(
         self,
@@ -2639,7 +2640,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "StreamName": stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def forbid_live_stream(
         self,
@@ -2662,7 +2663,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "StreamName": stream_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_streams_publish_list(
         self,
@@ -2693,7 +2694,7 @@ class CdnClient(AlibabaCloudClient):
             "StreamName": stream_name,
             "PageNumber": page_number,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_streams_online_list(
         self,
@@ -2720,7 +2721,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNum": page_num,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_streams_control_history(
         self,
@@ -2745,7 +2746,7 @@ class CdnClient(AlibabaCloudClient):
             "StartTime": start_time,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_live_streams_block_list(
         self,
@@ -2764,7 +2765,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cdn_domain_logs(
         self,
@@ -2793,7 +2794,7 @@ class CdnClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "LogDay": log_day,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cdn_domain_detail(
         self,
@@ -2812,7 +2813,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_cdn_domain(
         self,
@@ -2829,7 +2830,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_cdn_domain(
         self,
@@ -2865,7 +2866,7 @@ class CdnClient(AlibabaCloudClient):
             "CheckUrl": check_url,
             "Region": region,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def push_object_cache(
         self,
@@ -2882,7 +2883,7 @@ class CdnClient(AlibabaCloudClient):
             "ObjectPath": object_path,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def open_cdn_service(
         self,
@@ -2897,7 +2898,7 @@ class CdnClient(AlibabaCloudClient):
             "InternetChargeType": internet_charge_type,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_cdn_service(
         self,
@@ -2912,7 +2913,7 @@ class CdnClient(AlibabaCloudClient):
             "InternetChargeType": internet_charge_type,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_user_domains(
         self,
@@ -2951,7 +2952,7 @@ class CdnClient(AlibabaCloudClient):
             "CdnType": cdn_type,
             "PageSize": page_size,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_refresh_tasks(
         self,
@@ -2988,7 +2989,7 @@ class CdnClient(AlibabaCloudClient):
             "TaskId": task_id,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cdn_service(self, security_token=None, owner_id=None,):
         api_request = APIRequest(
@@ -3001,7 +3002,7 @@ class CdnClient(AlibabaCloudClient):
             "SecurityToken": security_token,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cdn_monitor_data(
         self,
@@ -3024,7 +3025,7 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Interval": interval,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def stop_cdn_domain(
         self,
@@ -3039,7 +3040,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def start_cdn_domain(
         self,
@@ -3054,7 +3055,7 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "OwnerId": owner_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def refresh_object_caches(
         self,
@@ -3075,4 +3076,4 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ObjectType": object_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

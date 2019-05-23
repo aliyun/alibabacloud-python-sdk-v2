@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class LinkWANClient(AlibabaCloudClient):
@@ -34,7 +35,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"InstanceId": instance_id, "Enabled": enabled, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def submit_external_nodes_adding_task(
             self, node_group_id=None, nodes=None,):
@@ -50,7 +51,7 @@ class LinkWANClient(AlibabaCloudClient):
                 'Nodes', list, dict, [
                     ('DevEui', str, None, None), ],), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_external_node_tuples(self, dev_eui_list=None,):
         api_request = APIRequest(
@@ -62,7 +63,7 @@ class LinkWANClient(AlibabaCloudClient):
         api_request._params = {"DevEuiList": dev_eui_list, }
         repeat_info = {"DevEuiList": ('DevEuiList', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_custom_local_join_permission(
         self,
@@ -83,7 +84,7 @@ class LinkWANClient(AlibabaCloudClient):
             "JoinEui": join_eui,
             "JoinPermissionName": join_permission_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def submit_external_node_tuples_importing_task(self, node_tuples=None,):
         api_request = APIRequest(
@@ -116,7 +117,7 @@ class LinkWANClient(AlibabaCloudClient):
                                       ),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_node_transfer_packet_paths(
         self,
@@ -139,7 +140,7 @@ class LinkWANClient(AlibabaCloudClient):
             "Base64EncodedMacPayload": base64_encoded_mac_payload,
             "LogMillis": log_millis,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_roaming_join_permission(
         self,
@@ -156,7 +157,7 @@ class LinkWANClient(AlibabaCloudClient):
             "JoinPermissionId": join_permission_id,
             "JoinPermissionName": join_permission_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_owned_local_join_permission(
         self,
@@ -177,7 +178,7 @@ class LinkWANClient(AlibabaCloudClient):
             "FreqBandPlanGroupId": freq_band_plan_group_id,
             "JoinPermissionName": join_permission_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_owned_local_join_permission_enabling_state(
             self, join_permission_id=None, enabled=None,):
@@ -191,7 +192,7 @@ class LinkWANClient(AlibabaCloudClient):
             "JoinPermissionId": join_permission_id,
             "Enabled": enabled,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_roaming_join_permission_enabling_state(
             self, join_permission_id=None, enabled=None,):
@@ -205,7 +206,7 @@ class LinkWANClient(AlibabaCloudClient):
             "JoinPermissionId": join_permission_id,
             "Enabled": enabled,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_nodes_by_owned_join_permission_id(
             self, join_permission_id=None, fuzzy_dev_eui=None,):
@@ -219,7 +220,7 @@ class LinkWANClient(AlibabaCloudClient):
             "JoinPermissionId": join_permission_id,
             "FuzzyDevEui": fuzzy_dev_eui,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_nodes_by_node_group_id(
         self,
@@ -244,7 +245,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_nodes_by_owned_join_permission_id(
         self,
@@ -269,7 +270,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_nodes_by_node_group_id(
             self, node_group_id=None, fuzzy_dev_eui=None,):
@@ -283,12 +284,12 @@ class LinkWANClient(AlibabaCloudClient):
             "NodeGroupId": node_group_id,
             "FuzzyDevEui": fuzzy_dev_eui,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_user_license(self,):
         api_request = APIRequest('GetUserLicense', 'GET', 'http', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_gateway(
         self,
@@ -323,7 +324,7 @@ class LinkWANClient(AlibabaCloudClient):
             "Name": name,
             "CommunicationMode": communication_mode,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_gateway_transfer_packets(
         self,
@@ -354,18 +355,18 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_gateway(self, gw_eui=None,):
         api_request = APIRequest(
             'DeleteGateway', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_gateway(self, gw_eui=None,):
         api_request = APIRequest('GetGateway', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_gateway_transfer_packets_download_url(
         self,
@@ -392,7 +393,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_gateway_transfer_flow_stats(
         self,
@@ -413,7 +414,7 @@ class LinkWANClient(AlibabaCloudClient):
             "GwEui": gw_eui,
             "TimeIntervalUnit": time_interval_unit,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_node_group_transfer_flow_stats(
         self,
@@ -434,7 +435,7 @@ class LinkWANClient(AlibabaCloudClient):
             "NodeGroupId": node_group_id,
             "TimeIntervalUnit": time_interval_unit,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_gateway_online_records(
         self,
@@ -457,13 +458,13 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_active_gateways(self,):
         api_request = APIRequest(
             'ListActiveGateways', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_gateway_status_stat(self, gw_eui=None,):
         api_request = APIRequest(
@@ -473,7 +474,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_freq_band_plan_group(self, group_id=None,):
         api_request = APIRequest(
@@ -483,7 +484,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GroupId": group_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_notifications(
         self,
@@ -506,19 +507,19 @@ class LinkWANClient(AlibabaCloudClient):
         }
         repeat_info = {"Category": ('Category', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_freq_band_plan_groups(self,):
         api_request = APIRequest(
             'ListFreqBandPlanGroups', 'GET', 'http', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_notification(self, notification_id=None,):
         api_request = APIRequest(
             'GetNotification', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"NotificationId": notification_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_notifications(
         self,
@@ -549,7 +550,7 @@ class LinkWANClient(AlibabaCloudClient):
         }
         repeat_info = {"Category": ('Category', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_gateway_tuple_orders(self, states=None,):
         api_request = APIRequest(
@@ -561,7 +562,7 @@ class LinkWANClient(AlibabaCloudClient):
         api_request._params = {"States": states, }
         repeat_info = {"States": ('States', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def submit_node_tuple_order(self, lora_version=None, required_count=None,):
         api_request = APIRequest(
@@ -574,7 +575,7 @@ class LinkWANClient(AlibabaCloudClient):
             "LoraVersion": lora_version,
             "RequiredCount": required_count,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_node_tuple_orders(self, is_kpm=None, states=None,):
         api_request = APIRequest(
@@ -586,7 +587,7 @@ class LinkWANClient(AlibabaCloudClient):
         api_request._params = {"IsKpm": is_kpm, "States": states, }
         repeat_info = {"States": ('States', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_notifications_handle_state(
             self, notification_id=None, target_handle_state=None,):
@@ -602,7 +603,7 @@ class LinkWANClient(AlibabaCloudClient):
         }
         repeat_info = {"NotificationId": ('NotificationId', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def submit_gateway_tuple_order(self, required_count=None,):
         api_request = APIRequest(
@@ -612,7 +613,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"RequiredCount": required_count, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_gateway_tuple_order(self, order_id=None,):
         api_request = APIRequest(
@@ -622,7 +623,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"OrderId": order_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_gateway_tuple_orders(
         self,
@@ -647,7 +648,7 @@ class LinkWANClient(AlibabaCloudClient):
         }
         repeat_info = {"State": ('State', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_gateway_tuples_download_url(self, order_id=None,):
         api_request = APIRequest(
@@ -657,7 +658,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"OrderId": order_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_node_tuple_order(self, order_id=None,):
         api_request = APIRequest(
@@ -667,7 +668,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"OrderId": order_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_node_tuple_orders(
         self,
@@ -694,7 +695,7 @@ class LinkWANClient(AlibabaCloudClient):
         }
         repeat_info = {"State": ('State', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_gateway(
         self,
@@ -727,13 +728,13 @@ class LinkWANClient(AlibabaCloudClient):
             "Name": name,
             "CommunicationMode": communication_mode,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_lab_gateway(self, gw_eui=None,):
         api_request = APIRequest(
             'GetLabGateway', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_node_tuples_download_url(self, order_id=None,):
         api_request = APIRequest(
@@ -743,7 +744,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"OrderId": order_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_gateways(
         self,
@@ -771,7 +772,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_gateways(
         self,
@@ -792,13 +793,13 @@ class LinkWANClient(AlibabaCloudClient):
             "OnlineState": online_state,
             "IsEnabled": is_enabled,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_gateways_gis_info(self,):
         api_request = APIRequest(
             'ListGatewaysGisInfo', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_lab_gateway(self, freq_band_plan_group_id=None, name=None,):
         api_request = APIRequest(
@@ -807,13 +808,13 @@ class LinkWANClient(AlibabaCloudClient):
             "FreqBandPlanGroupId": freq_band_plan_group_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_lab_gateway(self, gw_eui=None,):
         api_request = APIRequest(
             'DeleteLabGateway', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_lab_gateways(
         self,
@@ -830,7 +831,7 @@ class LinkWANClient(AlibabaCloudClient):
             "FreqBandPlanGroupId": freq_band_plan_group_id,
             "OnlineState": online_state,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_lab_gateways(
         self,
@@ -855,7 +856,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_gateway_enabling_state(self, gw_eui=None, enabled=None,):
         api_request = APIRequest(
@@ -865,7 +866,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, "Enabled": enabled, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_lab_node(
         self,
@@ -882,13 +883,13 @@ class LinkWANClient(AlibabaCloudClient):
             "FreqBandPlanGroupId": freq_band_plan_group_id,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_lab_node(self, dev_eui=None,):
         api_request = APIRequest(
             'DeleteLabNode', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"DevEui": dev_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def bind_lab_node_to_lab_gateway(self, dev_eui=None, gw_eui=None,):
         api_request = APIRequest(
@@ -898,7 +899,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"DevEui": dev_eui, "GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_lab_gateway_logs(
         self,
@@ -923,7 +924,7 @@ class LinkWANClient(AlibabaCloudClient):
             "PageSize": page_size,
             "BeginMillis": begin_millis,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unbind_lab_node_from_lab_gateway(self, dev_eui=None, gw_eui=None,):
         api_request = APIRequest(
@@ -933,12 +934,12 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"DevEui": dev_eui, "GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_lab_node(self, dev_eui=None,):
         api_request = APIRequest('GetLabNode', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"DevEui": dev_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_lab_nodes(
         self,
@@ -955,7 +956,7 @@ class LinkWANClient(AlibabaCloudClient):
             "FreqBandPlanGroupId": freq_band_plan_group_id,
             "FuzzyDevEui": fuzzy_dev_eui,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_lab_nodes(
         self,
@@ -977,7 +978,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_bound_lab_gateways(self, dev_eui=None,):
         api_request = APIRequest(
@@ -987,7 +988,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"DevEui": dev_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_lab_node_logs(
         self,
@@ -1006,7 +1007,7 @@ class LinkWANClient(AlibabaCloudClient):
             "PageSize": page_size,
             "BeginMillis": begin_millis,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_lab_gateway_gwmp_config(self, gw_eui=None,):
         api_request = APIRequest(
@@ -1016,7 +1017,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_lab_gateway_gwmp_config(self, gw_eui=None, gwmp_config=None,):
         api_request = APIRequest(
@@ -1026,7 +1027,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, "GwmpConfig": gwmp_config, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def trigger_lab_gateway_config_report(self, gw_eui=None,):
         api_request = APIRequest(
@@ -1036,7 +1037,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def trigger_lab_gateway_device_info_report(self, gw_eui=None,):
         api_request = APIRequest(
@@ -1046,7 +1047,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def trigger_lab_gateway_log_report(self, gw_eui=None,):
         api_request = APIRequest(
@@ -1056,13 +1057,13 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def reboot_lab_gateway(self, gw_eui=None,):
         api_request = APIRequest(
             'RebootLabGateway', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_lab_gateway_ssh_ctrl(self, gw_eui=None, enabled=None,):
         api_request = APIRequest(
@@ -1072,7 +1073,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, "Enabled": enabled, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_lab_gateway_uart_ctrl(self, gw_eui=None, enabled=None,):
         api_request = APIRequest(
@@ -1082,7 +1083,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, "Enabled": enabled, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_lab_node_debug_config(self, dev_eui=None,):
         api_request = APIRequest(
@@ -1092,7 +1093,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"DevEui": dev_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_lab_node_debug_config(
             self, dev_eui=None, debug_config_json=None,):
@@ -1104,7 +1105,7 @@ class LinkWANClient(AlibabaCloudClient):
             'body')
         api_request._params = {"DevEui": dev_eui,
                                "DebugConfigJson": debug_config_json, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_lab_node_downlink_config(self, dev_eui=None,):
         api_request = APIRequest(
@@ -1114,7 +1115,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"DevEui": dev_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_lab_node_join_accept_config(self, dev_eui=None,):
         api_request = APIRequest(
@@ -1124,7 +1125,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"DevEui": dev_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def send_mac_command_to_lab_node(
         self,
@@ -1143,7 +1144,7 @@ class LinkWANClient(AlibabaCloudClient):
             "DebugConfig": debug_config,
             "MacCommand": mac_command,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def send_business_command_to_lab_node(
         self,
@@ -1162,7 +1163,7 @@ class LinkWANClient(AlibabaCloudClient):
             "DebugConfig": debug_config,
             "BusinessCommand": business_command,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_local_join_permission(self, join_permission_id=None,):
         api_request = APIRequest(
@@ -1172,7 +1173,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"JoinPermissionId": join_permission_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_local_join_permission(
         self,
@@ -1193,13 +1194,13 @@ class LinkWANClient(AlibabaCloudClient):
             "UseDefaultJoinEui": use_default_join_eui,
             "JoinPermissionName": join_permission_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_lab_gateway(self, gw_eui=None, name=None,):
         api_request = APIRequest(
             'UpdateLabGateway', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"GwEui": gw_eui, "Name": name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_bound_lab_nodes(self, gw_eui=None,):
         api_request = APIRequest(
@@ -1209,7 +1210,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"GwEui": gw_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_lab_node(
         self,
@@ -1226,7 +1227,7 @@ class LinkWANClient(AlibabaCloudClient):
             "LoraVersion": lora_version,
             "Name": name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_owned_join_permission(self, join_permission_id=None,):
         api_request = APIRequest(
@@ -1236,7 +1237,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"JoinPermissionId": join_permission_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def check_cloud_product_open_status(self, service_code=None,):
         api_request = APIRequest(
@@ -1246,7 +1247,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"ServiceCode": service_code, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_rented_join_permission(self, join_permission_id=None,):
         api_request = APIRequest(
@@ -1256,7 +1257,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"JoinPermissionId": join_permission_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_owned_join_permissions(
         self,
@@ -1285,7 +1286,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_rented_join_permissions(
         self,
@@ -1318,7 +1319,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_owned_join_permissions(
         self,
@@ -1339,7 +1340,7 @@ class LinkWANClient(AlibabaCloudClient):
             "Enabled": enabled,
             "FuzzyJoinEui": fuzzy_join_eui,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_rented_join_permissions(
         self,
@@ -1364,7 +1365,7 @@ class LinkWANClient(AlibabaCloudClient):
             "FuzzyJoinEui": fuzzy_join_eui,
             "FuzzyOwnerAliyunId": fuzzy_owner_aliyun_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def apply_roaming_join_permission(
         self,
@@ -1383,7 +1384,7 @@ class LinkWANClient(AlibabaCloudClient):
             "FreqBandPlanGroupId": freq_band_plan_group_id,
             "JoinPermissionName": join_permission_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def return_join_permission(
         self,
@@ -1400,7 +1401,7 @@ class LinkWANClient(AlibabaCloudClient):
             "JoinPermissionId": join_permission_id,
             "JoinPermissionType": join_permission_type,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def submit_join_permission_auth_order(
             self, join_permission_id=None, renter_aliyun_id=None,):
@@ -1414,7 +1415,7 @@ class LinkWANClient(AlibabaCloudClient):
             "JoinPermissionId": join_permission_id,
             "RenterAliyunId": renter_aliyun_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def accept_join_permission_auth_order(self, order_id=None,):
         api_request = APIRequest(
@@ -1424,7 +1425,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"OrderId": order_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def cancel_join_permission_auth_order(self, order_id=None,):
         api_request = APIRequest(
@@ -1434,7 +1435,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"OrderId": order_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def reject_join_permission_auth_order(self, order_id=None,):
         api_request = APIRequest(
@@ -1444,7 +1445,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"OrderId": order_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_join_permission_auth_order(self, order_id=None,):
         api_request = APIRequest(
@@ -1454,7 +1455,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"OrderId": order_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_node_group(
         self,
@@ -1467,7 +1468,7 @@ class LinkWANClient(AlibabaCloudClient):
             "NodeGroupName": node_group_name,
             "JoinPermissionId": join_permission_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def register_kpm_public_key(self, public_key=None,):
         api_request = APIRequest(
@@ -1477,24 +1478,24 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"PublicKey": public_key, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unregister_kpm_public_key(self,):
         api_request = APIRequest(
             'UnregisterKpmPublicKey', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_kpm_public_key(self,):
         api_request = APIRequest('GetKpmPublicKey', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_node_group(self, node_group_id=None,):
         api_request = APIRequest(
             'DeleteNodeGroup', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"NodeGroupId": node_group_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_node_group(self, node_group_name=None, node_group_id=None,):
         api_request = APIRequest(
@@ -1503,12 +1504,12 @@ class LinkWANClient(AlibabaCloudClient):
             "NodeGroupName": node_group_name,
             "NodeGroupId": node_group_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_node_group(self, node_group_id=None,):
         api_request = APIRequest('GetNodeGroup', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"NodeGroupId": node_group_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_node_groups(
         self,
@@ -1531,7 +1532,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def count_node_groups(
         self,
@@ -1546,7 +1547,7 @@ class LinkWANClient(AlibabaCloudClient):
             "FuzzyJoinEui": fuzzy_join_eui,
             "FuzzyDevEui": fuzzy_dev_eui,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def bind_join_permission_to_node_group(
             self, node_group_id=None, join_permission_id=None,):
@@ -1560,7 +1561,7 @@ class LinkWANClient(AlibabaCloudClient):
             "NodeGroupId": node_group_id,
             "JoinPermissionId": join_permission_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_data_dispatch_config(
         self,
@@ -1587,7 +1588,7 @@ class LinkWANClient(AlibabaCloudClient):
             "NodeGroupId": node_group_id,
             "DataDispatchDestination": data_dispatch_destination,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_data_dispatch_enabling_state(
             self, node_group_id=None, data_dispatch_enabled=None,):
@@ -1601,7 +1602,7 @@ class LinkWANClient(AlibabaCloudClient):
             "NodeGroupId": node_group_id,
             "DataDispatchEnabled": data_dispatch_enabled,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_node_to_group(
         self,
@@ -1616,7 +1617,7 @@ class LinkWANClient(AlibabaCloudClient):
             "PinCode": pin_code,
             "NodeGroupId": node_group_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_node_from_group(self, dev_eui=None, node_group_id=None,):
         api_request = APIRequest(
@@ -1627,23 +1628,23 @@ class LinkWANClient(AlibabaCloudClient):
             'body')
         api_request._params = {
             "DevEui": dev_eui, "NodeGroupId": node_group_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_node(self, dev_eui=None,):
         api_request = APIRequest('GetNode', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"DevEui": dev_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_activated_features(self,):
         api_request = APIRequest(
             'ListActivatedFeatures', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_regions(self,):
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC', '')
 
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_lab_node_downlink_config(
         self,
@@ -1662,7 +1663,7 @@ class LinkWANClient(AlibabaCloudClient):
             "DebugConfig": debug_config,
             "DownlinkConfig": downlink_config,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_lab_node_join_accept_config(
         self,
@@ -1681,7 +1682,7 @@ class LinkWANClient(AlibabaCloudClient):
             "DebugConfig": debug_config,
             "JoinAcceptConfig": join_accept_config,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_gateway_packet_stat(
         self,
@@ -1700,7 +1701,7 @@ class LinkWANClient(AlibabaCloudClient):
             "BeginMillis": begin_millis,
             "GwEui": gw_eui,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def send_unicast_command(
         self,
@@ -1725,7 +1726,7 @@ class LinkWANClient(AlibabaCloudClient):
             "Comfirmed": comfirmed,
             "Content": content,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_node_group_transfer_packets(
         self,
@@ -1756,7 +1757,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_node_group_transfer_packets_download_url(
         self,
@@ -1783,7 +1784,7 @@ class LinkWANClient(AlibabaCloudClient):
             "SortingField": sorting_field,
             "Ascending": ascending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unbind_join_permission_from_node_group(
             self, node_group_id=None, join_permission_id=None,):
@@ -1797,7 +1798,7 @@ class LinkWANClient(AlibabaCloudClient):
             "NodeGroupId": node_group_id,
             "JoinPermissionId": join_permission_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_multicast_group(
         self,
@@ -1820,7 +1821,7 @@ class LinkWANClient(AlibabaCloudClient):
             "Periodicity": periodicity,
             "DataRate": data_rate,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_multicast_group(self, mc_address=None,):
         api_request = APIRequest(
@@ -1830,7 +1831,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"McAddress": mc_address, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def bind_nodes_to_multicast_group(
             self, mc_address=None, dev_eui_list=None,):
@@ -1846,7 +1847,7 @@ class LinkWANClient(AlibabaCloudClient):
         }
         repeat_info = {"DevEuiList": ('DevEuiList', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unbind_nodes_from_multicast_group(
             self, mc_address=None, dev_eui_list=None,):
@@ -1862,13 +1863,13 @@ class LinkWANClient(AlibabaCloudClient):
         }
         repeat_info = {"DevEuiList": ('DevEuiList', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_multicast_group(self, mc_address=None,):
         api_request = APIRequest(
             'GetMulticastGroup', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"McAddress": mc_address, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_node_multicast_config(self, dev_eui=None,):
         api_request = APIRequest(
@@ -1878,7 +1879,7 @@ class LinkWANClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"DevEui": dev_eui, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_bound_nodes_by_mc_address(
             self, offset=None, limit=None, mc_address=None,):
@@ -1893,7 +1894,7 @@ class LinkWANClient(AlibabaCloudClient):
             "Limit": limit,
             "McAddress": mc_address,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def send_multicast_command(
         self,
@@ -1912,4 +1913,4 @@ class LinkWANClient(AlibabaCloudClient):
             "FPort": f_port,
             "Content": content,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
