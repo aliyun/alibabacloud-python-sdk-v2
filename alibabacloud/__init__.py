@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+__version__ = '0.0.4'
 from aliyunsdkcore.acs_exception.exceptions import ClientException
 from aliyunsdkcore.client import AcsClient
 from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource,\
@@ -18,7 +19,7 @@ from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSyste
 from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
 from alibabacloud.services.slb import SLBResource, LoadBalancerResource
 import alibabacloud.errors
-from alibabacloud.utils import _assert_is_not_none
+from alibabacloud.utils.utils import _assert_is_not_none
 
 
 def _get_param_from_args(args, index, name):

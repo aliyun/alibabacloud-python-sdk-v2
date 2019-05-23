@@ -14,7 +14,7 @@
 
 from alibabacloud.resources.base import ServiceResource
 from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.utils import _do_request, _get_response, _assert_is_not_none
+from alibabacloud.utils.utils import _do_request, _get_response, _assert_is_not_none
 import alibabacloud.errors as errors
 from aliyunsdkcore.acs_exception.exceptions import ClientException
 

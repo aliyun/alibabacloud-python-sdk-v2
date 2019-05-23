@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from aliyunsdkcore.vendored.six import iteritems
-from alibabacloud.utils import _convert_name_from_camel_case_to_snake_case
+from alibabacloud.utils.utils import _convert_name_from_camel_case_to_snake_case
 
 
 class ServiceResource(object):

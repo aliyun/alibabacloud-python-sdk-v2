@@ -16,9 +16,9 @@ import json
 from aliyunsdkcore.acs_exception.exceptions import ClientException
 from aliyunsdkcore.vendored.six import iteritems
 from alibabacloud.errors import ERROR_INVALID_PARAMETER
-from alibabacloud.utils import _assert_is_list_but_not_string
-from alibabacloud.utils import _get_key_in_response
-import alibabacloud.utils as utils
+from alibabacloud.utils.utils import _assert_is_list_but_not_string
+from alibabacloud.utils.utils import _get_key_in_response
+import alibabacloud.utils.utils as utils
 
 
 class ResourceCollection:
