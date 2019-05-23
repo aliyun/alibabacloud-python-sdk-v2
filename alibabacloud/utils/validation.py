@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.exceptions import ClientException
+from alibabacloud.exceptions import ParamTypeInvalidException
 
 
 def assert_integer_positive(integer, name):
     if isinstance(integer, int) and integer > 0:
         return
-    raise ClientException(msg="{0} should be a positive integer.".format(name))
+    raise ParamTypeInvalidException(param=name, param_type='positive integer')

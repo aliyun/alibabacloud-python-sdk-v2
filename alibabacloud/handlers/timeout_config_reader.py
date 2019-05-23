@@ -14,7 +14,7 @@
 
 import jmespath
 
-from alibabacloud.exceptions import ClientException
+from alibabacloud.exceptions import ClientException, ParamTypeInvalidException
 from alibabacloud.handlers import RequestHandler
 from alibabacloud.utils import load_json_from_data_dir
 
@@ -28,16 +28,17 @@ class TimeoutConfigReader(RequestHandler):
         context.http_request.timeout = (self._connection_timeout(context.config.connection_timeout),
                                         self._read_timeout(context))
 
-    def _valid_timeout_value(self, timeout, name):
+    @staticmethod
+    def _valid_timeout_value(timeout, name):
         if isinstance(timeout, int) or isinstance(timeout, float):
             if timeout > 0:
                 return timeout
-            raise ClientException(msg="{0} should be a positive integer.".format(name))
+            raise ParamTypeInvalidException(param=name, param_type='positive integer')
         elif isinstance(timeout, str) and timeout.isdigit():
             if float(timeout) > 0:
                 return float(timeout)
-            raise ClientException(msg="{0} should be a positive integer.".format(name))
-        raise ClientException(msg='{0} must be float or int or str'.format(name))
+            raise ParamTypeInvalidException(param=name, param_type='positive integer')
+        raise ParamTypeInvalidException(param=name, param_type='float or int or str')
 
     def _connection_timeout(self, connection_timeout):
         connection_timeout = self._valid_timeout_value(connection_timeout, 'connection_timeout') \

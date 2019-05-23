@@ -63,8 +63,3 @@ class RetryHandler(RequestHandler):
             # ClientToken has not been set
             client_token = alibabacloud.utils.parameter_helper.get_uuid()  # up to 60 chars
             request._params['ClientToken'] = client_token
-            # if request.body_params:
-            #     # body params
-            #     request._body_params['ClientToken'] = client_token
-            # else:
-            #     request._query_params['ClientToken'] = client_token

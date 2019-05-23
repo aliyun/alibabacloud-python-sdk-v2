@@ -16,15 +16,18 @@
 class RequestContext:
 
     def __init__(self, api_request=None, http_request=None, api_response=None, http_response=None,
-                 exception=None, retry_flag=True, retry_backoff=0, config=None, client=None):
+                 exception=None, retry_flag=True, retry_backoff=0, config=None, client=None,
+                 result=None):
         self.api_request = api_request
         self.http_request = http_request
         self.api_response = api_response
         self.http_response = http_response
         self.exception = exception
+        self.result = result
 
         self.config = config
         self.client = client
+
         self.retry_flag = retry_flag
         self.retry_backoff = retry_backoff
 

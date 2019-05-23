@@ -17,6 +17,7 @@ import jmespath
 from alibabacloud.utils.load_json_from_data_dir import _load_json_from_data_dir
 import alibabacloud.utils.validation as validation
 from alibabacloud.exceptions import ServerException
+from alibabacloud.exceptions import HttpErrorException
 
 
 def _find_data_in_retry_config(key_name, product_info, retry_config):
@@ -72,9 +73,8 @@ class RetryOnExceptionCondition(RetryCondition):
         logger = retry_policy_context.logger
 
         exception = retry_policy_context.exception
-        from alibabacloud.exceptions import SdkHttpException
 
-        if isinstance(exception, SdkHttpException):
+        if isinstance(exception, HttpErrorException):
             # client http error retry
             logger.debug("Retryable ClientException occurred. ClientException:%s",
                          exception)

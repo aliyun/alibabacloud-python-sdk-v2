@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class EcsClient(AlibabaCloudClient):
@@ -56,7 +57,7 @@ class EcsClient(AlibabaCloudClient):
                        "Device": ('Device', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result.result
 
     def modify_fleet(
             self,
@@ -86,7 +87,7 @@ class EcsClient(AlibabaCloudClient):
             "TotalTargetCapacity": total_target_capacity,
             "SpotTargetCapacity": spot_target_capacity,
             "MaxSpotPrice": max_spot_price}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_fleets(
             self,
@@ -114,7 +115,7 @@ class EcsClient(AlibabaCloudClient):
                        "FleetId": ('FleetId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_fleet_instances(
             self,
@@ -134,7 +135,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "FleetId": fleet_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_fleet_history(
             self,
@@ -150,7 +151,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "FleetId": fleet_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_fleet(
             self,
@@ -168,7 +169,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "FleetId": fleet_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_fleet(
             self,
@@ -253,7 +254,7 @@ class EcsClient(AlibabaCloudClient):
                 ]),
         }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_reserved_instance_attribute(
             self,
@@ -273,7 +274,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ReservedInstanceId": reserved_instance_id,
             "ReservedInstanceName": reserved_instance_name}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def purchase_reserved_instances_offering(
             self,
@@ -309,7 +310,7 @@ class EcsClient(AlibabaCloudClient):
             "ZoneId": zone_id,
             "ReservedInstanceName": reserved_instance_name,
             "InstanceAmount": instance_amount}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_reserved_instances(
             self,
@@ -357,7 +358,7 @@ class EcsClient(AlibabaCloudClient):
                                               None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_reserved_instances(
             self,
@@ -397,7 +398,7 @@ class EcsClient(AlibabaCloudClient):
                        "Status": ('Status', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_demands(
             self,
@@ -435,7 +436,7 @@ class EcsClient(AlibabaCloudClient):
                        "DemandStatus": ('DemandStatus', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def import_snapshot(
             self,
@@ -455,7 +456,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "RoleName": role_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def export_snapshot(
             self,
@@ -473,7 +474,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "RoleName": role_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def untag_resources(
             self,
@@ -499,7 +500,7 @@ class EcsClient(AlibabaCloudClient):
                        "TagKey": ('TagKey', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def tag_resources(
             self,
@@ -523,7 +524,7 @@ class EcsClient(AlibabaCloudClient):
                        "ResourceId": ('ResourceId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def list_tag_resources(
             self,
@@ -551,7 +552,7 @@ class EcsClient(AlibabaCloudClient):
                        "ResourceId": ('ResourceId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def accept_inquired_system_event(
             self,
@@ -567,7 +568,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def redeploy_instance(
             self,
@@ -585,7 +586,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "InstanceId": instance_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassign_ipv6_addresses(
             self,
@@ -606,7 +607,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"Ipv6Address": ('Ipv6Address', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def assign_ipv6_addresses(
             self,
@@ -629,7 +630,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"Ipv6Address": ('Ipv6Address', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_topology(
             self,
@@ -643,7 +644,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "InstanceIds": instance_ids,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def renew_dedicated_hosts(
             self,
@@ -665,7 +666,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "PeriodUnit": period_unit}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def release_dedicated_host(
             self,
@@ -681,7 +682,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "DedicatedHostId": dedicated_host_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_deployment(
             self,
@@ -707,7 +708,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "Force": force,
             "Affinity": affinity}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_dedicated_host_auto_renew_attribute(
             self,
@@ -732,7 +733,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "RenewalStatus": renewal_status,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_dedicated_host_auto_release_time(
             self,
@@ -751,7 +752,7 @@ class EcsClient(AlibabaCloudClient):
             "AutoReleaseTime": auto_release_time,
             "DedicatedHostId": dedicated_host_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_dedicated_host_attribute(
             self,
@@ -779,7 +780,7 @@ class EcsClient(AlibabaCloudClient):
             "NetworkAttributes.SlbUdpTimeout": network_attributes_slb_udp_timeout,
             "AutoPlacement": auto_placement,
             "NetworkAttributes.UdpTimeout": network_attributes_udp_timeout}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_dedicated_hosts(
             self,
@@ -818,7 +819,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_dedicated_host_types(
             self,
@@ -836,7 +837,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_dedicated_host_auto_renew(
             self,
@@ -852,7 +853,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def allocate_dedicated_hosts(
             self,
@@ -907,7 +908,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_simulated_system_events(
             self,
@@ -930,7 +931,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"InstanceId": ('InstanceId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def cancel_simulated_system_events(
             self,
@@ -949,7 +950,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"EventId": ('EventId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_eni_monitor_data(
             self,
@@ -973,7 +974,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceId": instance_id,
             "EniId": eni_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_account_attributes(
             self,
@@ -992,7 +993,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"AttributeName": ('AttributeName', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_launch_template_default_version(
             self,
@@ -1013,7 +1014,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "DefaultVersionNumber": default_version_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_launch_templates(
             self,
@@ -1046,7 +1047,7 @@ class EcsClient(AlibabaCloudClient):
                        "LaunchTemplateId": ('LaunchTemplateId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_launch_template_versions(
             self,
@@ -1081,7 +1082,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"LaunchTemplateVersion": ('LaunchTemplateVersion', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_launch_template_version(
             self,
@@ -1104,7 +1105,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"DeleteVersion": ('DeleteVersion', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_launch_template(
             self,
@@ -1122,7 +1123,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_launch_template_version(
             self,
@@ -1236,7 +1237,7 @@ class EcsClient(AlibabaCloudClient):
                                                              ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_launch_template(
             self,
@@ -1355,7 +1356,7 @@ class EcsClient(AlibabaCloudClient):
                                                              ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def install_cloud_assistant(
             self,
@@ -1374,7 +1375,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"InstanceId": ('InstanceId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_cloud_assistant_status(
             self,
@@ -1393,7 +1394,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"InstanceId": ('InstanceId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassign_private_ip_addresses(
             self,
@@ -1414,7 +1415,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"PrivateIpAddress": ('PrivateIpAddress', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def assign_private_ip_addresses(
             self,
@@ -1437,7 +1438,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"PrivateIpAddress": ('PrivateIpAddress', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_network_interface_permissions(
             self,
@@ -1463,7 +1464,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"NetworkInterfacePermissionId": (
             'NetworkInterfacePermissionId', list, str, None), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_network_interface_permission(
             self,
@@ -1481,7 +1482,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Force": force}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_network_interface_permission(
             self,
@@ -1501,7 +1502,7 @@ class EcsClient(AlibabaCloudClient):
             "Permission": permission,
             "OwnerId": owner_id,
             "NetworkInterfaceId": network_interface_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_instance_screenshot(
             self,
@@ -1519,7 +1520,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "InstanceId": instance_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_instance_console_output(
             self,
@@ -1535,7 +1536,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "InstanceId": instance_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_resources_modification(
             self,
@@ -1563,7 +1564,7 @@ class EcsClient(AlibabaCloudClient):
             "OperationType": operation_type,
             "OwnerId": owner_id,
             "DestinationResource": destination_resource}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_bandwidth_limitation(
             self,
@@ -1587,7 +1588,7 @@ class EcsClient(AlibabaCloudClient):
             "OperationType": operation_type,
             "OwnerId": owner_id,
             "SpotStrategy": spot_strategy}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_available_resource(
             self,
@@ -1629,7 +1630,7 @@ class EcsClient(AlibabaCloudClient):
             "SpotStrategy": spot_strategy,
             "DestinationResource": destination_resource,
             "ZoneId": zone_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def re_activate_instances(
             self,
@@ -1645,7 +1646,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instances_full_status(
             self,
@@ -1688,7 +1689,7 @@ class EcsClient(AlibabaCloudClient):
                        "InstanceId": ('InstanceId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_history_events(
             self,
@@ -1731,7 +1732,7 @@ class EcsClient(AlibabaCloudClient):
                        "InstanceEventType": ('InstanceEventType', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_disks_full_status(
             self,
@@ -1767,7 +1768,7 @@ class EcsClient(AlibabaCloudClient):
                        "DiskId": ('DiskId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_user_business_behavior(
             self,
@@ -1785,7 +1786,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "statusKey": status_key}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_user_business_behavior(
             self,
@@ -1801,7 +1802,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "statusKey": status_key}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def run_instances(
             self,
@@ -1954,7 +1955,7 @@ class EcsClient(AlibabaCloudClient):
                                                              ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def convert_nat_public_ip_to_eip(
             self,
@@ -1968,7 +1969,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
             "InstanceId": instance_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_hpc_cluster_attribute(
             self,
@@ -1990,7 +1991,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Name": name}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_hpc_clusters(
             self,
@@ -2012,7 +2013,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "HpcClusterIds": hpc_cluster_ids}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_hpc_cluster(
             self,
@@ -2030,7 +2031,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_hpc_cluster(
             self,
@@ -2050,7 +2051,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Name": name}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_snapshots_usage(
             self,
@@ -2064,7 +2065,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_spot_price_history(
             self,
@@ -2094,7 +2095,7 @@ class EcsClient(AlibabaCloudClient):
             "OSType": os_type,
             "OwnerId": owner_id,
             "ZoneId": zone_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def stop_invocation(
             self,
@@ -2115,7 +2116,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"InstanceId": ('InstanceId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_command(
             self,
@@ -2141,7 +2142,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Name": name}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def invoke_command(
             self,
@@ -2168,7 +2169,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"InstanceId": ('InstanceId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_invocations(
             self,
@@ -2200,7 +2201,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "CommandType": command_type,
             "InstanceId": instance_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_invocation_results(
             self,
@@ -2226,7 +2227,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceId": instance_id,
             "InvokeRecordStatus": invoke_record_status}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_commands(
             self,
@@ -2252,7 +2253,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Name": name}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_command(
             self,
@@ -2268,7 +2269,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_command(
             self,
@@ -2296,7 +2297,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Name": name,
             "EnableParameter": enable_parameter}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_security_group_egress_rule(
             self,
@@ -2342,7 +2343,7 @@ class EcsClient(AlibabaCloudClient):
             "Priority": priority,
             "DestCidrIp": dest_cidr_ip,
             "DestGroupOwnerId": dest_group_owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_disk_charge_type(
             self,
@@ -2366,7 +2367,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "DiskIds": disk_ids,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_network_interface_attribute(
             self,
@@ -2391,7 +2392,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"SecurityGroupId": ('SecurityGroupId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def detach_network_interface(
             self,
@@ -2409,7 +2410,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceId": instance_id,
             "NetworkInterfaceId": network_interface_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_network_interfaces(
             self,
@@ -2455,7 +2456,7 @@ class EcsClient(AlibabaCloudClient):
                        "NetworkInterfaceId": ('NetworkInterfaceId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_network_interface(
             self,
@@ -2471,7 +2472,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "NetworkInterfaceId": network_interface_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_network_interface(
             self,
@@ -2510,7 +2511,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def attach_network_interface(
             self,
@@ -2528,7 +2529,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceId": instance_id,
             "NetworkInterfaceId": network_interface_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_recommend_instance_type(
             self,
@@ -2556,7 +2557,7 @@ class EcsClient(AlibabaCloudClient):
             "Scene": scene,
             "InstanceType": instance_type,
             "proxyId": proxy_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_prepay_instance_spec(
             self,
@@ -2588,7 +2589,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "MigrateAcrossZone": migrate_across_zone,
             "InstanceType": instance_type}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_charge_type(
             self,
@@ -2618,7 +2619,7 @@ class EcsClient(AlibabaCloudClient):
             "PeriodUnit": period_unit,
             "InstanceIds": instance_ids,
             "InstanceChargeType": instance_charge_type}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def join_resource_group(
             self,
@@ -2638,7 +2639,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ResourceType": resource_type}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_security_group_policy(
             self,
@@ -2658,7 +2659,7 @@ class EcsClient(AlibabaCloudClient):
             "SecurityGroupId": security_group_id,
             "OwnerId": owner_id,
             "InnerAccessPolicy": inner_access_policy}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_security_group_references(
             self,
@@ -2677,7 +2678,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"SecurityGroupId": ('SecurityGroupId', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def detach_classic_link_vpc(
             self,
@@ -2693,7 +2694,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "VpcId": vpc_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_classic_link_instances(
             self,
@@ -2713,7 +2714,7 @@ class EcsClient(AlibabaCloudClient):
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def attach_classic_link_vpc(
             self,
@@ -2729,7 +2730,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "VpcId": vpc_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def detach_instance_ram_role(
             self,
@@ -2745,7 +2746,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceIds": instance_ids,
             "RamRoleName": ram_role_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_ram_role(
             self,
@@ -2765,7 +2766,7 @@ class EcsClient(AlibabaCloudClient):
             "RamRoleName": ram_role_name,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def attach_instance_ram_role(
             self,
@@ -2781,7 +2782,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceIds": instance_ids,
             "RamRoleName": ram_role_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_snapshot_package(
             self,
@@ -2799,7 +2800,7 @@ class EcsClient(AlibabaCloudClient):
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_security_group_rule(
             self,
@@ -2845,7 +2846,7 @@ class EcsClient(AlibabaCloudClient):
             "Priority": priority,
             "DestCidrIp": dest_cidr_ip,
             "SourceGroupId": source_group_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_snapshot_monitor_data(
             self,
@@ -2865,7 +2866,7 @@ class EcsClient(AlibabaCloudClient):
             "EndTime": end_time,
             "StartTime": start_time,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_renewal_price(
             self,
@@ -2887,7 +2888,7 @@ class EcsClient(AlibabaCloudClient):
             "PriceUnit": price_unit,
             "OwnerId": owner_id,
             "ResourceType": resource_type}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_price(
             self,
@@ -2941,7 +2942,7 @@ class EcsClient(AlibabaCloudClient):
             "SystemDisk.Size": system_disk_size,
             "InternetChargeType": internet_charge_type,
             "InstanceNetworkType": instance_network_type}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_deployment_set_attribute(
             self,
@@ -2961,7 +2962,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "DeploymentSetName": deployment_set_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_deployment_sets(
             self,
@@ -2991,7 +2992,7 @@ class EcsClient(AlibabaCloudClient):
             "Domain": domain,
             "PageSize": page_size,
             "Strategy": strategy}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_deployment_set(
             self,
@@ -3007,7 +3008,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_deployment_set(
             self,
@@ -3035,7 +3036,7 @@ class EcsClient(AlibabaCloudClient):
             "Granularity": granularity,
             "Domain": domain,
             "Strategy": strategy}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def import_key_pair(
             self,
@@ -3051,7 +3052,7 @@ class EcsClient(AlibabaCloudClient):
             "PublicKeyBody": public_key_body,
             "KeyPairName": key_pair_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def detach_key_pair(
             self,
@@ -3067,7 +3068,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceIds": instance_ids,
             "KeyPairName": key_pair_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_key_pairs(
             self,
@@ -3096,7 +3097,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_key_pairs(
             self,
@@ -3110,7 +3111,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "KeyPairNames": key_pair_names,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_key_pair(
             self,
@@ -3133,7 +3134,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def attach_key_pair(
             self,
@@ -3149,7 +3150,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceIds": instance_ids,
             "KeyPairName": key_pair_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_auto_renew_attribute(
             self,
@@ -3173,7 +3174,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "RenewalStatus": renewal_status,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_auto_renew_attribute(
             self,
@@ -3196,7 +3197,7 @@ class EcsClient(AlibabaCloudClient):
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_snapshot_links(
             self,
@@ -3220,7 +3221,7 @@ class EcsClient(AlibabaCloudClient):
             "SnapshotLinkIds": snapshot_link_ids,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_auto_release_time(
             self,
@@ -3238,7 +3239,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "AutoReleaseTime": auto_release_time,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_new_project_eip_monitor_data(
             self,
@@ -3260,7 +3261,7 @@ class EcsClient(AlibabaCloudClient):
             "AllocationId": allocation_id,
             "StartTime": start_time,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_user_data(
             self,
@@ -3274,7 +3275,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_bandwidth_package_ips(
             self,
@@ -3297,7 +3298,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"RemovedIpAddresses": ('RemovedIpAddresses', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_forward_entry(
             self,
@@ -3325,7 +3326,7 @@ class EcsClient(AlibabaCloudClient):
             "InternalPort": internal_port,
             "ExternalIp": external_ip,
             "ExternalPort": external_port}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_bandwidth_package_spec(
             self,
@@ -3343,7 +3344,7 @@ class EcsClient(AlibabaCloudClient):
             "Bandwidth": bandwidth,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_nat_gateways(
             self,
@@ -3365,7 +3366,7 @@ class EcsClient(AlibabaCloudClient):
             "NatGatewayId": nat_gateway_id,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_forward_table_entries(
             self,
@@ -3387,7 +3388,7 @@ class EcsClient(AlibabaCloudClient):
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_bandwidth_packages(
             self,
@@ -3409,7 +3410,7 @@ class EcsClient(AlibabaCloudClient):
             "NatGatewayId": nat_gateway_id,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_nat_gateway(
             self,
@@ -3425,7 +3426,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "NatGatewayId": nat_gateway_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_forward_entry(
             self,
@@ -3443,7 +3444,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "ForwardTableId": forward_table_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_bandwidth_package(
             self,
@@ -3459,7 +3460,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_nat_gateway(
             self,
@@ -3489,7 +3490,7 @@ class EcsClient(AlibabaCloudClient):
                     ('Bandwidth', str, None, None), ('Zone', str, None, None),
                     ('IpCount', str, None, None), ]), }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_forward_entry(
             self,
@@ -3515,7 +3516,7 @@ class EcsClient(AlibabaCloudClient):
             "ExternalIp": external_ip,
             "ExternalPort": external_port,
             "InternalIp": internal_ip}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_bandwidth_package_ips(
             self,
@@ -3535,7 +3536,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "IpCount": ip_count}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def eip_fill_product(
             self,
@@ -3555,7 +3556,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "UserCidr": user_cidr,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def eip_notify_paid(
             self,
@@ -3575,7 +3576,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "UserCidr": user_cidr,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def eip_fill_params(
             self,
@@ -3595,7 +3596,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "UserCidr": user_cidr,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_auto_snapshot_policy_ex(
             self,
@@ -3617,7 +3618,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "repeatWeekdays": repeat_weekdays,
             "autoSnapshotPolicyName": auto_snapshot_policy_name}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_auto_snapshot_policy_ex(
             self,
@@ -3637,7 +3638,7 @@ class EcsClient(AlibabaCloudClient):
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_auto_snapshot_policy(
             self,
@@ -3651,7 +3652,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "autoSnapshotPolicyId": auto_snapshot_policy_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_auto_snapshot_policy(
             self,
@@ -3671,7 +3672,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "repeatWeekdays": repeat_weekdays,
             "autoSnapshotPolicyName": auto_snapshot_policy_name}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def cancel_auto_snapshot_policy(
             self,
@@ -3685,7 +3686,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "diskIds": disk_ids,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def apply_auto_snapshot_policy(
             self,
@@ -3701,7 +3702,7 @@ class EcsClient(AlibabaCloudClient):
             "autoSnapshotPolicyId": auto_snapshot_policy_id,
             "diskIds": disk_ids,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_image_support_instance_types(
             self,
@@ -3724,7 +3725,7 @@ class EcsClient(AlibabaCloudClient):
                                                          ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def terminate_virtual_border_router(
             self,
@@ -3744,7 +3745,7 @@ class EcsClient(AlibabaCloudClient):
             "UserCidr": user_cidr,
             "VbrId": vbr_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def terminate_physical_connection(
             self,
@@ -3764,7 +3765,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "UserCidr": user_cidr,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def recover_virtual_border_router(
             self,
@@ -3784,7 +3785,7 @@ class EcsClient(AlibabaCloudClient):
             "UserCidr": user_cidr,
             "VbrId": vbr_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_virtual_border_router_attribute(
             self,
@@ -3819,7 +3820,7 @@ class EcsClient(AlibabaCloudClient):
             "Name": name,
             "LocalGatewayIp": local_gateway_ip,
             "UserCidr": user_cidr}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_physical_connection_attribute(
             self,
@@ -3855,7 +3856,7 @@ class EcsClient(AlibabaCloudClient):
             "PhysicalConnectionId": physical_connection_id,
             "Name": name,
             "UserCidr": user_cidr}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def enable_physical_connection(
             self,
@@ -3875,7 +3876,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "UserCidr": user_cidr,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_virtual_border_routers_for_physical_connection(
             self,
@@ -3905,7 +3906,7 @@ class EcsClient(AlibabaCloudClient):
                                                          ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_virtual_border_routers(
             self,
@@ -3928,7 +3929,7 @@ class EcsClient(AlibabaCloudClient):
                                                          ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_physical_connections(
             self,
@@ -3957,7 +3958,7 @@ class EcsClient(AlibabaCloudClient):
                                                          ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_access_points(
             self,
@@ -3982,7 +3983,7 @@ class EcsClient(AlibabaCloudClient):
                                                          ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_virtual_border_router(
             self,
@@ -4002,7 +4003,7 @@ class EcsClient(AlibabaCloudClient):
             "UserCidr": user_cidr,
             "VbrId": vbr_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_physical_connection(
             self,
@@ -4020,7 +4021,7 @@ class EcsClient(AlibabaCloudClient):
             "PhysicalConnectionId": physical_connection_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_virtual_border_router(
             self,
@@ -4056,7 +4057,7 @@ class EcsClient(AlibabaCloudClient):
             "LocalGatewayIp": local_gateway_ip,
             "UserCidr": user_cidr,
             "VbrOwnerId": vbr_owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_physical_connection(
             self,
@@ -4094,7 +4095,7 @@ class EcsClient(AlibabaCloudClient):
             "LineOperator": line_operator,
             "Name": name,
             "UserCidr": user_cidr}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def cancel_physical_connection(
             self,
@@ -4114,7 +4115,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "UserCidr": user_cidr,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def import_image(
             self,
@@ -4171,7 +4172,7 @@ class EcsClient(AlibabaCloudClient):
                                    ]),
         }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def export_image(
             self,
@@ -4193,7 +4194,7 @@ class EcsClient(AlibabaCloudClient):
             "RoleName": role_name,
             "OwnerId": owner_id,
             "ImageFormat": image_format}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_tasks(
             self,
@@ -4221,7 +4222,7 @@ class EcsClient(AlibabaCloudClient):
             "TaskStatus": task_status,
             "PageSize": page_size,
             "TaskAction": task_action}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_task_attribute(
             self,
@@ -4235,7 +4236,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
             "TaskId": task_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def cancel_task(
             self,
@@ -4249,7 +4250,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
             "TaskId": task_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_type_families(
             self,
@@ -4265,7 +4266,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_router_interface_spec(
             self,
@@ -4287,7 +4288,7 @@ class EcsClient(AlibabaCloudClient):
             "RouterInterfaceId": router_interface_id,
             "OwnerId": owner_id,
             "Spec": spec}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_router_interface_attribute(
             self,
@@ -4317,7 +4318,7 @@ class EcsClient(AlibabaCloudClient):
             "Name": name,
             "OppositeRouterType": opposite_router_type,
             "OppositeInterfaceId": opposite_interface_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_router_interfaces(
             self,
@@ -4340,7 +4341,7 @@ class EcsClient(AlibabaCloudClient):
                                                          ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_router_interface(
             self,
@@ -4360,7 +4361,7 @@ class EcsClient(AlibabaCloudClient):
             "UserCidr": user_cidr,
             "RouterInterfaceId": router_interface_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def deactivate_router_interface(
             self,
@@ -4374,7 +4375,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_router_interface(
             self,
@@ -4430,7 +4431,7 @@ class EcsClient(AlibabaCloudClient):
             "OppositeRouterType": opposite_router_type,
             "Name": name,
             "PricingCycle": pricing_cycle}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def connect_router_interface(
             self,
@@ -4444,7 +4445,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def activate_router_interface(
             self,
@@ -4458,7 +4459,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassociate_ha_vip(
             self,
@@ -4480,7 +4481,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Force": force,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_ha_vip_attribute(
             self,
@@ -4500,7 +4501,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_ha_vips(
             self,
@@ -4525,7 +4526,7 @@ class EcsClient(AlibabaCloudClient):
                                                          ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_ha_vip(
             self,
@@ -4543,7 +4544,7 @@ class EcsClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_ha_vip(
             self,
@@ -4565,7 +4566,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def associate_ha_vip(
             self,
@@ -4585,7 +4586,7 @@ class EcsClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def renew_instance(
             self,
@@ -4607,7 +4608,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def remove_tags(
             self,
@@ -4630,7 +4631,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_tags(
             self,
@@ -4659,7 +4660,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_resource_by_tags(
             self,
@@ -4684,7 +4685,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def add_tags(
             self,
@@ -4707,7 +4708,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def unassociate_eip_address(
             self,
@@ -4727,7 +4728,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceType": instance_type,
             "AllocationId": allocation_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def stop_instance(
             self,
@@ -4753,7 +4754,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Hibernate": hibernate,
             "ForceStop": force_stop}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def start_instance(
             self,
@@ -4775,7 +4776,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def revoke_security_group_egress(
             self,
@@ -4821,7 +4822,7 @@ class EcsClient(AlibabaCloudClient):
             "Priority": priority,
             "DestCidrIp": dest_cidr_ip,
             "DestGroupOwnerId": dest_group_owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def revoke_security_group(
             self,
@@ -4867,7 +4868,7 @@ class EcsClient(AlibabaCloudClient):
             "Priority": priority,
             "DestCidrIp": dest_cidr_ip,
             "SourceGroupId": source_group_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def resize_disk(
             self,
@@ -4889,7 +4890,7 @@ class EcsClient(AlibabaCloudClient):
             "DiskId": disk_id,
             "OwnerId": owner_id,
             "Type": type}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def reset_disk(
             self,
@@ -4907,7 +4908,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "DiskId": disk_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def replace_system_disk(
             self,
@@ -4945,7 +4946,7 @@ class EcsClient(AlibabaCloudClient):
             "DiskId": disk_id,
             "UseAdditionalService": use_additional_service,
             "Architecture": architecture}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def release_public_ip_address(
             self,
@@ -4963,7 +4964,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def release_eip_address(
             self,
@@ -4979,7 +4980,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "AllocationId": allocation_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def re_init_disk(
             self,
@@ -5003,7 +5004,7 @@ class EcsClient(AlibabaCloudClient):
             "SecurityEnhancementStrategy": security_enhancement_strategy,
             "KeyPairName": key_pair_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def reboot_instance(
             self,
@@ -5023,7 +5024,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ForceStop": force_stop}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_v_switch_attribute(
             self,
@@ -5043,7 +5044,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_v_router_attribute(
             self,
@@ -5063,7 +5064,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_vpc_attribute(
             self,
@@ -5087,7 +5088,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "UserCidr": user_cidr,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_snapshot_attribute(
             self,
@@ -5107,7 +5108,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "SnapshotName": snapshot_name,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_security_group_attribute(
             self,
@@ -5127,7 +5128,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
             "SecurityGroupName": security_group_name}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_vpc_attribute(
             self,
@@ -5147,7 +5148,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_vnc_passwd(
             self,
@@ -5165,7 +5166,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "VncPassword": vnc_password}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_spec(
             self,
@@ -5201,7 +5202,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceType": instance_type,
             "Temporary.EndTime": temporary_end_time,
             "InternetMaxBandwidthIn": internet_max_bandwidth_in}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_network_spec(
             self,
@@ -5233,7 +5234,7 @@ class EcsClient(AlibabaCloudClient):
             "NetworkChargeType": network_charge_type,
             "InternetMaxBandwidthIn": internet_max_bandwidth_in,
             "AllocatePublicIp": allocate_public_ip}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_instance_attribute(
             self,
@@ -5265,7 +5266,7 @@ class EcsClient(AlibabaCloudClient):
             "HostName": host_name,
             "InstanceId": instance_id,
             "InstanceName": instance_name}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_image_share_permission(
             self,
@@ -5289,7 +5290,7 @@ class EcsClient(AlibabaCloudClient):
                        "RemoveAccount": ('RemoveAccount', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_image_share_group_permission(
             self,
@@ -5309,7 +5310,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "RemoveGroup.1": remove_group1,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_image_attribute(
             self,
@@ -5329,7 +5330,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_eip_address_attribute(
             self,
@@ -5347,7 +5348,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "AllocationId": allocation_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_disk_attribute(
             self,
@@ -5373,7 +5374,7 @@ class EcsClient(AlibabaCloudClient):
             "DiskId": disk_id,
             "OwnerId": owner_id,
             "DeleteWithInstance": delete_with_instance}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def modify_auto_snapshot_policy(
             self,
@@ -5403,7 +5404,7 @@ class EcsClient(AlibabaCloudClient):
             "SystemDiskPolicyRetentionDays": system_disk_policy_retention_days,
             "DataDiskPolicyTimePeriod": data_disk_policy_time_period,
             "SystemDiskPolicyEnabled": system_disk_policy_enabled}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def leave_security_group(
             self,
@@ -5421,7 +5422,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "SecurityGroupId": security_group_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def join_security_group(
             self,
@@ -5439,7 +5440,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "SecurityGroupId": security_group_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def detach_disk(
             self,
@@ -5457,7 +5458,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "DiskId": disk_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_zones(
             self,
@@ -5479,7 +5480,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceChargeType": instance_charge_type,
             "Verbose": verbose}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_v_switches(
             self,
@@ -5505,7 +5506,7 @@ class EcsClient(AlibabaCloudClient):
             "IsDefault": is_default,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_v_routers(
             self,
@@ -5525,7 +5526,7 @@ class EcsClient(AlibabaCloudClient):
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_vpcs(
             self,
@@ -5547,7 +5548,7 @@ class EcsClient(AlibabaCloudClient):
             "IsDefault": is_default,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_snapshots(
             self,
@@ -5606,7 +5607,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_security_groups(
             self,
@@ -5649,7 +5650,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_security_group_attribute(
             self,
@@ -5669,7 +5670,7 @@ class EcsClient(AlibabaCloudClient):
             "SecurityGroupId": security_group_id,
             "OwnerId": owner_id,
             "Direction": direction}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_route_tables(
             self,
@@ -5697,7 +5698,7 @@ class EcsClient(AlibabaCloudClient):
             "RouterId": router_id,
             "PageSize": page_size,
             "RouteTableId": route_table_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_regions(
             self,
@@ -5717,7 +5718,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceChargeType": instance_charge_type,
             "ResourceType": resource_type}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_limitation(
             self,
@@ -5733,7 +5734,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_vnc_url(
             self,
@@ -5749,7 +5750,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_vnc_passwd(
             self,
@@ -5765,7 +5766,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_types(
             self,
@@ -5781,7 +5782,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "InstanceTypeFamily": instance_type_family,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_status(
             self,
@@ -5803,7 +5804,7 @@ class EcsClient(AlibabaCloudClient):
             "ClusterId": cluster_id,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instances(
             self,
@@ -5896,7 +5897,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_physical_attribute(
             self,
@@ -5912,7 +5913,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_monitor_data(
             self,
@@ -5934,7 +5935,7 @@ class EcsClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
             "InstanceId": instance_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_instance_attribute(
             self,
@@ -5950,7 +5951,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_image_share_permission(
             self,
@@ -5970,7 +5971,7 @@ class EcsClient(AlibabaCloudClient):
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_images(
             self,
@@ -6030,7 +6031,7 @@ class EcsClient(AlibabaCloudClient):
                                                          ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_eip_monitor_data(
             self,
@@ -6052,7 +6053,7 @@ class EcsClient(AlibabaCloudClient):
             "AllocationId": allocation_id,
             "StartTime": start_time,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_eip_addresses(
             self,
@@ -6094,7 +6095,7 @@ class EcsClient(AlibabaCloudClient):
             "ChargeType": charge_type,
             "AssociatedInstanceId": associated_instance_id,
             "Status": status}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_disks(
             self,
@@ -6172,7 +6173,7 @@ class EcsClient(AlibabaCloudClient):
                        "AdditionalAttributes": ('AdditionalAttributes', list, str, None),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_disk_monitor_data(
             self,
@@ -6194,7 +6195,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "EndTime": end_time,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def describe_clusters(
             self,
@@ -6208,7 +6209,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_v_switch(
             self,
@@ -6224,7 +6225,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_vpc(
             self,
@@ -6240,7 +6241,7 @@ class EcsClient(AlibabaCloudClient):
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_snapshot(
             self,
@@ -6258,7 +6259,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Force": force,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_security_group(
             self,
@@ -6274,7 +6275,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "SecurityGroupId": security_group_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_route_entry(
             self,
@@ -6301,7 +6302,7 @@ class EcsClient(AlibabaCloudClient):
                                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_instance(
             self,
@@ -6321,7 +6322,7 @@ class EcsClient(AlibabaCloudClient):
             "TerminateSubscription": terminate_subscription,
             "Force": force,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_image(
             self,
@@ -6339,7 +6340,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Force": force,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_disk(
             self,
@@ -6355,7 +6356,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "DiskId": disk_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_v_switch(
             self,
@@ -6381,7 +6382,7 @@ class EcsClient(AlibabaCloudClient):
             "ZoneId": zone_id,
             "Description": description,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_vpc(
             self,
@@ -6405,7 +6406,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "UserCidr": user_cidr,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_snapshot(
             self,
@@ -6434,7 +6435,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_security_group(
             self,
@@ -6467,7 +6468,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_route_entry(
             self,
@@ -6498,7 +6499,7 @@ class EcsClient(AlibabaCloudClient):
                                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_instance(
             self,
@@ -6634,7 +6635,7 @@ class EcsClient(AlibabaCloudClient):
                                                              ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_image(
             self,
@@ -6681,7 +6682,7 @@ class EcsClient(AlibabaCloudClient):
                                         ]),
             }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_disk(
             self,
@@ -6732,7 +6733,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def copy_image(
             self,
@@ -6765,7 +6766,7 @@ class EcsClient(AlibabaCloudClient):
                                                    ]),
                        }
         verify_params(api_request._params, repeat_info)
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def cancel_copy_image(
             self,
@@ -6781,7 +6782,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def authorize_security_group_egress(
             self,
@@ -6827,7 +6828,7 @@ class EcsClient(AlibabaCloudClient):
             "Priority": priority,
             "DestCidrIp": dest_cidr_ip,
             "DestGroupOwnerId": dest_group_owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def authorize_security_group(
             self,
@@ -6873,7 +6874,7 @@ class EcsClient(AlibabaCloudClient):
             "Priority": priority,
             "DestCidrIp": dest_cidr_ip,
             "SourceGroupId": source_group_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def attach_disk(
             self,
@@ -6895,7 +6896,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Device": device,
             "DeleteWithInstance": delete_with_instance}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def associate_eip_address(
             self,
@@ -6915,7 +6916,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceType": instance_type,
             "AllocationId": allocation_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def allocate_public_ip_address(
             self,
@@ -6935,7 +6936,7 @@ class EcsClient(AlibabaCloudClient):
             "VlanId": vlan_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def allocate_eip_address(
             self,
@@ -6957,4 +6958,4 @@ class EcsClient(AlibabaCloudClient):
             "ISP": isp,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result

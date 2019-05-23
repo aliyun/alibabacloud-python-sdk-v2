@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.exceptions import SdkHttpException
+from alibabacloud.exceptions import HttpErrorException
 from alibabacloud.handlers import RequestHandler
 from alibabacloud.vendored.requests import Request, Session
 from alibabacloud.vendored.requests.packages import urllib3
+from alibabacloud.request import HTTPResponse
 
 
 class HttpHandler(RequestHandler):
@@ -34,8 +35,7 @@ class HttpHandler(RequestHandler):
                                                  str(http_request.port), http_request.params)
             req = Request(method=http_request.method, url=http_request.url,
                           data=http_request.body,
-                          headers=http_request.headers,
-                          )
+                          headers=http_request.headers)
             prepped = s.prepare_request(req)
 
             # ignore the warning-InsecureRequestWarning
@@ -47,8 +47,7 @@ class HttpHandler(RequestHandler):
                                   allow_redirects=False, verify=None, cert=None)
 
             except IOError as e:
-                context.exception = SdkHttpException(sdk_http_error=str(e))
-                from alibabacloud.request import HTTPResponse
+                context.exception = HttpErrorException(sdk_http_error=str(e))
                 context.http_response = HTTPResponse()
                 context.client.logger.error("HttpError occurred. Host:%s HttpException:%s",
                                             context.endpoint, str(e))

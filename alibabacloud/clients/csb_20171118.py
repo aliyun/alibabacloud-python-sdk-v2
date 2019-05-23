@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import AlibabaCloudClient, verify_params
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class CSBClient(AlibabaCloudClient):
@@ -44,12 +45,12 @@ class CSBClient(AlibabaCloudClient):
             "ServiceName": service_name,
             "StartTime": start_time,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_instance(self, csb_id=None,):
         api_request = APIRequest('GetInstance', 'GET', 'http', 'RPC', 'query')
         api_request._params = {"CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_cas_service(
         self,
@@ -70,7 +71,7 @@ class CSBClient(AlibabaCloudClient):
             "SrcUserId": src_user_id,
             "CasServiceId": cas_service_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def find_instance_list(
         self,
@@ -87,7 +88,7 @@ class CSBClient(AlibabaCloudClient):
             "PageNum": page_num,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def publish_cas_service(self, cas_csb_name=None, data=None,):
         api_request = APIRequest(
@@ -97,7 +98,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"CasCsbName": cas_csb_name, "Data": data, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def commit_successed_services(self, csb_name=None, services=None,):
         api_request = APIRequest(
@@ -107,7 +108,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"CsbName": csb_name, "Services": services, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_union_cas_service(
         self,
@@ -128,7 +129,7 @@ class CSBClient(AlibabaCloudClient):
             "SrcUserId": src_user_id,
             "CasServiceId": cas_service_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def publish_union_cas_service(self, cas_csb_name=None, data=None,):
         api_request = APIRequest(
@@ -138,7 +139,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"CasCsbName": cas_csb_name, "Data": data, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_service_qps(self, qps=None, service_id=None,):
         api_request = APIRequest(
@@ -148,7 +149,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"Qps": qps, "ServiceId": service_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_service_list(self, data=None, csb_id=None,):
         api_request = APIRequest(
@@ -158,7 +159,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_order_list(self, data=None,):
         api_request = APIRequest(
@@ -168,7 +169,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"Data": data, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_service_list_status(self, data=None, csb_id=None,):
         api_request = APIRequest(
@@ -178,7 +179,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_project_list_status(self, data=None, csb_id=None,):
         api_request = APIRequest(
@@ -188,7 +189,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def approve_order_list(self, data=None,):
         api_request = APIRequest(
@@ -198,13 +199,13 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"Data": data, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_project(self, csb_id=None, project_id=None,):
         api_request = APIRequest(
             'DeleteProject', 'POST', 'https', 'RPC', 'query')
         api_request._params = {"CsbId": csb_id, "ProjectId": project_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_service(self, service_name=None, service_id=None,):
         api_request = APIRequest(
@@ -213,7 +214,7 @@ class CSBClient(AlibabaCloudClient):
             "ServiceName": service_name,
             "ServiceId": service_id,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_order_list(self, data=None,):
         api_request = APIRequest(
@@ -223,7 +224,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"Data": data, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_project_list(self, data=None, csb_id=None,):
         api_request = APIRequest(
@@ -233,7 +234,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_credentials(self, data=None, csb_id=None,):
         api_request = APIRequest(
@@ -243,41 +244,41 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_service(self, data=None, csb_id=None,):
         api_request = APIRequest(
             'CreateService', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_service(self, data=None, csb_id=None,):
         api_request = APIRequest(
             'UpdateService', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_order(self, data=None, csb_id=None,):
         api_request = APIRequest('UpdateOrder', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_order(self, data=None, csb_id=None,):
         api_request = APIRequest('CreateOrder', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def update_project(self, data=None, csb_id=None,):
         api_request = APIRequest(
             'UpdateProject', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def create_project(self, data=None, csb_id=None,):
         api_request = APIRequest(
             'CreateProject', 'POST', 'https', 'RPC', 'body')
         api_request._params = {"Data": data, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def delete_credentials_list(
         self,
@@ -296,7 +297,7 @@ class CSBClient(AlibabaCloudClient):
             "IgnoreDauth": ignore_dauth,
             "Force": force,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def find_projects_name_list(self, operation_flag=None, csb_id=None,):
         api_request = APIRequest(
@@ -307,17 +308,17 @@ class CSBClient(AlibabaCloudClient):
             'query')
         api_request._params = {
             "OperationFlag": operation_flag, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_project(self, project_name=None, csb_id=None,):
         api_request = APIRequest('GetProject', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"ProjectName": project_name, "CsbId": csb_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_service(self, csb_id=None, service_id=None,):
         api_request = APIRequest('GetService', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"CsbId": csb_id, "ServiceId": service_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def check_service_exist(self, csb_id=None, service_name=None,):
         api_request = APIRequest(
@@ -327,7 +328,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"CsbId": csb_id, "ServiceName": service_name, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def get_order(self, order_id=None, service_name=None,):
         api_request = APIRequest('GetOrder', 'GET', 'https', 'RPC', 'query')
@@ -335,7 +336,7 @@ class CSBClient(AlibabaCloudClient):
             "OrderId": order_id,
             "ServiceName": service_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def find_project_list(
         self,
@@ -354,7 +355,7 @@ class CSBClient(AlibabaCloudClient):
             "CsbId": csb_id,
             "PageNum": page_num,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def find_approval_order_list(
         self,
@@ -381,7 +382,7 @@ class CSBClient(AlibabaCloudClient):
             "PageNum": page_num,
             "OnlyPending": only_pending,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def find_approve_service_list(
         self,
@@ -406,7 +407,7 @@ class CSBClient(AlibabaCloudClient):
             "Alias": alias,
             "ServiceName": service_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def find_credentials_list(
         self,
@@ -425,7 +426,7 @@ class CSBClient(AlibabaCloudClient):
             "PageNum": page_num,
             "GroupName": group_name,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def renew_credentials(self, credential_id=None,):
         api_request = APIRequest(
@@ -435,7 +436,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"CredentialId": credential_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def replace_credential(self, credential_id=None,):
         api_request = APIRequest(
@@ -445,7 +446,7 @@ class CSBClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {"CredentialId": credential_id, }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def find_orderable_list(
         self,
@@ -468,7 +469,7 @@ class CSBClient(AlibabaCloudClient):
             "ServiceName": service_name,
             "PageNum": page_num,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def find_ordered_list(
         self,
@@ -497,7 +498,7 @@ class CSBClient(AlibabaCloudClient):
             "ServiceId": service_id,
             "Status": status,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
 
     def find_service_list(
         self,
@@ -524,4 +525,4 @@ class CSBClient(AlibabaCloudClient):
             "ServiceName": service_name,
             "PageNum": page_num,
         }
-        return self._handle_request(api_request)
+        return self._handle_request(api_request).result
