@@ -259,4 +259,3 @@ class AlibabaCloudClient:
         ch.setFormatter(formatter)
         if ch not in log.handlers:
             log.addHandler(ch)
-

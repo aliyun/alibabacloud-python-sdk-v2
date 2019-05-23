@@ -17,7 +17,7 @@ class APIRequest:
 
     def __init__(self, action_name, method, scheme, style, param_position="query"):
         self.action_name = action_name
-        self.scheme = scheme  # http|https,TODO 所有protocol改为scheme
+        self.scheme = scheme  # http|https
         self.method = method
         self.style = style
         self._param_position = param_position
@@ -25,7 +25,6 @@ class APIRequest:
         self.uri_pattern = ''
         self.path_params = {}
 
-        # 以下参数仅兼容Common Request
         self._headers = {}
         self._body_params = {}
         self._query_params = {}
@@ -34,7 +33,7 @@ class APIRequest:
     def _load_from_legacy_request(self, request):
         # request:acsrequest
 
-        # FIXME：content
+        # FIXME content
         self._content = request._content
 
         self._body_params = request._body_params
