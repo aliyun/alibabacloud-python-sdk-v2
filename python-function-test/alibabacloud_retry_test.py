@@ -123,9 +123,9 @@ class AlibabaCloudRetryTest(SDKTestBase):
                 assert _test_client_token == request._params.get("ClientToken")
             _test_retry_times += 1
             _test_client_token = request._params.get("ClientToken")
-            context.exception = HttpErrorException(sdk_http_error="some error")
+            context.exception = HttpErrorException(http_error="some error")
             from alibabacloud.request import HTTPResponse
-            context.http_response = HTTPResponse()
+            context.http_response = HTTPResponse('', None, {}, None)
 
         def no_sleep(delay):
             pass
@@ -160,9 +160,9 @@ class AlibabaCloudRetryTest(SDKTestBase):
             request = context.api_request
             assert "ABCDEFGHIJKLMN" == request._params.get("ClientToken")
             _test_retry_times += 0
-            context.exception = HttpErrorException(sdk_http_error="some error")
+            context.exception = HttpErrorException(http_error="some error")
             from alibabacloud.request import HTTPResponse
-            context.http_response = HTTPResponse()
+            context.http_response = HTTPResponse('', None, {}, None)
 
         def no_sleep(delay):
             pass
@@ -214,7 +214,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         default_retry_policy = retry_policy.get_default_retry_policy()
 
         def HE():
-            return HttpErrorException(sdk_http_error="some error")
+            return HttpErrorException(http_error="some error")
 
         def SE(code):
             return ServerException(code, "some error")

@@ -76,7 +76,20 @@ class HTTPRequest:
 
 class HTTPResponse:
 
-    def __init__(self, status_code=None, headers=None, content=None):
+    def __init__(self, url, status_code, headers, raw):
+        self.url = url
         self.status_code = status_code
         self.headers = headers
-        self.content = content
+        self.raw = raw
+
+        self._content = None
+
+    @property
+    def content(self):
+        if self._content is None:
+            self._content = bytes().join(self.raw.stream()) or bytes()
+        return self._content
+
+    @property
+    def text(self):
+        return self.content.decode('utf-8')

@@ -30,7 +30,7 @@ class ClientException(AlibabaCloudException):
 
 
 class HttpErrorException(AlibabaCloudException):
-    fmt = '{sdk_http_error}'
+    fmt = '{http_error}'
 
 
 class InvalidProductCode(AlibabaCloudException):
