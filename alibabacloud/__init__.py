@@ -12,14 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 __version__ = '0.0.4'
+
+import os
+
 from aliyunsdkcore.acs_exception.exceptions import ClientException
 from aliyunsdkcore.client import AcsClient
-from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource,\
-    ECSImageResource, ECSDiskResource
-from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
-from alibabacloud.services.slb import SLBResource, LoadBalancerResource
+
 import alibabacloud.errors
+from alibabacloud.client import ClientConfig
+from alibabacloud.exceptions import NoModuleException
+from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource, \
+    ECSImageResource, ECSDiskResource
+from alibabacloud.services.slb import SLBResource, LoadBalancerResource
+from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
 from alibabacloud.utils.utils import _assert_is_not_none
+
+ALIBABACLOUD_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 def _get_param_from_args(args, index, name):
@@ -65,3 +73,38 @@ def get_resource(*args, **kwargs):
         raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
                               "Resource '{0}' is not currently supported.".format(resource_name))
 
+
+def prepare_module(service_name, api_version):
+    """
+    :param service_name: Ecs or ECS or eCS
+    :param api_version: 2018-06-09
+    :return:
+    """
+    module_name = ['alibabacloud', 'clients']
+    module_prefix = service_name.lower() + '_' + api_version.replace('-', '')
+    client_name = service_name.upper() + 'Client'
+    module_name.extend([module_prefix, client_name])
+    return module_name
+
+
+def client(service_name, api_version, **kwargs):
+    """
+
+    :param service_name: Ecs or ECS or eCS
+    :param api_version: 2018-06-09
+    :param kwargs:
+    :return:
+    """
+    client_config = ClientConfig(**kwargs)
+    module_name = prepare_module(service_name, api_version)
+    print(module_name)
+
+    try:
+        client_module = __import__(
+            '.'.join(module_name[:3]), globals(), locals(),
+            [module_name[1], module_name[2]], 0).__dict__.get(module_name[3])
+
+    except ImportError:
+        raise NoModuleException(name='.'.join(module_name))
+
+    return client_module(client_config)

@@ -156,9 +156,9 @@ class APIProtocolHandler(RequestHandler):
     def handle_response(self, context):
         if not context.exception:
             try:
-                context.result = json.loads(context.http_response.content, encoding='utf-8')
+                context.result = json.loads(context.http_response.text)
             except ValueError:
                 # failed to parse body as json format
                 raise ClientException(
                     msg='Failed to parse response as json format.Response:%s' % str(
-                        context.http_response.content))
+                        context.http_response.text))

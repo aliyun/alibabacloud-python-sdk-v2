@@ -54,6 +54,10 @@ class ParamTypeInvalidException(AlibabaCloudException):
     fmt = 'The type of param {param} must be {param_type}.'
 
 
+class NoModuleException(AlibabaCloudException):
+    fmt = 'Could not import "{name}".'
+
+
 class ServerException(Exception):
 
     def __init__(self, error_code, error_message, endpoint=None, service_name=None,
