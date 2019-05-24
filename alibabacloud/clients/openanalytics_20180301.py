@@ -41,7 +41,7 @@ class openanalyticsClient(AlibabaCloudClient):
             "TargetUid": target_uid,
             "TargetArnRole": target_arn_role,
         }
-        return self._handle_request(api_request).result.result
+        return self._handle_request(api_request).result
 
     def close_product_account(
         self,
