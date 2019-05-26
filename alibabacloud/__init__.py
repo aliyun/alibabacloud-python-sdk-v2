@@ -20,12 +20,15 @@ from aliyunsdkcore.client import AcsClient
 
 import alibabacloud.errors
 from alibabacloud.client import ClientConfig
-from alibabacloud.exceptions import NoModuleException
+from alibabacloud.exceptions import NoModuleException, ServiceNameInvalidException, \
+    ApiVersionInvalidException
 from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource, \
     ECSImageResource, ECSDiskResource
 from alibabacloud.services.slb import SLBResource, LoadBalancerResource
 from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
 from alibabacloud.utils.utils import _assert_is_not_none
+from alibabacloud.utils.client_supports import CLIENT_SUPPORT
+
 
 ALIBABACLOUD_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -74,17 +77,26 @@ def get_resource(*args, **kwargs):
                               "Resource '{0}' is not currently supported.".format(resource_name))
 
 
-def prepare_module(service_name, api_version):
+def _check_client_service_name(service_name):
+    if service_name.lower() in CLIENT_SUPPORT:
+        return CLIENT_SUPPORT[service_name.lower()]
+    raise ServiceNameInvalidException(service_name=service_name,
+                                      more=','.join([item for item in CLIENT_SUPPORT.keys()]))
+
+
+def _prepare_module(service_name, api_version):
     """
     :param service_name: Ecs or ECS or eCS
     :param api_version: 2018-06-09
     :return:
     """
-    module_name = ['alibabacloud', 'clients']
-    module_prefix = service_name.lower() + '_' + api_version.replace('-', '')
-    client_name = service_name.upper() + 'Client'
-    module_name.extend([module_prefix, client_name])
-    return module_name
+    client_name, client_versions = _check_client_service_name(service_name)
+    if api_version not in client_versions:
+        raise ApiVersionInvalidException(service_name=service_name, api_version=api_version,
+                                         api_versions=','.join([item for item in client_versions]))
+
+    module_name = service_name.lower() + '_' + api_version.replace('-', '')
+    return module_name, client_name
 
 
 def client(service_name, api_version, **kwargs):
@@ -96,14 +108,13 @@ def client(service_name, api_version, **kwargs):
     :return:
     """
     client_config = ClientConfig(**kwargs)
-    module_name = prepare_module(service_name, api_version)
+    module_name, client_name = _prepare_module(service_name, api_version)  # ecs_20180909
 
     try:
         client_module = __import__(
-            '.'.join(module_name[:3]), globals(), locals(),
-            [module_name[1], module_name[2]], 0).__dict__.get(module_name[3])
+            '.'.join(['alibabacloud', 'clients', module_name]), globals(), locals(),
+            ['clients', module_name], 0)
 
     except ImportError:
         raise NoModuleException(name='.'.join(module_name))
-
-    return client_module(client_config)
+    return getattr(client_module, client_name)(client_config)

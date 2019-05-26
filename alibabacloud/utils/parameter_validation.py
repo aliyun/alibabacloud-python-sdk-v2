@@ -13,9 +13,11 @@
 # limitations under the License.
 from collections import namedtuple
 
-from alibabacloud.exceptions import ParamTypeInvalidException
+from alibabacloud.exceptions import ParamTypeInvalidException, MaximumRecursionException
 
 MetaParams = namedtuple('MetaParams', 'sname, stype, ctype, cparams')
+
+DEPTH = 0
 
 
 def verify_hierarchic(cparams, aparams):
@@ -24,6 +26,10 @@ def verify_hierarchic(cparams, aparams):
     :param aparams:dict
     :return:
     """
+    global DEPTH
+    DEPTH += 1
+    if DEPTH >= 5:
+        raise MaximumRecursionException()
     for item in cparams:
         meta_params = MetaParams._make(list(item))
         if meta_params.stype == list:
@@ -47,6 +53,8 @@ def verify_params(api_params, repeat_info):
                         ('Key', str, None, None),
                         ('Value', str, None, None),],), }
     """
+    global DEPTH
+    DEPTH = 0
     for name, value in repeat_info.items():
         formal_param = value
         actual_param = api_params.get(name)

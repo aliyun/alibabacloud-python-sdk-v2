@@ -25,10 +25,6 @@ class GenTestBase(TestCase):
     def tearDown(self):
         pass
 
-    @staticmethod
-    def get_dict_response(string):
-        return json.loads(string.decode('utf-8'), encoding="utf-8")
-
     def test_rpc_query_list(self):
         ecs_client = EcsClient(self.client_config)
         tag = [
