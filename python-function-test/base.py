@@ -82,8 +82,8 @@ class SDKTestBase(TestCase):
 
     def __init__(self, *args, **kwargs):
         TestCase.__init__(self, *args, **kwargs)
-        # if sys.version_info[0] == 2:
-        #     self.assertRegex = self.assertRegexpMatches
+        if sys.version_info[0] == 2:
+            self.assertRegex = self.assertRegexpMatches
         self._init_env()
 
     def test_env_available(self):

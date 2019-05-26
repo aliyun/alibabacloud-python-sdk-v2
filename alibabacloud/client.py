@@ -43,7 +43,7 @@ DEFAULT_CONFIG_VARIABLES = {
 }
 
 
-class ClientConfig:
+class ClientConfig(object):
     """
     handle client config
     """
@@ -78,12 +78,12 @@ class ClientConfig:
         self.connection_timeout = connection_timeout
         self.read_timeout = read_timeout
         self.enable_stream_logger = enable_stream_logger
-        # TODO credentials profile，profile_name
+        # TODO credentials profile, profile_name
         # self.profile_name = profile_name
         # config file
         self.config_file = config_file
         self.enable_http_debug = enable_http_debug
-        # proxy provider： client  env
+        # proxy provider: client  env
         self.http_proxy = http_proxy
         self.https_proxy = https_proxy
         self._proxy = {
@@ -141,7 +141,7 @@ def get_merged_client_config(config):
     return config
 
 
-class AlibabaCloudClient:
+class AlibabaCloudClient(object):
     LOG_FORMAT = '%(thread)d %(asctime)s %(name)s %(levelname)s %(message)s'
 
     def __init__(self, client_config, credentials_provider=None):
@@ -201,7 +201,7 @@ class AlibabaCloudClient:
             for handler in reversed(self.handlers[handler_index:]):
                 handler.handle_response(context)
                 if context.retry_flag:
-                    time.sleep(context.retry_backoff / 1000)
+                    time.sleep(context.retry_backoff / float(1000))
                     handler_index = self.handlers.index(handler)
                     break
             if not context.retry_flag:

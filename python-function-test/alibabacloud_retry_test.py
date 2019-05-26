@@ -26,7 +26,7 @@ from alibabacloud.handlers.server_error_handler import ServerErrorHandler
 from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import APIRequest
-from base import SDKTestBase
+from base import TestCase
 from alibabacloud.clients.ecs_20140526 import EcsClient
 
 DEFAULT_HANDLERS = [
@@ -41,7 +41,7 @@ DEFAULT_HANDLERS = [
 ]
 
 
-class AlibabaCloudRetryTest(SDKTestBase):
+class AlibabaCloudRetryTest(TestCase):
 
     def _prepare_config_var(self):
         self.access_key_id = os.environ.get("ACCESS_KEY_ID")

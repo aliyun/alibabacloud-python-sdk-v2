@@ -89,7 +89,7 @@ class EndpointTest(SDKTestBase):
 
         class TempClient(AlibabaCloudClient):
             def __init__(self):
-                super().__init__(client_config, None)
+                AlibabaCloudClient.__init__(self, client_config, None)
                 self.product_code = product
                 self.location_service_code = location_service_code
                 self.product_version = version

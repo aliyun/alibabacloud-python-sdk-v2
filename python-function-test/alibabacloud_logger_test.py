@@ -16,12 +16,12 @@ import logging
 import os
 import tempfile
 import mock
-from base import SDKTestBase
+from base import TestCase
 from alibabacloud.client import ClientConfig
 from alibabacloud.clients.ecs_20140526 import EcsClient
 
 
-class AlibabaLoggerTest(SDKTestBase):
+class AlibabaLoggerTest(TestCase):
 
     def _prepare_config_var(self):
         self.access_key_id = os.environ.get("ACCESS_KEY_ID")

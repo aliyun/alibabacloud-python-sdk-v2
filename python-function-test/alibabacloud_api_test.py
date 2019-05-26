@@ -13,6 +13,7 @@
 # limitations under the License.
 import os
 
+from alibabacloud.vendored import six
 from base import TestCase
 from alibabacloud.client import ClientConfig, AlibabaCloudClient
 from alibabacloud.exceptions import ServerException
@@ -154,8 +155,11 @@ class APIRequestTest(TestCase):
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("SDK.UnknownServerError", e.error_code)
-                self.assertEqual("ServerResponseBody: {&quot;name&quot; : &quot;cloud&quot;}",
-                                 e.error_message)
+                if six.PY2:
+                    self.assertEqual(e.error_message, 'ServerResponseBody: '+test_unicode)
+                else:
+                    self.assertEqual("ServerResponseBody: {&quot;name&quot; : &quot;cloud&quot;}",
+                                     e.error_message)
 
     def test_request_with_body_escape(self):
         def _handle_request(context):

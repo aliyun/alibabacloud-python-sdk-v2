@@ -97,7 +97,6 @@ def client(service_name, api_version, **kwargs):
     """
     client_config = ClientConfig(**kwargs)
     module_name = prepare_module(service_name, api_version)
-    print(module_name)
 
     try:
         client_module = __import__(

@@ -1,7 +1,8 @@
 # encoding:utf-8
 import sys
 import threading
-import unittest
+from base import TestCase
+
 # the version under py3 use the different package
 if sys.version_info[0] == 3:
     from http.server import SimpleHTTPRequestHandler
@@ -61,7 +62,7 @@ class MyServer:
         return response
 
 
-class UserAgentTest(unittest.TestCase):
+class UserAgentTest(TestCase):
 
     @staticmethod
     def joint_default_user_agent():

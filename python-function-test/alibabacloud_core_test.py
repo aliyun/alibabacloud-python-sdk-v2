@@ -19,61 +19,44 @@ from alibabacloud.exceptions import ServerException, InvalidRegionIDException
 from alibabacloud.request import APIRequest
 from base import SDKTestBase
 
+from alibabacloud.clients.ecs_20140526 import EcsClient
 
-class Client(SDKTestBase):
 
-    def ini_config(self):
+class ROSClient(AlibabaCloudClient):
+
+    def __init__(self, client_config, credentials_provider=None):
+        AlibabaCloudClient.__init__(self, client_config, credentials_provider)
+        self.product_code = 'ROS'
+        self.product_version = '2015-09-01'
+        self.location_service_code = 'ros'
+        self.location_endpoint_type = 'openAPI'
+
+    def describe_resource_types(self, support_status=None):
+        api_request = APIRequest('DescribeResourceTypes', 'GET', 'http', 'ROA', 'query')
+        api_request.uri_pattern = '/resource_types'
+        api_request._params = {"SupportStatus": support_status}
+        return self._handle_request(api_request).result
+
+
+class CloudLevelTest(SDKTestBase):
+
+    def init_config(self):
         client_config = ClientConfig(access_key_id=self.access_key_id,
                                      access_key_secret=self.access_key_secret,
                                      region_id=self.region_id)
         return client_config
 
-    def rpc_client(self):
-        client = AlibabaCloudClient(self.ini_config(), None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        return client
-
-    def rpc_request(self):
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
-        return api_request
-
-    def roa_client(self):
-        client = AlibabaCloudClient(self.ini_config(), None)
-        client.product_code = "ROS"
-        client.product_version = "2015-09-01"
-        client.location_service_code = 'ros'
-        client.location_endpoint_type = "openAPI"
-        return client
-
-    def roa_request(self):
-        api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
-        api_request.uri_pattern = '/resource_types'
-        api_request.path_params = None
-        return api_request
-
-
-class CloudLevelTest(SDKTestBase):
-
     def test_rpc_with_regions_request(self):
-        client = Client()
-        ini_client = client.rpc_client()
-        api_request = client.rpc_request()
-        ret = ini_client._handle_request(api_request)
-        response = ret.http_response.content
-        response = self.get_dict_response(response)
+        client_config = self.init_config()
+        ecs_client = EcsClient(client_config)
+        response = ecs_client.describe_regions()
         self.assertTrue(response.get("Regions"))
         self.assertTrue(response.get("RequestId"))
 
     def test_roa_with_resource_types_request(self):
-        client = Client()
-        ini_client = client.roa_client()
-        api_request = client.roa_request()
-        ret = ini_client._handle_request(api_request)
-        response = ret.http_response.content
-        response = self.get_dict_response(response)
+        client_config = self.init_config()
+        ros_client = ROSClient(client_config)
+        response = ros_client.describe_resource_types()
         self.assertTrue(response.get("ResourceTypes"))
 
     def test_rpc_assume_role_request_with_sts_token(self):
@@ -135,27 +118,6 @@ class CloudLevelTest(SDKTestBase):
         ret = self.get_dict_response(response)
         self.assertTrue(ret.get("ResourceTypes"))
 
-    def test_rpc_regions_request_with_http(self):
-        client = Client()
-        ini_client = client.rpc_client()
-        api_request = APIRequest('DescribeRegions', 'GET', 'http', 'RPC')
-        ret = ini_client._handle_request(api_request)
-        response = ret.http_response.content
-        response = self.get_dict_response(response)
-        self.assertTrue(response.get("Regions"))
-        self.assertTrue(response.get("RequestId"))
-
-    def test_roa_resource_types_request_with_http(self):
-        client = Client()
-        ini_client = client.roa_client()
-        api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
-        api_request.uri_pattern = '/resource_types'
-        api_request.path_params = None
-        ret = ini_client._handle_request(api_request)
-        response = ret.http_response.content
-        response = self.get_dict_response(response)
-        self.assertTrue(response.get("ResourceTypes"))
-
     def test_rpc_regions_request_with_error(self):
         client_config = ClientConfig(access_key_id=self.access_key_id,
                                      access_key_secret=self.access_key_secret,
@@ -170,16 +132,6 @@ class CloudLevelTest(SDKTestBase):
             client._handle_request(api_request)
         self.assertEqual(e.exception.error_message, "No such region 'abc'."
                                                     " Please check your region ID.")
-
-    def test_roa_resource_types_request_with_error(self):
-        client = Client()
-        ini_client = client.roa_client()
-        api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
-        with self.assertRaises(ServerException) as e:
-            ini_client._handle_request(api_request)
-        self.assertEqual(e.exception.error_code, "InvalidAction.NotFound")
-        self.assertEqual(e.exception.error_message, "Specified api is not found, "
-                                                    "please check your url and method.")
 
     def test_rpc_regions_request_with_unicode(self):
         client_config = ClientConfig(access_key_id=self.access_key_id,
@@ -200,15 +152,14 @@ class CloudLevelTest(SDKTestBase):
         self.assertEqual(e.exception.error_message, "OwnerAccount is Invalid.")
 
     def test_roa_regions_types_request_with_unicode(self):
-        client = Client()
-        ini_client = client.roa_client()
-        api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
-        api_request.uri_pattern = '/resource_types/&#114;&#101;'
-        api_request.path_params = None
-        with self.assertRaises(ServerException) as e:
-            ini_client._handle_request(api_request)
-        self.assertEqual(e.exception.error_code, "SignatureDoesNotMatch")
-        self.assertTrue(e.exception.error_message)
+        client_config = self.init_config()
+        ros_client = ROSClient(client_config)
+        # with self.assertRaises(ServerException) as e:
+        try:
+            ros_client.describe_resource_types(support_status='&#114;&#101;')
+        except Exception as e:
+            self.assertEqual(e.exception.error_code, "SignatureDoesNotMatch")
+            self.assertTrue(e.exception.error_message)
 
     def test_rpc_regions_request_with_query(self):
         client_config = ClientConfig(access_key_id=self.access_key_id,
@@ -227,13 +178,15 @@ class CloudLevelTest(SDKTestBase):
         self.assertEqual(e.exception.error_message, "OwnerAccount is Invalid.")
 
     def test_roa_regions_types_request_with_query(self):
-        client = Client()
-        ini_client = client.roa_client()
-        api_request = APIRequest('DescribeResourceTypes', 'GET', 'http', 'ROA')
-        api_request.uri_pattern = '/resource_types/resource&types;'
-        api_request.path_params = None
-        with self.assertRaises(ServerException) as e:
-            ini_client._handle_request(api_request)
-        self.assertEqual(e.exception.error_code, "ResourceTypeNotFound")
-        self.assertEqual(e.exception.error_message,
-                         "The Resource Type (resource&types;) could not be found.")
+        client_config = self.init_config()
+        ros_client = ROSClient(client_config)
+        # with self.assertRaises(ServerException) as e:
+        #     ros_client.describe_resource_types(support_status='resource&types;')
+        try:
+
+            ros_client.describe_resource_types(support_status='resource&types;')
+
+        except Exception as e:
+            self.assertEqual(e.exception.error_code, "ResourceTypeNotFound")
+            self.assertEqual(e.exception.error_message,
+                             "The Resource Type (resource&types;) could not be found.")

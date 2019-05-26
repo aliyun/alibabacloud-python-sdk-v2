@@ -1,16 +1,15 @@
 import json
 import os
-from unittest import TestCase
+from base import TestCase
 
 from alibabacloud.client import ClientConfig
-from alibabacloud.clients.cr_20160607 import crClient
 from alibabacloud.clients.eci_20180808 import EciClient
 from alibabacloud.clients.edas_20170801 import EdasClient
 from alibabacloud.clients.linkwan_20181230 import LinkWANClient
-from alibabacloud.clients.openanalytics_20180301 import openanalyticsClient
-from alibabacloud.clients.csb_20171118 import CSBClient
 from alibabacloud.clients.ecs_20140526 import EcsClient
 from alibabacloud.exceptions import ServerException, HttpErrorException, ParamTypeInvalidException
+
+from utils import crClient, CSBClient, OpenanalyticsClient
 
 
 class GenTestBase(TestCase):
@@ -51,7 +50,7 @@ class GenTestBase(TestCase):
             self.assertEqual(e.error_message, 'The specified Tag.n.Value is not valid.')
 
     def test_rpc_query_get(self):
-        # TODO 不一致的
+        # TODO
         ecs_client = EcsClient(self.client_config)
         tag = "hi"
         try:
@@ -62,7 +61,7 @@ class GenTestBase(TestCase):
             self.assertEqual(e.error_message, "The type of param Tag must be list.")
 
     def test_rpc_query_get1(self):
-        # TODO 不一致的
+        # TODO
         ecs_client = EciClient(self.client_config)
         # tag = []
         tag = ['hi', ]
@@ -74,7 +73,7 @@ class GenTestBase(TestCase):
 
     def test_rpc_body_get(self):
 
-        open_client = openanalyticsClient(self.client_config)
+        open_client = OpenanalyticsClient(self.client_config)
         try:
             context = open_client.get_region_status()
             assert False
@@ -108,7 +107,7 @@ class GenTestBase(TestCase):
                              "Specified api is not found, please check your url and method.")
 
     def test_rpc_body_https(self):
-        # TODO 原本的Core，请求签名错误，现在签名正常
+        # TODO
         link_client = LinkWANClient(self.client_config)
         try:
             context = link_client.list_gateway_tuple_orders(offset="123", limit="12")

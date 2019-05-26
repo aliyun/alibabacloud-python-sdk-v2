@@ -17,7 +17,6 @@ from alibabacloud.retry.retry_condition import RetryCondition
 import logging
 
 logger = logging.getLogger(__name__)
-# TODO logger 设置默认值
 
 
 class RetryPolicyContext:

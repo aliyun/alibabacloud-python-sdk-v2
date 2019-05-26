@@ -12,19 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from mock import patch
+
 from alibabacloud.client import ClientConfig, AlibabaCloudClient
 from alibabacloud.exceptions import ServerException, InvalidRegionIDException, HttpErrorException
+from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
 from alibabacloud.handlers.endpoint_handler import EndpointHandler
 from alibabacloud.handlers.http_handler import HttpHandler
-from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.retry_handler import RetryHandler
 from alibabacloud.handlers.server_error_handler import ServerErrorHandler
 from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import APIRequest
+from alibabacloud.vendored import six
 from alibabacloud.vendored.requests import Response
-from mock import patch
 from base import SDKTestBase
 
 http_handler = HttpHandler()
@@ -130,7 +132,10 @@ class ErrorTest(SDKTestBase):
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("SDK.UnknownServerError", e.error_code)
-                self.assertEqual("ServerResponseBody: b'bad-json'", e.error_message)
+                if six.PY2:
+                    self.assertEqual('ServerResponseBody: bad-json', e.error_message)
+                else:
+                    self.assertEqual("ServerResponseBody: b'bad-json'", e.error_message)
 
     def test_server_error_with_valid_json_no_code_or_message(self):
         # test valid json format but no Code or Message
@@ -162,9 +167,14 @@ class ErrorTest(SDKTestBase):
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("SDK.UnknownServerError", e.error_code)
-                self.assertEqual(
-                    """ServerResponseBody: b'{"key" : "this is a valid json string"}'""",
-                    e.error_message)
+                if six.PY2:
+                    self.assertEqual(
+                        'ServerResponseBody: {"key" : "this is a valid json string"}',
+                        e.error_message)
+                else:
+                    self.assertEqual(
+                        """ServerResponseBody: b'{"key" : "this is a valid json string"}'""",
+                        e.error_message)
 
     def test_missing_code_in_response(self):
         # test missing Code in response
@@ -196,7 +206,10 @@ class ErrorTest(SDKTestBase):
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("SDK.UnknownServerError", e.error_code)
-                self.assertEqual("""Some message""", e.error_message)
+                if six.PY2:
+                    self.assertEqual("Some message", e.error_message)
+                else:
+                    self.assertEqual("""Some message""", e.error_message)
 
     def test_missing_message_in_response(self):
         # test missing message in response
@@ -228,6 +241,7 @@ class ErrorTest(SDKTestBase):
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("SDK.UnknownServerError", e.error_code)
+
                 self.assertEqual("""Some message""", e.error_message)
 
     def test_missing_message_in_response2(self):
@@ -260,5 +274,9 @@ class ErrorTest(SDKTestBase):
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("YouMessedSomethingUp", e.error_code)
-                self.assertEqual("""ServerResponseBody: b'{"Code": "YouMessedSomethingUp"}'""",
-                                 e.error_message)
+                if six.PY2:
+                    self.assertEqual('ServerResponseBody: {"Code": "YouMessedSomethingUp"}',
+                                     e.error_message)
+                else:
+                    self.assertEqual("""ServerResponseBody: b'{"Code": "YouMessedSomethingUp"}'""",
+                                     e.error_message)

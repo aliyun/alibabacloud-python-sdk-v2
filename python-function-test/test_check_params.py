@@ -1,5 +1,6 @@
 import os
-from unittest import TestCase
+from base import TestCase
+
 
 from alibabacloud.client import ClientConfig
 from alibabacloud.clients.eci_20180808 import EciClient
