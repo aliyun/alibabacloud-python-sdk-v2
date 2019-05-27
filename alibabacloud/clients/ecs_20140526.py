@@ -22,7 +22,7 @@ class EcsClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'Ecs'
-        self.product_version = '2014-05-26'
+        self.api_version = '2014-05-26'
         self.location_service_code = 'ecs'
         self.location_endpoint_type = 'openAPI'
 
@@ -2227,7 +2227,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             description=None,
-            type=None,
+            _type=None,
             command_id=None,
             page_number=None,
             page_size=None,
@@ -2239,7 +2239,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "Description": description,
-            "Type": type,
+            "Type": _type,
             "CommandId": command_id,
             "PageNumber": page_number,
             "PageSize": page_size,
@@ -2270,7 +2270,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             working_dir=None,
             description=None,
-            type=None,
+            _type=None,
             command_content=None,
             timeout=None,
             resource_owner_account=None,
@@ -2283,7 +2283,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "WorkingDir": working_dir,
             "Description": description,
-            "Type": type,
+            "Type": _type,
             "CommandContent": command_content,
             "Timeout": timeout,
             "ResourceOwnerAccount": resource_owner_account,
@@ -2411,7 +2411,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             service_managed=None,
             security_group_id=None,
-            type=None,
+            _type=None,
             page_number=None,
             resource_group_id=None,
             page_size=None,
@@ -2430,7 +2430,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ServiceManaged": service_managed,
             "SecurityGroupId": security_group_id,
-            "Type": type,
+            "Type": _type,
             "PageNumber": page_number,
             "ResourceGroupId": resource_group_id,
             "PageSize": page_size,
@@ -3960,7 +3960,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_account=None,
             page_size=None,
             owner_id=None,
-            type=None,
+            _type=None,
             page_number=None):
         api_request = APIRequest('DescribeAccessPoints', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -3969,7 +3969,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
-            "Type": type,
+            "Type": _type,
             "PageNumber": page_number}
         repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
                                                          ('Key', str, None, None),
@@ -4065,7 +4065,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_account=None,
             owner_account=None,
             description=None,
-            type=None,
+            _type=None,
             owner_id=None,
             line_operator=None,
             name=None,
@@ -4083,7 +4083,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "Description": description,
-            "Type": type,
+            "Type": _type,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
             "Name": name,
@@ -4871,7 +4871,7 @@ class EcsClient(AlibabaCloudClient):
             new_size=None,
             disk_id=None,
             owner_id=None,
-            type=None):
+            _type=None):
         api_request = APIRequest('ResizeDisk', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
@@ -4881,7 +4881,7 @@ class EcsClient(AlibabaCloudClient):
             "NewSize": new_size,
             "DiskId": disk_id,
             "OwnerId": owner_id,
-            "Type": type}
+            "Type": _type}
         return self._handle_request(api_request).result
 
     def reset_disk(

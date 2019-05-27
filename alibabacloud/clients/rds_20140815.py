@@ -22,7 +22,7 @@ class RdsClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'Rds'
-        self.product_version = '2014-08-15'
+        self.api_version = '2014-08-15'
         self.location_service_code = 'rds'
         self.location_endpoint_type = 'openAPI'
 
@@ -3132,6 +3132,7 @@ class RdsClient(AlibabaCloudClient):
             security_ip_list=None,
             v_switch_id=None,
             private_ip_address=None,
+            auto_renew=None,
             role_arn=None,
             vpc_id=None,
             tunnel_id=None,
@@ -3162,6 +3163,7 @@ class RdsClient(AlibabaCloudClient):
             "SecurityIPList": security_ip_list,
             "VSwitchId": v_switch_id,
             "PrivateIpAddress": private_ip_address,
+            "AutoRenew": auto_renew,
             "RoleARN": role_arn,
             "VPCId": vpc_id,
             "TunnelId": tunnel_id,

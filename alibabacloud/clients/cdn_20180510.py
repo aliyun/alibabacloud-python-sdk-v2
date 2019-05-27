@@ -22,13 +22,16 @@ class CdnClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'Cdn'
-        self.product_version = '2018-05-10'
+        self.api_version = '2018-05-10'
         self.location_service_code = 'None'
         self.location_endpoint_type = 'openAPI'
 
-    def modify_cdn_domain_schdm_by_property(self, domain_name=None, owner_id=None, property=None):
+    def modify_cdn_domain_schdm_by_property(self, domain_name=None, owner_id=None, _property=None):
         api_request = APIRequest('ModifyCdnDomainSchdmByProperty', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {"DomainName": domain_name, "OwnerId": owner_id, "Property": property}
+        api_request._params = {
+            "DomainName": domain_name,
+            "OwnerId": owner_id,
+            "Property": _property}
         return self._handle_request(api_request).result
 
     def describe_cdn_https_domain_list(self, owner_id=None):
@@ -785,7 +788,7 @@ class CdnClient(AlibabaCloudClient):
             task_name=None,
             language=None,
             start_time=None,
-            type=None,
+            _type=None,
             group=None,
             end_time=None,
             owner_id=None):
@@ -795,7 +798,7 @@ class CdnClient(AlibabaCloudClient):
             "TaskName": task_name,
             "Language": language,
             "StartTime": start_time,
-            "Type": type,
+            "Type": _type,
             "Group": group,
             "EndTime": end_time,
             "OwnerId": owner_id}

@@ -22,7 +22,7 @@ class VpcClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'Vpc'
-        self.product_version = '2016-04-28'
+        self.api_version = '2016-04-28'
         self.location_service_code = 'vpc'
         self.location_endpoint_type = 'openAPI'
 
@@ -3279,7 +3279,7 @@ class VpcClient(AlibabaCloudClient):
             owner_account=None,
             description=None,
             interface_name=None,
-            type=None,
+            _type=None,
             owner_id=None,
             line_operator=None,
             name=None,
@@ -3298,7 +3298,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Description": description,
             "InterfaceName": interface_name,
-            "Type": type,
+            "Type": _type,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
             "Name": name,
@@ -4128,7 +4128,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            type=None,
+            _type=None,
             page_number=None,
             router_type=None,
             resource_group_id=None,
@@ -4143,7 +4143,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "Type": type,
+            "Type": _type,
             "PageNumber": page_number,
             "RouterType": router_type,
             "ResourceGroupId": resource_group_id,
@@ -4418,7 +4418,7 @@ class VpcClient(AlibabaCloudClient):
             name=None,
             page_size=None,
             owner_id=None,
-            type=None,
+            _type=None,
             page_number=None):
         api_request = APIRequest('DescribeAccessPoints', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -4429,7 +4429,7 @@ class VpcClient(AlibabaCloudClient):
             "Name": name,
             "PageSize": page_size,
             "OwnerId": owner_id,
-            "Type": type,
+            "Type": _type,
             "PageNumber": page_number}
         repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
                                                          ('Key', str, None, None),
@@ -4836,7 +4836,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_account=None,
             owner_account=None,
             description=None,
-            type=None,
+            _type=None,
             owner_id=None,
             line_operator=None,
             name=None):
@@ -4853,7 +4853,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "Description": description,
-            "Type": type,
+            "Type": _type,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
             "Name": name}
