@@ -13,15 +13,50 @@
 # limitations under the License.
 
 
-CLIENT_SUPPORT = {
-    # product: name version
-    'ecs':('EcsClient', ['2014-05-26',]),
-    'ram': ('RamClient', ['2015-05-01', ]),
-    'rds': ('RdsClient', ['2014-08-15', ]),
-    'slb': ('SlbClient', ['2014-05-15', ]),
-    'vpc': ('VpcClient', ['2016-04-28', ]),
-    'cdn':('CdnClient', ['2014-11-11', '2018-05-10',]),
-    'eci':('EciClient', ['2018-08-08',]),
-    'edas':('EdasClient', ['2017-08-01',]),
-    'linkwan':('LinkWANClient', ['2018-12-30',]),
-}
+import inspect
+import os
+import time
+
+CLIENTS_DATA_PATH = os.path.join('alibabacloud', 'clients')
+
+
+def _is_subclass_of_alibabacloudclient(object):
+    if object.__name__ == 'AlibabaCloudClient':
+        return
+    from alibabacloud.client import AlibabaCloudClient
+    return issubclass(object, AlibabaCloudClient)
+
+
+def _get_client_classes(path):
+    for name, obj in inspect.getmembers(path):
+        if inspect.isclass(obj):
+            if _is_subclass_of_alibabacloudclient(obj):
+                return obj.__name__
+
+
+def _format_api_version(api_version):
+    return time.strftime("%Y-%m-%d", time.strptime(api_version, '%Y%m%d'))
+
+
+def _list_available_client_services():
+    # find py file ,get name ,split
+    services = dict()
+    for path in os.walk(CLIENTS_DATA_PATH):
+        if path[0].endswith('clients'):
+            files = path[2]
+            if '__init__.py' in files:
+                files.remove('__init__.py')
+            for file in files:
+                if file.endswith('.py'):
+                    module_name = file.rstrip('.py')
+                    service_name, api_version = module_name.split('_')
+                    api_version = _format_api_version(api_version)
+                    client_module = __import__(
+                        '.'.join(['alibabacloud', 'clients', module_name]), globals(), locals(),
+                        ['clients', module_name], 0)
+                    client_name = _get_client_classes(client_module)
+                    if service_name not in services:
+                        services[service_name] = (client_name, [api_version])
+                    elif api_version not in services[service_name][1]:
+                        services[service_name][1].append(api_version)
+    return services

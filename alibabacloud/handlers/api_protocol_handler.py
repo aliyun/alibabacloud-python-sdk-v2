@@ -86,7 +86,7 @@ class APIProtocolHandler(RequestHandler):
         def handle_params(params, prefix=''):
             global DEPTH
             DEPTH += 1
-            if DEPTH >= 100:
+            if DEPTH >= 10:
                 raise MaximumRecursionException()
             if isinstance(params, list):
                 for i in range(len(params)):

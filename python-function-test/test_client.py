@@ -1,10 +1,9 @@
 import os
-from alibabacloud.client import ClientConfig
-from alibabacloud.clients.eci_20180808 import EciClient
 import alibabacloud
 from alibabacloud.clients.ecs_20140526 import EcsClient
-from alibabacloud.exceptions import ServiceNameInvalidException, ApiVersionInvalidException, ServerException
-from base import TestCase
+from alibabacloud.exceptions import ServiceNameInvalidException, ApiVersionInvalidException
+# from base import TestCase
+from unittest import TestCase
 
 
 class AlibabaClientTest(TestCase):

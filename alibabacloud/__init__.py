@@ -27,7 +27,7 @@ from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSyste
 from alibabacloud.services.slb import SLBResource, LoadBalancerResource
 from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
 from alibabacloud.utils.utils import _assert_is_not_none
-from alibabacloud.utils.client_supports import CLIENT_SUPPORT
+from alibabacloud.utils.client_supports import _list_available_client_services
 
 
 ALIBABACLOUD_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -78,10 +78,11 @@ def get_resource(*args, **kwargs):
 
 
 def _check_client_service_name(service_name):
-    if service_name.lower() in CLIENT_SUPPORT:
-        return CLIENT_SUPPORT[service_name.lower()]
+    available_clients = _list_available_client_services()
+    if service_name.lower() in available_clients:
+        return available_clients[service_name.lower()]
     raise ServiceNameInvalidException(service_name=service_name,
-                                      more=','.join([item for item in CLIENT_SUPPORT.keys()]))
+                                      more=','.join([item for item in available_clients.keys()]))
 
 
 def _prepare_module(service_name, api_version):
@@ -101,7 +102,6 @@ def _prepare_module(service_name, api_version):
 
 def client(service_name, api_version, **kwargs):
     """
-
     :param service_name: Ecs or ECS or eCS
     :param api_version: 2018-06-09
     :param kwargs:
