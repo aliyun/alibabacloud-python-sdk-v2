@@ -51,11 +51,11 @@ class TimeoutConfigReader(RequestHandler):
             if context.config.read_timeout else None
         file_read_timeout = None
         product_code = context.client.product_code
-        product_version = context.client.product_version
+        api_version = context.client.api_version
         action_name = context.api_request.action_name
-        if product_code is not None and product_version is not None \
+        if product_code is not None and api_version is not None \
                 and action_name is not None:
-            path = '"{0}"."{1}"."{2}"'.format(product_code.lower(), product_version,
+            path = '"{0}"."{1}"."{2}"'.format(product_code.lower(), api_version,
                                               action_name)
             file_read_timeout = jmespath.search(path, _api_timeout_config_data)
         return read_timeout or file_read_timeout or DEFAULT_READ_TIMEOUT

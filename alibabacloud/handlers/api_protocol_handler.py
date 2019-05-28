@@ -16,8 +16,7 @@ import json
 import platform
 
 from alibabacloud.compat import urlencode
-from alibabacloud.exceptions import ParamTypeInvalidException, ClientException, \
-    MaximumRecursionException
+from alibabacloud.exceptions import ParamTypeInvalidException, ClientException
 from alibabacloud.handlers import RequestHandler
 from alibabacloud.utils import format_type
 from alibabacloud.vendored.requests.structures import CaseInsensitiveDict
@@ -80,14 +79,8 @@ class APIProtocolHandler(RequestHandler):
     def _filter_params(params):
         # handle params
         new_params = {}
-        global DEPTH
-        DEPTH = 0
 
         def handle_params(params, prefix=''):
-            global DEPTH
-            DEPTH += 1
-            if DEPTH >= 10:
-                raise MaximumRecursionException()
             if isinstance(params, list):
                 for i in range(len(params)):
                     handle_params(params[i], prefix=prefix + '.' + str(i + 1))

@@ -54,10 +54,10 @@ class EdasClient(AlibabaCloudClient):
 
         return self._handle_request(api_request).result
 
-    def synchronize_resource(self, _type=None):
+    def synchronize_resource(self, type_=None):
         api_request = APIRequest('SynchronizeResource', 'GET', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/v5/resource/pop_sync_resource'
-        api_request._params = {"Type": _type}
+        api_request._params = {"Type": type_}
         return self._handle_request(api_request).result
 
     def create_serverless_application(
@@ -439,10 +439,10 @@ class EdasClient(AlibabaCloudClient):
         api_request._params = {"AppId": app_id}
         return self._handle_request(api_request).result
 
-    def unbind_k8s_slb(self, app_id=None, cluster_id=None, _type=None):
+    def unbind_k8s_slb(self, app_id=None, cluster_id=None, type_=None):
         api_request = APIRequest('UnbindK8sSlb', 'DELETE', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/v5/k8s/acs/k8s_slb_binding'
-        api_request._params = {"AppId": app_id, "ClusterId": cluster_id, "Type": _type}
+        api_request._params = {"AppId": app_id, "ClusterId": cluster_id, "Type": type_}
         return self._handle_request(api_request).result
 
     def bind_k8s_slb(
@@ -452,7 +452,7 @@ class EdasClient(AlibabaCloudClient):
             port=None,
             app_id=None,
             cluster_id=None,
-            _type=None,
+            type_=None,
             target_port=None):
         api_request = APIRequest('BindK8sSlb', 'POST', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/v5/k8s/acs/k8s_slb_binding'
@@ -462,7 +462,7 @@ class EdasClient(AlibabaCloudClient):
             "Port": port,
             "AppId": app_id,
             "ClusterId": cluster_id,
-            "Type": _type,
+            "Type": type_,
             "TargetPort": target_port}
         return self._handle_request(api_request).result
 
@@ -472,7 +472,7 @@ class EdasClient(AlibabaCloudClient):
             port=None,
             app_id=None,
             cluster_id=None,
-            _type=None,
+            type_=None,
             target_port=None):
         api_request = APIRequest('UpdateK8sSlb', 'PUT', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/v5/k8s/acs/k8s_slb_binding'
@@ -481,7 +481,7 @@ class EdasClient(AlibabaCloudClient):
             "Port": port,
             "AppId": app_id,
             "ClusterId": cluster_id,
-            "Type": _type,
+            "Type": type_,
             "TargetPort": target_port}
         return self._handle_request(api_request).result
 
@@ -629,10 +629,10 @@ class EdasClient(AlibabaCloudClient):
         api_request._params = {"Name": name, "Telephone": telephone, "Email": email}
         return self._handle_request(api_request).result
 
-    def unbind_slb(self, slb_id=None, app_id=None, _type=None):
+    def unbind_slb(self, slb_id=None, app_id=None, type_=None):
         api_request = APIRequest('UnbindSlb', 'POST', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/app/unbind_slb_json'
-        api_request._params = {"SlbId": slb_id, "AppId": app_id, "Type": _type}
+        api_request._params = {"SlbId": slb_id, "AppId": app_id, "Type": type_}
         return self._handle_request(api_request).result
 
     def rollback_application(
@@ -857,7 +857,7 @@ class EdasClient(AlibabaCloudClient):
             region_tag=None,
             region_name=None,
             description=None,
-            _id=None):
+            id_=None):
         api_request = APIRequest('InsertOrUpdateRegion', 'POST', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/v5/user_region_def'
         api_request._params = {
@@ -865,7 +865,7 @@ class EdasClient(AlibabaCloudClient):
             "RegionTag": region_tag,
             "RegionName": region_name,
             "Description": description,
-            "Id": _id}
+            "Id": id_}
         return self._handle_request(api_request).result
 
     def insert_config_center(
@@ -1000,10 +1000,10 @@ class EdasClient(AlibabaCloudClient):
         api_request._params = {"AppId": app_id, "RuleId": rule_id}
         return self._handle_request(api_request).result
 
-    def delete_user_define_region(self, region_tag=None, _id=None):
+    def delete_user_define_region(self, region_tag=None, id_=None):
         api_request = APIRequest('DeleteUserDefineRegion', 'DELETE', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/v5/user_region_def'
-        api_request._params = {"RegionTag": region_tag, "Id": _id}
+        api_request._params = {"RegionTag": region_tag, "Id": id_}
         return self._handle_request(api_request).result
 
     def delete_service_group(self, group_id=None):
@@ -1070,7 +1070,7 @@ class EdasClient(AlibabaCloudClient):
             slb_id=None,
             app_id=None,
             slb_ip=None,
-            _type=None):
+            type_=None):
         api_request = APIRequest('BindSlb', 'POST', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/app/bind_slb_json'
         api_request._params = {
@@ -1079,7 +1079,7 @@ class EdasClient(AlibabaCloudClient):
             "SlbId": slb_id,
             "AppId": app_id,
             "SlbIp": slb_ip,
-            "Type": _type}
+            "Type": type_}
         return self._handle_request(api_request).result
 
     def authorize_role(self, role_ids=None, target_user_id=None):

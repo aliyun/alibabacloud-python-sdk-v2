@@ -5,7 +5,7 @@ from base import TestCase
 from alibabacloud.client import ClientConfig
 from alibabacloud.clients.eci_20180808 import EciClient
 from alibabacloud.clients.ecs_20140526 import EcsClient
-from alibabacloud.exceptions import ServerException, ParamTypeInvalidException
+from alibabacloud.exceptions import ServerException, ParamValidationException
 
 
 class GenTestCheckParams(TestCase):
@@ -28,8 +28,8 @@ class GenTestCheckParams(TestCase):
         try:
             context = ecs_client.describe_tags(tag=tag)
             assert False
-        except ParamTypeInvalidException as e:
-            self.assertEqual(e.error_message, "The type of param Tag must be list.")
+        except ParamValidationException as e:
+            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Container.0.Container.Port, value: {'Protocol': 'https', 'Port': '80'}, type: <class 'dict'>, valid types: <class 'list'>")
 
     def test_rpc_query_list1(self):
         # check two
@@ -40,8 +40,8 @@ class GenTestCheckParams(TestCase):
         try:
             context = ecs_client.describe_tags(tag=tag)
             assert False
-        except ParamTypeInvalidException as e:
-            self.assertEqual(e.error_message, "The type of param hi must be dict.")
+        except ParamValidationException as e:
+            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
 
     def test_rpc_query_list2(self):
         # tree layer check
@@ -57,8 +57,8 @@ class GenTestCheckParams(TestCase):
         try:
             context = eci_client.update_container_group(container=container)
             assert False
-        except ParamTypeInvalidException as e:
-            self.assertEqual(e.error_message, "The type of param Port must be list.")
+        except ParamValidationException as e:
+            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Container.0.Container.Port, value: {'Protocol': 'https', 'Port': '80'}, type: <class 'dict'>, valid types: <class 'list'>")
 
     def test_rpc_query_list3(self):
         # tree layer check

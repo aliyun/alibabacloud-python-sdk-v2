@@ -61,7 +61,7 @@ class CredentialsTest(SDKTestBase):
             "alice_test")
         client = AlibabaCloudClient(client_config, ram_role_arn_credential)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -84,7 +84,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -110,7 +110,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -134,7 +134,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -154,7 +154,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -174,7 +174,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -204,7 +204,7 @@ class CredentialsTest(SDKTestBase):
             "alice_test")
         client = AlibabaCloudClient(acs_client, ram_role_arn_credential)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -233,7 +233,7 @@ class CredentialsTest(SDKTestBase):
             "alice_test")
         client = AlibabaCloudClient(roa_client, ram_role_arn_credential)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -255,7 +255,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -274,7 +274,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -299,7 +299,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -313,7 +313,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -330,7 +330,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -348,7 +348,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -367,7 +367,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -387,7 +387,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')

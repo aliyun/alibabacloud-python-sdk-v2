@@ -35,8 +35,8 @@ class LinkWANClient(AlibabaCloudClient):
     def submit_external_nodes_adding_task(self, node_group_id=None, nodes=None):
         api_request = APIRequest('SubmitExternalNodesAddingTask', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"NodeGroupId": node_group_id, "Nodes": nodes}
-        repeat_info = {"Nodes": ('Nodes', list, dict, [('DevEui', str, None, None),
-                                                       ]),
+        repeat_info = {"Nodes": ('Nodes', 'list', 'dict', [('DevEui', 'str', None, None),
+                                                           ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -44,7 +44,7 @@ class LinkWANClient(AlibabaCloudClient):
     def delete_external_node_tuples(self, dev_eui_list=None):
         api_request = APIRequest('DeleteExternalNodeTuples', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"DevEuiList": dev_eui_list}
-        repeat_info = {"DevEuiList": ('DevEuiList', list, str, None),
+        repeat_info = {"DevEuiList": ('DevEuiList', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -67,11 +67,11 @@ class LinkWANClient(AlibabaCloudClient):
         api_request = APIRequest('SubmitExternalNodeTuplesImportingTask',
                                  'GET', 'https', 'RPC', 'body')
         api_request._params = {"NodeTuples": node_tuples}
-        repeat_info = {"NodeTuples": ('NodeTuples', list, dict, [('AppSKey', str, None, None),
-                                                                 ('NwkSKey', str, None, None),
-                                                                 ('LoraVer', str, None, None),
-                                                                 ('DevEui', str, None, None),
-                                                                 ]),
+        repeat_info = {"NodeTuples": ('NodeTuples', 'list', 'dict', [('AppSKey', 'str', None, None),
+                                                                     ('NwkSKey', 'str', None, None),
+                                                                     ('LoraVer', 'str', None, None),
+                                                                     ('DevEui', 'str', None, None),
+                                                                     ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -343,7 +343,7 @@ class LinkWANClient(AlibabaCloudClient):
             "HandleState": handle_state,
             "Category": category,
             "BeginMillis": begin_millis}
-        repeat_info = {"Category": ('Category', list, str, None),
+        repeat_info = {"Category": ('Category', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -378,7 +378,7 @@ class LinkWANClient(AlibabaCloudClient):
             "BeginMillis": begin_millis,
             "SortingField": sorting_field,
             "Ascending": ascending}
-        repeat_info = {"Category": ('Category', list, str, None),
+        repeat_info = {"Category": ('Category', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -386,7 +386,7 @@ class LinkWANClient(AlibabaCloudClient):
     def count_gateway_tuple_orders(self, states=None):
         api_request = APIRequest('CountGatewayTupleOrders', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"States": states}
-        repeat_info = {"States": ('States', list, str, None),
+        repeat_info = {"States": ('States', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -399,7 +399,7 @@ class LinkWANClient(AlibabaCloudClient):
     def count_node_tuple_orders(self, is_kpm=None, states=None):
         api_request = APIRequest('CountNodeTupleOrders', 'GET', 'https', 'RPC', 'body')
         api_request._params = {"IsKpm": is_kpm, "States": states}
-        repeat_info = {"States": ('States', list, str, None),
+        repeat_info = {"States": ('States', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -409,7 +409,7 @@ class LinkWANClient(AlibabaCloudClient):
         api_request._params = {
             "NotificationId": notification_id,
             "TargetHandleState": target_handle_state}
-        repeat_info = {"NotificationId": ('NotificationId', list, str, None),
+        repeat_info = {"NotificationId": ('NotificationId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -438,7 +438,7 @@ class LinkWANClient(AlibabaCloudClient):
             "State": state,
             "SortingField": sorting_field,
             "Ascending": ascending}
-        repeat_info = {"State": ('State', list, str, None),
+        repeat_info = {"State": ('State', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -469,7 +469,7 @@ class LinkWANClient(AlibabaCloudClient):
             "State": state,
             "SortingField": sorting_field,
             "Ascending": ascending}
-        repeat_info = {"State": ('State', list, str, None),
+        repeat_info = {"State": ('State', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -878,7 +878,7 @@ class LinkWANClient(AlibabaCloudClient):
 
     def list_rented_join_permissions(
             self,
-            _type=None,
+            type_=None,
             enabled=None,
             fuzzy_join_eui=None,
             limit=None,
@@ -890,7 +890,7 @@ class LinkWANClient(AlibabaCloudClient):
             ascending=None):
         api_request = APIRequest('ListRentedJoinPermissions', 'GET', 'https', 'RPC', 'body')
         api_request._params = {
-            "Type": _type,
+            "Type": type_,
             "Enabled": enabled,
             "FuzzyJoinEui": fuzzy_join_eui,
             "Limit": limit,
@@ -919,7 +919,7 @@ class LinkWANClient(AlibabaCloudClient):
     def count_rented_join_permissions(
             self,
             fuzzy_join_permission_name=None,
-            _type=None,
+            type_=None,
             enabled=None,
             bound_node_group=None,
             fuzzy_join_eui=None,
@@ -927,7 +927,7 @@ class LinkWANClient(AlibabaCloudClient):
         api_request = APIRequest('CountRentedJoinPermissions', 'GET', 'https', 'RPC', 'body')
         api_request._params = {
             "FuzzyJoinPermissionName": fuzzy_join_permission_name,
-            "Type": _type,
+            "Type": type_,
             "Enabled": enabled,
             "BoundNodeGroup": bound_node_group,
             "FuzzyJoinEui": fuzzy_join_eui,
@@ -1226,7 +1226,7 @@ class LinkWANClient(AlibabaCloudClient):
     def bind_nodes_to_multicast_group(self, mc_address=None, dev_eui_list=None):
         api_request = APIRequest('BindNodesToMulticastGroup', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"McAddress": mc_address, "DevEuiList": dev_eui_list}
-        repeat_info = {"DevEuiList": ('DevEuiList', list, str, None),
+        repeat_info = {"DevEuiList": ('DevEuiList', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1234,7 +1234,7 @@ class LinkWANClient(AlibabaCloudClient):
     def unbind_nodes_from_multicast_group(self, mc_address=None, dev_eui_list=None):
         api_request = APIRequest('UnbindNodesFromMulticastGroup', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"McAddress": mc_address, "DevEuiList": dev_eui_list}
-        repeat_info = {"DevEuiList": ('DevEuiList', list, str, None),
+        repeat_info = {"DevEuiList": ('DevEuiList', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result

@@ -249,45 +249,45 @@ class AlibabaCloudRetryTest(TestCase):
         unknown_error = SE("SDK_UNKNOWN_SERVER_ERROR")
         internal_error = SE("InternalError")
         product_code = client.product_code.lower()
-        product_version = client.product_version
+        api_version = client.api_version
         _assert_retryable(api_request, timeout_exception, 0, 500, product_code,
-                          product_version)
+                          api_version)
         _assert_retryable(api_request, timeout_exception, 2, 500, product_code,
-                          product_version)
-        _assert_retryable(api_request, unknown_error, 0, 500, product_code, product_version)
-        _assert_retryable(api_request, unknown_error, 0, 502, product_code, product_version)
-        _assert_retryable(api_request, unknown_error, 0, 503, product_code, product_version)
-        _assert_retryable(api_request, unknown_error, 0, 504, product_code, product_version)
-        _assert_retryable(api_request, internal_error, 0, 500, product_code, product_version)
+                          api_version)
+        _assert_retryable(api_request, unknown_error, 0, 500, product_code, api_version)
+        _assert_retryable(api_request, unknown_error, 0, 502, product_code, api_version)
+        _assert_retryable(api_request, unknown_error, 0, 503, product_code, api_version)
+        _assert_retryable(api_request, unknown_error, 0, 504, product_code, api_version)
+        _assert_retryable(api_request, internal_error, 0, 500, product_code, api_version)
         _assert_retryable(api_request, SE("Throttling"), 0, 400, product_code,
-                          product_version)
+                          api_version)
         _assert_retryable(api_request, SE("ServiceUnavailable"), 0, 503, product_code,
-                          product_version)
+                          api_version)
         _assert_not_retryable(api_request, invalid_param_excpetion, 0, 400, product_code,
-                              product_version)
+                              api_version)
         _assert_not_retryable(api_request, timeout_exception, 3, 500, product_code,
-                              product_version)
+                              api_version)
         _assert_not_retryable(api_request, SE("InvalidAccessKeyId.NotFound"), 0, 404,
-                              product_code, product_version)
+                              product_code, api_version)
 
         request1 = APIRequest('DescribeInstanceHistoryEvents', 'GET', 'http', 'RPC')
 
         _assert_retryable(request1, SE("ServiceUnavailable"), 0, 503,
-                          product_code, product_version)
+                          product_code, api_version)
 
         request2 = APIRequest('DescribeDisks', 'GET', 'http', 'RPC')
 
         _assert_retryable(request2, SE("ServiceUnavailable"), 0, 503,
-                          product_code, product_version)
+                          product_code, api_version)
         # no_retry
         no_retry_request = APIRequest('AttachDisk', 'GET', 'http', 'RPC')
 
         _assert_not_retryable(no_retry_request, timeout_exception, 0, 500, product_code,
-                              product_version)
+                              api_version)
         _assert_not_retryable(no_retry_request, unknown_error, 0, 504, product_code,
-                              product_version)
+                              api_version)
         _assert_not_retryable(no_retry_request, invalid_param_excpetion, 0, 400, product_code,
-                              product_version)
+                              api_version)
         request1 = APIRequest('CreateInstance', 'GET', 'http', 'RPC')
 
         _assert_retryable_with_client_token(request1)

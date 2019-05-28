@@ -123,7 +123,7 @@ class APIRequestTest(TestCase):
 
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Kms"
-        client.product_version = "2016-01-20"
+        client.api_version = "2016-01-20"
         client.location_service_code = 'kms'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('ListKeys', 'GET', 'https', 'RPC')

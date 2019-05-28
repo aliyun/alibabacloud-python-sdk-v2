@@ -21,7 +21,7 @@ class MiniRAMClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = "Sts"
-        self.product_version = "2015-04-01"
+        self.api_version = "2015-04-01"
         self.location_service_code = 'sts'
         self.location_endpoint_type = "openAPI"
 

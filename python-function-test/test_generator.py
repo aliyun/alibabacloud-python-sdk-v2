@@ -7,7 +7,7 @@ from alibabacloud.clients.eci_20180808 import EciClient
 from alibabacloud.clients.edas_20170801 import EdasClient
 from alibabacloud.clients.linkwan_20181230 import LinkWANClient
 from alibabacloud.clients.ecs_20140526 import EcsClient
-from alibabacloud.exceptions import ServerException, HttpErrorException, ParamTypeInvalidException
+from alibabacloud.exceptions import ServerException, HttpErrorException, ParamValidationException
 
 from utils import crClient, CSBClient, OpenanalyticsClient
 
@@ -53,8 +53,8 @@ class GenTestBase(TestCase):
             context = ecs_client.add_tags(tag=tag, resource_type="instance",
                                           resource_id="i-bp13ozj6v9ckzcq8sjxw")
             assert False
-        except ParamTypeInvalidException as e:
-            self.assertEqual(e.error_message, "The type of param Tag must be list.")
+        except ParamValidationException as e:
+            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
 
     def test_rpc_query_get1(self):
         # TODO
@@ -64,8 +64,8 @@ class GenTestBase(TestCase):
         try:
             context = ecs_client.describe_container_groups(tag=tag)
             assert False
-        except ParamTypeInvalidException as e:
-            self.assertEqual(e.error_message, "The type of param hi must be dict.")
+        except ParamValidationException as e:
+            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
 
     def test_rpc_body_get(self):
 

@@ -53,7 +53,7 @@ class ServerErrorHandler(RequestHandler):
                 context.exception = ServerException(server_error_code, server_error_message,
                                                     context.endpoint, context.client.product_code,
                                                     response.status_code, request_id,
-                                                    context.client.product_version)
+                                                    context.client.api_version)
 
     @staticmethod
     def _parse_error_info_from_response_body(logger, response_body):

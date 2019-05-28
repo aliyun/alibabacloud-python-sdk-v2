@@ -210,9 +210,9 @@ class SlbClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "PageSize": page_size,
             "Tag": tag}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -600,9 +600,9 @@ class SlbClient(AlibabaCloudClient):
             "Tag": tag,
             "OwnerId": owner_id,
             "CACertificateId": ca_certificate_id}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1728,9 +1728,9 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ServerCertificateId": server_certificate_id,
             "Tags": tags}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1838,9 +1838,9 @@ class SlbClient(AlibabaCloudClient):
             "InternetChargeType": internet_charge_type,
             "VpcId": vpc_id,
             "PayType": pay_type}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result

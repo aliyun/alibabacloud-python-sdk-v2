@@ -92,7 +92,7 @@ class EndpointTest(SDKTestBase):
                 AlibabaCloudClient.__init__(self, client_config, None)
                 self.product_code = product
                 self.location_service_code = location_service_code
-                self.product_version = version
+                self.api_version = version
                 self.location_endpoint_type = endpoint_type
 
         return TempClient()
@@ -101,7 +101,7 @@ class EndpointTest(SDKTestBase):
         client_config = self._init_client_config()
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -111,7 +111,7 @@ class EndpointTest(SDKTestBase):
         client_config = self._init_client_config()
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ram"
-        client.product_version = "2015-05-01"
+        client.api_version = "2015-05-01"
         client.location_service_code = 'ram'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('ListAccessKeys', 'GET', 'https', 'RPC')
@@ -175,7 +175,7 @@ class EndpointTest(SDKTestBase):
         client_config = self._init_client_config()
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -356,7 +356,7 @@ class EndpointTest(SDKTestBase):
                                      region_id="cn-hangzhou")
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         self.init_env(client_config, None, None)
@@ -374,7 +374,7 @@ class EndpointTest(SDKTestBase):
                                      region_id="cn-hangzhou")
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         self.init_env(client_config, None, None)
@@ -390,7 +390,7 @@ class EndpointTest(SDKTestBase):
         client_config = self._init_client_config()
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -402,7 +402,7 @@ class EndpointTest(SDKTestBase):
 
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -422,7 +422,7 @@ class EndpointTest(SDKTestBase):
 
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "CloudAPI"
-        client.product_version = "2016-07-14"
+        client.api_version = "2016-07-14"
         client.location_service_code = 'apigateway'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeApis', 'GET', 'https', 'RPC')
@@ -437,7 +437,7 @@ class EndpointTest(SDKTestBase):
 
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "CloudAPI"
-        client.product_version = "2016-07-14"
+        client.api_version = "2016-07-14"
         client.location_service_code = 'apigateway'
         client.location_endpoint_type = "openAPI"
         client._endpoint_resolver = self._endpoint_resolver
@@ -460,7 +460,7 @@ class EndpointTest(SDKTestBase):
         client_config.endpoint = "ecs-cn-hangzhou.aliyuncs.com"
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeInstances', 'GET', 'https', 'RPC')
@@ -501,7 +501,7 @@ class EndpointTest(SDKTestBase):
         client_config = self._init_client_config()
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "BssOpenApi"
-        client.product_version = "2017-12-14"
+        client.api_version = "2017-12-14"
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('GetOrderDetail', 'GET', 'https', 'RPC')
         api_request._params = {"OrderId": "blah"}
@@ -522,7 +522,7 @@ class EndpointTest(SDKTestBase):
 
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "faas"
-        client.product_version = "2017-08-24"
+        client.api_version = "2017-08-24"
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeLoadTaskStatus', 'POST', 'https', 'RPC')
         api_request._params = {"FpgaUUID": "blah", "InstanceId": "blah", "RoleArn": "blah"}

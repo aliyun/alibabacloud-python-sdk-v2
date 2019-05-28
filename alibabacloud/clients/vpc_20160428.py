@@ -68,7 +68,7 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_express_cloud_connections(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -77,16 +77,16 @@ class VpcClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribeExpressCloudConnections', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -149,24 +149,78 @@ class VpcClient(AlibabaCloudClient):
             "UpdateEgressAclEntries": update_egress_acl_entries,
             "OwnerId": owner_id,
             "IngressAclEntries": ingress_acl_entries}
-        repeat_info = {"EgressAclEntries": ('EgressAclEntries', list, dict, [('NetworkAclEntryName', str, None, None),
-                                                                             ('NetworkAclEntryId', str, None, None),
-                                                                             ('Policy', str, None, None),
-                                                                             ('Protocol', str, None, None),
-                                                                             ('DestinationCidrIp', str, None, None),
-                                                                             ('Port', str, None, None),
-                                                                             ('EntryType', str, None, None),
-                                                                             ('Description', str, None, None),
-                                                                             ]),
-                       "IngressAclEntries": ('IngressAclEntries', list, dict, [('NetworkAclEntryName', str, None, None),
-                                                                               ('NetworkAclEntryId', str, None, None),
-                                                                               ('Policy', str, None, None),
-                                                                               ('Protocol', str, None, None),
-                                                                               ('SourceCidrIp', str, None, None),
-                                                                               ('Port', str, None, None),
-                                                                               ('EntryType', str, None, None),
-                                                                               ('Description', str, None, None),
-                                                                               ]),
+        repeat_info = {"EgressAclEntries": ('EgressAclEntries',
+                                            'list',
+                                            'dict',
+                                            [('NetworkAclEntryName',
+                                              'str',
+                                              None,
+                                              None),
+                                             ('NetworkAclEntryId',
+                                              'str',
+                                              None,
+                                              None),
+                                                ('Policy',
+                                                 'str',
+                                                 None,
+                                                 None),
+                                                ('Protocol',
+                                                 'str',
+                                                 None,
+                                                 None),
+                                                ('DestinationCidrIp',
+                                                 'str',
+                                                 None,
+                                                 None),
+                                                ('Port',
+                                                 'str',
+                                                 None,
+                                                 None),
+                                                ('EntryType',
+                                                 'str',
+                                                 None,
+                                                 None),
+                                                ('Description',
+                                                 'str',
+                                                 None,
+                                                 None),
+                                             ]),
+                       "IngressAclEntries": ('IngressAclEntries',
+                                             'list',
+                                             'dict',
+                                             [('NetworkAclEntryName',
+                                               'str',
+                                               None,
+                                               None),
+                                              ('NetworkAclEntryId',
+                                                 'str',
+                                                 None,
+                                                 None),
+                                                 ('Policy',
+                                                  'str',
+                                                  None,
+                                                  None),
+                                                 ('Protocol',
+                                                  'str',
+                                                  None,
+                                                  None),
+                                                 ('SourceCidrIp',
+                                                  'str',
+                                                  None,
+                                                  None),
+                                                 ('Port',
+                                                  'str',
+                                                  None,
+                                                  None),
+                                                 ('EntryType',
+                                                  'str',
+                                                  None,
+                                                  None),
+                                                 ('Description',
+                                                  'str',
+                                                  None,
+                                                  None),
+                                              ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -187,10 +241,10 @@ class VpcClient(AlibabaCloudClient):
             "Resource": resource,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id}
-        repeat_info = {"Resource": ('Resource', list, dict, [('ResourceType', str, None, None),
-                                                             ('ResourceId', str, None, None),
-                                                             ]),
-                       }
+        repeat_info = {
+            "Resource": (
+                'Resource', 'list', 'dict', [
+                    ('ResourceType', 'str', None, None), ('ResourceId', 'str', None, None), ]), }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -328,10 +382,10 @@ class VpcClient(AlibabaCloudClient):
             "Resource": resource,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id}
-        repeat_info = {"Resource": ('Resource', list, dict, [('ResourceType', str, None, None),
-                                                             ('ResourceId', str, None, None),
-                                                             ]),
-                       }
+        repeat_info = {
+            "Resource": (
+                'Resource', 'list', 'dict', [
+                    ('ResourceType', 'str', None, None), ('ResourceId', 'str', None, None), ]), }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -735,12 +789,30 @@ class VpcClient(AlibabaCloudClient):
             "CompanyName": company_name,
             "Si": si,
             "PMInfo": pm_info}
-        repeat_info = {"PMInfo": ('PMInfo', list, dict, [('PMCertificateNo', str, None, None),
-                                                         ('PMName', str, None, None),
-                                                         ('PMCertificateType', str, None, None),
-                                                         ('PMContactInfo', str, None, None),
-                                                         ('PMGender', str, None, None),
-                                                         ]),
+        repeat_info = {"PMInfo": ('PMInfo',
+                                  'list',
+                                  'dict',
+                                  [('PMCertificateNo',
+                                    'str',
+                                    None,
+                                    None),
+                                   ('PMName',
+                                    'str',
+                                    None,
+                                    None),
+                                      ('PMCertificateType',
+                                       'str',
+                                       None,
+                                       None),
+                                      ('PMContactInfo',
+                                       'str',
+                                       None,
+                                       None),
+                                      ('PMGender',
+                                       'str',
+                                       None,
+                                       None),
+                                   ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -2133,9 +2205,9 @@ class VpcClient(AlibabaCloudClient):
             "PageSize": page_size,
             "Tag": tag,
             "RouteTableId": route_table_id}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -3279,7 +3351,7 @@ class VpcClient(AlibabaCloudClient):
             owner_account=None,
             description=None,
             interface_name=None,
-            _type=None,
+            type_=None,
             owner_id=None,
             line_operator=None,
             name=None,
@@ -3298,7 +3370,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Description": description,
             "InterfaceName": interface_name,
-            "Type": _type,
+            "Type": type_,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
             "Name": name,
@@ -3628,7 +3700,7 @@ class VpcClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        repeat_info = {"RemovedIpAddresses": ('RemovedIpAddresses', list, str, None),
+        repeat_info = {"RemovedIpAddresses": ('RemovedIpAddresses', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4008,9 +4080,9 @@ class VpcClient(AlibabaCloudClient):
             "Tag": tag,
             "IsDefault": is_default,
             "RouteTableId": route_table_id}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4061,16 +4133,16 @@ class VpcClient(AlibabaCloudClient):
             "PageSize": page_size,
             "Tag": tag,
             "IsDefault": is_default}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
     def describe_virtual_border_routers_for_physical_connection(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             physical_connection_id=None,
@@ -4084,23 +4156,23 @@ class VpcClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "PhysicalConnectionId": physical_connection_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
     def describe_virtual_border_routers(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             page_size=None,
@@ -4108,15 +4180,15 @@ class VpcClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribeVirtualBorderRouters', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4128,7 +4200,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            _type=None,
+            type_=None,
             page_number=None,
             router_type=None,
             resource_group_id=None,
@@ -4143,7 +4215,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "Type": _type,
+            "Type": type_,
             "PageNumber": page_number,
             "RouterType": router_type,
             "ResourceGroupId": resource_group_id,
@@ -4155,7 +4227,7 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_router_interfaces(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             page_size=None,
@@ -4164,16 +4236,16 @@ class VpcClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribeRouterInterfaces', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "IncludeReservationData": include_reservation_data,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4198,7 +4270,7 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_physical_connections(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
@@ -4209,7 +4281,7 @@ class VpcClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribePhysicalConnections', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
@@ -4218,9 +4290,9 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "IncludeReservationData": include_reservation_data,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4255,7 +4327,7 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_ha_vips(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -4264,16 +4336,16 @@ class VpcClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribeHaVips', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4380,9 +4452,9 @@ class VpcClient(AlibabaCloudClient):
             "ChargeType": charge_type,
             "AssociatedInstanceId": associated_instance_id,
             "Status": status}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4411,29 +4483,29 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_access_points(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             host_operator=None,
             resource_owner_account=None,
             name=None,
             page_size=None,
             owner_id=None,
-            _type=None,
+            type_=None,
             page_number=None):
         api_request = APIRequest('DescribeAccessPoints', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "HostOperator": host_operator,
             "ResourceOwnerAccount": resource_owner_account,
             "Name": name,
             "PageSize": page_size,
             "OwnerId": owner_id,
-            "Type": _type,
+            "Type": type_,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4528,10 +4600,10 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "NextHopList": next_hop_list,
             "RouteTableId": route_table_id}
-        repeat_info = {"NextHopList": ('NextHopList', list, dict, [('NextHopId', str, None, None),
-                                                                   ('NextHopType', str, None, None),
-                                                                   ]),
-                       }
+        repeat_info = {
+            "NextHopList": (
+                'NextHopList', 'list', 'dict', [
+                    ('NextHopId', 'str', None, None), ('NextHopType', 'str', None, None), ]), }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -4815,10 +4887,10 @@ class VpcClient(AlibabaCloudClient):
             "NextHopType": next_hop_type,
             "NextHopList": next_hop_list,
             "RouteTableId": route_table_id}
-        repeat_info = {"NextHopList": ('NextHopList', list, dict, [('Weight', str, None, None),
-                                                                   ('NextHopId', str, None, None),
-                                                                   ('NextHopType', str, None, None),
-                                                                   ]),
+        repeat_info = {"NextHopList": ('NextHopList', 'list', 'dict', [('Weight', 'str', None, None),
+                                                                       ('NextHopId', 'str', None, None),
+                                                                       ('NextHopType', 'str', None, None),
+                                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4836,7 +4908,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_account=None,
             owner_account=None,
             description=None,
-            _type=None,
+            type_=None,
             owner_id=None,
             line_operator=None,
             name=None):
@@ -4853,7 +4925,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "Description": description,
-            "Type": _type,
+            "Type": type_,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
             "Name": name}
@@ -4892,26 +4964,26 @@ class VpcClient(AlibabaCloudClient):
             "InstanceChargeType": instance_charge_type,
             "PricingCycle": pricing_cycle}
         repeat_info = {"BandwidthPackage": ('BandwidthPackage',
-                                            list,
-                                            dict,
+                                            'list',
+                                            'dict',
                                             [('Bandwidth',
-                                              str,
+                                              'str',
                                               None,
                                               None),
                                              ('Zone',
-                                              str,
+                                              'str',
                                               None,
                                               None),
                                                 ('InternetChargeType',
-                                                 str,
+                                                 'str',
                                                  None,
                                                  None),
                                                 ('ISP',
-                                                 str,
+                                                 'str',
                                                  None,
                                                  None),
                                                 ('IpCount',
-                                                 str,
+                                                 'str',
                                                  None,
                                                  None),
                                              ]),

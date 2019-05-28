@@ -21,7 +21,7 @@ class CSBClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'CSB'
-        self.product_version = '2017-11-18'
+        self.api_version = '2017-11-18'
         self.location_service_code = 'csb'
         self.location_endpoint_type = 'openAPI'
 
@@ -41,7 +41,7 @@ class crClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'cr'
-        self.product_version = '2016-06-07'
+        self.api_version = '2016-06-07'
         self.location_service_code = 'cr'
         self.location_endpoint_type = 'openAPI'
 
@@ -66,7 +66,7 @@ class OpenanalyticsClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'openanalytics'
-        self.product_version = '2018-03-01'
+        self.api_version = '2018-03-01'
         self.location_service_code = 'openanalytics'
         self.location_endpoint_type = 'openAPI'
 

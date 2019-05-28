@@ -53,6 +53,10 @@ class ParamTypeInvalidException(AlibabaCloudException):
     fmt = 'The type of param {param} must be {param_type}.'
 
 
+class ParamValidationException(AlibabaCloudException):
+    fmt = 'Parameter validation failed: {report}'
+
+
 class NoModuleException(AlibabaCloudException):
     fmt = 'Could not import "{name}".'
 

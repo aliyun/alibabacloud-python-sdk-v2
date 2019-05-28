@@ -50,7 +50,7 @@ class ErrorTest(SDKTestBase):
                                      region_id="cn-abc")
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -67,7 +67,7 @@ class ErrorTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DeleteInstance', 'GET', 'https', 'RPC')
@@ -87,7 +87,7 @@ class ErrorTest(SDKTestBase):
                                      read_timeout=0.001)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('CreateInstance', 'GET', 'http', 'RPC')
@@ -116,7 +116,7 @@ class ErrorTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -151,7 +151,7 @@ class ErrorTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -190,7 +190,7 @@ class ErrorTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -225,7 +225,7 @@ class ErrorTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -258,7 +258,7 @@ class ErrorTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')

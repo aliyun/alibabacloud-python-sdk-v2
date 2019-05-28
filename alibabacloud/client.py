@@ -147,7 +147,7 @@ class AlibabaCloudClient(object):
     def __init__(self, client_config, credentials_provider=None):
         self.product_code = None
         self.location_service_code = None
-        self.product_version = None
+        self.api_version = None
         self.location_endpoint_type = None
 
         self.logger = self._init_logger()  # TODO initialize
