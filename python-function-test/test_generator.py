@@ -1,5 +1,7 @@
 import json
 import os
+
+from alibabacloud.vendored import six
 from base import TestCase
 
 from alibabacloud.client import ClientConfig
@@ -54,7 +56,11 @@ class GenTestBase(TestCase):
                                           resource_id="i-bp13ozj6v9ckzcq8sjxw")
             assert False
         except ParamValidationException as e:
-            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
+            if six.PY2:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <type 'str'>, valid types: <type 'list'>")
+            else:
+                self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
 
     def test_rpc_query_get1(self):
         # TODO
@@ -65,7 +71,12 @@ class GenTestBase(TestCase):
             context = ecs_client.describe_container_groups(tag=tag)
             assert False
         except ParamValidationException as e:
-            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
+            if six.PY2:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <type 'str'>, valid types: <type 'dict'>")
+
+            else:
+                self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
 
     def test_rpc_body_get(self):
 

@@ -1,4 +1,6 @@
 import os
+
+from alibabacloud.vendored import six
 from base import TestCase
 
 
@@ -29,7 +31,11 @@ class GenTestCheckParams(TestCase):
             context = ecs_client.describe_tags(tag=tag)
             assert False
         except ParamValidationException as e:
-            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
+            if six.PY2:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <type 'str'>, valid types: <type 'list'>")
+            else:
+                self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
 
     def test_rpc_query_list1(self):
         # check two
@@ -41,7 +47,11 @@ class GenTestCheckParams(TestCase):
             context = ecs_client.describe_tags(tag=tag)
             assert False
         except ParamValidationException as e:
-            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
+            if six.PY2:
+                self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <type 'str'>, valid types: <type 'dict'>")
+
+            else:
+                self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
 
     def test_rpc_query_list2(self):
         # tree layer check

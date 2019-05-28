@@ -11,10 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 __version__ = '0.0.4'
 
 import os
-
+from functools import wraps
 from aliyunsdkcore.acs_exception.exceptions import ClientException
 from aliyunsdkcore.client import AcsClient
 
@@ -26,9 +27,8 @@ from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSyste
     ECSImageResource, ECSDiskResource
 from alibabacloud.services.slb import SLBResource, LoadBalancerResource
 from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
-from alibabacloud.utils.utils import _assert_is_not_none
 from alibabacloud.utils.client_supports import _list_available_client_services
-
+from alibabacloud.utils.utils import _assert_is_not_none
 
 ALIBABACLOUD_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -77,6 +77,20 @@ def get_resource(*args, **kwargs):
                               "Resource '{0}' is not currently supported.".format(resource_name))
 
 
+def instance_cache(function):
+    cache = {}
+    @wraps(function)
+    def wrapper(**kwargs):
+        key = kwargs.get('service_name')+"@"+kwargs.get("api_version")
+        if key in cache:
+            return cache[key]
+        else:
+            rv = function(**kwargs)
+            cache[key] = rv
+            return rv
+    return wrapper
+
+
 def _check_client_service_name(service_name):
     available_clients = _list_available_client_services()
     if service_name.lower() in available_clients:
@@ -100,6 +114,7 @@ def _prepare_module(service_name, api_version):
     return module_name, client_name
 
 
+@instance_cache
 def client(service_name, api_version, **kwargs):
     """
     :param service_name: Ecs or ECS or eCS

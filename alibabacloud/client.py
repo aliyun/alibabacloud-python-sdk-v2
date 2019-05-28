@@ -29,7 +29,7 @@ from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import HTTPRequest
 from alibabacloud.utils.ini_helper import load_config
-from alibabacloud.exceptions import ClientException, ParamTypeInvalidException
+from alibabacloud.exceptions import ClientException, ParamTypeInvalidException, ConfigNotFoundException
 from logging.handlers import RotatingFileHandler
 
 
@@ -118,8 +118,11 @@ class ClientConfig(object):
                     profile = loaded_config.get('default', {})
             else:
                 filename = self.DEFAULT_NAME_FOR_CONFIG_FILE
-                loaded_config = load_config(filename)
-                profile = loaded_config.get('default', {})
+                try:
+                    loaded_config = load_config(filename)
+                    profile = loaded_config.get('default', {})
+                except ConfigNotFoundException:
+                    pass
 
         else:
             profile = load_config(self.config_file)

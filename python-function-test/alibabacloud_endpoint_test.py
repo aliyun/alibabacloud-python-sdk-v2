@@ -516,7 +516,6 @@ class EndpointTest(SDKTestBase):
         resolver = DefaultEndpointResolver(temp_client.config, temp_client.credentials_provider)
         request = ResolveEndpointRequest("cn-hangzhou", "faas", None, None)
         self.assertEqual("faas.cn-hangzhou.aliyuncs.com", resolver.resolve(request))
-        client = self.init_client(region_id="cn-hangzhou")
 
         client_config = self._init_client_config()
 

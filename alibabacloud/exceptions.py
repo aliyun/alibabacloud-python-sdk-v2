@@ -57,6 +57,26 @@ class ParamValidationException(AlibabaCloudException):
     fmt = 'Parameter validation failed: {report}'
 
 
+class ConfigNotFoundException(AlibabaCloudException):
+    fmt = 'The specified config file ({path}) could not be found.'
+
+
+class NoCredentialsException(AlibabaCloudException):
+    fmt = 'Unable to locate credentials'
+
+
+class CredentialRetrievalException(AlibabaCloudException):
+    fmt = 'Error when retrieving credentials from {provider}: {error_msg}'
+
+
+class NoRegionException(AlibabaCloudException):
+    fmt = 'You must specify a region.'
+
+
+class PartialCredentialsException(AlibabaCloudException):
+    fmt = 'Partial credentials found in {provider}, missing: {cred_var}'
+
+
 class NoModuleException(AlibabaCloudException):
     fmt = 'Could not import "{name}".'
 

@@ -118,22 +118,20 @@ class ParamValidator(object):
     @type_check(valid_types=(list,))
     def _validate_list(self, param, shape, errors, name):
         """
-
         :param param: [{'Port': {'Protocol': 'https', 'Port': '80'}}]
         :param shape:
         :param errors:
         :param name:
         :return:
         """
-        member_shape = shape.cparams  # 孩子参数
+        member_shape = shape.cparams
         for i, item in enumerate(param):
-            if member_shape is not None:  # 证明自己的dict
+            if member_shape is not None:
                 self._validate_dict(item, member_shape, errors,
                                     '.'.join([name, str(i), shape.sname]))
 
     @type_check(valid_types=(dict,))
     def _validate_dict(self, param, shape, errors, name):
-        # TODO shape 应该是一个列表
         """
         :param param: {'Port': {'Protocol': 'https', 'Port': '80'}}
         :param shape:

@@ -20,7 +20,7 @@ from alibabacloud.credentials import AccessKeyCredentials
 from alibabacloud.credentials.provider import RamRoleCredentialsProvider, StaticCredentialsProvider, \
     DefaultChainedCredentialsProvider, ProfileCredentialsProvider, \
     InstanceProfileCredentialsProvider
-from alibabacloud.exceptions import ServerException, ClientException
+from alibabacloud.exceptions import ServerException, ClientException, PartialCredentialsException, ConfigNotFoundException
 from alibabacloud.request import APIRequest
 from alibabacloud.utils import ini_helper
 from alibabacloud.vendored import requests
@@ -404,17 +404,17 @@ class CredentialsTest(SDKTestBase):
         os.environ["ALIBABA_CLOUD_ACCESS_KEY_ID"] = self.access_key_id
         os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_SECRET")
         client_config = ClientConfig(region_id=self.region_id)
-        with self.assertRaises(ClientException) as e:
+        with self.assertRaises(PartialCredentialsException) as e:
             DefaultChainedCredentialsProvider(client_config)
         self.assertEqual(e.exception.error_message,
-                         "Environment variable ALIBABA_CLOUD_ACCESS_KEY_SECRET cannot be empty.")
+                         "Partial credentials found in env, missing: access_key_secret")
 
     def test_local_file_default_config_with_path_error(self):
         os.environ.setdefault('ALIBABA_CLOUD_CREDENTIALS_FILE', 'abc')
         client_config = ClientConfig(region_id=self.region_id)
-        with self.assertRaises(ClientException) as e:
+        with self.assertRaises(ConfigNotFoundException) as e:
             DefaultChainedCredentialsProvider(client_config)
-        self.assertEqual(e.exception.error_message, "Failed to find config file for SDK: abc")
+        self.assertEqual(e.exception.error_message, "The specified config file (abc) could not be found.")
         os.environ.pop("ALIBABA_CLOUD_CREDENTIALS_FILE")
 
     def test_local_file_default_config_with_none_error(self):

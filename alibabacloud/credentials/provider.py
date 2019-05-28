@@ -20,7 +20,8 @@ from alibabacloud.credentials import AccessKeyCredentials
 from alibabacloud.credentials import BearerTokenCredentials
 from alibabacloud.credentials import SecurityCredentials
 from alibabacloud.credentials.assume_role_caller import AssumeRoleCaller
-from alibabacloud.exceptions import ClientException
+from alibabacloud.exceptions import ClientException, ConfigNotFoundException, \
+    CredentialRetrievalException, PartialCredentialsException
 from alibabacloud.utils.ini_helper import load_config
 
 
@@ -112,22 +113,22 @@ class ProfileCredentialsProvider(CredentialsProvider):
     def _load_profile(config_file_name, profile_name):
         full_path = os.path.expanduser(config_file_name)
         if not os.path.isfile(full_path):
-            raise ClientException(msg="Failed to find config file for SDK: {}".format(full_path))
+            raise ConfigNotFoundException(path=full_path)
         config = load_config(full_path)
         profile = config.get(profile_name, {})
         if not profile:
             raise ClientException(msg='Can not find valid credentials provider.')
         if 'type' not in profile:
-            raise ClientException(msg='The Credentials file {} '
-                                      'can not find the needed param "type".'.format(full_path))
+            raise CredentialRetrievalException(provider='profile',
+                                               error_msg='No needed params "type" in ({})'.format(
+                                                   full_path))
         return profile
 
     def _get_provider_by_profile(self, profile):
 
         def _get_value(key):
             if key not in profile:
-                raise ClientException(
-                    msg="{0} must be set for credentials type {1}.".format(key, type_))
+                raise PartialCredentialsException(provider='profile', cred_var=key)
             return profile[key]
 
         type_ = profile.get('type')
@@ -183,14 +184,10 @@ class EnvCredentialsProvider(CachedCredentialsProvider):
         if self.ENV_NAME_FOR_ACCESS_KEY_ID in os.environ:
             access_key_id = os.environ.get(self.ENV_NAME_FOR_ACCESS_KEY_ID)
             if access_key_id is None:
-                raise ClientException(
-                    msg='Environment variable {} cannot be empty.'
-                        .format(self.ENV_NAME_FOR_ACCESS_KEY_ID))
+                raise PartialCredentialsException(provider='env', cred_var="access_key_id")
             access_key_secret = os.environ.get(self.ENV_NAME_FOR_ACCESS_KEY_SECRET)
             if access_key_secret is None:
-                raise ClientException(
-                    msg='Environment variable {} cannot be empty.'
-                        .format(self.ENV_NAME_FOR_ACCESS_KEY_SECRET))
+                raise PartialCredentialsException(provider='env', cred_var="access_key_secret")
 
             self._cached_credentials = AccessKeyCredentials(
                 access_key_id=access_key_id,
