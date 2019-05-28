@@ -29,7 +29,7 @@ class GenTestCheckParams(TestCase):
             context = ecs_client.describe_tags(tag=tag)
             assert False
         except ParamValidationException as e:
-            self.assertEqual(e.error_message, " Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
+            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
 
     def test_rpc_query_list1(self):
         # check two
