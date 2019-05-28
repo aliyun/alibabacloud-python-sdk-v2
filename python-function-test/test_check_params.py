@@ -68,7 +68,11 @@ class GenTestCheckParams(TestCase):
             context = eci_client.update_container_group(container=container)
             assert False
         except ParamValidationException as e:
-            self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Container.0.Container.Port, value: {'Protocol': 'https', 'Port': '80'}, type: <class 'dict'>, valid types: <class 'list'>")
+            if six.PY2:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Container.0.Container.Port, value: {'Protocol': 'https', 'Port': '80'}, type: <type 'dict'>, valid types: <type 'list'>")
+            else:
+                self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Container.0.Container.Port, value: {'Protocol': 'https', 'Port': '80'}, type: <class 'dict'>, valid types: <class 'list'>")
 
     def test_rpc_query_list3(self):
         # tree layer check
