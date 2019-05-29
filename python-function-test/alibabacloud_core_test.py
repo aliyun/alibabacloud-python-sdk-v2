@@ -40,22 +40,16 @@ class ROSClient(AlibabaCloudClient):
 
 class CloudLevelTest(SDKTestBase):
 
-    def init_config(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        return client_config
-
     def test_rpc_with_regions_request(self):
-        client_config = self.init_config()
-        ecs_client = EcsClient(client_config)
+        
+        ecs_client = EcsClient(self.client_config)
         response = ecs_client.describe_regions()
         self.assertTrue(response.get("Regions"))
         self.assertTrue(response.get("RequestId"))
 
     def test_roa_with_resource_types_request(self):
-        client_config = self.init_config()
-        ros_client = ROSClient(client_config)
+        
+        ros_client = ROSClient(self.client_config)
         response = ros_client.describe_resource_types()
         self.assertTrue(response.get("ResourceTypes"))
 
@@ -119,74 +113,37 @@ class CloudLevelTest(SDKTestBase):
         self.assertTrue(ret.get("ResourceTypes"))
 
     def test_rpc_regions_request_with_error(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id="abc")
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.api_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
+        self.client_config.region_id = 'abc'
+        ecs_client = EcsClient(self.client_config)
         with self.assertRaises(InvalidRegionIDException) as e:
-            client._handle_request(api_request)
+            ecs_client.describe_regions()
         self.assertEqual(e.exception.error_message, "No such region 'abc'."
                                                     " Please check your region ID.")
 
     def test_rpc_regions_request_with_unicode(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id="cn-hangzhou")
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.api_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
-        api_request._params = {'OwnerAccount': "&#111;&#119;&#110;&#101;"
-                                               "&#114;&#95;&#97;&#99;&#99;"
-                                               "&#111;&#117;&#110;&#116;", }
-        with self.assertRaises(ServerException) as e:
-            client._handle_request(api_request)
-        self.assertEqual(e.exception.error_code, "InvalidParameter.OwnerAccount")
-        self.assertEqual(e.exception.error_message, "OwnerAccount is Invalid.")
+        ecs_client = EcsClient(self.client_config)
+        try:
+            ecs_client.describe_regions(owner_account="&#111;&#119;&#110;&#101;")
+        except ServerException as e:
+            self.assertEqual(e.error_code, "InvalidParameter.OwnerAccount")
+            self.assertEqual(e.error_message, "OwnerAccount is Invalid.")
 
     def test_roa_regions_types_request_with_unicode(self):
-        client_config = self.init_config()
-        ros_client = ROSClient(client_config)
-        # with self.assertRaises(ServerException) as e:
-        try:
-            ros_client.describe_resource_types(support_status='&#114;&#101;')
-        except Exception as e:
-            self.assertEqual(e.exception.error_code, "SignatureDoesNotMatch")
-            self.assertTrue(e.exception.error_message)
+        ros_client = ROSClient(self.client_config)
+        response = ros_client.describe_resource_types(support_status='&#114;&#101;')
+        self.assertTrue(response.get("ResourceTypes") == [])
 
     def test_rpc_regions_request_with_query(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id="cn-hangzhou")
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.api_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'http', 'RPC')
-        api_request._params = {'OwnerAccount': "owner&account"}
+        ecs_client = EcsClient(self.client_config)
         with self.assertRaises(ServerException) as e:
-            client._handle_request(api_request)
+            ecs_client.describe_regions(owner_account="owner&account")
+
         self.assertEqual(e.exception.error_code, "InvalidParameter.OwnerAccount")
         self.assertEqual(e.exception.error_message, "OwnerAccount is Invalid.")
 
     def test_roa_regions_types_request_with_query(self):
-        client_config = self.init_config()
-        ros_client = ROSClient(client_config)
-        # with self.assertRaises(ServerException) as e:
-        #     ros_client.describe_resource_types(support_status='resource&types;')
-        try:
+        
+        ros_client = ROSClient(self.client_config)
+        response = ros_client.describe_resource_types(support_status='resource&types;')
+        self.assertTrue(response.get("ResourceTypes") == [])
 
-            ros_client.describe_resource_types(support_status='resource&types;')
-
-        except Exception as e:
-            self.assertEqual(e.exception.error_code, "ResourceTypeNotFound")
-            self.assertEqual(e.exception.error_message,
-                             "The Resource Type (resource&types;) could not be found.")

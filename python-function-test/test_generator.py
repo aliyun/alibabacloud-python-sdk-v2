@@ -2,7 +2,7 @@ import json
 import os
 
 from alibabacloud.vendored import six
-from base import TestCase
+from base import SDKTestBase
 
 from alibabacloud.client import ClientConfig
 from alibabacloud.clients.eci_20180808 import EciClient
@@ -14,18 +14,7 @@ from alibabacloud.exceptions import ServerException, HttpErrorException, ParamVa
 from utils import crClient, CSBClient, OpenanalyticsClient
 
 
-class GenTestBase(TestCase):
-
-    def setUp(self):
-        self.access_key_id = os.environ.get("ACCESS_KEY_ID")
-        self.access_key_secret = os.environ.get("ACCESS_KEY_SECRET")
-        self.region_id = os.environ.get("REGION_ID")
-        self.client_config = ClientConfig(access_key_id=self.access_key_id,
-                                          access_key_secret=self.access_key_secret,
-                                          region_id="cn-hangzhou")
-
-    def tearDown(self):
-        pass
+class GenTestBase(SDKTestBase):
 
     def test_rpc_query_list(self):
         ecs_client = EcsClient(self.client_config)

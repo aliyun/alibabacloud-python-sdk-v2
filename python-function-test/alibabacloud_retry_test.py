@@ -26,7 +26,7 @@ from alibabacloud.handlers.server_error_handler import ServerErrorHandler
 from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import APIRequest
-from base import TestCase
+from base import SDKTestBase
 from alibabacloud.clients.ecs_20140526 import EcsClient
 
 DEFAULT_HANDLERS = [
@@ -41,19 +41,10 @@ DEFAULT_HANDLERS = [
 ]
 
 
-class AlibabaCloudRetryTest(TestCase):
-
-    def _prepare_config_var(self):
-        self.access_key_id = os.environ.get("ACCESS_KEY_ID")
-        self.access_key_secret = os.environ.get("ACCESS_KEY_SECRET")
-        self.region_id = os.environ.get("REGION_ID")
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                          access_key_secret=self.access_key_secret,
-                                          region_id="cn-hangzhou")
-        return client_config
+class AlibabaCloudRetryTest(SDKTestBase):
 
     def test_no_retry(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.enable_retry = False
         config.endpoint = 'somewhere.you.never'
         client = EcsClient(config)
@@ -70,7 +61,7 @@ class AlibabaCloudRetryTest(TestCase):
         self.assertEqual(1, monkey.call_count)
 
     def test_default_retry_times(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.endpoint = "somewhere.you.will.never.get"
         client = EcsClient(config)
         with patch.object(client.handlers[-1], "handle_request",
@@ -85,7 +76,7 @@ class AlibabaCloudRetryTest(TestCase):
         self.assertEqual(4, monkey.call_count)
 
     def test_no_retry_on_parameter_invalid(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         client = EcsClient(config)
         with patch.object(client.handlers[-1], "handle_request",
                           wraps=client.handlers[-1].handle_request) as monkey:
@@ -101,7 +92,7 @@ class AlibabaCloudRetryTest(TestCase):
         self.assertEqual(1, monkey.call_count)
 
     def test_retry_with_client_token(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         client = EcsClient(config)
         client.max_retry_times = 3
         client.handlers = DEFAULT_HANDLERS
@@ -141,7 +132,7 @@ class AlibabaCloudRetryTest(TestCase):
             self.assertEqual(4, monkey.call_count)
 
     def test_retry_with_client_token_set(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         client = EcsClient(config)
         client.max_retry_times = 3
         client.handlers = DEFAULT_HANDLERS
@@ -178,7 +169,7 @@ class AlibabaCloudRetryTest(TestCase):
             self.assertEqual(4, monkey.call_count)
 
     def test_invalid_max_retry_times(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.max_retry_times = -1
         try:
             client = EcsClient(config)
@@ -188,7 +179,7 @@ class AlibabaCloudRetryTest(TestCase):
                              e.error_message)
 
     def test_set_max_retry_times(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.max_retry_times = 8
         config.endpoint = "somewhere.you.will.never.get"
         client = EcsClient(config)
@@ -208,7 +199,7 @@ class AlibabaCloudRetryTest(TestCase):
         from alibabacloud.retry.retry_condition import RetryCondition
         from alibabacloud.retry.retry_policy_context import RetryPolicyContext
 
-        config = self._prepare_config_var()
+        config = self.client_config
         client = EcsClient(config)
 
         default_retry_policy = retry_policy.get_default_retry_policy()
@@ -303,7 +294,7 @@ class AlibabaCloudRetryTest(TestCase):
         _assert_not_retryable_with_client_token(request1)
 
     def test_normal_backoff(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.max_retry_times = 10
         config.endpoint = "somewhere.you.will.never.get"
         client = EcsClient(config)
@@ -330,7 +321,7 @@ class AlibabaCloudRetryTest(TestCase):
         def _handle_response(context):
             context.exception = ServerException("Throttling", "some error")
 
-        config = self._prepare_config_var()
+        config = self.client_config
         config.max_retry_times = 10
         config.endpoint = "somewhere.you.will.never.get"
         client = EcsClient(config)

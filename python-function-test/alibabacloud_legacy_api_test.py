@@ -15,23 +15,14 @@
 import os
 
 from alibabacloud.client import ClientConfig
-from base import TestCase
+from base import SDKTestBase
 from alibabacloud.clients.ecs_20140526 import EcsClient
 
 
-class AlibabaCloudTest(TestCase):
-
-    def _prepare_config_var(self):
-        self.access_key_id = os.environ.get("ACCESS_KEY_ID")
-        self.access_key_secret = os.environ.get("ACCESS_KEY_SECRET")
-        self.region_id = os.environ.get("REGION_ID")
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                          access_key_secret=self.access_key_secret,
-                                          region_id="cn-hangzhou")
-        return client_config
+class AlibabaCloudTest(SDKTestBase):
 
     def test_config_enable_default(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         self.assertEqual(config.enable_https, None)
         self.assertEqual(config.enable_retry, None)
         self.assertEqual(config.enable_http_debug, None)
@@ -43,7 +34,7 @@ class AlibabaCloudTest(TestCase):
         self.assertEqual(client.config.enable_stream_logger, None)
 
     def test_config_enable_custom(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.enable_http_debug = True
         config.enable_stream_logger = False
         config.enable_https = False
@@ -55,7 +46,7 @@ class AlibabaCloudTest(TestCase):
         self.assertEqual(client.config.enable_stream_logger, False)
 
     def test_config_from_env(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         os.environ.setdefault('HTTPS_PROXY', 'https://alibabacloud-sdk.com')
         os.environ.setdefault('HTTP_PROXY', 'http://alibabacloud-sdk.com')
         os.environ.setdefault('DEBUG', 'sdk')
