@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import os
-
-from alibabacloud.client import ClientConfig
 from alibabacloud.exceptions import ServerException
 from base import SDKTestBase
 from alibabacloud.clients.edas_20170801 import EdasClient
@@ -22,17 +18,8 @@ from alibabacloud.clients.edas_20170801 import EdasClient
 
 class AlibabaCloudEdasTest(SDKTestBase):
 
-    def _prepare_config_var(self):
-        self.access_key_id = os.environ.get("ACCESS_KEY_ID")
-        self.access_key_secret = os.environ.get("ACCESS_KEY_SECRET")
-        self.region_id = os.environ.get("REGION_ID")
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                          access_key_secret=self.access_key_secret,
-                                          region_id="cn-hangzhou")
-        return client_config
-
     def test_api_request_post(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.endpoint = 'edas.cn-hangzhou.aliyuncs.com'
         client = EdasClient(config)
         try:
@@ -48,7 +35,7 @@ class AlibabaCloudEdasTest(SDKTestBase):
             self.assertEqual(response.get("Code"), 200)
 
     def test_api_request_get(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.endpoint = 'edas.cn-hangzhou.aliyuncs.com'
         client = EdasClient(config)
         try:
@@ -64,7 +51,7 @@ class AlibabaCloudEdasTest(SDKTestBase):
             self.assertIsInstance(response.get("SlbList"), dict)
 
     def test_api_request_put(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.endpoint = 'edas.cn-hangzhou.aliyuncs.com'
         client = EdasClient(config)
         response = client.disable_degrade_control(app_id='123', rule_id='456')
@@ -74,7 +61,7 @@ class AlibabaCloudEdasTest(SDKTestBase):
         self.assertTrue(response.get("Code") == 401 or response.get("Code") == 500)
 
     def test_api_request_delete(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.endpoint = 'edas.cn-hangzhou.aliyuncs.com'
         client = EdasClient(config)
         response = client.delete_cluster(cluster_id='123')

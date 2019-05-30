@@ -30,7 +30,7 @@ class Signer(object):
 
         request = context.api_request
         region_id = context.config.region_id
-        version = context.client.product_version
+        version = context.client.api_version
         # which token
         from alibabacloud.signer.composer import SIGNER_MAP
         cls = SIGNER_MAP[request.style]

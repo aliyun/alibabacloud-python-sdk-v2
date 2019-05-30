@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 SDK_ENDPOINT_MANAGEMENT_DOC_HTML = "https://www.alibabacloud.com/help/doc-detail/92074.htm"
 
 
@@ -30,7 +29,7 @@ class ClientException(AlibabaCloudException):
 
 
 class HttpErrorException(AlibabaCloudException):
-    fmt = '{sdk_http_error}'
+    fmt = '{http_error}'
 
 
 class InvalidProductCode(AlibabaCloudException):
@@ -52,6 +51,48 @@ class NoSuchEndpointException(AlibabaCloudException):
 
 class ParamTypeInvalidException(AlibabaCloudException):
     fmt = 'The type of param {param} must be {param_type}.'
+
+
+class ParamValidationException(AlibabaCloudException):
+    fmt = 'Parameter validation failed: {report}'
+
+
+class ConfigNotFoundException(AlibabaCloudException):
+    fmt = 'The specified config file ({path}) could not be found.'
+
+
+class NoCredentialsException(AlibabaCloudException):
+    fmt = 'Unable to locate credentials'
+
+
+class CredentialRetrievalException(AlibabaCloudException):
+    fmt = 'Error when retrieving credentials from {provider}: {error_msg}'
+
+
+class NoRegionException(AlibabaCloudException):
+    fmt = 'You must specify a region.'
+
+
+class PartialCredentialsException(AlibabaCloudException):
+    fmt = 'Partial credentials found in {provider}, missing: {cred_var}'
+
+
+class NoModuleException(AlibabaCloudException):
+    fmt = 'Could not import "{name}".'
+
+
+class ServiceNameInvalidException(AlibabaCloudException):
+    fmt = "No such service_name '{service_name}'. Please check your Service Name.\n" \
+          "We now support service_name: {more}"
+
+
+class ApiVersionInvalidException(AlibabaCloudException):
+    fmt = "{service_name} no such api_version '{api_version}'. Please check your API Version.\n" \
+          "We now support api_version: {api_versions}"
+
+
+class MaximumRecursionException(AlibabaCloudException):
+    fmt = "Maximum recursion depth exceeded.Please check your params"
 
 
 class ServerException(Exception):

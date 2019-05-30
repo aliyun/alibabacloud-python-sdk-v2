@@ -21,7 +21,7 @@ import copy
 from alibabacloud.vendored.six.moves.urllib.request import pathname2url
 from alibabacloud.vendored.six import iteritems
 from alibabacloud.compat import urlencode
-from alibabacloud.exceptions import ClientException
+from alibabacloud.exceptions import NoCredentialsException
 from alibabacloud.signer.algorithm import ShaHmac1 as mac1
 from alibabacloud.utils import format_type as FormatType, parameter_helper as helper
 from alibabacloud.utils.parameter_helper import md5_sum
@@ -56,7 +56,7 @@ class ROASigner:
 
     def _prepare_headers(self):
         if self.credentials is None:
-            raise ClientException(msg='Unable to locate credentials.')
+            raise NoCredentialsException()
         headers = copy.deepcopy(self.request._headers)
         headers['x-acs-version'] = self.version
         headers['x-acs-region-id'] = str(self.region_id)
@@ -225,7 +225,7 @@ class RPCSigner:
 
     def _canonicalized_query_string(self):
         if self.credentials is None:
-            raise ClientException(msg='Unable to locate credentials.')
+            raise NoCredentialsException()
         parameters = copy.deepcopy(self.request._query_params)
         # TODO version :client level
         parameters['Version'] = self.version

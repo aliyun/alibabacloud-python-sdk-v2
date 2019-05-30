@@ -43,17 +43,8 @@ DEFAULT_HANDLERS = [
 
 class AlibabaCloudRetryTest(SDKTestBase):
 
-    def _prepare_config_var(self):
-        self.access_key_id = os.environ.get("ACCESS_KEY_ID")
-        self.access_key_secret = os.environ.get("ACCESS_KEY_SECRET")
-        self.region_id = os.environ.get("REGION_ID")
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                          access_key_secret=self.access_key_secret,
-                                          region_id="cn-hangzhou")
-        return client_config
-
     def test_no_retry(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.enable_retry = False
         config.endpoint = 'somewhere.you.never'
         client = EcsClient(config)
@@ -70,7 +61,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         self.assertEqual(1, monkey.call_count)
 
     def test_default_retry_times(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.endpoint = "somewhere.you.will.never.get"
         client = EcsClient(config)
         with patch.object(client.handlers[-1], "handle_request",
@@ -85,7 +76,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         self.assertEqual(4, monkey.call_count)
 
     def test_no_retry_on_parameter_invalid(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         client = EcsClient(config)
         with patch.object(client.handlers[-1], "handle_request",
                           wraps=client.handlers[-1].handle_request) as monkey:
@@ -101,7 +92,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         self.assertEqual(1, monkey.call_count)
 
     def test_retry_with_client_token(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         client = EcsClient(config)
         client.max_retry_times = 3
         client.handlers = DEFAULT_HANDLERS
@@ -123,9 +114,9 @@ class AlibabaCloudRetryTest(SDKTestBase):
                 assert _test_client_token == request._params.get("ClientToken")
             _test_retry_times += 1
             _test_client_token = request._params.get("ClientToken")
-            context.exception = HttpErrorException(sdk_http_error="some error")
+            context.exception = HttpErrorException(http_error="some error")
             from alibabacloud.request import HTTPResponse
-            context.http_response = HTTPResponse()
+            context.http_response = HTTPResponse('', None, {}, None)
 
         def no_sleep(delay):
             pass
@@ -141,7 +132,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
             self.assertEqual(4, monkey.call_count)
 
     def test_retry_with_client_token_set(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         client = EcsClient(config)
         client.max_retry_times = 3
         client.handlers = DEFAULT_HANDLERS
@@ -160,9 +151,9 @@ class AlibabaCloudRetryTest(SDKTestBase):
             request = context.api_request
             assert "ABCDEFGHIJKLMN" == request._params.get("ClientToken")
             _test_retry_times += 0
-            context.exception = HttpErrorException(sdk_http_error="some error")
+            context.exception = HttpErrorException(http_error="some error")
             from alibabacloud.request import HTTPResponse
-            context.http_response = HTTPResponse()
+            context.http_response = HTTPResponse('', None, {}, None)
 
         def no_sleep(delay):
             pass
@@ -178,7 +169,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
             self.assertEqual(4, monkey.call_count)
 
     def test_invalid_max_retry_times(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.max_retry_times = -1
         try:
             client = EcsClient(config)
@@ -188,7 +179,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
                              e.error_message)
 
     def test_set_max_retry_times(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.max_retry_times = 8
         config.endpoint = "somewhere.you.will.never.get"
         client = EcsClient(config)
@@ -208,13 +199,13 @@ class AlibabaCloudRetryTest(SDKTestBase):
         from alibabacloud.retry.retry_condition import RetryCondition
         from alibabacloud.retry.retry_policy_context import RetryPolicyContext
 
-        config = self._prepare_config_var()
+        config = self.client_config
         client = EcsClient(config)
 
         default_retry_policy = retry_policy.get_default_retry_policy()
 
         def HE():
-            return HttpErrorException(sdk_http_error="some error")
+            return HttpErrorException(http_error="some error")
 
         def SE(code):
             return ServerException(code, "some error")
@@ -249,45 +240,45 @@ class AlibabaCloudRetryTest(SDKTestBase):
         unknown_error = SE("SDK_UNKNOWN_SERVER_ERROR")
         internal_error = SE("InternalError")
         product_code = client.product_code.lower()
-        product_version = client.product_version
+        api_version = client.api_version
         _assert_retryable(api_request, timeout_exception, 0, 500, product_code,
-                          product_version)
+                          api_version)
         _assert_retryable(api_request, timeout_exception, 2, 500, product_code,
-                          product_version)
-        _assert_retryable(api_request, unknown_error, 0, 500, product_code, product_version)
-        _assert_retryable(api_request, unknown_error, 0, 502, product_code, product_version)
-        _assert_retryable(api_request, unknown_error, 0, 503, product_code, product_version)
-        _assert_retryable(api_request, unknown_error, 0, 504, product_code, product_version)
-        _assert_retryable(api_request, internal_error, 0, 500, product_code, product_version)
+                          api_version)
+        _assert_retryable(api_request, unknown_error, 0, 500, product_code, api_version)
+        _assert_retryable(api_request, unknown_error, 0, 502, product_code, api_version)
+        _assert_retryable(api_request, unknown_error, 0, 503, product_code, api_version)
+        _assert_retryable(api_request, unknown_error, 0, 504, product_code, api_version)
+        _assert_retryable(api_request, internal_error, 0, 500, product_code, api_version)
         _assert_retryable(api_request, SE("Throttling"), 0, 400, product_code,
-                          product_version)
+                          api_version)
         _assert_retryable(api_request, SE("ServiceUnavailable"), 0, 503, product_code,
-                          product_version)
+                          api_version)
         _assert_not_retryable(api_request, invalid_param_excpetion, 0, 400, product_code,
-                              product_version)
+                              api_version)
         _assert_not_retryable(api_request, timeout_exception, 3, 500, product_code,
-                              product_version)
+                              api_version)
         _assert_not_retryable(api_request, SE("InvalidAccessKeyId.NotFound"), 0, 404,
-                              product_code, product_version)
+                              product_code, api_version)
 
         request1 = APIRequest('DescribeInstanceHistoryEvents', 'GET', 'http', 'RPC')
 
         _assert_retryable(request1, SE("ServiceUnavailable"), 0, 503,
-                          product_code, product_version)
+                          product_code, api_version)
 
         request2 = APIRequest('DescribeDisks', 'GET', 'http', 'RPC')
 
         _assert_retryable(request2, SE("ServiceUnavailable"), 0, 503,
-                          product_code, product_version)
+                          product_code, api_version)
         # no_retry
         no_retry_request = APIRequest('AttachDisk', 'GET', 'http', 'RPC')
 
         _assert_not_retryable(no_retry_request, timeout_exception, 0, 500, product_code,
-                              product_version)
+                              api_version)
         _assert_not_retryable(no_retry_request, unknown_error, 0, 504, product_code,
-                              product_version)
+                              api_version)
         _assert_not_retryable(no_retry_request, invalid_param_excpetion, 0, 400, product_code,
-                              product_version)
+                              api_version)
         request1 = APIRequest('CreateInstance', 'GET', 'http', 'RPC')
 
         _assert_retryable_with_client_token(request1)
@@ -303,7 +294,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         _assert_not_retryable_with_client_token(request1)
 
     def test_normal_backoff(self):
-        config = self._prepare_config_var()
+        config = self.client_config
         config.max_retry_times = 10
         config.endpoint = "somewhere.you.will.never.get"
         client = EcsClient(config)
@@ -330,7 +321,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         def _handle_response(context):
             context.exception = ServerException("Throttling", "some error")
 
-        config = self._prepare_config_var()
+        config = self.client_config
         config.max_retry_times = 10
         config.endpoint = "somewhere.you.will.never.get"
         client = EcsClient(config)

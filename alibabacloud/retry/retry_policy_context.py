@@ -17,17 +17,16 @@ from alibabacloud.retry.retry_condition import RetryCondition
 import logging
 
 logger = logging.getLogger(__name__)
-# TODO logger 设置默认值
 
 
 class RetryPolicyContext:
 
     def __init__(self, original_request, exception, retries_attempted, http_status_code,
-                 product_code, product_version, logger=logger):
+                 product_code, api_version, logger=logger):
         self.original_request = original_request
         self.exception = exception
         self.retries_attempted = retries_attempted
         self.http_status_code = http_status_code
         self.retryable = RetryCondition.BLANK_STATUS
-        self.product_info = (product_code, product_version)
+        self.product_info = (product_code, api_version)
         self.logger = logger

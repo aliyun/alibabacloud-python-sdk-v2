@@ -22,6 +22,8 @@ from alibabacloud.utils import format_type
 from alibabacloud.vendored.requests.structures import CaseInsensitiveDict
 from alibabacloud.vendored.requests.structures import OrderedDict
 
+DEPTH = 0
+
 
 def _user_agent_header():
     base = '%s (%s %s;%s)' \
@@ -156,9 +158,9 @@ class APIProtocolHandler(RequestHandler):
     def handle_response(self, context):
         if not context.exception:
             try:
-                context.result = json.loads(context.http_response.content, encoding='utf-8')
+                context.result = json.loads(context.http_response.text)
             except ValueError:
                 # failed to parse body as json format
                 raise ClientException(
                     msg='Failed to parse response as json format.Response:%s' % str(
-                        context.http_response.content))
+                        context.http_response.text))

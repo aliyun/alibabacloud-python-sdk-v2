@@ -19,17 +19,10 @@ import sys
 import threading
 import time
 
+from alibabacloud import ClientConfig
 from alibabacloud.vendored.six import iteritems
-from aliyunsdkcore.acs_exception.exceptions import ServerException
-from aliyunsdkcore.client import AcsClient
-from aliyunsdkram.request.v20150501.AttachPolicyToUserRequest import AttachPolicyToUserRequest
-from aliyunsdkram.request.v20150501.CreateAccessKeyRequest import CreateAccessKeyRequest
-from aliyunsdkram.request.v20150501.CreateRoleRequest import CreateRoleRequest
-from aliyunsdkram.request.v20150501.CreateUserRequest import CreateUserRequest
-from aliyunsdkram.request.v20150501.DeleteAccessKeyRequest import DeleteAccessKeyRequest
-from aliyunsdkram.request.v20150501.ListAccessKeysRequest import ListAccessKeysRequest
-from aliyunsdkram.request.v20150501.ListRolesRequest import ListRolesRequest
-from aliyunsdkram.request.v20150501.ListUsersRequest import ListUsersRequest
+from alibabacloud.exceptions import ServerException
+from alibabacloud.clients.ram_20150501 import RamClient
 
 # The unittest module got a significant overhaul
 # in 2.7, so if we're in 2.6 we can use the backported
@@ -82,8 +75,8 @@ class SDKTestBase(TestCase):
 
     def __init__(self, *args, **kwargs):
         TestCase.__init__(self, *args, **kwargs)
-        # if sys.version_info[0] == 2:
-        #     self.assertRegex = self.assertRegexpMatches
+        if sys.version_info[0] == 2:
+            self.assertRegex = self.assertRegexpMatches
         self._init_env()
 
     def test_env_available(self):
@@ -125,17 +118,18 @@ class SDKTestBase(TestCase):
 
     def setUp(self):
         TestCase.setUp(self)
-        self.client = self.init_client()
+        self.client_config = self.init_client_config()
 
     def tearDown(self):
         pass
 
-    def init_client(self, region_id=None):
+    def init_client_config(self, region_id=None):
         if not region_id:
             region_id = self.region_id
-        client = AcsClient(self.access_key_id, self.access_key_secret, region_id, timeout=120)
-        # client.set_stream_logger()
-        return client
+        client_config = ClientConfig(access_key_id=self.access_key_id,
+                                     access_key_secret=self.access_key_secret,
+                                     region_id=region_id, connection_timeout=120)
+        return client_config
 
     @staticmethod
     def get_dict_response(string):
@@ -144,27 +138,29 @@ class SDKTestBase(TestCase):
     def _create_default_ram_user(self):
         if self.ram_user_id:
             return
-        response = request_helper(self.client, ListUsersRequest())
+        ram_client = RamClient(self.client_config)
+        response = ram_client.list_users()
         user_list = find_in_response(response, keys=['Users', 'User'])
         for user in user_list:
             if user['UserName'] == self.default_ram_user_name:
                 self.ram_user_id = user["UserId"]
                 return
 
-        response = request_helper(self.client, CreateUserRequest(),
-                                  UserName=self.default_ram_user_name)
+        response = ram_client.create_user(user_name=self.default_ram_user_name)
         self.ram_user_id = find_in_response(response, keys=['User', 'UserId'])
 
     def _attach_default_policy(self):
         if self.ram_policy_attched:
             return
+        ram_client = RamClient(self.client_config)
 
         try:
-            request_helper(self.client, AttachPolicyToUserRequest(),
-                           PolicyType='System', PolicyName='AliyunSTSAssumeRoleAccess',
-                           UserName=self.default_ram_user_name)
+            ram_client.attach_policy_to_user(policy_type='System',
+                                             policy_name='AliyunSTSAssumeRoleAccess',
+                                             user_name=self.default_ram_user_name)
+
         except ServerException as e:
-            if e.get_error_code() == 'EntityAlreadyExists.User.Policy':
+            if e.error_code == 'EntityAlreadyExists.User.Policy':
                 pass
             else:
                 raise e
@@ -174,40 +170,39 @@ class SDKTestBase(TestCase):
     def _create_access_key(self):
         if self.ram_user_access_key_id and self.ram_user_access_key_secret:
             return
+        ram_client = RamClient(self.client_config)
+        response = ram_client.list_access_keys(user_name=self.default_ram_user_name)
 
-        response = request_helper(self.client, ListAccessKeysRequest(),
-                                  UserName=self.default_ram_user_name)
         for access_key in find_in_response(response, keys=['AccessKeys', 'AccessKey']):
             access_key_id = access_key['AccessKeyId']
-            request_helper(self.client, DeleteAccessKeyRequest(),
-                           UserAccessKeyId=access_key_id,
-                           UserName=self.default_ram_user_name)
+            ram_client.delete_access_key(user_access_key_id=access_key_id, user_name=self.default_ram_user_name)
 
-        response = request_helper(self.client, CreateAccessKeyRequest(),
-                                  UserName=self.default_ram_user_name)
+        response = ram_client.create_access_key(user_name=self.default_ram_user_name)
         self.ram_user_access_key_id = find_in_response(response, keys=['AccessKey', 'AccessKeyId'])
         self.ram_user_access_key_secret = find_in_response(
             response,
             keys=['AccessKey', 'AccessKeySecret'])
 
     def _delete_access_key(self):
-        request_helper(self.client, DeleteAccessKeyRequest(),
-                       UserName=self.default_ram_user_name,
-                       UserAccessKeyId=self.ram_user_access_key_id)
+        ram_client = RamClient(self.client_config)
+        ram_client.delete_access_key(user_name=self.default_ram_user_name,
+                                     user_access_key_id=self.ram_user_access_key_id)
 
-    def init_sub_client(self):
+    def init_sub_client_config(self):
         self._create_default_ram_user()
         # self._attach_default_policy()
         self._create_access_key()
-        client = AcsClient(self.ram_user_access_key_id,
-                           self.ram_user_access_key_secret,
-                           self.region_id, timeout=120)
-        return client
+        sub_client_config = ClientConfig(access_key_id=self.ram_user_access_key_id,
+                                         access_key_secret=self.ram_user_access_key_secret,
+                                         region_id=self.region_id,
+                                         connection_timeout=120)
+        return sub_client_config
 
     def _create_default_ram_role(self):
         if self.ram_role_arn:
             return
-        response = request_helper(self.client, ListRolesRequest())
+        ram_client = RamClient(self.client_config)
+        response = ram_client.list_roles()
         for role in find_in_response(response, keys=['Roles', 'Role']):
             role_name = role['RoleName']
             role_arn = role['Arn']
@@ -231,10 +226,8 @@ class SDKTestBase(TestCase):
           "Version": "1"
         }
         """ % self.user_id
-
-        response = request_helper(self.client, CreateRoleRequest(),
-                                  RoleName=self.default_ram_role_name,
-                                  AssumeRolePolicyDocument=policy_doc)
+        response = ram_client.create_role(role_name=self.default_ram_role_name,
+                                          assume_role_policy_document=policy_doc)
         self.ram_role_arn = find_in_response(response, keys=['Role', 'Arn'])
         # FIXME We have wait for 5 seconds after CreateRole before
         # we can AssumeRole later

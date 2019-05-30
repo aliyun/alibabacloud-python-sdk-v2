@@ -22,7 +22,7 @@ class RamClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'Ram'
-        self.product_version = '2015-05-01'
+        self.api_version = '2015-05-01'
         self.location_service_code = 'ram'
         self.location_endpoint_type = 'openAPI'
 

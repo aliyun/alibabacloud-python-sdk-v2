@@ -14,7 +14,7 @@
 
 import os
 
-from alibabacloud.exceptions import ClientException
+from alibabacloud.exceptions import ClientException, ConfigNotFoundException
 from alibabacloud.vendored import six
 
 
@@ -37,9 +37,7 @@ def raw_config_parse(config_filename, parse_subsections=True):
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)
         if not os.path.isfile(path):
-            raise ClientException(
-                msg='The specified credentials file (%s) does not exist.' % path,
-            )
+            raise ConfigNotFoundException(path=path)
         cp = six.moves.configparser.RawConfigParser()
         try:
             cp.read([path])

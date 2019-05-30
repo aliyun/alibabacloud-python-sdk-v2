@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from alibabacloud.exceptions import NoRegionException
 
 ENDPOINT_TYPE_INNER = "innerAPI"
 ENDPOINT_TYPE_OPEN = "openAPI"
@@ -23,6 +24,8 @@ class ResolveEndpointRequest(object):
 
     # just a request include some common info
     def __init__(self, region_id, product_code, location_service_code, endpoint_type):
+        if region_id is None:
+            raise NoRegionException()
 
         self.region_id = region_id
         self.product_code = product_code

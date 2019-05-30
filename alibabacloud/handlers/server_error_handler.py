@@ -17,7 +17,7 @@ import json
 from alibabacloud.exceptions import ServerException
 from alibabacloud.handlers import RequestHandler
 from alibabacloud.vendored.requests import codes
-from alibabacloud.vendored.requests.models import Response
+from alibabacloud.compat import ensure_string
 
 SDK_UNKNOWN_SERVER_ERROR = 'SDK.UnknownServerError'
 
@@ -31,7 +31,7 @@ class ServerErrorHandler(RequestHandler):
         # if isinstance(response, Response):
         if context.exception is None:
             try:
-                body_obj = json.loads(response.content)
+                body_obj = json.loads(response.text)
                 request_id = body_obj.get('RequestId')
             except (ValueError, TypeError, AttributeError):
                 # in case the response body is not a json string, return the raw
@@ -53,7 +53,7 @@ class ServerErrorHandler(RequestHandler):
                 context.exception = ServerException(server_error_code, server_error_message,
                                                     context.endpoint, context.client.product_code,
                                                     response.status_code, request_id,
-                                                    context.client.product_version)
+                                                    context.client.api_version)
 
     @staticmethod
     def _parse_error_info_from_response_body(logger, response_body):
@@ -61,7 +61,7 @@ class ServerErrorHandler(RequestHandler):
         # TODO handle if response_body is too big
         error_message_to_return = "ServerResponseBody: " + str(response_body)
         try:
-            body_obj = json.loads(response_body)
+            body_obj = json.loads(ensure_string(response_body))
             if 'Code' in body_obj:
                 error_code_to_return = body_obj['Code']
             if 'Message' in body_obj:

@@ -1,24 +1,14 @@
 import os
-from unittest import TestCase
 
 from alibabacloud.client import ClientConfig
 from alibabacloud.clients.eci_20180808 import EciClient
 from alibabacloud.clients.ecs_20140526 import EcsClient
-from alibabacloud.exceptions import ServerException, ParamTypeInvalidException
+from alibabacloud.exceptions import ServerException, ParamValidationException
+from alibabacloud.vendored import six
+from base import SDKTestBase
 
 
-class GenTestCheckParams(TestCase):
-
-    def setUp(self):
-        self.access_key_id = os.environ.get("ACCESS_KEY_ID")
-        self.access_key_secret = os.environ.get("ACCESS_KEY_SECRET")
-        self.region_id = os.environ.get("REGION_ID")
-        self.client_config = ClientConfig(access_key_id=self.access_key_id,
-                                          access_key_secret=self.access_key_secret,
-                                          region_id="cn-hangzhou")
-
-    def tearDown(self):
-        pass
+class GenTestCheckParams(SDKTestBase):
 
     def test_rpc_query_list(self):
         # check one
@@ -27,8 +17,13 @@ class GenTestCheckParams(TestCase):
         try:
             context = ecs_client.describe_tags(tag=tag)
             assert False
-        except ParamTypeInvalidException as e:
-            self.assertEqual(e.error_message, "The type of param Tag must be list.")
+        except ParamValidationException as e:
+            if six.PY2:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <type 'str'>, valid types: <type 'list'>")
+            else:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
 
     def test_rpc_query_list1(self):
         # check two
@@ -39,8 +34,14 @@ class GenTestCheckParams(TestCase):
         try:
             context = ecs_client.describe_tags(tag=tag)
             assert False
-        except ParamTypeInvalidException as e:
-            self.assertEqual(e.error_message, "The type of param hi must be dict.")
+        except ParamValidationException as e:
+            if six.PY2:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <type 'str'>, valid types: <type 'dict'>")
+
+            else:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
 
     def test_rpc_query_list2(self):
         # tree layer check
@@ -56,8 +57,13 @@ class GenTestCheckParams(TestCase):
         try:
             context = eci_client.update_container_group(container=container)
             assert False
-        except ParamTypeInvalidException as e:
-            self.assertEqual(e.error_message, "The type of param Port must be list.")
+        except ParamValidationException as e:
+            if six.PY2:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Container.0.Container.Port, value: {'Protocol': 'https', 'Port': '80'}, type: <type 'dict'>, valid types: <type 'list'>")
+            else:
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Container.0.Container.Port, value: {'Protocol': 'https', 'Port': '80'}, type: <class 'dict'>, valid types: <class 'list'>")
 
     def test_rpc_query_list3(self):
         # tree layer check
@@ -95,7 +101,3 @@ class GenTestCheckParams(TestCase):
             self.assertEqual(e.http_status, 400)
             self.assertEqual(e.error_code, "MissingContainerGroupId")
             self.assertEqual(e.error_message, "ContainerGroupId is mandatory for this action.")
-
-    # test 6 product
-    def test_ecs_client(self):
-        pass

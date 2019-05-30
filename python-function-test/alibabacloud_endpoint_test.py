@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import json
 import os
 
 from mock import patch
@@ -30,7 +31,7 @@ from alibabacloud.exceptions import ServerException, NoSuchEndpointException, \
     InvalidRegionIDException, HttpErrorException, InvalidProductCode
 from alibabacloud.request import APIRequest
 from base import SDKTestBase
-
+from alibabacloud.clients.ecs_20140526 import EcsClient
 
 class EndpointTest(SDKTestBase):
 
@@ -73,50 +74,34 @@ class EndpointTest(SDKTestBase):
                                          location_service_code, endpoint_type)
         return request
 
-    def _init_client_config(self):
-        self.access_key_id = os.environ.get("ACCESS_KEY_ID")
-        self.access_key_secret = os.environ.get("ACCESS_KEY_SECRET")
-        self.region_id = os.environ.get("REGION_ID")
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id="cn-hangzhou")
-
-        return client_config
-
     def temp_client(self, product, version=None, endpoint_type=None, location_service_code=None):
 
-        client_config = self._init_client_config()
+        client_config = self.client_config
 
         class TempClient(AlibabaCloudClient):
             def __init__(self):
-                super().__init__(client_config, None)
+                AlibabaCloudClient.__init__(self, client_config, None)
                 self.product_code = product
                 self.location_service_code = location_service_code
-                self.product_version = version
+                self.api_version = version
                 self.location_endpoint_type = endpoint_type
 
         return TempClient()
 
     def test_products_with_location_service(self):
-        client_config = self._init_client_config()
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
         response = client._handle_request(api_request)
 
     def test_products_without_location_service(self):
-        client_config = self._init_client_config()
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ram"
-        client.product_version = "2015-05-01"
-        client.location_service_code = 'ram'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('ListAccessKeys', 'GET', 'https', 'RPC')
-        response = client._handle_request(api_request)
-        response = response.http_response.content
+        from alibabacloud.clients.ram_20150501 import RamClient
+        client = RamClient(client_config=self.client_config)
+        response = client.list_access_keys()
+        self.assertTrue(response.get('RequestId'))
 
     def test_regional_endpoint_comes_from_local_config(self):
         test_config = """
@@ -167,22 +152,16 @@ class EndpointTest(SDKTestBase):
         )
 
     def test_endpoint_comes_from_location_service(self):
-        from alibabacloud.client import get_merged_client_config
         temp_client = self.temp_client('ECS', None, None, 'ecs')
         self.init_env(temp_client.config,
                       temp_client.credentials_provider, "{}")  # empty local config
 
-        client_config = self._init_client_config()
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
+        from alibabacloud.clients.ecs_20140526 import EcsClient
+        ecs_client = EcsClient(self.client_config)
+        ecs_client.describe_regions()
 
-        new_config = get_merged_client_config(client_config)
-        client.endpoint_resolver = DefaultEndpointResolver(
-            new_config, client.credentials_provider)
+        ecs_client.endpoint_resolver = DefaultEndpointResolver(
+            ecs_client.config, ecs_client.credentials_provider)
         with patch.object(
                 self._location_service_endpoint_resolver,
                 '_call_location_service',
@@ -191,7 +170,7 @@ class EndpointTest(SDKTestBase):
             for i in range(3):
                 self.assertEqual(
                     "ecs-cn-hangzhou.aliyuncs.com",
-                    client.endpoint_resolver.resolve(
+                    ecs_client.endpoint_resolver.resolve(
                         self.resolve_request("cn-hangzhou", "ecs", "ecs", None))
                 )
 
@@ -349,17 +328,8 @@ class EndpointTest(SDKTestBase):
                 " Max retries exceeded with url"))
 
     def test_invalid_access_key_id(self):
-        config = self._init_client_config()
 
-        client_config = ClientConfig(access_key_id="BadAccessKeyId",
-                                     access_key_secret=config.access_key_secret,
-                                     region_id="cn-hangzhou")
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        self.init_env(client_config, None, None)
+        self.init_env(self.client_config, None, None)
         try:
             self.resolve("cn-hangzhou", "Ecs", "ecs", "innerAPI")
         except ServerException as e:
@@ -367,17 +337,7 @@ class EndpointTest(SDKTestBase):
             self.assertEqual(e.error_message, 'Specified access key is not found.')
 
     def test_invalid_access_key_secret(self):
-        config = self._init_client_config()
-
-        client_config = ClientConfig(access_key_id=config.access_key_id,
-                                     access_key_secret="BadAccessKeySecret",
-                                     region_id="cn-hangzhou")
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        self.init_env(client_config, None, None)
+        self.init_env(self.client_config, None, None)
         try:
             self.resolve("cn-hangzhou", "Ecs", "ecs", "innerAPI")
         except ServerException as e:
@@ -387,22 +347,14 @@ class EndpointTest(SDKTestBase):
                              'Please check your AccessKeyId and AccessKeySecret.')
 
     def test_call_rpc_request_with_client(self):
-        client_config = self._init_client_config()
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
-        response = client._handle_request(api_request)
-        response = response.http_response.content
+        ecs_client = EcsClient(self.client_config)
+        response = ecs_client.describe_regions()
+        self.assertTrue(response.get('RequestId'))
 
     def test_call_roa_request_with_client(self):
-        client_config = self._init_client_config()
-
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -418,26 +370,23 @@ class EndpointTest(SDKTestBase):
             self.assertTrue(e.error_message.startswith("Request url is invalid"))
 
     def test_location_service_code_not_equals_product_code(self):
-        client_config = self._init_client_config()
-
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config, None)
         client.product_code = "CloudAPI"
-        client.product_version = "2016-07-14"
+        client.api_version = "2016-07-14"
         client.location_service_code = 'apigateway'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeApis', 'GET', 'https', 'RPC')
-        response = client._handle_request(api_request)
-        response = response.http_response.content
+        context = client._handle_request(api_request)
+        response = json.loads(str(context.http_response.text))
+        self.assertTrue(response.get('RequestId'))
 
     def test_location_service_code_not_equals_product_code2(self):
         # The product changed from api_gateway to edas
         temp_client = self.temp_client('Edas', '2017-08-01', 'openAPI', 'BindSlb')
         self.init_env(temp_client.config, temp_client.credentials_provider, "{}")
-        client_config = self._init_client_config()
-
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config, None)
         client.product_code = "CloudAPI"
-        client.product_version = "2016-07-14"
+        client.api_version = "2016-07-14"
         client.location_service_code = 'apigateway'
         client.location_endpoint_type = "openAPI"
         client._endpoint_resolver = self._endpoint_resolver
@@ -452,19 +401,13 @@ class EndpointTest(SDKTestBase):
                 response = client._handle_request(api_request)
         self.assertEqual(0, monkey.call_count)
 
-        # self.init_env()
         client._endpoint_resolver = self._endpoint_resolver
 
     def test_doc_help_sample(self):
-        client_config = self._init_client_config()
-        client_config.endpoint = "ecs-cn-hangzhou.aliyuncs.com"
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeInstances', 'GET', 'https', 'RPC')
-        response = client._handle_request(api_request)
+        self.client_config.endpoint = "ecs-cn-hangzhou.aliyuncs.com"
+        ecs_client = EcsClient(self.client_config)
+        response = ecs_client.describe_instances()
+        self.assertTrue(response.get('RequestId'))
 
     def test_r_kvstore(self):
         temp_client = self.temp_client("R-kvstore")
@@ -498,10 +441,9 @@ class EndpointTest(SDKTestBase):
         request = ResolveEndpointRequest("eu-west-1", "BssOpenApi", None, None)
         self.assertEqual("business.ap-southeast-1.aliyuncs.com", resolver.resolve(request))
 
-        client_config = self._init_client_config()
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config, None)
         client.product_code = "BssOpenApi"
-        client.product_version = "2017-12-14"
+        client.api_version = "2017-12-14"
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('GetOrderDetail', 'GET', 'https', 'RPC')
         api_request._params = {"OrderId": "blah"}
@@ -516,13 +458,10 @@ class EndpointTest(SDKTestBase):
         resolver = DefaultEndpointResolver(temp_client.config, temp_client.credentials_provider)
         request = ResolveEndpointRequest("cn-hangzhou", "faas", None, None)
         self.assertEqual("faas.cn-hangzhou.aliyuncs.com", resolver.resolve(request))
-        client = self.init_client(region_id="cn-hangzhou")
 
-        client_config = self._init_client_config()
-
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config, None)
         client.product_code = "faas"
-        client.product_version = "2017-08-24"
+        client.api_version = "2017-08-24"
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeLoadTaskStatus', 'POST', 'https', 'RPC')
         api_request._params = {"FpgaUUID": "blah", "InstanceId": "blah", "RoleArn": "blah"}

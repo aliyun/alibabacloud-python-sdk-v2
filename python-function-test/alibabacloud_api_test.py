@@ -11,9 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
-
-from base import TestCase
+from alibabacloud.vendored import six
+from base import SDKTestBase
 from alibabacloud.client import ClientConfig, AlibabaCloudClient
 from alibabacloud.exceptions import ServerException
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
@@ -54,20 +53,10 @@ DEFAULT_HANDLERS = [
 ]
 
 
-class APIRequestTest(TestCase):
-
-    def _init_client_config(self):
-        self.access_key_id = os.environ.get("ACCESS_KEY_ID")
-        self.access_key_secret = os.environ.get("ACCESS_KEY_SECRET")
-        self.region_id = os.environ.get("REGION_ID")
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                          access_key_secret=self.access_key_secret,
-                                          region_id="cn-hangzhou")
-        return client_config
+class APIRequestTest(SDKTestBase):
 
     def test_request_with_ecs(self):
-        client_config = self._init_client_config()
-        ecs_client = EcsClient(client_config)
+        ecs_client = EcsClient(self.client_config)
         delete_version = ["1.0.1", ]
 
         try:
@@ -79,50 +68,40 @@ class APIRequestTest(TestCase):
             self.assertEqual(e.error_message, 'The specified parameter "DeleteVersion.1" is not valid.')
 
     def test_request_with_rds(self):
-        client_config = self._init_client_config()
-        client = RdsClient(client_config)
+        client = RdsClient(self.client_config)
         result = client.describe_db_instances()
         self.assertTrue(result.get("Items"))
 
     def test_request_with_cdn(self):
-        client_config = self._init_client_config()
-        client = cdn_old(client_config)
+        client = cdn_old(self.client_config)
         response = client.describe_cdn_types()
         self.assertTrue(response.get("CdnTypes"))
 
     def test_request_with_cdn_new(self):
-        client_config = self._init_client_config()
-        client = cdn_new(client_config)
+        client = cdn_new(self.client_config)
         result = client.describe_cdn_certificate_detail(cert_name="sdk-test")
         self.assertTrue(result.get("RequestId"))
 
     def test_request_with_slb(self):
-        client_config = self._init_client_config()
 
-        client = SlbClient(client_config)
+        client = SlbClient(self.client_config)
         result = client.describe_access_control_lists()
         self.assertTrue(result.get("Acls"))
 
     def test_request_with_ram(self):
-        client_config = self._init_client_config()
-
-        client = RamClient(client_config)
+        client = RamClient(self.client_config)
         response = client.list_access_keys()
         self.assertTrue(response.get("AccessKeys"))
 
     def test_request_with_vpc(self):
-        client_config = self._init_client_config()
-
-        client = VpcClient(client_config)
+        client = VpcClient(self.client_config)
         result = client.describe_access_points()
         self.assertTrue(result.get("AccessPointSet"))
 
     def test_request_with_listkeys(self):
-        client_config = self._init_client_config()
-
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config, None)
         client.product_code = "Kms"
-        client.product_version = "2016-01-20"
+        client.api_version = "2016-01-20"
         client.location_service_code = 'kms'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('ListKeys', 'GET', 'https', 'RPC')
@@ -139,9 +118,7 @@ class APIRequestTest(TestCase):
             context.http_response.headers = {}
             context.http_response._content = test_unicode
 
-        client_config = self._init_client_config()
-
-        client = EcsClient(client_config, None)
+        client = EcsClient(self.client_config, None)
 
         client.handlers = DEFAULT_HANDLERS
 
@@ -154,8 +131,11 @@ class APIRequestTest(TestCase):
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("SDK.UnknownServerError", e.error_code)
-                self.assertEqual("ServerResponseBody: {&quot;name&quot; : &quot;cloud&quot;}",
-                                 e.error_message)
+                if six.PY2:
+                    self.assertEqual(e.error_message, 'ServerResponseBody: '+test_unicode)
+                else:
+                    self.assertEqual("ServerResponseBody: {&quot;name&quot; : &quot;cloud&quot;}",
+                                     e.error_message)
 
     def test_request_with_body_escape(self):
         def _handle_request(context):
@@ -165,8 +145,7 @@ class APIRequestTest(TestCase):
             context.http_response.headers = {}
             context.http_response._content = "{\"Message\": \"Some message\"}"
 
-        client_config = self._init_client_config()
-        client = EcsClient(client_config, None)
+        client = EcsClient(self.client_config, None)
 
         client.handlers = DEFAULT_HANDLERS
 

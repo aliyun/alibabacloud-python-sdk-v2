@@ -26,7 +26,7 @@ class MiniLocationClient(AlibabaCloudClient):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
 
         self.product_code = "Location"
-        self.product_version = "2015-06-12"
+        self.api_version = "2015-06-12"
         self.location_service_code = None
         self.location_endpoint_type = "openAPI"
 
@@ -46,7 +46,7 @@ class MiniLocationClient(AlibabaCloudClient):
 class DescribeEndpointCaller:
 
     def __init__(self, client_config, credentials_provider):
-        # TODO enable https 如何收起来
+        # TODO enable https
         client_config.enable_https = True
         self._client = MiniLocationClient(client_config, credentials_provider)
 

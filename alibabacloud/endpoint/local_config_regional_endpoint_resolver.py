@@ -25,6 +25,7 @@ from alibabacloud.vendored.six import iteritems
 
 
 class LocalConfigRegionalEndpointResolver(EndpointResolverBase):
+
     ENDPOINT_JSON = os.path.join(os.path.dirname(alibabacloud.__file__),
                                  "data", "endpoints.json")
 

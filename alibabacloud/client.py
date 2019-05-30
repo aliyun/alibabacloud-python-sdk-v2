@@ -29,7 +29,7 @@ from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import HTTPRequest
 from alibabacloud.utils.ini_helper import load_config
-from alibabacloud.exceptions import ClientException, ParamTypeInvalidException
+from alibabacloud.exceptions import ClientException, ParamTypeInvalidException, ConfigNotFoundException
 from logging.handlers import RotatingFileHandler
 
 
@@ -43,7 +43,7 @@ DEFAULT_CONFIG_VARIABLES = {
 }
 
 
-class ClientConfig:
+class ClientConfig(object):
     """
     handle client config
     """
@@ -78,12 +78,12 @@ class ClientConfig:
         self.connection_timeout = connection_timeout
         self.read_timeout = read_timeout
         self.enable_stream_logger = enable_stream_logger
-        # TODO credentials profile，profile_name
+        # TODO credentials profile, profile_name
         # self.profile_name = profile_name
         # config file
         self.config_file = config_file
         self.enable_http_debug = enable_http_debug
-        # proxy provider： client  env
+        # proxy provider: client  env
         self.http_proxy = http_proxy
         self.https_proxy = https_proxy
         self._proxy = {
@@ -118,8 +118,11 @@ class ClientConfig:
                     profile = loaded_config.get('default', {})
             else:
                 filename = self.DEFAULT_NAME_FOR_CONFIG_FILE
-                loaded_config = load_config(filename)
-                profile = loaded_config.get('default', {})
+                try:
+                    loaded_config = load_config(filename)
+                    profile = loaded_config.get('default', {})
+                except ConfigNotFoundException:
+                    pass
 
         else:
             profile = load_config(self.config_file)
@@ -141,13 +144,13 @@ def get_merged_client_config(config):
     return config
 
 
-class AlibabaCloudClient:
+class AlibabaCloudClient(object):
     LOG_FORMAT = '%(thread)d %(asctime)s %(name)s %(levelname)s %(message)s'
 
     def __init__(self, client_config, credentials_provider=None):
         self.product_code = None
         self.location_service_code = None
-        self.product_version = None
+        self.api_version = None
         self.location_endpoint_type = None
 
         self.logger = self._init_logger()  # TODO initialize
@@ -201,7 +204,7 @@ class AlibabaCloudClient:
             for handler in reversed(self.handlers[handler_index:]):
                 handler.handle_response(context)
                 if context.retry_flag:
-                    time.sleep(context.retry_backoff / 1000)
+                    time.sleep(context.retry_backoff / float(1000))
                     handler_index = self.handlers.index(handler)
                     break
             if not context.retry_flag:

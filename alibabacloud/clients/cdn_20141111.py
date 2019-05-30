@@ -22,7 +22,7 @@ class CdnClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'Cdn'
-        self.product_version = '2014-11-11'
+        self.api_version = '2014-11-11'
         self.location_service_code = 'None'
         self.location_endpoint_type = 'openAPI'
 

@@ -20,11 +20,13 @@ from alibabacloud.credentials import AccessKeyCredentials
 from alibabacloud.credentials.provider import RamRoleCredentialsProvider, StaticCredentialsProvider, \
     DefaultChainedCredentialsProvider, ProfileCredentialsProvider, \
     InstanceProfileCredentialsProvider
-from alibabacloud.exceptions import ServerException, ClientException
+from alibabacloud.exceptions import ServerException, ClientException, PartialCredentialsException, ConfigNotFoundException
 from alibabacloud.request import APIRequest
 from alibabacloud.utils import ini_helper
 from alibabacloud.vendored import requests
 from base import SDKTestBase, MyServer
+from alibabacloud.clients.ecs_20140526 import EcsClient
+
 
 role_name = {u'Code': u'Success', u'LastUpdated': u'2019-04-09T10:41:31Z',
              u'AccessKeyId': u'STS.NHLK9qYbdbKgs4oYTRXqjLSdX',
@@ -48,20 +50,18 @@ class CredentialsTest(SDKTestBase):
 
     def test_call_request_with_client_env_priority(self):
         self._create_default_ram_user()
-        # self._attach_default_policy()
         self._create_access_key()
         self._create_default_ram_role()
 
-        client_config = ClientConfig(region_id=self.region_id)
         ram_role_arn_credential = RamRoleCredentialsProvider(
-            client_config,
+            self.client_config,
             AccessKeyCredentials(self.ram_user_access_key_id,
                                  self.ram_user_access_key_secret),
             self.ram_role_arn,
             "alice_test")
-        client = AlibabaCloudClient(client_config, ram_role_arn_credential)
+        client = AlibabaCloudClient(self.client_config, ram_role_arn_credential)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -78,13 +78,13 @@ class CredentialsTest(SDKTestBase):
         self.assertTrue(ret.get("RequestId"))
 
     def test_call_request_with_env_config_priority(self):
-        os.environ["ALIBABA_CLOUD_ACCESS_KEY_ID"] = self.access_key_id
-        os.environ["ALIBABA_CLOUD_ACCESS_KEY_SECRET"] = self.access_key_secret
+        os.environ.setdefault("ALIBABA_CLOUD_ACCESS_KEY_ID", self.access_key_id)
+        os.environ.setdefault("ALIBABA_CLOUD_ACCESS_KEY_SECRET", self.access_key_secret)
 
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -101,16 +101,18 @@ class CredentialsTest(SDKTestBase):
         ret = self.get_dict_response(response)
         self.assertTrue(ret.get("Regions"))
         self.assertTrue(ret.get("RequestId"))
+        os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_ID")
+        os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_SECRET")
 
     def test_call_request_with_env_role_name_priority(self):
-        os.environ["ALIBABA_CLOUD_ACCESS_KEY_ID"] = self.access_key_id
-        os.environ["ALIBABA_CLOUD_ACCESS_KEY_SECRET"] = self.access_key_secret
-        os.environ["ALIBABA_CLOUD_ROLE_NAME"] = self.default_ram_role_name
+        os.environ.setdefault("ALIBABA_CLOUD_ACCESS_KEY_ID", self.access_key_id)
+        os.environ.setdefault("ALIBABA_CLOUD_ACCESS_KEY_SECRET", self.access_key_secret)
+        os.environ.setdefault("ALIBABA_CLOUD_ROLE_NAME", self.default_ram_role_name)
 
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -127,6 +129,9 @@ class CredentialsTest(SDKTestBase):
         ret = self.get_dict_response(response)
         self.assertTrue(ret.get("Regions"))
         self.assertTrue(ret.get("RequestId"))
+        os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_ID")
+        os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_SECRET")
+        os.environ.pop("ALIBABA_CLOUD_ROLE_NAME")
 
     def test_call_request_with_config_role_name_priority(self):
         os.environ["ALIBABA_CLOUD_ROLE_NAME"] = self.default_ram_role_name
@@ -134,7 +139,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -147,14 +152,12 @@ class CredentialsTest(SDKTestBase):
         ret = self.get_dict_response(response)
         self.assertTrue(ret.get("Regions"))
         self.assertTrue(ret.get("RequestId"))
+        os.environ.pop("ALIBABA_CLOUD_ROLE_NAME")
 
     def test_call_rpc_request_with_introduction_ak(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -169,12 +172,9 @@ class CredentialsTest(SDKTestBase):
         self.assertTrue(ret.get("RequestId"))
 
     def test_call_roa_request_with_introduction_ak(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -204,7 +204,7 @@ class CredentialsTest(SDKTestBase):
             "alice_test")
         client = AlibabaCloudClient(acs_client, ram_role_arn_credential)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -233,7 +233,7 @@ class CredentialsTest(SDKTestBase):
             "alice_test")
         client = AlibabaCloudClient(roa_client, ram_role_arn_credential)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -255,7 +255,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -274,7 +274,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -284,6 +284,8 @@ class CredentialsTest(SDKTestBase):
         response = response.http_response.content
         ret = self.get_dict_response(response)
         self.assertTrue(ret.get("ResourceTypes"))
+        os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_ID")
+        os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_SECRET")
 
     @mock.patch("alibabacloud.credentials.provider.InstanceProfileCredentialsProvider")
     def test_call_rpc_request_with_role_name(self, InstanceProfileCredentialsProvider):
@@ -299,7 +301,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -313,7 +315,7 @@ class CredentialsTest(SDKTestBase):
         client_config = ClientConfig(region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -330,7 +332,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -348,7 +350,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -367,7 +369,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -387,7 +389,7 @@ class CredentialsTest(SDKTestBase):
                                      region_id=self.region_id)
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "ROS"
-        client.product_version = "2015-09-01"
+        client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeResourceTypes', 'GET', 'https', 'ROA')
@@ -402,19 +404,18 @@ class CredentialsTest(SDKTestBase):
 
     def test_call_request_with_env_error(self):
         os.environ["ALIBABA_CLOUD_ACCESS_KEY_ID"] = self.access_key_id
-        os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_SECRET")
         client_config = ClientConfig(region_id=self.region_id)
-        with self.assertRaises(ClientException) as e:
+        with self.assertRaises(PartialCredentialsException) as e:
             DefaultChainedCredentialsProvider(client_config)
         self.assertEqual(e.exception.error_message,
-                         "Environment variable ALIBABA_CLOUD_ACCESS_KEY_SECRET cannot be empty.")
+                         "Partial credentials found in env, missing: access_key_secret")
 
     def test_local_file_default_config_with_path_error(self):
         os.environ.setdefault('ALIBABA_CLOUD_CREDENTIALS_FILE', 'abc')
         client_config = ClientConfig(region_id=self.region_id)
-        with self.assertRaises(ClientException) as e:
+        with self.assertRaises(ConfigNotFoundException) as e:
             DefaultChainedCredentialsProvider(client_config)
-        self.assertEqual(e.exception.error_message, "Failed to find config file for SDK: abc")
+        self.assertEqual(e.exception.error_message, "The specified config file (abc) could not be found.")
         os.environ.pop("ALIBABA_CLOUD_CREDENTIALS_FILE")
 
     def test_local_file_default_config_with_none_error(self):

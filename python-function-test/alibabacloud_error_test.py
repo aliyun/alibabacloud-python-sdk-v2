@@ -11,21 +11,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
+
+from mock import patch
 
 from alibabacloud.client import ClientConfig, AlibabaCloudClient
 from alibabacloud.exceptions import ServerException, InvalidRegionIDException, HttpErrorException
+from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
 from alibabacloud.handlers.endpoint_handler import EndpointHandler
 from alibabacloud.handlers.http_handler import HttpHandler
-from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.retry_handler import RetryHandler
 from alibabacloud.handlers.server_error_handler import ServerErrorHandler
 from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import APIRequest
+from alibabacloud.vendored import six
 from alibabacloud.vendored.requests import Response
-from mock import patch
 from base import SDKTestBase
+from alibabacloud.clients.ecs_20140526 import EcsClient
 
 http_handler = HttpHandler()
 DEFAULT_HANDLERS = [
@@ -43,12 +47,11 @@ DEFAULT_HANDLERS = [
 class ErrorTest(SDKTestBase):
 
     def test_server_unreachable(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id="cn-abc")
+        client_config = self.client_config
+        client_config.region_id = 'cn-abc'
         client = AlibabaCloudClient(client_config, None)
         client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
+        client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
@@ -60,18 +63,10 @@ class ErrorTest(SDKTestBase):
                 "No such region 'cn-abc'. Please check your region ID."))
 
     def test_server_error_normal(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DeleteInstance', 'GET', 'https', 'RPC')
-        api_request._params = {"InstanceId": "blah"}
+        ecs_client = EcsClient(self.client_config)
         try:
-            client._handle_request(api_request)
+            ecs_client.delete_instance(instance_id="blah")
+
             assert False
         except ServerException as e:
             self.assertEqual("InvalidInstanceId.NotFound", e.error_code)
@@ -79,21 +74,13 @@ class ErrorTest(SDKTestBase):
                              e.error_message)
 
     def test_server_timeout(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id,
-                                     read_timeout=0.001)
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('CreateInstance', 'GET', 'http', 'RPC')
-        api_request._params = {"ImageId": "coreos_1745_7_0_64_30G_alibase_20180705.vhd",
-                               "InstanceType": "ecs.cn-hangzhou.invalid",
-                               "SystemDiskCategory": "cloud_ssd"}
+        self.client_config.read_timeout = 0.001
+        ecs_client = EcsClient(self.client_config)
+
         try:
-            client._handle_request(api_request)
+            ecs_client.create_instance(image_id="coreos_1745_7_0_64_30G_alibase_20180705.vhd",
+                                       instance_type="ecs.cn-hangzhou.invalid",
+                                       system_disk_category="cloud_ssd")
             assert False
         except HttpErrorException as e:
             self.assertEqual("HTTPConnectionPool(host='ecs-cn-hangzhou.aliyuncs.com',"
@@ -109,28 +96,22 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"bad-json"
 
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
-
-        client.handlers = DEFAULT_HANDLERS
+        ecs_client = EcsClient(self.client_config)
+        ecs_client.handlers = DEFAULT_HANDLERS
 
         with patch.object(http_handler, "handle_request", wraps=_handle_request):
             try:
-                client._handle_request(api_request, _config=client_config)
+                ecs_client.delete_instance()
                 assert False
             except ServerException as e:
                 self.assertEqual(400, e.http_status)
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("SDK.UnknownServerError", e.error_code)
-                self.assertEqual("ServerResponseBody: b'bad-json'", e.error_message)
+                if six.PY2:
+                    self.assertEqual('ServerResponseBody: bad-json', e.error_message)
+                else:
+                    self.assertEqual("ServerResponseBody: b'bad-json'", e.error_message)
 
     def test_server_error_with_valid_json_no_code_or_message(self):
         # test valid json format but no Code or Message
@@ -141,30 +122,25 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"""{"key" : "this is a valid json string"}"""
 
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
-
-        client.handlers = DEFAULT_HANDLERS
-
+        ecs_client = EcsClient(self.client_config)
+        ecs_client.handlers = DEFAULT_HANDLERS
         with patch.object(http_handler, "handle_request", wraps=_handle_request):
             try:
-                client._handle_request(api_request, _config=client_config)
+                ecs_client.describe_instances()
                 assert False
             except ServerException as e:
                 self.assertEqual(400, e.http_status)
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("SDK.UnknownServerError", e.error_code)
-                self.assertEqual(
-                    """ServerResponseBody: b'{"key" : "this is a valid json string"}'""",
-                    e.error_message)
+                if six.PY2:
+                    self.assertEqual(
+                        'ServerResponseBody: {"key" : "this is a valid json string"}',
+                        e.error_message)
+                else:
+                    self.assertEqual(
+                        """ServerResponseBody: b'{"key" : "this is a valid json string"}'""",
+                        e.error_message)
 
     def test_missing_code_in_response(self):
         # test missing Code in response
@@ -175,28 +151,22 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"{\"Message\": \"Some message\"}"
 
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
-
-        client.handlers = DEFAULT_HANDLERS
+        ecs_client = EcsClient(self.client_config)
+        ecs_client.handlers = DEFAULT_HANDLERS
 
         with patch.object(http_handler, "handle_request", wraps=_handle_request):
             try:
-                client._handle_request(api_request, _config=client_config)
+                ecs_client.describe_instances()
                 assert False
             except ServerException as e:
                 self.assertEqual(400, e.http_status)
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("SDK.UnknownServerError", e.error_code)
-                self.assertEqual("""Some message""", e.error_message)
+                if six.PY2:
+                    self.assertEqual("Some message", e.error_message)
+                else:
+                    self.assertEqual("""Some message""", e.error_message)
 
     def test_missing_message_in_response(self):
         # test missing message in response
@@ -207,21 +177,11 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"{\"Message\": \"Some message\"}"
 
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
-
-        client.handlers = DEFAULT_HANDLERS
-
+        ecs_client = EcsClient(self.client_config)
+        ecs_client.handlers = DEFAULT_HANDLERS
         with patch.object(http_handler, "handle_request", wraps=_handle_request):
             try:
-                client._handle_request(api_request, _config=client_config)
+                ecs_client.describe_regions()
                 assert False
             except ServerException as e:
                 self.assertEqual(400, e.http_status)
@@ -239,26 +199,21 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"{\"Code\": \"YouMessedSomethingUp\"}"
 
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
-        client.product_code = "Ecs"
-        client.product_version = "2014-05-26"
-        client.location_service_code = 'ecs'
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC')
-
-        client.handlers = DEFAULT_HANDLERS
+        ecs_client = EcsClient(self.client_config)
+        ecs_client.handlers = DEFAULT_HANDLERS
 
         with patch.object(http_handler, "handle_request", wraps=_handle_request):
             try:
-                client._handle_request(api_request, _config=client_config)
+                ecs_client.describe_regions()
                 assert False
             except ServerException as e:
                 self.assertEqual(400, e.http_status)
                 self.assertEqual("Ecs", e.service_name)
                 self.assertEqual("ecs-cn-hangzhou.aliyuncs.com", e.endpoint)
                 self.assertEqual("YouMessedSomethingUp", e.error_code)
-                self.assertEqual("""ServerResponseBody: b'{"Code": "YouMessedSomethingUp"}'""",
-                                 e.error_message)
+                if six.PY2:
+                    self.assertEqual('ServerResponseBody: {"Code": "YouMessedSomethingUp"}',
+                                     e.error_message)
+                else:
+                    self.assertEqual("""ServerResponseBody: b'{"Code": "YouMessedSomethingUp"}'""",
+                                     e.error_message)

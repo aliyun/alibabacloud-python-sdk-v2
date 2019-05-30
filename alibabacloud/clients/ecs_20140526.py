@@ -22,7 +22,7 @@ class EcsClient(AlibabaCloudClient):
     def __init__(self, client_config, credentials_provider=None):
         AlibabaCloudClient.__init__(self, client_config, credentials_provider)
         self.product_code = 'Ecs'
-        self.product_version = '2014-05-26'
+        self.api_version = '2014-05-26'
         self.location_service_code = 'ecs'
         self.location_endpoint_type = 'openAPI'
 
@@ -52,9 +52,9 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceId": instance_id,
             "Device": device}
-        repeat_info = {"DiskId": ('DiskId', list, str, None),
-                       "InstanceId": ('InstanceId', list, str, None),
-                       "Device": ('Device', list, str, None),
+        repeat_info = {"DiskId": ('DiskId', 'list', 'str', None),
+                       "InstanceId": ('InstanceId', 'list', 'str', None),
+                       "Device": ('Device', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -111,8 +111,8 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "FleetId": fleet_id}
-        repeat_info = {"FleetStatus": ('FleetStatus', list, str, None),
-                       "FleetId": ('FleetId', list, str, None),
+        repeat_info = {"FleetStatus": ('FleetStatus', 'list', 'str', None),
+                       "FleetId": ('FleetId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -228,27 +228,27 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {
             "LaunchTemplateConfig": (
                 'LaunchTemplateConfig',
-                list,
-                dict,
+                'list',
+                'dict',
                 [
                     ('InstanceType',
-                     str,
+                     'str',
                      None,
                      None),
                     ('MaxPrice',
-                     str,
+                     'str',
                      None,
                      None),
                     ('VSwitchId',
-                     str,
+                     'str',
                      None,
                      None),
                     ('WeightedCapacity',
-                     str,
+                     'str',
                      None,
                      None),
                     ('Priority',
-                     str,
+                     'str',
                      None,
                      None),
                     ]),
@@ -329,32 +329,32 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ReservedInstanceId": reserved_instance_id}
         repeat_info = {"Configuration": ('Configuration',
-                                         list,
-                                         dict,
+                                         'list',
+                                         'dict',
                                          [('ZoneId',
-                                           str,
+                                           'str',
                                            None,
                                            None),
                                           ('ReservedInstanceName',
-                                           str,
+                                           'str',
                                            None,
                                            None),
                                              ('InstanceType',
-                                              str,
+                                              'str',
                                               None,
                                               None),
                                              ('Scope',
-                                              str,
+                                              'str',
                                               None,
                                               None),
                                              ('InstanceAmount',
-                                              str,
+                                              'str',
                                               None,
                                               None),
                                           ]),
                        "ReservedInstanceId": ('ReservedInstanceId',
-                                              list,
-                                              str,
+                                              'list',
+                                              'str',
                                               None),
                        }
         verify_params(api_request._params, repeat_info)
@@ -394,8 +394,8 @@ class EcsClient(AlibabaCloudClient):
             "ZoneId": zone_id,
             "ReservedInstanceName": reserved_instance_name,
             "Status": status}
-        repeat_info = {"ReservedInstanceId": ('ReservedInstanceId', list, str, None),
-                       "Status": ('Status', list, str, None),
+        repeat_info = {"ReservedInstanceId": ('ReservedInstanceId', 'list', 'str', None),
+                       "Status": ('Status', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -430,10 +430,10 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "DemandStatus": demand_status,
             "ZoneId": zone_id}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Key', str, None, None),
-                                                   ('Value', str, None, None),
-                                                   ]),
-                       "DemandStatus": ('DemandStatus', list, str, None),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "DemandStatus": ('DemandStatus', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -479,7 +479,7 @@ class EcsClient(AlibabaCloudClient):
     def untag_resources(
             self,
             resource_owner_id=None,
-            _all=None,
+            all_=None,
             resource_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -489,15 +489,15 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('UntagResources', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "All": _all,
+            "All": all_,
             "ResourceId": resource_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ResourceType": resource_type,
             "TagKey": tag_key}
-        repeat_info = {"ResourceId": ('ResourceId', list, str, None),
-                       "TagKey": ('TagKey', list, str, None),
+        repeat_info = {"ResourceId": ('ResourceId', 'list', 'str', None),
+                       "TagKey": ('TagKey', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -518,10 +518,10 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ResourceType": resource_type}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Key', str, None, None),
-                                                   ('Value', str, None, None),
-                                                   ]),
-                       "ResourceId": ('ResourceId', list, str, None),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "ResourceId": ('ResourceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -546,10 +546,10 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ResourceType": resource_type}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Key', str, None, None),
-                                                   ('Value', str, None, None),
-                                                   ]),
-                       "ResourceId": ('ResourceId', list, str, None),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "ResourceId": ('ResourceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -604,7 +604,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "NetworkInterfaceId": network_interface_id,
             "Ipv6Address": ipv6_address}
-        repeat_info = {"Ipv6Address": ('Ipv6Address', list, str, None),
+        repeat_info = {"Ipv6Address": ('Ipv6Address', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -627,7 +627,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "NetworkInterfaceId": network_interface_id,
             "Ipv6Address": ipv6_address}
-        repeat_info = {"Ipv6Address": ('Ipv6Address', list, str, None),
+        repeat_info = {"Ipv6Address": ('Ipv6Address', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -814,9 +814,9 @@ class EcsClient(AlibabaCloudClient):
             "DedicatedHostType": dedicated_host_type,
             "Tag": tag,
             "Status": status}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -903,9 +903,9 @@ class EcsClient(AlibabaCloudClient):
             "AutoPlacement": auto_placement,
             "ChargeType": charge_type,
             "NetworkAttributes.UdpTimeout": network_attributes_udp_timeout}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Key', str, None, None),
-                                                   ('Value', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -928,7 +928,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceId": instance_id,
             "EventType": event_type}
-        repeat_info = {"InstanceId": ('InstanceId', list, str, None),
+        repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -947,7 +947,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        repeat_info = {"EventId": ('EventId', list, str, None),
+        repeat_info = {"EventId": ('EventId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -990,7 +990,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
             "ZoneId": zone_id}
-        repeat_info = {"AttributeName": ('AttributeName', list, str, None),
+        repeat_info = {"AttributeName": ('AttributeName', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1040,11 +1040,11 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "TemplateResourceGroupId": template_resource_group_id,
             "OwnerId": owner_id}
-        repeat_info = {"LaunchTemplateName": ('LaunchTemplateName', list, str, None),
-                       "TemplateTag": ('TemplateTag', list, dict, [('Key', str, None, None),
-                                                                   ('Value', str, None, None),
-                                                                   ]),
-                       "LaunchTemplateId": ('LaunchTemplateId', list, str, None),
+        repeat_info = {"LaunchTemplateName": ('LaunchTemplateName', 'list', 'str', None),
+                       "TemplateTag": ('TemplateTag', 'list', 'dict', [('Key', 'str', None, None),
+                                                                       ('Value', 'str', None, None),
+                                                                       ]),
+                       "LaunchTemplateId": ('LaunchTemplateId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1079,7 +1079,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "LaunchTemplateVersion": launch_template_version,
             "DetailFlag": detail_flag}
-        repeat_info = {"LaunchTemplateVersion": ('LaunchTemplateVersion', list, str, None),
+        repeat_info = {"LaunchTemplateVersion": ('LaunchTemplateVersion', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1102,7 +1102,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        repeat_info = {"DeleteVersion": ('DeleteVersion', list, str, None),
+        repeat_info = {"DeleteVersion": ('DeleteVersion', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1215,24 +1215,24 @@ class EcsClient(AlibabaCloudClient):
             "SystemDisk.Size": system_disk_size,
             "VpcId": vpc_id,
             "SystemDisk.Description": system_disk_description}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Key', str, None, None),
-                                                   ('Value', str, None, None),
-                                                   ]),
-                       "NetworkInterface": ('NetworkInterface', list, dict, [('PrimaryIpAddress', str, None, None),
-                                                                             ('VSwitchId', str, None, None),
-                                                                             ('SecurityGroupId', str, None, None),
-                                                                             ('NetworkInterfaceName', str, None, None),
-                                                                             ('Description', str, None, None),
-                                                                             ]),
-                       "DataDisk": ('DataDisk', list, dict, [('Size', str, None, None),
-                                                             ('SnapshotId', str, None, None),
-                                                             ('Category', str, None, None),
-                                                             ('Encrypted', str, None, None),
-                                                             ('DiskName', str, None, None),
-                                                             ('Description', str, None, None),
-                                                             ('DeleteWithInstance', str, None, None),
-                                                             ('Device', str, None, None),
-                                                             ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "NetworkInterface": ('NetworkInterface', 'list', 'dict', [('PrimaryIpAddress', 'str', None, None),
+                                                                                 ('VSwitchId', 'str', None, None),
+                                                                                 ('SecurityGroupId', 'str', None, None),
+                                                                                 ('NetworkInterfaceName', 'str', None, None),
+                                                                                 ('Description', 'str', None, None),
+                                                                                 ]),
+                       "DataDisk": ('DataDisk', 'list', 'dict', [('Size', 'str', None, None),
+                                                                 ('SnapshotId', 'str', None, None),
+                                                                 ('Category', 'str', None, None),
+                                                                 ('Encrypted', 'str', None, None),
+                                                                 ('DiskName', 'str', None, None),
+                                                                 ('Description', 'str', None, None),
+                                                                 ('DeleteWithInstance', 'str', None, None),
+                                                                 ('Device', 'str', None, None),
+                                                                 ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1329,27 +1329,27 @@ class EcsClient(AlibabaCloudClient):
             "SystemDisk.Size": system_disk_size,
             "VpcId": vpc_id,
             "SystemDisk.Description": system_disk_description}
-        repeat_info = {"TemplateTag": ('TemplateTag', list, dict, [('Key', str, None, None),
-                                                                   ('Value', str, None, None),
-                                                                   ]),
-                       "Tag": ('Tag', list, dict, [('Key', str, None, None),
-                                                   ('Value', str, None, None),
-                                                   ]),
-                       "NetworkInterface": ('NetworkInterface', list, dict, [('PrimaryIpAddress', str, None, None),
-                                                                             ('VSwitchId', str, None, None),
-                                                                             ('SecurityGroupId', str, None, None),
-                                                                             ('NetworkInterfaceName', str, None, None),
-                                                                             ('Description', str, None, None),
-                                                                             ]),
-                       "DataDisk": ('DataDisk', list, dict, [('Size', str, None, None),
-                                                             ('SnapshotId', str, None, None),
-                                                             ('Category', str, None, None),
-                                                             ('Encrypted', str, None, None),
-                                                             ('DiskName', str, None, None),
-                                                             ('Description', str, None, None),
-                                                             ('DeleteWithInstance', str, None, None),
-                                                             ('Device', str, None, None),
-                                                             ]),
+        repeat_info = {"TemplateTag": ('TemplateTag', 'list', 'dict', [('Key', 'str', None, None),
+                                                                       ('Value', 'str', None, None),
+                                                                       ]),
+                       "Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "NetworkInterface": ('NetworkInterface', 'list', 'dict', [('PrimaryIpAddress', 'str', None, None),
+                                                                                 ('VSwitchId', 'str', None, None),
+                                                                                 ('SecurityGroupId', 'str', None, None),
+                                                                                 ('NetworkInterfaceName', 'str', None, None),
+                                                                                 ('Description', 'str', None, None),
+                                                                                 ]),
+                       "DataDisk": ('DataDisk', 'list', 'dict', [('Size', 'str', None, None),
+                                                                 ('SnapshotId', 'str', None, None),
+                                                                 ('Category', 'str', None, None),
+                                                                 ('Encrypted', 'str', None, None),
+                                                                 ('DiskName', 'str', None, None),
+                                                                 ('Description', 'str', None, None),
+                                                                 ('DeleteWithInstance', 'str', None, None),
+                                                                 ('Device', 'str', None, None),
+                                                                 ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1368,7 +1368,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "InstanceId": instance_id}
-        repeat_info = {"InstanceId": ('InstanceId', list, str, None),
+        repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1387,7 +1387,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "InstanceId": instance_id}
-        repeat_info = {"InstanceId": ('InstanceId', list, str, None),
+        repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1408,7 +1408,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PrivateIpAddress": private_ip_address,
             "NetworkInterfaceId": network_interface_id}
-        repeat_info = {"PrivateIpAddress": ('PrivateIpAddress', list, str, None),
+        repeat_info = {"PrivateIpAddress": ('PrivateIpAddress', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1431,7 +1431,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PrivateIpAddress": private_ip_address,
             "NetworkInterfaceId": network_interface_id}
-        repeat_info = {"PrivateIpAddress": ('PrivateIpAddress', list, str, None),
+        repeat_info = {"PrivateIpAddress": ('PrivateIpAddress', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1457,8 +1457,13 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "NetworkInterfaceId": network_interface_id}
-        repeat_info = {"NetworkInterfacePermissionId": (
-            'NetworkInterfacePermissionId', list, str, None), }
+        repeat_info = {
+            "NetworkInterfacePermissionId": (
+                'NetworkInterfacePermissionId',
+                'list',
+                'str',
+                None),
+         }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -1680,9 +1685,9 @@ class EcsClient(AlibabaCloudClient):
             "HealthStatus": health_status,
             "EventType": event_type,
             "Status": status}
-        repeat_info = {"EventId": ('EventId', list, str, None),
-                       "InstanceEventType": ('InstanceEventType', list, str, None),
-                       "InstanceId": ('InstanceId', list, str, None),
+        repeat_info = {"EventId": ('EventId', 'list', 'str', None),
+                       "InstanceEventType": ('InstanceEventType', 'list', 'str', None),
+                       "InstanceId": ('InstanceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1723,10 +1728,11 @@ class EcsClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "NotBefore.End": not_before_end,
             "EventType": event_type}
-        repeat_info = {"EventId": ('EventId', list, str, None),
-                       "InstanceEventCycleStatus": ('InstanceEventCycleStatus', list, str, None),
-                       "InstanceEventType": ('InstanceEventType', list, str, None),
-                       }
+        repeat_info = {
+            "EventId": (
+                'EventId', 'list', 'str', None), "InstanceEventCycleStatus": (
+                'InstanceEventCycleStatus', 'list', 'str', None), "InstanceEventType": (
+                'InstanceEventType', 'list', 'str', None), }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -1760,8 +1766,8 @@ class EcsClient(AlibabaCloudClient):
             "HealthStatus": health_status,
             "EventType": event_type,
             "Status": status}
-        repeat_info = {"EventId": ('EventId', list, str, None),
-                       "DiskId": ('DiskId', list, str, None),
+        repeat_info = {"EventId": ('EventId', 'list', 'str', None),
+                       "DiskId": ('DiskId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -1926,27 +1932,27 @@ class EcsClient(AlibabaCloudClient):
             "LaunchTemplateVersion": launch_template_version,
             "SystemDisk.Size": system_disk_size,
             "SystemDisk.Description": system_disk_description}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Key', str, None, None),
-                                                   ('Value', str, None, None),
-                                                   ]),
-                       "Ipv6Address": ('Ipv6Address', list, str, None),
-                       "NetworkInterface": ('NetworkInterface', list, dict, [('PrimaryIpAddress', str, None, None),
-                                                                             ('VSwitchId', str, None, None),
-                                                                             ('SecurityGroupId', str, None, None),
-                                                                             ('NetworkInterfaceName', str, None, None),
-                                                                             ('Description', str, None, None),
-                                                                             ]),
-                       "SecurityGroupIds": ('SecurityGroupIds', list, str, None),
-                       "DataDisk": ('DataDisk', list, dict, [('Size', str, None, None),
-                                                             ('SnapshotId', str, None, None),
-                                                             ('Category', str, None, None),
-                                                             ('Encrypted', str, None, None),
-                                                             ('KMSKeyId', str, None, None),
-                                                             ('DiskName', str, None, None),
-                                                             ('Description', str, None, None),
-                                                             ('Device', str, None, None),
-                                                             ('DeleteWithInstance', str, None, None),
-                                                             ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "Ipv6Address": ('Ipv6Address', 'list', 'str', None),
+                       "NetworkInterface": ('NetworkInterface', 'list', 'dict', [('PrimaryIpAddress', 'str', None, None),
+                                                                                 ('VSwitchId', 'str', None, None),
+                                                                                 ('SecurityGroupId', 'str', None, None),
+                                                                                 ('NetworkInterfaceName', 'str', None, None),
+                                                                                 ('Description', 'str', None, None),
+                                                                                 ]),
+                       "SecurityGroupIds": ('SecurityGroupIds', 'list', 'str', None),
+                       "DataDisk": ('DataDisk', 'list', 'dict', [('Size', 'str', None, None),
+                                                                 ('SnapshotId', 'str', None, None),
+                                                                 ('Category', 'str', None, None),
+                                                                 ('Encrypted', 'str', None, None),
+                                                                 ('KMSKeyId', 'str', None, None),
+                                                                 ('DiskName', 'str', None, None),
+                                                                 ('Description', 'str', None, None),
+                                                                 ('Device', 'str', None, None),
+                                                                 ('DeleteWithInstance', 'str', None, None),
+                                                                 ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -2107,7 +2113,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "InstanceId": instance_id}
-        repeat_info = {"InstanceId": ('InstanceId', list, str, None),
+        repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -2160,7 +2166,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceId": instance_id,
             "Parameters": parameters}
-        repeat_info = {"InstanceId": ('InstanceId', list, str, None),
+        repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -2227,7 +2233,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             description=None,
-            type=None,
+            type_=None,
             command_id=None,
             page_number=None,
             page_size=None,
@@ -2239,7 +2245,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "Description": description,
-            "Type": type,
+            "Type": type_,
             "CommandId": command_id,
             "PageNumber": page_number,
             "PageSize": page_size,
@@ -2270,7 +2276,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             working_dir=None,
             description=None,
-            type=None,
+            type_=None,
             command_content=None,
             timeout=None,
             resource_owner_account=None,
@@ -2283,7 +2289,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "WorkingDir": working_dir,
             "Description": description,
-            "Type": type,
+            "Type": type_,
             "CommandContent": command_content,
             "Timeout": timeout,
             "ResourceOwnerAccount": resource_owner_account,
@@ -2383,7 +2389,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "NetworkInterfaceId": network_interface_id}
-        repeat_info = {"SecurityGroupId": ('SecurityGroupId', list, str, None),
+        repeat_info = {"SecurityGroupId": ('SecurityGroupId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -2411,7 +2417,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             service_managed=None,
             security_group_id=None,
-            type=None,
+            type_=None,
             page_number=None,
             resource_group_id=None,
             page_size=None,
@@ -2430,7 +2436,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ServiceManaged": service_managed,
             "SecurityGroupId": security_group_id,
-            "Type": type,
+            "Type": type_,
             "PageNumber": page_number,
             "ResourceGroupId": resource_group_id,
             "PageSize": page_size,
@@ -2444,10 +2450,10 @@ class EcsClient(AlibabaCloudClient):
             "VpcId": vpc_id,
             "PrimaryIpAddress": primary_ip_address,
             "NetworkInterfaceId": network_interface_id}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Key', str, None, None),
-                                                   ('Value', str, None, None),
-                                                   ]),
-                       "NetworkInterfaceId": ('NetworkInterfaceId', list, str, None),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "NetworkInterfaceId": ('NetworkInterfaceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -2500,9 +2506,9 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "VSwitchId": v_switch_id,
             "PrimaryIpAddress": primary_ip_address}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Key', str, None, None),
-                                                   ('Value', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -2669,7 +2675,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "SecurityGroupId": security_group_id,
             "OwnerId": owner_id}
-        repeat_info = {"SecurityGroupId": ('SecurityGroupId', list, str, None),
+        repeat_info = {"SecurityGroupId": ('SecurityGroupId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -3086,9 +3092,9 @@ class EcsClient(AlibabaCloudClient):
             "Tag": tag,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -3123,9 +3129,9 @@ class EcsClient(AlibabaCloudClient):
             "KeyPairName": key_pair_name,
             "Tag": tag,
             "OwnerId": owner_id}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -3289,7 +3295,7 @@ class EcsClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        repeat_info = {"RemovedIpAddresses": ('RemovedIpAddresses', list, str, None),
+        repeat_info = {"RemovedIpAddresses": ('RemovedIpAddresses', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -3480,8 +3486,8 @@ class EcsClient(AlibabaCloudClient):
             "BandwidthPackage": bandwidth_package}
         repeat_info = {
             "BandwidthPackage": (
-                'BandwidthPackage', list, dict, [
-                    ('Bandwidth', str, None, None), ('Zone', str, None, None), ('IpCount', str, None, None), ]), }
+                'BandwidthPackage', 'list', 'dict', [
+                    ('Bandwidth', 'str', None, None), ('Zone', 'str', None, None), ('IpCount', 'str', None, None), ]), }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -3700,7 +3706,7 @@ class EcsClient(AlibabaCloudClient):
     def describe_image_support_instance_types(
             self,
             action_type=None,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             image_id=None,
             resource_owner_account=None,
@@ -3708,14 +3714,14 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DescribeImageSupportInstanceTypes', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ActionType": action_type,
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ImageId": image_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', str, None, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'str', None, None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -3873,7 +3879,7 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_virtual_border_routers_for_physical_connection(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             physical_connection_id=None,
@@ -3887,23 +3893,23 @@ class EcsClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "PhysicalConnectionId": physical_connection_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
     def describe_virtual_border_routers(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             page_size=None,
@@ -3911,22 +3917,22 @@ class EcsClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribeVirtualBorderRouters', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
     def describe_physical_connections(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
@@ -3937,7 +3943,7 @@ class EcsClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribePhysicalConnections', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
@@ -3946,34 +3952,34 @@ class EcsClient(AlibabaCloudClient):
             "UserCidr": user_cidr,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
     def describe_access_points(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             page_size=None,
             owner_id=None,
-            type=None,
+            type_=None,
             page_number=None):
         api_request = APIRequest('DescribeAccessPoints', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
-            "Type": type,
+            "Type": type_,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4065,7 +4071,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_account=None,
             owner_account=None,
             description=None,
-            type=None,
+            type_=None,
             owner_id=None,
             line_operator=None,
             name=None,
@@ -4083,7 +4089,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "Description": description,
-            "Type": type,
+            "Type": type_,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
             "Name": name,
@@ -4135,30 +4141,30 @@ class EcsClient(AlibabaCloudClient):
             "ImageName": image_name,
             "Architecture": architecture}
         repeat_info = {"DiskDeviceMapping": ('DiskDeviceMapping',
-                                             list,
-                                             dict,
+                                             'list',
+                                             'dict',
                                              [('OSSBucket',
-                                               str,
+                                               'str',
                                                None,
                                                None),
                                               ('DiskImSize',
-                                               str,
+                                               'str',
                                                None,
                                                None),
                                                  ('Format',
-                                                  str,
+                                                  'str',
                                                   None,
                                                   None),
                                                  ('Device',
-                                                  str,
+                                                  'str',
                                                   None,
                                                   None),
                                                  ('OSSObject',
-                                                  str,
+                                                  'str',
                                                   None,
                                                   None),
                                                  ('DiskImageSize',
-                                                  str,
+                                                  'str',
                                                   None,
                                                   None),
                                               ]),
@@ -4314,7 +4320,7 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_router_interfaces(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             page_size=None,
@@ -4322,15 +4328,15 @@ class EcsClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribeRouterInterfaces', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4497,7 +4503,7 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_ha_vips(
             self,
-            _filter=None,
+            filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -4506,16 +4512,16 @@ class EcsClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribeHaVips', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": _filter,
+            "Filter": filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
-        repeat_info = {"Filter": ('Filter', list, dict, [('Value', list, str, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'list', 'str', None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4618,9 +4624,9 @@ class EcsClient(AlibabaCloudClient):
             "Tag": tag,
             "OwnerId": owner_id,
             "ResourceType": resource_type}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4647,9 +4653,9 @@ class EcsClient(AlibabaCloudClient):
             "Category": category,
             "ResourceType": resource_type,
             "PageNumber": page_number}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4672,9 +4678,9 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ResourceType": resource_type,
             "PageNumber": page_number}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4695,9 +4701,9 @@ class EcsClient(AlibabaCloudClient):
             "Tag": tag,
             "OwnerId": owner_id,
             "ResourceType": resource_type}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -4871,7 +4877,7 @@ class EcsClient(AlibabaCloudClient):
             new_size=None,
             disk_id=None,
             owner_id=None,
-            type=None):
+            type_=None):
         api_request = APIRequest('ResizeDisk', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
@@ -4881,7 +4887,7 @@ class EcsClient(AlibabaCloudClient):
             "NewSize": new_size,
             "DiskId": disk_id,
             "OwnerId": owner_id,
-            "Type": type}
+            "Type": type_}
         return self._handle_request(api_request).result
 
     def reset_disk(
@@ -5172,7 +5178,7 @@ class EcsClient(AlibabaCloudClient):
             temporary_internet_max_bandwidth_out=None,
             system_disk_category=None,
             temporary_start_time=None,
-            _async=None,
+            async_=None,
             instance_id=None,
             instance_type=None,
             temporary_end_time=None,
@@ -5189,7 +5195,7 @@ class EcsClient(AlibabaCloudClient):
             "Temporary.InternetMaxBandwidthOut": temporary_internet_max_bandwidth_out,
             "SystemDisk.Category": system_disk_category,
             "Temporary.StartTime": temporary_start_time,
-            "Async": _async,
+            "Async": async_,
             "InstanceId": instance_id,
             "InstanceType": instance_type,
             "Temporary.EndTime": temporary_end_time,
@@ -5278,8 +5284,8 @@ class EcsClient(AlibabaCloudClient):
             "RemoveAccount": remove_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
-        repeat_info = {"AddAccount": ('AddAccount', list, str, None),
-                       "RemoveAccount": ('RemoveAccount', list, str, None),
+        repeat_info = {"AddAccount": ('AddAccount', 'list', 'str', None),
+                       "RemoveAccount": ('RemoveAccount', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -5594,9 +5600,9 @@ class EcsClient(AlibabaCloudClient):
             "SnapshotType": snapshot_type,
             "KMSKeyId": kms_key_id,
             "Status": status}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -5637,9 +5643,9 @@ class EcsClient(AlibabaCloudClient):
             "VpcId": vpc_id,
             "PageSize": page_size,
             "Tag": tag}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -5884,9 +5890,9 @@ class EcsClient(AlibabaCloudClient):
             "Filter.3.Key": filter3_key,
             "InstanceNetworkType": instance_network_type,
             "Status": status}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -5988,7 +5994,7 @@ class EcsClient(AlibabaCloudClient):
             show_expired=None,
             os_type=None,
             owner_id=None,
-            _filter=None,
+            filter_=None,
             status=None):
         api_request = APIRequest('DescribeImages', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -6013,14 +6019,14 @@ class EcsClient(AlibabaCloudClient):
             "ShowExpired": show_expired,
             "OSType": os_type,
             "OwnerId": owner_id,
-            "Filter": _filter,
+            "Filter": filter_,
             "Status": status}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
-                       "Filter": ('Filter', list, dict, [('Value', str, None, None),
-                                                         ('Key', str, None, None),
-                                                         ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
+                       "Filter": ('Filter', 'list', 'dict', [('Value', 'str', None, None),
+                                                             ('Key', 'str', None, None),
+                                                             ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -6159,10 +6165,10 @@ class EcsClient(AlibabaCloudClient):
             "Category": category,
             "KMSKeyId": kms_key_id,
             "Status": status}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
-                       "AdditionalAttributes": ('AdditionalAttributes', list, str, None),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
+                       "AdditionalAttributes": ('AdditionalAttributes', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -6289,10 +6295,10 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "NextHopList": next_hop_list,
             "RouteTableId": route_table_id}
-        repeat_info = {"NextHopList": ('NextHopList', list, dict, [('NextHopId', str, None, None),
-                                                                   ('NextHopType', str, None, None),
-                                                                   ]),
-                       }
+        repeat_info = {
+            "NextHopList": (
+                'NextHopList', 'list', 'dict', [
+                    ('NextHopId', 'str', None, None), ('NextHopType', 'str', None, None), ]), }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -6422,9 +6428,9 @@ class EcsClient(AlibabaCloudClient):
             "SnapshotName": snapshot_name,
             "Tag": tag,
             "OwnerId": owner_id}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -6455,9 +6461,9 @@ class EcsClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "VpcId": vpc_id,
             "Tag": tag}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -6486,10 +6492,10 @@ class EcsClient(AlibabaCloudClient):
             "NextHopType": next_hop_type,
             "NextHopList": next_hop_list,
             "RouteTableId": route_table_id}
-        repeat_info = {"NextHopList": ('NextHopList', list, dict, [('NextHopId', str, None, None),
-                                                                   ('NextHopType', str, None, None),
-                                                                   ]),
-                       }
+        repeat_info = {
+            "NextHopList": (
+                'NextHopList', 'list', 'dict', [
+                    ('NextHopId', 'str', None, None), ('NextHopType', 'str', None, None), ]), }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -6607,23 +6613,23 @@ class EcsClient(AlibabaCloudClient):
             "DataDisk": data_disk,
             "SystemDisk.Size": system_disk_size,
             "SystemDisk.Description": system_disk_description}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
-                       "Arn": ('Arn', list, dict, [('Rolearn', str, None, None),
-                                                   ('RoleType', str, None, None),
-                                                   ('AssumeRoleFor', str, None, None),
-                                                   ]),
-                       "DataDisk": ('DataDisk', list, dict, [('DiskName', str, None, None),
-                                                             ('SnapshotId', str, None, None),
-                                                             ('Size', str, None, None),
-                                                             ('Encrypted', str, None, None),
-                                                             ('Description', str, None, None),
-                                                             ('Category', str, None, None),
-                                                             ('KMSKeyId', str, None, None),
-                                                             ('Device', str, None, None),
-                                                             ('DeleteWithInstance', str, None, None),
-                                                             ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
+                       "Arn": ('Arn', 'list', 'dict', [('Rolearn', 'str', None, None),
+                                                       ('RoleType', 'str', None, None),
+                                                       ('AssumeRoleFor', 'str', None, None),
+                                                       ]),
+                       "DataDisk": ('DataDisk', 'list', 'dict', [('DiskName', 'str', None, None),
+                                                                 ('SnapshotId', 'str', None, None),
+                                                                 ('Size', 'str', None, None),
+                                                                 ('Encrypted', 'str', None, None),
+                                                                 ('Description', 'str', None, None),
+                                                                 ('Category', 'str', None, None),
+                                                                 ('KMSKeyId', 'str', None, None),
+                                                                 ('Device', 'str', None, None),
+                                                                 ('DeleteWithInstance', 'str', None, None),
+                                                                 ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -6662,14 +6668,14 @@ class EcsClient(AlibabaCloudClient):
             "ImageVersion": image_version,
             "Tag": tag,
             "Architecture": architecture}
-        repeat_info = {"DiskDeviceMapping": ('DiskDeviceMapping', list, dict, [('SnapshotId', str, None, None),
-                                                                               ('Size', str, None, None),
-                                                                               ('DiskType', str, None, None),
-                                                                               ('Device', str, None, None),
-                                                                               ]),
-                       "Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"DiskDeviceMapping": ('DiskDeviceMapping', 'list', 'dict', [('SnapshotId', 'str', None, None),
+                                                                                   ('Size', 'str', None, None),
+                                                                                   ('DiskType', 'str', None, None),
+                                                                                   ('Device', 'str', None, None),
+                                                                                   ]),
+                       "Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -6714,13 +6720,13 @@ class EcsClient(AlibabaCloudClient):
             "Arn": arn,
             "KMSKeyId": kms_key_id,
             "AdvancedFeatures": advanced_features}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
-                       "Arn": ('Arn', list, dict, [('Rolearn', str, None, None),
-                                                   ('RoleType', str, None, None),
-                                                   ('AssumeRoleFor', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
+                       "Arn": ('Arn', 'list', 'dict', [('Rolearn', 'str', None, None),
+                                                       ('RoleType', 'str', None, None),
+                                                       ('AssumeRoleFor', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
@@ -6751,9 +6757,9 @@ class EcsClient(AlibabaCloudClient):
             "Tag": tag,
             "KMSKeyId": kms_key_id,
             "DestinationDescription": destination_description}
-        repeat_info = {"Tag": ('Tag', list, dict, [('Value', str, None, None),
-                                                   ('Key', str, None, None),
-                                                   ]),
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
                        }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result

@@ -47,8 +47,8 @@ class HttpHandler(RequestHandler):
                                   allow_redirects=False, verify=None, cert=None)
 
             except IOError as e:
-                context.exception = HttpErrorException(sdk_http_error=str(e))
-                context.http_response = HTTPResponse()
+                context.exception = HttpErrorException(http_error=str(e))
+                context.http_response = HTTPResponse(http_request.url, None, {}, None)
                 context.client.logger.error("HttpError occurred. Host:%s HttpException:%s",
                                             context.endpoint, str(e))
             else:
