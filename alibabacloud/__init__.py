@@ -30,8 +30,6 @@ from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
 from alibabacloud.utils.client_supports import _list_available_client_services
 from alibabacloud.utils.utils import _assert_is_not_none
 
-ALIBABACLOUD_ROOT = os.path.dirname(os.path.abspath(__file__))
-
 
 def _get_param_from_args(args, index, name):
     if len(args) <= index:
