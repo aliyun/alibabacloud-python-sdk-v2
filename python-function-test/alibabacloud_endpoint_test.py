@@ -377,7 +377,7 @@ class EndpointTest(SDKTestBase):
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('DescribeApis', 'GET', 'https', 'RPC')
         context = client._handle_request(api_request)
-        response = json.loads(str(context.http_response.content, encoding='utf-8'))
+        response = json.loads(str(context.http_response.text))
         self.assertTrue(response.get('RequestId'))
 
     def test_location_service_code_not_equals_product_code2(self):
@@ -401,7 +401,6 @@ class EndpointTest(SDKTestBase):
                 response = client._handle_request(api_request)
         self.assertEqual(0, monkey.call_count)
 
-        # self.init_env()
         client._endpoint_resolver = self._endpoint_resolver
 
     def test_doc_help_sample(self):

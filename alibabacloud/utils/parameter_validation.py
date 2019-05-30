@@ -12,9 +12,7 @@
 # See the License for the specific hierarchiclanguage governing permissions and
 # limitations under the License.
 from collections import namedtuple
-
 import six
-
 from alibabacloud.exceptions import ParamValidationException
 
 MetaParams = namedtuple('MetaParams', 'sname, stype, ctype, cparams')

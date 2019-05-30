@@ -81,7 +81,8 @@ def instance_cache(function):
     cache = {}
     @wraps(function)
     def wrapper(**kwargs):
-        key = kwargs.get('service_name')+"@"+kwargs.get("api_version")
+        api_version = kwargs.get("api_version") if kwargs.get("api_version") else 'latest'
+        key = kwargs.get('service_name')+"@"+api_version
         if key in cache:
             return cache[key]
         else:
@@ -106,7 +107,9 @@ def _prepare_module(service_name, api_version):
     :return:
     """
     client_name, client_versions = _check_client_service_name(service_name)
-    if api_version not in client_versions:
+    if api_version is None:
+        api_version = max(client_versions)
+    elif api_version not in client_versions:
         raise ApiVersionInvalidException(service_name=service_name, api_version=api_version,
                                          api_versions=','.join([item for item in client_versions]))
 
@@ -115,7 +118,7 @@ def _prepare_module(service_name, api_version):
 
 
 @instance_cache
-def client(service_name, api_version, **kwargs):
+def client(service_name, api_version=None, **kwargs):
     """
     :param service_name: Ecs or ECS or eCS
     :param api_version: 2018-06-09
