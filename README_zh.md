@@ -1,8 +1,8 @@
-```Alibaba Cloud Python SDK 2.0``` 旨在提供阿里云API的Pythonic，面向对象的接口。现在它仍在开发中，有一些包含ECS、RDS、SLB、RAM、VPC、CDN等功能和资源可用。通过使用它，开发人员可以更便捷的管理其相应资源，并且比当前的aliyun-openapi-python-sdk具有更好的编程体验 。
+```Alibaba Cloud Python SDK 2.0``` 旨在提供阿里云API的Pythonic，面向对象的接口。现在它仍在开发中，有一些包含ECS、RDS、SLB、RAM、VPC、CDN等功能和资源可用。通过使用它，开发人员可以更便捷的管理其相应资源，并获得比当前的aliyun-openapi-python-sdk具有更好的编程体验。
 
 
 # 安装
-```Alibaba Cloud Python SDK 2.0``` 目前暂没有发布pypi版本，只能通过源代码安装SDK：
+```Alibaba Cloud Python SDK 2.0``` 目前暂没有发布pypi版本，只能通过源代码安装：
 ```
 git clone https://github.com/aliyun/alibabacloud-python-sdk-v2.git
 cd alibabacloud-python-sdk-v2
@@ -31,13 +31,13 @@ region_id= cn-hangzhou
 
 # 快速开始
 
-`alibabacloud` 创建client是基于产品的client。
+`alibabacloud` 创建的client是基于产品的。
 ```python
 import alibabacloud
 # 创建一个基于ECS产品的client
 ecs_client = alibabacloud.client(service_name='Ecs')
 ```
-创建基于产品的客户端后，该产品提供的每一个操作都将能够被直接调用，获取到字典类型的返回结果
+创建基于产品的客户端后，该产品提供的每一个操作都将能够被直接调用，并获取到字典类型的返回结果
 ```python
 result = ecs_client.describe_regions()
 print(result.get("RequestId"))
