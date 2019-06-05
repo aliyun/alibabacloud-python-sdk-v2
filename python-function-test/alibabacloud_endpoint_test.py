@@ -28,7 +28,7 @@ from alibabacloud.endpoint.location_service_endpoint_resolver import LocationSer
 from alibabacloud.endpoint.resolver_endpoint_request import ResolveEndpointRequest
 from alibabacloud.endpoint.user_customized_endpoint_resolver import UserCustomizedEndpointResolver
 from alibabacloud.exceptions import ServerException, NoSuchEndpointException, \
-    InvalidRegionIDException, HttpErrorException, InvalidProductCode
+    InvalidRegionIDException, HttpErrorException, InvalidProductCodeException
 from alibabacloud.request import APIRequest
 from base import SDKTestBase
 from alibabacloud.clients.ecs_20140526 import EcsClient
@@ -227,7 +227,7 @@ class EndpointTest(SDKTestBase):
                     self.resolve("cn-hangzhou", "InvalidProductCode",
                                  "InvalidProductCode", "openAPI")
                     assert False
-                except InvalidProductCode as e:
+                except InvalidProductCodeException as e:
                     self.assertTrue(e.error_message.startswith(
                         "No endpoint for product 'InvalidProductCode'.\n"
                         "Please check the product code, "
@@ -238,7 +238,7 @@ class EndpointTest(SDKTestBase):
             try:
                 self.resolve("cn-beijing", "InvalidProductCode", "InvalidProductCode", "openAPI")
                 assert False
-            except InvalidProductCode as e:
+            except InvalidProductCodeException as e:
                 self.assertTrue(e.error_message.startswith(
                     "No endpoint for product 'InvalidProductCode'.\n"
                     "Please check the product code, "
@@ -264,7 +264,7 @@ class EndpointTest(SDKTestBase):
         try:
             self.resolve("cn-beijing", "InvalidProductCode")
             assert False
-        except InvalidProductCode as e:
+        except InvalidProductCodeException as e:
             self.assertTrue(e.error_message.startswith(
                 "No endpoint for product 'InvalidProductCode'.\n"
                 "Please check the product code, "

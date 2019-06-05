@@ -32,7 +32,7 @@ class HttpErrorException(AlibabaCloudException):
     fmt = '{http_error}'
 
 
-class InvalidProductCode(AlibabaCloudException):
+class InvalidProductCodeException(AlibabaCloudException):
     fmt = "No endpoint for product '{product_code}'.\n" +\
           "Please check the product code, " + \
           "or set an endpoint for your request explicitly.\n" + \
@@ -98,7 +98,7 @@ class MaximumRecursionException(AlibabaCloudException):
 class ServerException(Exception):
 
     def __init__(self, error_code, error_message, endpoint=None, service_name=None,
-                 http_status=None, request_id=None, version=None):
+                 http_status=None, request_id=None, api_version=None):
         self.error_code = error_code
         self.error_message = error_message
         self.endpoint = endpoint
@@ -106,7 +106,7 @@ class ServerException(Exception):
         self.service_name = service_name
         self.http_status = http_status
         self.request_id = request_id
-        self.version = version
+        self.api_version = api_version
 
     def __str__(self):
         return "HTTP Status: %s Product:%s Endpoint:%s Error:%s %s RequestID: %s Version:%s" % (
@@ -116,5 +116,5 @@ class ServerException(Exception):
             self.error_code,
             self.error_message,
             self.request_id,
-            self.version
+            self.api_version
         )

@@ -87,7 +87,7 @@ class HTTPResponse:
     @property
     def content(self):
         if self._content is None:
-            self._content = bytes().join(self.raw.stream()) or bytes()
+            self._content = bytes(self.raw, encoding='utf-8') if self.raw else bytes()
         return self._content
 
     @property
