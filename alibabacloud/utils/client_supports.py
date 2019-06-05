@@ -41,9 +41,8 @@ def _format_api_version(api_version):
 def _list_available_client_services():
     # find py file ,get name ,split
     services = dict()
-    for path in os.walk(CLIENTS_DATA_PATH):
-        if path[0].endswith('clients'):
-            files = path[2]
+    for root, _, files in os.walk(CLIENTS_DATA_PATH):
+        if root.endswith('clients'):
             if '__init__.py' in files:
                 files.remove('__init__.py')
             for file in files:
