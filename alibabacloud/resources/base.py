@@ -21,7 +21,7 @@ class ServiceResource(object):
         """
 
         :param service_name: such as ecs slb
-        :param _client:  such as ecsclient
+        :param _client:  such as ecsClient
         """
         self.service_name = service_name
         self._client = _client

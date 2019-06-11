@@ -17,7 +17,6 @@ from alibabacloud.exceptions import ClientException
 from alibabacloud.vendored.six import iteritems
 from alibabacloud.utils.utils import _assert_is_list_but_not_string
 from alibabacloud.utils.utils import _get_key_in_response
-import alibabacloud.utils.utils as utils
 
 
 class ResourceCollection:
@@ -121,13 +120,12 @@ def _param_expand_to_json(params, rules, singular=True):
                 to_add = [params[key]]
             else:
                 to_add = params[key]
-                _assert_is_list_but_not_string(to_add, key)  # 校验不是str， 但是是list或者tuple
+                _assert_is_list_but_not_string(to_add, key)
             del params[key]
 
             if value in params:
                 raise ClientException(msg=
                                       "Param {0} is already set.".format(value))
-            # to_add 是一个list或者tuple,转换成字符串
             params[value] = json.dumps(to_add)
 
 
@@ -153,10 +151,7 @@ def _create_resource_collection(resource_class, client, request_class,
                                 param_aliases=None):
 
     def page_handler(params):
-        # request_class 以前是Describeregions()
         # request_class is describe_regions
-        # request = request_class()
-        # 处理params
         if singular_param_to_json:
             _param_expand_to_json(params, singular_param_to_json)
         if plural_param_to_json:
@@ -184,7 +179,7 @@ def _create_resource_collection(resource_class, client, request_class,
         resource = resource_class(None, _client=client)
         resource._assign_attributes(resource_data_item)
         return resource
-    # key_to_resource_id 资源的唯一标识，即instanceid等等
+    # key_to_resource_id :identify
     if key_to_resource_id is None:
         return ResourceCollection(page_handler, resource_creator2)
     else:
@@ -195,7 +190,6 @@ def _create_default_resource_collection(resource_class, client, request_class,
                                         key_to_resource_items,
                                         plural_param_to_json=None,
                                         param_aliases=None):
-    from alibabacloud.resources.base import ServiceResource
     return _create_resource_collection(resource_class, client, request_class,
                                        key_to_resource_items, None,
                                        plural_param_to_json=plural_param_to_json,
