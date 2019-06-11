@@ -13,9 +13,8 @@
 # limitations under the License.
 import copy
 import json
-from aliyunsdkcore.acs_exception.exceptions import ClientException
-from aliyunsdkcore.vendored.six import iteritems
-from alibabacloud.errors import ERROR_INVALID_PARAMETER
+from alibabacloud.exceptions import ClientException
+from alibabacloud.vendored.six import iteritems
 from alibabacloud.utils.utils import _assert_is_list_but_not_string
 from alibabacloud.utils.utils import _get_key_in_response
 import alibabacloud.utils.utils as utils
@@ -62,9 +61,10 @@ class ResourceCollection:
             params = copy.deepcopy(self._filter_params)
             if params is None:
                 params = {}
-            params['PageNumber'] = page_num
+            params['page_number'] = page_num
+
             if self._page_size:
-                params['PageSize'] = self._page_size
+                params['page_size'] = self._page_size
 
             total_count, page_size, page_num, items = self._page_handler(params)
             if self._limit is not None:
@@ -97,7 +97,7 @@ class ResourceCollection:
 
     def _check_count(self, count):
         if not isinstance(count, int) or count <= 0:
-            raise ClientException(ERROR_INVALID_PARAMETER, "count must be a positive integer.")
+            raise ClientException(msg="count must be a positive integer.")
 
     def limit(self, count):
         self._check_count(count)
@@ -121,20 +121,22 @@ def _param_expand_to_json(params, rules, singular=True):
                 to_add = [params[key]]
             else:
                 to_add = params[key]
-                _assert_is_list_but_not_string(to_add, key)
+                _assert_is_list_but_not_string(to_add, key)  # 校验不是str， 但是是list或者tuple
             del params[key]
 
             if value in params:
-                raise ClientException(ERROR_INVALID_PARAMETER,
+                raise ClientException(msg=
                                       "Param {0} is already set.".format(value))
+            # to_add 是一个list或者tuple,转换成字符串
             params[value] = json.dumps(to_add)
 
 
 def _handle_param_aliases(params, aliases):
+    # iteritems such as {'list_of_event_id': 'EventIds',}
     for key, value in iteritems(aliases):
         if key in params:
             if value in params:
-                raise ClientException(ERROR_INVALID_PARAMETER,
+                raise ClientException(msg=
                                       "Param {0} is already set.".format(value))
             params[value] = params[key]
             del params[key]
@@ -151,15 +153,17 @@ def _create_resource_collection(resource_class, client, request_class,
                                 param_aliases=None):
 
     def page_handler(params):
-        request = request_class()
+        # request_class 以前是Describeregions()
+        # request_class is describe_regions
+        # request = request_class()
+        # 处理params
         if singular_param_to_json:
             _param_expand_to_json(params, singular_param_to_json)
         if plural_param_to_json:
             _param_expand_to_json(params, plural_param_to_json, singular=False)
         if param_aliases:
             _handle_param_aliases(params, param_aliases)
-
-        response = utils._do_request(client, request, params)
+        response = request_class(**params)
         return (
             _get_key_in_response(response, key_to_total_count),
             _get_key_in_response(response, key_to_page_size),
@@ -168,8 +172,10 @@ def _create_resource_collection(resource_class, client, request_class,
         )
 
     def resource_creator(resource_data_item):
+
         resource_id = _get_key_in_response(resource_data_item, key_to_resource_id)
         del resource_data_item[key_to_resource_id]
+        # resource_class is such as ECSInstanceResource
         resource = resource_class(resource_id, _client=client)
         resource._assign_attributes(resource_data_item)
         return resource
@@ -178,7 +184,7 @@ def _create_resource_collection(resource_class, client, request_class,
         resource = resource_class(None, _client=client)
         resource._assign_attributes(resource_data_item)
         return resource
-
+    # key_to_resource_id 资源的唯一标识，即instanceid等等
     if key_to_resource_id is None:
         return ResourceCollection(page_handler, resource_creator2)
     else:
