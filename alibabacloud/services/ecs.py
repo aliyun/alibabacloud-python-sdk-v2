@@ -189,7 +189,7 @@ class ECSInstanceFullStatus(ServiceResource):
     def _assign_attributes(self, attrs):
         ServiceResource._assign_attributes(self, attrs)
         self.system_events = []
-        system_events_data = self.scheduled_system_event_set.search('ScheduledSystemEventType')
+        system_events_data = self.scheduled_system_event_set.get('ScheduledSystemEventType')
         for item in system_events_data:
             event_id = item.get('EventId')
             event = ECSSystemEventResource(event_id)
@@ -282,12 +282,12 @@ class ECSResource(ServiceResource):
             singular_param_to_json={'instance_id': 'InstanceIds'},
             # 从行为上看，plural_param_to_json只是参数辅助的作用
             plural_param_to_json={
-                'instance_ids': 'InstanceIds',
-                'list_of_instance_id': 'InstanceIds',
-                'list_of_private_ip_address': 'PrivateIpAddresses',
-                'list_of_inner_ip_address': 'InnerIpAddresses',
-                'list_of_public_ip_address': 'PublicIpAddresses',
-                'list_of_eip_address': 'EipAddresses',
+                'instance_ids': 'instance_ids',
+                'list_of_instance_id': 'instance_ids',
+                'list_of_private_ip_address': 'private_ip_addresses',
+                'list_of_inner_ip_address': 'inner_ip_addresses',
+                'list_of_public_ip_address': 'public_ip_addresses',
+                'list_of_eip_address': 'eip_addresses',
             }
         )
         self.system_events = _create_resource_collection(

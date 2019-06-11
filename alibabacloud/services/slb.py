@@ -33,7 +33,7 @@ class LoadBalancerResource(ServiceResource):
         self._client.set_load_balancer_name(load_balancer_id=self.load_balancer_id, **params)
 
     def refresh(self):
-        response = self._client.set_load_balancer_name(load_balancer_id=self.load_balancer_id)
+        response = self._client.describe_load_balancers(load_balancer_id=self.load_balancer_id)
         items = _get_key_in_response(response, 'LoadBalancers.LoadBalancer')
         if not items:
             raise ClientException(msg=

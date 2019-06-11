@@ -15,10 +15,8 @@
 import json
 import os.path
 from tests.base import SDKTestBase
-import alibabacloud
-from aliyunsdkcore.acs_exception.exceptions import ClientException
 from mock import patch
-import alibabacloud.utils as utils
+import alibabacloud.utils.utils as utils
 
 
 class MockResponseTest(SDKTestBase):
@@ -33,6 +31,7 @@ class MockResponseTest(SDKTestBase):
         def mock_do_request(client, request, params):
             return self._read_mock_data("instance_full_status.json")
 
+        # with patch.object(utils, "_do_request", mock_do_request):
         with patch.object(utils, "_do_request", mock_do_request):
 
             ecs = self._get_ecs_resource()
