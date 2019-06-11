@@ -11,13 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 
 __version__ = '0.0.4'
 
-import os
 from functools import wraps
-from aliyunsdkcore.acs_exception.exceptions import ClientException
-from aliyunsdkcore.client import AcsClient
+from alibabacloud.exceptions import ClientException
 
 import alibabacloud.errors
 from alibabacloud.client import ClientConfig
@@ -33,46 +32,10 @@ from alibabacloud.utils.utils import _assert_is_not_none
 
 def _get_param_from_args(args, index, name):
     if len(args) <= index:
-        raise ClientException(alibabacloud.errors.ERROR_INVALID_PARAMETER,
-                              "Parameter {0} required.".format(name))
+        raise ClientException(msg="Parameter {0} required.".format(name))
     return args[index]
 
-
-def get_resource(*args, **kwargs):
-    resource_name = _get_param_from_args(args, 0, "resource_name")
-
-    # FIXME more checks
-    access_key_id = kwargs.get('access_key_id')
-    access_key_secret = kwargs.get('access_key_secret')
-    region_id = kwargs.get('region_id')
-
-    service_resources = {
-        "ecs": ECSResource,
-        "vpc": VPCResource,
-        "slb": SLBResource,
-    }
-
-    normal_resources = {
-        "ecs.instance": ECSInstanceResource,
-        "ecs.system_event": ECSSystemEventResource,
-        "ecs.disk": ECSDiskResource,
-        "ecs.image": ECSImageResource,
-        "vpc.eip_address": VPCEipAddressResource,
-        "slb.load_balancer": LoadBalancerResource,
-    }
-
-    if resource_name.lower() in service_resources:
-        client = AcsClient(access_key_id, access_key_secret, region_id)
-        return service_resources[resource_name](_client=client)
-
-    elif resource_name.lower() in normal_resources:
-        instance_id = _get_param_from_args(args, 1, "resource_id")
-        client = AcsClient(access_key_id, access_key_secret, region_id)
-        return normal_resources[resource_name](instance_id, _client=client)
-
-    else:
-        raise ClientException(alibabacloud.errors.ERROR_CODE_SERVICE_NOT_SUPPORTED,
-                              "Resource '{0}' is not currently supported.".format(resource_name))
+# Client
 
 
 def instance_cache(function):
@@ -139,3 +102,44 @@ def get_client(service_name, api_version=None, **kwargs):
                                                credentials_provider=credentials_provider,
                                                retry_policy=retry_policy,
                                                endpoint_resolver=endpoint_resolver)
+
+
+# resource
+
+def get_resource(*args, **kwargs):
+
+    resource_name = _get_param_from_args(args, 0, "resource_name")
+
+    # FIXME more checks
+    # access_key_id = kwargs.get('access_key_id')
+    # access_key_secret = kwargs.get('access_key_secret')
+    # region_id = kwargs.get('region_id')
+
+    service_resources = {
+        "ecs": ECSResource,
+        "vpc": VPCResource,
+        "slb": SLBResource,
+    }
+
+    normal_resources = {
+        "ecs.instance": ECSInstanceResource,
+        "ecs.system_event": ECSSystemEventResource,
+        "ecs.disk": ECSDiskResource,
+        "ecs.image": ECSImageResource,
+        "vpc.eip_address": VPCEipAddressResource,
+        "slb.load_balancer": LoadBalancerResource,
+    }
+
+    if resource_name.lower() in service_resources:
+        temp_client = get_client(service_name=resource_name.lower(), **kwargs)
+        return service_resources[resource_name](_client=temp_client)
+
+    elif resource_name.lower() in normal_resources:
+        instance_id = _get_param_from_args(args, 1, "resource_id")
+        service_name = resource_name.split('.')[0]
+        temp_client = get_client(service_name=service_name, **kwargs)
+        return normal_resources[resource_name](instance_id, _client=temp_client)
+
+    else:
+        raise ClientException(msg=
+                              "Resource '{0}' is not currently supported.".format(resource_name))

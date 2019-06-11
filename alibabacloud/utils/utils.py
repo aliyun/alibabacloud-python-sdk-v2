@@ -14,8 +14,7 @@
 import re
 import jmespath
 import json
-import alibabacloud.errors as errors
-from aliyunsdkcore.acs_exception.exceptions import ClientException
+from alibabacloud.exceptions import ClientException
 
 _test_flag = False  # FIXME when sdk-core has logging we won't need it
 
@@ -34,7 +33,7 @@ def _do_request(client, request, params):
         elif key == "RegionId":
             request.add_query_param(key, value)
         else:
-            raise ClientException(errors.ERROR_INVALID_PARAMETER,
+            raise ClientException(msg=
                                   "{0} has no parameter named {1}.".format(
                                       request.__class__.__name__,
                                       key,
@@ -55,7 +54,7 @@ def _get_key_in_response(response, key):
     result = jmespath.search(key, response)
     if result is None:
         raise ClientException(
-            errors.ERROR_INVALID_SERVER_RESPONSE,
+            msg=
             "No '{0}' in server response.".format(key)
         )
     return result
@@ -79,10 +78,10 @@ def _assert_is_list_but_not_string(item, name):
     else:
         message = "{0} should be a list or a tuple, {1} found.".format(name,
                                                                        item.__class__.__name__)
-        raise ClientException(errors.ERROR_INVALID_PARAMETER, message)
+        raise ClientException(msg=message)
 
 
 def _assert_is_not_none(item, name):
     if item is None:
-        raise ClientException(errors.ERROR_INVALID_PARAMETER,
+        raise ClientException(msg=
                               "{0} should not be None".format(name))

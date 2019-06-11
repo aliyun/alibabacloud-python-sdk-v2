@@ -11,13 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aliyunsdkcore.vendored.six import iteritems
+from alibabacloud.vendored.six import iteritems
 from alibabacloud.utils.utils import _convert_name_from_camel_case_to_snake_case
 
 
 class ServiceResource(object):
 
     def __init__(self, service_name, _client=None):
+        """
+
+        :param service_name: such as ecs slb
+        :param _client:  such as ecsclient
+        """
         self.service_name = service_name
         self._client = _client
 

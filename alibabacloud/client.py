@@ -147,7 +147,7 @@ class AlibabaCloudClient(object):
     LOG_FORMAT = '%(thread)d %(asctime)s %(name)s %(levelname)s %(message)s'
 
     def __init__(self, client_config, credentials_provider=None,
-                 retry_policy=None, endpoint_resolver=None):
+                 custom_retry_policy=None, endpoint_resolver=None):
         self.product_code = None
         self.location_service_code = None
         self.api_version = None
@@ -182,7 +182,7 @@ class AlibabaCloudClient(object):
             self.credentials_provider = DefaultChainedCredentialsProvider(self.config)
 
         self._init_endpoint_resolve(endpoint_resolver)
-        self._init_retry(retry_policy)
+        self._init_retry(custom_retry_policy)
 
     def _handle_config(self, client_config):
         self.config = get_merged_client_config(client_config)
