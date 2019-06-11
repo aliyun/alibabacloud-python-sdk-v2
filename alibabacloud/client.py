@@ -15,23 +15,22 @@
 import logging
 import os
 import time
+from logging.handlers import RotatingFileHandler
 
 import alibabacloud.retry.retry_policy as retry_policy
 from alibabacloud.credentials import AccessKeyCredentials
+from alibabacloud.exceptions import ParamTypeInvalidException, ConfigNotFoundException
 from alibabacloud.handlers import RequestContext
+from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
 from alibabacloud.handlers.endpoint_handler import EndpointHandler
 from alibabacloud.handlers.http_handler import HttpHandler
-from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.retry_handler import RetryHandler
 from alibabacloud.handlers.server_error_handler import ServerErrorHandler
 from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import HTTPRequest
 from alibabacloud.utils.ini_helper import load_config
-from alibabacloud.exceptions import ClientException, ParamTypeInvalidException, ConfigNotFoundException
-from logging.handlers import RotatingFileHandler
-
 
 DEFAULT_CONFIG_VARIABLES = {
     'max_retry_times': 3,
@@ -147,7 +146,8 @@ def get_merged_client_config(config):
 class AlibabaCloudClient(object):
     LOG_FORMAT = '%(thread)d %(asctime)s %(name)s %(levelname)s %(message)s'
 
-    def __init__(self, client_config, credentials_provider=None):
+    def __init__(self, client_config, credentials_provider=None,
+                 retry_policy=None, endpoint_resolver=None):
         self.product_code = None
         self.location_service_code = None
         self.api_version = None
@@ -181,13 +181,13 @@ class AlibabaCloudClient(object):
             from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
             self.credentials_provider = DefaultChainedCredentialsProvider(self.config)
 
-        self._init_endpoint_resolve()
-        self._init_retry()
+        self._init_endpoint_resolve(endpoint_resolver)
+        self._init_retry(retry_policy)
 
     def _handle_config(self, client_config):
         self.config = get_merged_client_config(client_config)
-        self._init_endpoint_resolve()
-        self._init_retry()
+        self._init_endpoint_resolve(endpoint_resolver=None)
+        self._init_retry(custom_retry_policy=None)
 
     def _handle_request(self, api_request, _config=None, _raise_exception=True):
         if _config is not None:
@@ -214,20 +214,23 @@ class AlibabaCloudClient(object):
         # body
         return context
 
-    def _init_endpoint_resolve(self):
+    def _init_endpoint_resolve(self, endpoint_resolver):
         from alibabacloud.endpoint.default_endpoint_resolver import DefaultEndpointResolver
 
         self.endpoint_resolver = DefaultEndpointResolver(self.config,
-                                                         self.credentials_provider)
+                                                         self.credentials_provider) \
+            if endpoint_resolver is None else endpoint_resolver
 
-    def _init_retry(self):
+    def _init_retry(self, custom_retry_policy):
         # TODO initialize
         # retry
-        if self.config.enable_retry:
+        if custom_retry_policy is not None:
+            self.retry_policy = custom_retry_policy
+        elif self.config.enable_retry:
             try:
                 max_retry_times = int(self.config.max_retry_times)
             except ValueError:
-                raise ParamTypeInvalidException(param='max_retry_times',param_type='int')
+                raise ParamTypeInvalidException(param='max_retry_times', param_type='int')
             else:
                 self.retry_policy = retry_policy.get_default_retry_policy(
                     max_retry_times=max_retry_times)

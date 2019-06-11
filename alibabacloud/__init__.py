@@ -115,7 +115,7 @@ def _prepare_module(service_name, api_version):
 
 
 @instance_cache
-def client(service_name, api_version=None, **kwargs):
+def get_client(service_name, api_version=None, **kwargs):
     """
     :param service_name: Ecs or ECS or eCS
     :param api_version: 2018-06-09
@@ -132,4 +132,10 @@ def client(service_name, api_version=None, **kwargs):
 
     except ImportError:
         raise NoModuleException(name='.'.join(module_name))
-    return getattr(client_module, client_name)(client_config)
+    credentials_provider = kwargs.get('credentials_provider')
+    retry_policy = kwargs.get('retry_policy')
+    endpoint_resolver = kwargs.get('endpoint_resolver')
+    return getattr(client_module, client_name)(client_config,
+                                               credentials_provider=credentials_provider,
+                                               retry_policy=retry_policy,
+                                               endpoint_resolver=endpoint_resolver)
