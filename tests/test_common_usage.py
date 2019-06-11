@@ -15,7 +15,7 @@
 import unittest
 from tests.base import SDKTestBase
 import alibabacloud
-from aliyunsdkcore.acs_exception.exceptions import ClientException
+from alibabacloud.exceptions import ClientException
 
 
 class CommonTest(SDKTestBase):
@@ -25,8 +25,7 @@ class CommonTest(SDKTestBase):
             ecs = alibabacloud.get_resource("blah")
             assert False
         except ClientException as e:
-            self.assertEqual(e.error_code, "SDK.ServiceNotSupported")
-            self.assertEqual(e.get_error_msg(), "Resource 'blah' is not currently supported.")
+            self.assertEqual(e.error_message, "Resource 'blah' is not currently supported.")
 
     def test_get_resource(self):
         alibabacloud.get_resource("ecs",
@@ -50,8 +49,7 @@ class CommonTest(SDKTestBase):
                                       region_id=self.region_id)
             assert False
         except ClientException as e:
-            self.assertEqual(e.get_error_code(), "SDK.InvalidParameter")
-            self.assertEqual(e.get_error_msg(), "Parameter resource_id required.")
+            self.assertEqual(e.error_message, "Parameter resource_id required.")
 
 
 if __name__ == '__main__':
