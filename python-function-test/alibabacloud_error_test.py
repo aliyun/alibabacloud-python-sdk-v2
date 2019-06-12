@@ -15,7 +15,7 @@ import os
 
 from mock import patch
 
-from alibabacloud.client import ClientConfig, AlibabaCloudClient
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.exceptions import ServerException, InvalidRegionIDException, HttpErrorException
 from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler

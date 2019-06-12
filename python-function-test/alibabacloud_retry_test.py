@@ -15,7 +15,6 @@ import os
 import time
 
 from mock import patch
-from alibabacloud.client import ClientConfig
 from alibabacloud.exceptions import ClientException, ServerException, HttpErrorException, ParamTypeInvalidException
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
 from alibabacloud.handlers.endpoint_handler import EndpointHandler
@@ -352,11 +351,12 @@ class AlibabaCloudRetryTest(SDKTestBase):
         ]
 
         client.handlers = DEFAULT_HANDLERS
+        client.config = config
 
         with patch.object(time, "sleep", wraps=record_sleep) as monkey:
             with patch.object(ServerErrorHandler, "handle_response", wraps=_handle_response):
                 try:
-                    client._handle_request(api_request, _config=config)
+                    client._handle_request(api_request)
                     assert False
                 except ServerException as e:
                     self.assertEqual("Throttling", e.error_code)

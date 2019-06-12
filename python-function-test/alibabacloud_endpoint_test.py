@@ -17,7 +17,6 @@ import os
 from mock import patch
 
 from alibabacloud.client import AlibabaCloudClient
-from alibabacloud.client import ClientConfig
 from alibabacloud.endpoint.chained_endpoint_resolver import ChainedEndpointResolver
 from alibabacloud.endpoint.default_endpoint_resolver import DefaultEndpointResolver
 from alibabacloud.endpoint.local_config_global_endpoint_resolver import \

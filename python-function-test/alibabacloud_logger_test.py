@@ -17,7 +17,7 @@ import os
 import tempfile
 import mock
 from base import SDKTestBase
-from alibabacloud.client import ClientConfig
+
 from alibabacloud.clients.ecs_20140526 import EcsClient
 
 

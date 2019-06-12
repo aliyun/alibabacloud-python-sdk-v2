@@ -13,7 +13,7 @@
 # limitations under the License.
 from alibabacloud.vendored import six
 from base import SDKTestBase
-from alibabacloud.client import ClientConfig, AlibabaCloudClient
+from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.exceptions import ServerException
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
 from alibabacloud.handlers.endpoint_handler import EndpointHandler
