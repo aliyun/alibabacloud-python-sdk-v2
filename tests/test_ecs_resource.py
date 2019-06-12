@@ -453,12 +453,15 @@ class EcsResourceTest(SDKTestBase):
             event_ids.append(event.event_id)
         self.assertEqual(set(created_event_ids), set(event_ids))
 
-        self.assertEqual(0, len(list(self.ecs.system_events.filter(not_before_start=start_time_str,
+        # FIXME system_events will amend the params
+        self.assertEqual(0, len(list(self.ecs.system_events.filter(instance_id="123",
+                                                                   not_before_start=start_time_str,
                                                                    not_before_end=end_time_str))))
 
         # test get event by id
         event_id = created_event_ids[0]
-        event = alibabacloud.get_resource("ecs.system_event", event_id,
+        # TODO event_id 是个list
+        event = alibabacloud.get_resource("ecs.system_event", [event_id, ],
                                           access_key_id=self.access_key_id,
                                           access_key_secret=self.access_key_secret,
                                           region_id=self.region_id)
@@ -481,16 +484,16 @@ class EcsResourceTest(SDKTestBase):
         list_of_status = [event.EventCycleStatus.AVOIDED,
                           event.EventCycleStatus.EXECUTED]
         for event in self.ecs.system_events.filter(list_of_event_cycle_status=list_of_status,
-                                                   NotBeforeStart=start_time_str,
-                                                   NotBeforeEnd=end_time_str):
+                                                   not_before_start=start_time_str,
+                                                   not_before_end=end_time_str):
             count += 1
             self.assertEqual(event.EventCycleStatus.EXECUTED, event.get_event_cycle_status())
         self.assertEqual(12, count)
 
         list_of_status = [event.EventCycleStatus.AVOIDED]
         events = list(self.ecs.system_events.filter(list_of_event_cycle_status=list_of_status,
-                                                    NotBeforeStart=start_time_str,
-                                                    NotBeforeEnd=end_time_str))
+                                                    not_before_start=start_time_str,
+                                                    not_before_end=end_time_str))
         self.assertEqual(0, len(events))
 
         # # test list_of_event_type
@@ -498,15 +501,15 @@ class EcsResourceTest(SDKTestBase):
         list_of_type = [event.EventType.SYSTEM_MAINTENANCE_REBOOT,
                         event.EventType.SYSTEM_FAILURE_REBOOT]
         for event in self.ecs.system_events.filter(list_of_event_type=list_of_type,
-                                                   NotBeforeStart=start_time_str,
-                                                   NotBeforeEnd=end_time_str):
+                                                   not_before_start=start_time_str,
+                                                   not_before_end=end_time_str):
             count += 1
             self.assertIn(event.get_event_type(), list_of_type)
         self.assertEqual(8, count)
 
         # test instance full status
         count = 0
-        statuses = list(self.ecs.instance_full_statuses.filter(InstanceIds=instance_ids))
+        statuses = list(self.ecs.instance_full_statuses.filter(instance_id=instance_ids))
         self.assertEqual(4, len(statuses))
         status = statuses[0]
         self.assertEqual(instance_ids[0], status.instance_id)

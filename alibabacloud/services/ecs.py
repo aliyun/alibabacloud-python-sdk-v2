@@ -176,12 +176,12 @@ class ECSSystemEventResource(ServiceResource):
     def get_event_type(self):
         if not hasattr(self, "event_type"):
             return None
-        return self.event_type.search("Name")
+        return self.event_type.get("Name")
 
     def get_event_cycle_status(self):
         if not hasattr(self, "event_cycle_status"):
             return None
-        return self.event_cycle_status.search("Name")
+        return self.event_cycle_status.get("Name")
 
 
 class ECSInstanceFullStatus(ServiceResource):
@@ -278,9 +278,7 @@ class ECSResource(ServiceResource):
         self.instances = _create_resource_collection(
             ECSInstanceResource, _client, _client.describe_instances,
             'Instances.Instance', 'InstanceId',
-            #
             singular_param_to_json={'instance_id': 'InstanceIds'},
-            # 从行为上看，plural_param_to_json只是参数辅助的作用
             plural_param_to_json={
                 'instance_ids': 'instance_ids',
                 'list_of_instance_id': 'instance_ids',
@@ -294,9 +292,9 @@ class ECSResource(ServiceResource):
             ECSSystemEventResource, _client, _client.describe_instance_history_events,
             'InstanceSystemEventSet.InstanceSystemEventType', 'EventId',
             param_aliases={
-                'list_of_event_id': 'EventIds',
-                'list_of_event_cycle_status': 'InstanceEventCycleStatuss',
-                'list_of_event_type': 'InstanceEventTypes'
+                'list_of_event_id': 'event_id',
+                'list_of_event_cycle_status': 'instance_event_cycle_status',
+                'list_of_event_type': 'instance_event_type'
             }
         )
 
@@ -309,7 +307,7 @@ class ECSResource(ServiceResource):
             ECSDiskResource, _client, _client.describe_disks,
             'Disks.Disk', 'DiskId',
             plural_param_to_json={
-                'list_of_disk_id': 'DiskIds',
+                'list_of_disk_id': 'disk_ids',
             }
         )
 
