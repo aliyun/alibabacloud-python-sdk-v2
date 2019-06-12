@@ -19,7 +19,7 @@ import sys
 import threading
 import time
 
-from alibabacloud import ClientConfig
+from alibabacloud.client import ClientConfig
 from alibabacloud.vendored.six import iteritems
 from alibabacloud.exceptions import ServerException
 from alibabacloud.clients.ram_20150501 import RamClient

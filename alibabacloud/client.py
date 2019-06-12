@@ -12,14 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
 import os
+import logging
 import time
 from logging.handlers import RotatingFileHandler
 
 import alibabacloud.retry.retry_policy as retry_policy
 from alibabacloud.credentials import AccessKeyCredentials
-from alibabacloud.exceptions import ParamTypeInvalidException, ConfigNotFoundException
 from alibabacloud.handlers import RequestContext
 from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
@@ -30,12 +29,13 @@ from alibabacloud.handlers.server_error_handler import ServerErrorHandler
 from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import HTTPRequest
+from alibabacloud.exceptions import ParamTypeInvalidException, ConfigNotFoundException
 from alibabacloud.utils.ini_helper import load_config
 
 DEFAULT_CONFIG_VARIABLES = {
     'max_retry_times': 3,
     'enable_retry': True,
-    'enable_http_debug': False,
+    # 'enable_http_debug': None,
     'enable_https': True,
     'http_port': 80,
     'https_port': 443,
@@ -45,41 +45,48 @@ DEFAULT_CONFIG_VARIABLES = {
 class ClientConfig(object):
     """
     handle client config
+    Configuration priority:custom > file > env > default
     """
 
     ENV_NAME_FOR_CONFIG_FILE = 'ALIBABA_CLOUD_CONFIG_FILE'
     DEFAULT_NAME_FOR_CONFIG_FILE = '~/.alibabacloud/config'
 
-    def __init__(self, access_key_id=None, access_key_secret=None, region_id=None,
+    def __init__(self,
+                 access_key_id=None, access_key_secret=None,
+                 region_id=None, endpoint=None,
                  max_retry_times=None, user_agent=None, extra_user_agent=None,
+
                  enable_https=None, http_port=None, https_port=None,
+
                  connection_timeout=None, read_timeout=None, enable_http_debug=None,
-                 http_proxy=None, https_proxy=None, enable_stream_logger=None,
-                 config_file=None, enable_retry=None, endpoint=None):
+                 http_proxy=None, https_proxy=None,
+                 config_file=None, enable_retry=None):
 
         # credentials
         self.access_key_id = access_key_id
         self.access_key_secret = access_key_secret
+        self.endpoint = endpoint
         self.region_id = region_id
 
+        # config
         self.enable_retry = enable_retry
         self.max_retry_times = max_retry_times
-        self.endpoint = endpoint
 
         # user-agent, user define ua
         self.user_agent = user_agent
         self.extra_user_agent = extra_user_agent
+
         # https
         self.enable_https = enable_https
         self.http_port = http_port
         self.https_port = https_port
+
         # timeout
         self.connection_timeout = connection_timeout
         self.read_timeout = read_timeout
-        self.enable_stream_logger = enable_stream_logger
         # TODO credentials profile, profile_name
         # self.profile_name = profile_name
-        # config file
+        # config file, Specify the configuration file location
         self.config_file = config_file
         self.enable_http_debug = enable_http_debug
         # proxy provider: client  env
@@ -89,12 +96,15 @@ class ClientConfig(object):
             'http': self.http_proxy,
             'https': self.https_proxy,
         }
+        self._read_from_env()
+        self._read_from_file()
+        self._read_from_default()
 
     @property
     def proxy(self):
         return self._proxy
 
-    def read_from_env(self):
+    def _read_from_env(self):
         env_vars = {'HTTPS_PROXY', 'HTTP_PROXY'}
         for item in env_vars:
             if getattr(self, item.lower()) is None:
@@ -105,7 +115,7 @@ class ClientConfig(object):
         if self.enable_http_debug is None:
             self.enable_http_debug = os.environ.get('DEBUG') in ('sdk', 'SDK')
 
-    def read_from_file(self):
+    def _read_from_file(self):
         profile = {}
         # TODO read from profile
         if self.config_file is None:
@@ -130,24 +140,17 @@ class ClientConfig(object):
             if profile.get(key) is not None and getattr(self, key) is None:
                 setattr(self, key, profile.get(key))
 
-    def read_from_default(self):
+    def _read_from_default(self):
         for (key, value) in DEFAULT_CONFIG_VARIABLES.items():
             if getattr(self, key) is None:
                 setattr(self, key, value)
 
 
-def get_merged_client_config(config):
-    config.read_from_env()
-    config.read_from_file()
-    config.read_from_default()
-    return config
-
-
 class AlibabaCloudClient(object):
     LOG_FORMAT = '%(thread)d %(asctime)s %(name)s %(levelname)s %(message)s'
 
-    def __init__(self, client_config, credentials_provider=None,
-                 custom_retry_policy=None, endpoint_resolver=None):
+    def __init__(self, client_config, custom_credentials_provider=None, custom_retry_policy=None,
+                 custom_endpoint_resolver=None):
         self.product_code = None
         self.location_service_code = None
         self.api_version = None
@@ -166,10 +169,11 @@ class AlibabaCloudClient(object):
         ]
 
         # client_config:ClientConfig,TODO
-        self.config = get_merged_client_config(client_config)
+        # self.config = get_merged_client_config(client_config)
+        self.config = client_config
 
-        if credentials_provider is not None:
-            self.credentials_provider = credentials_provider
+        if custom_credentials_provider is not None:
+            self.credentials_provider = custom_credentials_provider
 
         elif self.config.access_key_id and self.config.access_key_secret:
             credentials = AccessKeyCredentials(self.config.access_key_id,
@@ -181,18 +185,10 @@ class AlibabaCloudClient(object):
             from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
             self.credentials_provider = DefaultChainedCredentialsProvider(self.config)
 
-        self._init_endpoint_resolve(endpoint_resolver)
+        self._init_endpoint_resolve(custom_endpoint_resolver)
         self._init_retry(custom_retry_policy)
 
-    def _handle_config(self, client_config):
-        self.config = get_merged_client_config(client_config)
-        self._init_endpoint_resolve(endpoint_resolver=None)
-        self._init_retry(custom_retry_policy=None)
-
-    def _handle_request(self, api_request, _config=None, _raise_exception=True):
-        if _config is not None:
-            # for compat
-            self._handle_config(_config)
+    def _handle_request(self, api_request, _raise_exception=True):
         http_request = HTTPRequest()
         context = RequestContext(api_request=api_request, http_request=http_request,
                                  config=self.config, client=self)

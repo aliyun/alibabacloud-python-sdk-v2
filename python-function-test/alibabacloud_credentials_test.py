@@ -15,7 +15,9 @@
 import os
 import mock
 
-from alibabacloud.client import ClientConfig, AlibabaCloudClient, get_merged_client_config
+from alibabacloud.client import AlibabaCloudClient
+from alibabacloud.client import ClientConfig
+
 from alibabacloud.credentials import AccessKeyCredentials
 from alibabacloud.credentials.provider import RamRoleCredentialsProvider, StaticCredentialsProvider, \
     DefaultChainedCredentialsProvider, ProfileCredentialsProvider, \

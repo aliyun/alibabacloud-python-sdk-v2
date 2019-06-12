@@ -14,7 +14,6 @@
 import os
 
 from mock import patch
-from alibabacloud.client import ClientConfig
 from alibabacloud.exceptions import HttpErrorException
 from alibabacloud.request import APIRequest
 from base import SDKTestBase

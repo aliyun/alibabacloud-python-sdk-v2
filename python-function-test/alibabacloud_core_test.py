@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from alibabacloud.client import ClientConfig, AlibabaCloudClient
+from alibabacloud.client import AlibabaCloudClient
+from alibabacloud.client import ClientConfig
 from alibabacloud.credentials import AccessKeyCredentials
 from alibabacloud.credentials.provider import RamRoleCredentialsProvider
 from alibabacloud.exceptions import ServerException, InvalidRegionIDException

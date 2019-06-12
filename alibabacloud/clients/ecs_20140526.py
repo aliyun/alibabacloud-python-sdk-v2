@@ -19,10 +19,8 @@ from alibabacloud.utils.parameter_validation import verify_params
 
 class EcsClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
-                 endpoint_resolver=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider,
-                                    retry_policy, endpoint_resolver)
+    def __init__(self, client_config, custom_credentials_provider=None, retry_policy=None, endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config, custom_credentials_provider, retry_policy, endpoint_resolver)
         self.product_code = 'Ecs'
         self.api_version = '2014-05-26'
         self.location_service_code = 'ecs'

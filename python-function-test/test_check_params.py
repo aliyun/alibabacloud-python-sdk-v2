@@ -1,6 +1,5 @@
 import os
 
-from alibabacloud.client import ClientConfig
 from alibabacloud.clients.eci_20180808 import EciClient
 from alibabacloud.clients.ecs_20140526 import EcsClient
 from alibabacloud.exceptions import ServerException, ParamValidationException

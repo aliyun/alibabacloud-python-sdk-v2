@@ -4,7 +4,6 @@ import os
 from alibabacloud.vendored import six
 from base import SDKTestBase
 
-from alibabacloud.client import ClientConfig
 from alibabacloud.clients.eci_20180808 import EciClient
 from alibabacloud.clients.edas_20170801 import EdasClient
 from alibabacloud.clients.linkwan_20181230 import LinkWANClient
