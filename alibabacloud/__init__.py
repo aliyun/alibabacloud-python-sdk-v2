@@ -11,15 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
+import logging
 
 __version__ = '0.0.4'
 
 from functools import wraps
-from alibabacloud.exceptions import ClientException
 
 import alibabacloud.errors
 from alibabacloud.client import ClientConfig
+from alibabacloud.exceptions import ClientException
 from alibabacloud.exceptions import NoModuleException, ServiceNameInvalidException, \
     ApiVersionInvalidException
 from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource, \
@@ -35,20 +35,23 @@ def _get_param_from_args(args, index, name):
         raise ClientException(msg="Parameter {0} required.".format(name))
     return args[index]
 
+
 # Client
 
 
 def instance_cache(function):
     cache = {}
+
     @wraps(function)
     def wrapper(**kwargs):
-        key = kwargs.get('service_name')+"@"+kwargs.get("api_version", 'latest')
+        key = kwargs.get('service_name') + "@" + kwargs.get("api_version", 'latest')
         if key in cache:
             return cache[key]
         else:
             rv = function(**kwargs)
             cache[key] = rv
             return rv
+
     return wrapper
 
 
@@ -78,7 +81,9 @@ def _prepare_module(service_name, api_version):
 
 
 @instance_cache
-def get_client(service_name, api_version=None, **kwargs):
+def get_client(service_name, api_version=None, region_name=None, endpoint=None, access_key_id=None,
+               access_key_secret=None, credentials_provider=None, retry_policy=None,
+               endpoint_resolver=None, config=None):
     """
     :param service_name: Ecs or ECS or eCS
     :param api_version: 2018-06-09
@@ -107,7 +112,6 @@ def get_client(service_name, api_version=None, **kwargs):
 # resource
 
 def get_resource(*args, **kwargs):
-
     resource_name = _get_param_from_args(args, 0, "resource_name")
 
     service_resources = {
@@ -124,15 +128,43 @@ def get_resource(*args, **kwargs):
         "vpc.eip_address": VPCEipAddressResource,
         "slb.load_balancer": LoadBalancerResource,
     }
+    stream_logger_handler = {
+        "log_level": kwargs.pop('stream_log_level', logging.DEBUG),
+        "logger_name": kwargs.pop('stream_log_name', None),
+        "stream": kwargs.pop('stream', None),
+        "format_string": kwargs.pop('stream_format_string', None)
+    }
 
+    file_logger_handler = {
+        "log_level": kwargs.pop('file_log_level', logging.DEBUG),
+        "path": kwargs.pop('file_logger_path', None),
+        "logger_name": kwargs.pop('file_log_name', None),
+        "maxBytes": kwargs.pop('maxBytes', 10485760),
+        "backupCount": kwargs.pop('backupCount', 5),
+        "format_string": kwargs.pop('file_logger_format_string', None)
+    }
+    enable_stream_logger = kwargs.pop('enable_stream_logger', None)
+    enable_file_logger = kwargs.pop('enable_file_logger', None)
     if resource_name.lower() in service_resources:
         temp_client = get_client(service_name=resource_name.lower(), **kwargs)
+        if enable_stream_logger:
+            temp_client.add_stream_log_handler(**stream_logger_handler)
+        if enable_file_logger:
+            if file_logger_handler.get('path') is None:
+                raise ClientException(
+                    msg="The params file_logger_path is needed. If you want add file logger handler.")
+            temp_client.add_rotating_file_log_handler(**file_logger_handler)
+
         return service_resources[resource_name](_client=temp_client)
 
     elif resource_name.lower() in normal_resources:
         instance_id = _get_param_from_args(args, 1, "resource_id")
         service_name = resource_name.split('.')[0]
         temp_client = get_client(service_name=service_name, **kwargs)
+        if enable_stream_logger:
+            temp_client.add_stream_log_handler(**stream_logger_handler)
+        if enable_file_logger:
+            temp_client.add_rotating_file_log_handler(**file_logger_handler)
         return normal_resources[resource_name](instance_id, _client=temp_client)
 
     else:
