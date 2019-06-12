@@ -212,6 +212,10 @@ class AlibabaCloudClient(object):
         if context.exception and _raise_exception:
             raise context.exception
         # body
+        context.client.logger.debug('Response received. Product:%s Response-body: %s',
+                                    self.product_code, context.http_response.text)
+
+        # TODO
         return context
 
     def _init_endpoint_resolve(self, endpoint_resolver):
@@ -243,12 +247,14 @@ class AlibabaCloudClient(object):
         return logger
 
     def add_rotating_file_log_handler(self, path, log_level=logging.DEBUG, logger_name=None,
-                                      maxBytes=10485760, backupCount=5):
+                                      maxBytes=10485760, backupCount=5, format_string=None):
         log = logging.getLogger(logger_name) if logger_name else self.logger
         log.setLevel(log_level)
         fh = RotatingFileHandler(path, maxBytes=maxBytes, backupCount=backupCount)
         fh.setLevel(log_level)
-        formatter = logging.Formatter(self.LOG_FORMAT)
+        if format_string is None:
+            format_string = self.LOG_FORMAT
+        formatter = logging.Formatter(format_string)
         fh.setFormatter(formatter)
         if fh not in log.handlers:
             log.addHandler(fh)

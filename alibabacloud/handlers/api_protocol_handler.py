@@ -106,16 +106,20 @@ class APIProtocolHandler(RequestHandler):
         http_request.accept_format = 'JSON'
 
         # handle params to body_params or query_params
+        parse_params = {
+            "query": (api_request._query_params, "QueryParams"),
+            "body": (api_request._body_params, "BodyParams"),
+            "path": (api_request.path_params, "PathParams"),
+            "header": (api_request._headers, "Headers")
+        }
+        # TODO default params is query_params
         if api_request.params:
-            # TODO default params is query_params
-            if api_request._param_position == "query":
-                api_request._query_params.update(self._filter_params(api_request.params))
-            elif api_request._param_position == "body":
-                api_request._body_params.update(self._filter_params(api_request.params))
-            elif api_request._param_position == "path":
-                api_request.path_params.update(self._filter_params(api_request.params))
-            elif api_request._param_position == "header":
-                api_request._headers.update(self._filter_params(api_request.params))
+            key = api_request._param_position
+            if key in parse_params:
+                params, position = parse_params[key]
+                params.update(self._filter_params(api_request.params))
+                context.client.logger.debug('Request received. Product:%s %s: %s',
+                                            context.client.product_code, position, str(params))
 
         # handle api_request region_id, rpc and roa must
         if 'RegionId' not in api_request._query_params:

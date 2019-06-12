@@ -188,6 +188,7 @@ class EnvCredentialsProvider(CachedCredentialsProvider):
             access_key_secret = os.environ.get(self.ENV_NAME_FOR_ACCESS_KEY_SECRET)
             if access_key_secret is None:
                 raise PartialCredentialsException(provider='env', cred_var="access_key_secret")
+            # context.client.logger.info('Found credentials in environment variables.')
 
             self._cached_credentials = AccessKeyCredentials(
                 access_key_id=access_key_id,
