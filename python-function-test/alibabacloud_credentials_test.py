@@ -15,6 +15,7 @@
 import os
 import mock
 
+from alibabacloud import get_client
 from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.client import ClientConfig
 
@@ -50,6 +51,14 @@ role_name = {u'Code': u'Success', u'LastUpdated': u'2019-04-09T10:41:31Z',
 
 class CredentialsTest(SDKTestBase):
 
+    def _init_client(self, service_name, api_version=None, region_id='cn-hangzhou'):
+        client = get_client(service_name=service_name, api_version=api_version,
+                            region_id=region_id,
+                            access_key_id=self.access_key_id,
+                            access_key_secret=self.access_key_secret,
+                            config=self.init_client_config())
+        return client
+
     def test_call_request_with_client_env_priority(self):
         self._create_default_ram_user()
         self._create_access_key()
@@ -84,7 +93,8 @@ class CredentialsTest(SDKTestBase):
         os.environ.setdefault("ALIBABA_CLOUD_ACCESS_KEY_SECRET", self.access_key_secret)
 
         client_config = ClientConfig(region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+
+        client = AlibabaCloudClient(client_config, credentials_provider=self.init_credentials_provider())
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -112,7 +122,9 @@ class CredentialsTest(SDKTestBase):
         os.environ.setdefault("ALIBABA_CLOUD_ROLE_NAME", self.default_ram_role_name)
 
         client_config = ClientConfig(region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(client_config,
+                                    credentials_provider=self.init_credentials_provider())
+
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -139,7 +151,9 @@ class CredentialsTest(SDKTestBase):
         os.environ["ALIBABA_CLOUD_ROLE_NAME"] = self.default_ram_role_name
 
         client_config = ClientConfig(region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(client_config,
+                                    credentials_provider=self.init_credentials_provider())
+
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -157,7 +171,9 @@ class CredentialsTest(SDKTestBase):
         os.environ.pop("ALIBABA_CLOUD_ROLE_NAME")
 
     def test_call_rpc_request_with_introduction_ak(self):
-        client = AlibabaCloudClient(self.client_config, None)
+        client = AlibabaCloudClient(self.client_config,
+                                    credentials_provider=self.init_credentials_provider())
+
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -174,7 +190,8 @@ class CredentialsTest(SDKTestBase):
         self.assertTrue(ret.get("RequestId"))
 
     def test_call_roa_request_with_introduction_ak(self):
-        client = AlibabaCloudClient(self.client_config, None)
+        client = AlibabaCloudClient(self.client_config,
+                                    credentials_provider=self.init_credentials_provider())
         client.product_code = "ROS"
         client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
@@ -255,7 +272,8 @@ class CredentialsTest(SDKTestBase):
         os.environ["ALIBABA_CLOUD_ACCESS_KEY_SECRET"] = self.access_key_secret
 
         client_config = ClientConfig(region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(client_config,
+                                    credentials_provider=self.init_credentials_provider())
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -271,10 +289,9 @@ class CredentialsTest(SDKTestBase):
         os.environ["ALIBABA_CLOUD_ACCESS_KEY_ID"] = self.access_key_id
         os.environ["ALIBABA_CLOUD_ACCESS_KEY_SECRET"] = self.access_key_secret
 
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        client_config = ClientConfig(region_id=self.region_id)
+        client = AlibabaCloudClient(client_config,
+                                    credentials_provider=self.init_credentials_provider())
         client.product_code = "ROS"
         client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
@@ -300,8 +317,8 @@ class CredentialsTest(SDKTestBase):
             self.assertTrue(InstanceProfileCredentialsProvider.rotate_credentials)
 
     def test_call_rpc_request_with_config_default(self):
-        client_config = ClientConfig(region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config,
+                                    credentials_provider=self.init_credentials_provider())
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -314,8 +331,8 @@ class CredentialsTest(SDKTestBase):
         self.assertTrue(ret.get("RequestId"))
 
     def test_call_roa_request_with_config_default(self):
-        client_config = ClientConfig(region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(self.client_config,
+                                    credentials_provider=self.init_credentials_provider())
         client.product_code = "ROS"
         client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
@@ -329,10 +346,15 @@ class CredentialsTest(SDKTestBase):
         self.assertTrue(ret.get("ResourceTypes"))
 
     def test_call_rpc_request_with_key_error(self):
-        client_config = ClientConfig(access_key_id="BadAccessKeyId",
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        def init_credentials_provider():
+            from alibabacloud.credentials import AccessKeyCredentials
+
+            credentials = AccessKeyCredentials(access_key_id="BadAccessKeyId",
+                                               access_key_secret=self.access_key_secret)
+            from alibabacloud.credentials.provider import StaticCredentialsProvider
+            credentials_provider = StaticCredentialsProvider(credentials)
+            return credentials_provider
+        client = AlibabaCloudClient(self.client_config, credentials_provider=init_credentials_provider())
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -347,10 +369,15 @@ class CredentialsTest(SDKTestBase):
         self.assertEqual(e.exception.error_message, "Specified access key is not found.")
 
     def test_call_roa_request_with_key_error(self):
-        client_config = ClientConfig(access_key_id="BadAccessKeyId",
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        def init_credentials_provider():
+            from alibabacloud.credentials import AccessKeyCredentials
+
+            credentials = AccessKeyCredentials(access_key_id="BadAccessKeyId",
+                                               access_key_secret=self.access_key_secret)
+            from alibabacloud.credentials.provider import StaticCredentialsProvider
+            credentials_provider = StaticCredentialsProvider(credentials)
+            return credentials_provider
+        client = AlibabaCloudClient(self.client_config, credentials_provider=init_credentials_provider())
         client.product_code = "ROS"
         client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
@@ -366,10 +393,15 @@ class CredentialsTest(SDKTestBase):
                          "Specified api is not found, please check your url and method.")
 
     def test_call_rpc_request_with_secret_error(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret="BadAccessKeySecret",
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        def init_credentials_provider():
+            from alibabacloud.credentials import AccessKeyCredentials
+
+            credentials = AccessKeyCredentials(access_key_id=self.access_key_id,
+                                               access_key_secret="BadAccessKeySecret")
+            from alibabacloud.credentials.provider import StaticCredentialsProvider
+            credentials_provider = StaticCredentialsProvider(credentials)
+            return credentials_provider
+        client = AlibabaCloudClient(self.client_config, credentials_provider=init_credentials_provider())
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -386,10 +418,15 @@ class CredentialsTest(SDKTestBase):
                          "Please check your AccessKeyId and AccessKeySecret.")
 
     def test_call_roa_request_with_secret_error(self):
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret="BadAccessKeySecret",
-                                     region_id=self.region_id)
-        client = AlibabaCloudClient(client_config, None)
+        def init_credentials_provider():
+            from alibabacloud.credentials import AccessKeyCredentials
+
+            credentials = AccessKeyCredentials(access_key_id=self.access_key_id,
+                                               access_key_secret="BadAccessKeySecret")
+            from alibabacloud.credentials.provider import StaticCredentialsProvider
+            credentials_provider = StaticCredentialsProvider(credentials)
+            return credentials_provider
+        client = AlibabaCloudClient(self.client_config, credentials_provider=init_credentials_provider())
         client.product_code = "ROS"
         client.api_version = "2015-09-01"
         client.location_service_code = 'ros'

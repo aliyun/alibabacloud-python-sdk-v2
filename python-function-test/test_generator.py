@@ -16,7 +16,7 @@ from utils import crClient, CSBClient, OpenanalyticsClient
 class GenTestBase(SDKTestBase):
 
     def test_rpc_query_list(self):
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
         tag = [
             {"xxx": 123,
              "aaaa": 456,
@@ -37,7 +37,7 @@ class GenTestBase(SDKTestBase):
 
     def test_rpc_query_get(self):
         # TODO
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
         tag = "hi"
         try:
             context = ecs_client.add_tags(tag=tag, resource_type="instance",
@@ -52,7 +52,7 @@ class GenTestBase(SDKTestBase):
 
     def test_rpc_query_get1(self):
         # TODO
-        ecs_client = EciClient(self.client_config)
+        ecs_client = EciClient(self.client_config, self.init_credentials_provider())
         # tag = []
         tag = ['hi', ]
         try:
@@ -68,7 +68,7 @@ class GenTestBase(SDKTestBase):
 
     def test_rpc_body_get(self):
 
-        open_client = OpenanalyticsClient(self.client_config)
+        open_client = OpenanalyticsClient(self.client_config, self.init_credentials_provider())
         try:
             context = open_client.get_region_status()
             assert False
@@ -78,7 +78,7 @@ class GenTestBase(SDKTestBase):
             self.assertEqual(e.error_message, 'Specified parameter Version is not valid.')
 
     def test_rpc_body_get1(self):
-        link_client = LinkWANClient(self.client_config)
+        link_client = LinkWANClient(self.client_config, self.init_credentials_provider())
         try:
             context = link_client.describe_regions()
             assert False
@@ -91,7 +91,7 @@ class GenTestBase(SDKTestBase):
             self.assertEqual(e.error_message, 'The request has failed due to a temporary failure of the server.')
 
     def test_rpc_body_post(self):
-        csb_client = CSBClient(self.client_config)
+        csb_client = CSBClient(self.client_config, self.init_credentials_provider())
         try:
             context = csb_client.approve_order_list()
             assert False
@@ -103,7 +103,7 @@ class GenTestBase(SDKTestBase):
 
     def test_rpc_body_https(self):
         # TODO
-        link_client = LinkWANClient(self.client_config)
+        link_client = LinkWANClient(self.client_config, self.init_credentials_provider())
         try:
             context = link_client.list_gateway_tuple_orders(offset="123", limit="12")
             assert False
@@ -114,7 +114,7 @@ class GenTestBase(SDKTestBase):
                              "The request has failed due to a temporary failure of the server.")
 
     def test_roa_path(self):
-        cr_client = crClient(self.client_config)
+        cr_client = crClient(self.client_config, self.init_credentials_provider())
         try:
             context = cr_client.get_namespace_authorization_list(namespace="123")
             assert False
@@ -125,7 +125,7 @@ class GenTestBase(SDKTestBase):
 
     def test_roa_query_get_post_delete_put(self):
         self.client_config.endpoint = "edas.cn-hangzhou.aliyuncs.com"
-        edas_client = EdasClient(self.client_config)
+        edas_client = EdasClient(self.client_config, self.init_credentials_provider())
         result = edas_client.list_application()
         self.assertEqual(result.get('Message'), 'success')
         self.assertEqual(result.get('Code'), 200)

@@ -25,7 +25,7 @@ class AlibabaCloudTest(SDKTestBase):
         self.assertEqual(config.enable_https, True)
         self.assertEqual(config.enable_retry, True)
         self.assertEqual(config.enable_http_debug, False)
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         self.assertEqual(client.config.enable_https, True)
         self.assertEqual(client.config.enable_retry, True)
         self.assertEqual(client.config.enable_http_debug, False)
@@ -35,7 +35,7 @@ class AlibabaCloudTest(SDKTestBase):
         config.enable_http_debug = True
         config.enable_https = False
         config.enable_retry = False
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         self.assertEqual(client.config.enable_https, False)
         self.assertEqual(client.config.enable_retry, False)
         self.assertEqual(client.config.enable_http_debug, True)
@@ -46,7 +46,7 @@ class AlibabaCloudTest(SDKTestBase):
         os.environ.setdefault('HTTP_PROXY', 'http://alibabacloud-sdk.com')
         os.environ.setdefault('DEBUG', 'sdk')
 
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         self.assertEqual(client.config.enable_http_debug, False)
         os.environ.pop('HTTPS_PROXY')
         os.environ.pop('HTTP_PROXY')

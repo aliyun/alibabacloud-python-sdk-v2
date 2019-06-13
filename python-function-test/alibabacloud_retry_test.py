@@ -46,7 +46,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         config = self.client_config
         config.enable_retry = False
         config.endpoint = 'somewhere.you.never'
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         with patch.object(client, "_handle_request",
                           wraps=client._handle_request) as monkey:
             try:
@@ -62,7 +62,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
     def test_default_retry_times(self):
         config = self.client_config
         config.endpoint = "somewhere.you.will.never.get"
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         with patch.object(client.handlers[-1], "handle_request",
                           wraps=client.handlers[-1].handle_request) as monkey:
             try:
@@ -76,7 +76,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
 
     def test_no_retry_on_parameter_invalid(self):
         config = self.client_config
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         with patch.object(client.handlers[-1], "handle_request",
                           wraps=client.handlers[-1].handle_request) as monkey:
             try:
@@ -92,7 +92,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
 
     def test_retry_with_client_token(self):
         config = self.client_config
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         client.max_retry_times = 3
         client.handlers = DEFAULT_HANDLERS
         api_request = APIRequest('CreateInstance', 'GET', 'http', 'RPC')
@@ -132,8 +132,9 @@ class AlibabaCloudRetryTest(SDKTestBase):
 
     def test_retry_with_client_token_set(self):
         config = self.client_config
-        client = EcsClient(config)
-        client.max_retry_times = 3
+        config.max_retry_times = 3
+
+        client = EcsClient(config, self.init_credentials_provider())
         client.handlers = DEFAULT_HANDLERS
         api_request = APIRequest('CreateInstance', 'GET', 'http', 'RPC')
         api_request._params = {
@@ -171,7 +172,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         config = self.client_config
         config.max_retry_times = -1
         try:
-            client = EcsClient(config)
+            client = EcsClient(config, self.init_credentials_provider())
             assert False
         except ParamTypeInvalidException as e:
             self.assertEqual("The type of param max_retry_times must be positive integer.",
@@ -181,7 +182,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         config = self.client_config
         config.max_retry_times = 8
         config.endpoint = "somewhere.you.will.never.get"
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         with patch.object(client.handlers[-1], "handle_request",
                           wraps=client.handlers[-1].handle_request) as monkey:
             try:
@@ -199,7 +200,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         from alibabacloud.retry.retry_policy_context import RetryPolicyContext
 
         config = self.client_config
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
 
         default_retry_policy = retry_policy.get_default_retry_policy()
 
@@ -296,7 +297,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         config = self.client_config
         config.max_retry_times = 10
         config.endpoint = "somewhere.you.will.never.get"
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         request = APIRequest('DescribeInstances', 'GET', 'http', 'RPC')
 
         globals()['_test_compute_delay'] = []
@@ -323,7 +324,7 @@ class AlibabaCloudRetryTest(SDKTestBase):
         config = self.client_config
         config.max_retry_times = 10
         config.endpoint = "somewhere.you.will.never.get"
-        client = EcsClient(config)
+        client = EcsClient(config, self.init_credentials_provider())
         api_request = APIRequest('DescribeInstances', 'GET', 'http', 'RPC')
         globals()["_test_compute_delay"] = []
 

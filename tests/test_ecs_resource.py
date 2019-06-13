@@ -32,9 +32,10 @@ class EcsResourceTest(SDKTestBase):
         self._created = False
 
     def setUp(self):
-        if not self._created:
-            self._create_a_lot_instances(4)
-            self._created = True
+        pass
+        # if not self._created:
+        #     self._create_a_lot_instances(4)
+        #     self._created = True
 
     def _env_clean_up(self):
         print("clean up all instances if any")
@@ -315,7 +316,7 @@ class EcsResourceTest(SDKTestBase):
     def test_instance_filter_params_alias(self):
         instances = list(self.ecs.instances.limit(2))
         instance_ids = [x.instance_id for x in instances]
-        inner_ips = [x.inner_ip_address.get("IpAddress")[0] for x in instances]
+        inner_ips = [x.inner_ip_address.get("IpAddress[0]") for x in instances]
 
         def _iterator_assert(iterator, expected_count, expected_instance_ids):
             items = list(iterator)

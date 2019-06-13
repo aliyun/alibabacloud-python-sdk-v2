@@ -21,7 +21,7 @@ class AlibabaCloudEdasTest(SDKTestBase):
     def test_api_request_post(self):
         config = self.client_config
         config.endpoint = 'edas.cn-hangzhou.aliyuncs.com'
-        client = EdasClient(config)
+        client = EdasClient(config, self.init_credentials_provider())
         try:
             response = client.list_application()
         except ServerException as e:
@@ -37,7 +37,8 @@ class AlibabaCloudEdasTest(SDKTestBase):
     def test_api_request_get(self):
         config = self.client_config
         config.endpoint = 'edas.cn-hangzhou.aliyuncs.com'
-        client = EdasClient(config)
+        client = EdasClient(config, self.init_credentials_provider())
+
         try:
             response = client.list_slb()
         except ServerException as e:
@@ -53,7 +54,8 @@ class AlibabaCloudEdasTest(SDKTestBase):
     def test_api_request_put(self):
         config = self.client_config
         config.endpoint = 'edas.cn-hangzhou.aliyuncs.com'
-        client = EdasClient(config)
+        client = EdasClient(config, self.init_credentials_provider())
+
         response = client.disable_degrade_control(app_id='123', rule_id='456')
         self.assertTrue(response.get("Message") ==
                         "Only primary account is allowed to perform this operation." or
@@ -63,7 +65,8 @@ class AlibabaCloudEdasTest(SDKTestBase):
     def test_api_request_delete(self):
         config = self.client_config
         config.endpoint = 'edas.cn-hangzhou.aliyuncs.com'
-        client = EdasClient(config)
+        client = EdasClient(config, self.init_credentials_provider())
+
         response = client.delete_cluster(cluster_id='123')
         self.assertTrue(response.get("Code") == 401 or response.get("Code") == "601")
         self.assertTrue(response.get("Message") == "Edas.errorcode.User.Invalid.message"

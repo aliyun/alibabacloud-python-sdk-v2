@@ -11,7 +11,7 @@ class GenTestCheckParams(SDKTestBase):
 
     def test_rpc_query_list(self):
         # check one
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
         tag = 'hi'
         try:
             context = ecs_client.describe_tags(tag=tag)
@@ -26,7 +26,7 @@ class GenTestCheckParams(SDKTestBase):
 
     def test_rpc_query_list1(self):
         # check two
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
         tag = [
             'hi'
         ]
@@ -44,7 +44,7 @@ class GenTestCheckParams(SDKTestBase):
 
     def test_rpc_query_list2(self):
         # tree layer check
-        eci_client = EciClient(self.client_config)
+        eci_client = EciClient(self.client_config, self.init_credentials_provider())
         container = [{
             "Port": {
                 "Protocol": 'https',
@@ -66,7 +66,7 @@ class GenTestCheckParams(SDKTestBase):
 
     def test_rpc_query_list3(self):
         # tree layer check
-        eci_client = EciClient(self.client_config)
+        eci_client = EciClient(self.client_config, self.init_credentials_provider())
         container = [{
             "Port": [{
                 "Protocol": 'https',
@@ -84,7 +84,7 @@ class GenTestCheckParams(SDKTestBase):
 
     def test_rpc_query_with_extra_params(self):
         # tree layer check
-        eci_client = EciClient(self.client_config)
+        eci_client = EciClient(self.client_config, self.init_credentials_provider())
         container = [{
             "Port": [{
                 "Protocol": 'https',
