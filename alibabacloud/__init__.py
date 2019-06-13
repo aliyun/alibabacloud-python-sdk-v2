@@ -26,6 +26,7 @@ from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSyste
 from alibabacloud.services.slb import SLBResource, LoadBalancerResource
 from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
 from alibabacloud.utils.client_supports import _list_available_client_services
+from alibabacloud.credentials import AccessKeyCredentials
 
 
 def _get_param_from_args(args, index, name):
@@ -39,7 +40,6 @@ def _get_param_from_args(args, index, name):
 
 def instance_cache(function):
     cache = {}
-
     @wraps(function)
     def wrapper(**kwargs):
         key = kwargs.get('service_name') + "@" + kwargs.get('api_version') if kwargs.get(
@@ -79,20 +79,18 @@ def _prepare_module(service_name, api_version):
     return module_name, client_name
 
 
-@instance_cache
+# @instance_cache
 def get_client(service_name, api_version=None, region_id=None, endpoint=None, access_key_id=None,
                access_key_secret=None, custom_credentials_provider=None, custom_retry_policy=None,
                endpoint_resolver=None, config=None):
     """
     :param service_name: Ecs or ECS or eCS
     :param api_version: 2018-06-09
-    :param config: ClientConfig
+    :param config: ClientConfig, if user define the config ,use config,else init a config
     :return:
     """
     module_name, client_name = _prepare_module(service_name, api_version)  # ecs_20180909
-    client_config = config if config else ClientConfig(access_key_id=access_key_id,
-                                                       access_key_secret=access_key_secret,
-                                                       region_id=region_id, endpoint=endpoint)
+    client_config = config if config else ClientConfig(region_id=region_id, endpoint=endpoint)
 
     try:
         client_module = __import__(
@@ -102,9 +100,22 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
     except ImportError:
         raise NoModuleException(name='.'.join(module_name))
 
-    return getattr(client_module, client_name)(client_config, retry_policy=custom_retry_policy,
-                                               custom_credentials_provider=custom_credentials_provider,
-                                               endpoint_resolver=endpoint_resolver)
+    if custom_credentials_provider is not None:
+        credentials_provider = custom_credentials_provider
+
+    elif access_key_id and access_key_secret:
+        credentials = AccessKeyCredentials(access_key_id, access_key_secret)
+        from alibabacloud.credentials.provider import StaticCredentialsProvider
+        credentials_provider = StaticCredentialsProvider(credentials)
+
+    else:
+        from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
+        credentials_provider = DefaultChainedCredentialsProvider(client_config)
+
+    return getattr(client_module, client_name)(client_config,
+                                               custom_retry_policy=custom_retry_policy,
+                                               credentials_provider=credentials_provider,
+                                               custom_endpoint_resolver=endpoint_resolver)
 
 
 # resource
@@ -138,12 +149,12 @@ def get_resource(*args, api_version=None, region_id=None, endpoint=None, access_
     }
 
     file_logger_handler = {
-        "log_level": kwargs.pop('file_log_level', logging.DEBUG),
-        "path": kwargs.pop('file_logger_path', None),
-        "logger_name": kwargs.pop('file_log_name', None),
-        "maxBytes": kwargs.pop('file_maxBytes', 10485760),
-        "backupCount": kwargs.pop('file_backupCount', 5),
-        "format_string": kwargs.pop('file_logger_format_string', None)
+        "log_level": kwargs.get('file_log_level', logging.DEBUG),
+        "path": kwargs.get('file_logger_path', None),
+        "logger_name": kwargs.get('file_log_name', None),
+        "maxBytes": kwargs.get('file_maxBytes', 10485760),
+        "backupCount": kwargs.get('file_backupCount', 5),
+        "format_string": kwargs.get('file_logger_format_string', None)
     }
 
     def init_client(service_name):

@@ -19,10 +19,12 @@ from alibabacloud.utils.parameter_validation import verify_params
 
 class EdasClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
-                 endpoint_resolver=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider,
-                                    retry_policy, endpoint_resolver)
+    def __init__(self, client_config, credentials_provider=None, custom_retry_policy=None,
+                 custom_endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config,
+                                    credentials_provider=credentials_provider,
+                                    custom_retry_policy=custom_retry_policy,
+                                    custom_endpoint_resolver=custom_endpoint_resolver)
         self.product_code = 'Edas'
         self.api_version = '2017-08-01'
         self.location_service_code = 'None'

@@ -31,7 +31,6 @@ class MockResponseTest(SDKTestBase):
         def mock_do_request(client, request, params):
             return self._read_mock_data("instance_full_status.json")
 
-        # with patch.object(utils, "_do_request", mock_do_request):
         with patch.object(utils, "_do_request", mock_do_request):
 
             ecs = self._get_ecs_resource()
@@ -76,11 +75,11 @@ class MockResponseTest(SDKTestBase):
             print(image.image_id)
             image.refresh()
 
-    def test_tag_resource(self):
-        ecs = self._get_resource('ecs')
-
-        for tag in ecs.tags.all():
-            print(tag.tag_key, tag.tag_value)
+    # def test_tag_resource(self):
+    #     ecs = self._get_resource('ecs')
+    #
+    #     for tag in ecs.tags.all():
+    #         print(tag.tag_key, tag.tag_value)
 
     def test_new_resource(self):
 

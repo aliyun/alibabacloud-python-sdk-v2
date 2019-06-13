@@ -52,7 +52,7 @@ class ClientConfig(object):
     DEFAULT_NAME_FOR_CONFIG_FILE = '~/.alibabacloud/config'
 
     def __init__(self,
-                 access_key_id=None, access_key_secret=None,
+                 # access_key_id=None, access_key_secret=None,
                  region_id=None, endpoint=None,
                  max_retry_times=None, user_agent=None, extra_user_agent=None,
 
@@ -63,8 +63,8 @@ class ClientConfig(object):
                  config_file=None, enable_retry=None):
 
         # credentials
-        self.access_key_id = access_key_id
-        self.access_key_secret = access_key_secret
+        # self.access_key_id = access_key_id
+        # self.access_key_secret = access_key_secret
         self.endpoint = endpoint
         self.region_id = region_id
 
@@ -149,7 +149,7 @@ class ClientConfig(object):
 class AlibabaCloudClient(object):
     LOG_FORMAT = '%(thread)d %(asctime)s %(name)s %(levelname)s %(message)s'
 
-    def __init__(self, client_config, custom_credentials_provider=None, custom_retry_policy=None,
+    def __init__(self, client_config, credentials_provider=None, custom_retry_policy=None,
                  custom_endpoint_resolver=None):
         self.product_code = None
         self.location_service_code = None
@@ -169,21 +169,22 @@ class AlibabaCloudClient(object):
         ]
 
         # client_config:ClientConfig,TODO
-        # self.config = get_merged_client_config(client_config)
         self.config = client_config
 
-        if custom_credentials_provider is not None:
-            self.credentials_provider = custom_credentials_provider
+        # if custom_credentials_provider is not None:
+        #     self.credentials_provider = custom_credentials_provider
+        #
+        # elif self.config.access_key_id and self.config.access_key_secret:
+        #     credentials = AccessKeyCredentials(self.config.access_key_id,
+        #                                        self.config.access_key_secret)
+        #     from alibabacloud.credentials.provider import StaticCredentialsProvider
+        #     self.credentials_provider = StaticCredentialsProvider(credentials)
+        #
+        # else:
+        #     from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
+        #     self.credentials_provider = DefaultChainedCredentialsProvider(self.config)
 
-        elif self.config.access_key_id and self.config.access_key_secret:
-            credentials = AccessKeyCredentials(self.config.access_key_id,
-                                               self.config.access_key_secret)
-            from alibabacloud.credentials.provider import StaticCredentialsProvider
-            self.credentials_provider = StaticCredentialsProvider(credentials)
-
-        else:
-            from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
-            self.credentials_provider = DefaultChainedCredentialsProvider(self.config)
+        self.credentials_provider = credentials_provider
 
         self._init_endpoint_resolve(custom_endpoint_resolver)
         self._init_retry(custom_retry_policy)
