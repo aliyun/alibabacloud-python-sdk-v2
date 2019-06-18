@@ -100,6 +100,9 @@ class ClientConfig(object):
         self._read_from_file()
         self._read_from_default()
 
+    # def merge(self):
+
+
     @property
     def proxy(self):
         return self._proxy
@@ -170,19 +173,6 @@ class AlibabaCloudClient(object):
 
         # client_config:ClientConfig,TODO
         self.config = client_config
-
-        # if custom_credentials_provider is not None:
-        #     self.credentials_provider = custom_credentials_provider
-        #
-        # elif self.config.access_key_id and self.config.access_key_secret:
-        #     credentials = AccessKeyCredentials(self.config.access_key_id,
-        #                                        self.config.access_key_secret)
-        #     from alibabacloud.credentials.provider import StaticCredentialsProvider
-        #     self.credentials_provider = StaticCredentialsProvider(credentials)
-        #
-        # else:
-        #     from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
-        #     self.credentials_provider = DefaultChainedCredentialsProvider(self.config)
 
         self.credentials_provider = credentials_provider
 

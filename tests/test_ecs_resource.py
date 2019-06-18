@@ -32,10 +32,9 @@ class EcsResourceTest(SDKTestBase):
         self._created = False
 
     def setUp(self):
-        pass
-        # if not self._created:
-        #     self._create_a_lot_instances(4)
-        #     self._created = True
+        if not self._created:
+            self._create_a_lot_instances(4)
+            self._created = True
 
     def _env_clean_up(self):
         print("clean up all instances if any")
@@ -461,7 +460,7 @@ class EcsResourceTest(SDKTestBase):
 
         # test get event by id
         event_id = created_event_ids[0]
-        # TODO event_id 是个list
+        # TODO event_id is list
         event = alibabacloud.get_resource("ecs.system_event", [event_id, ],
                                           access_key_id=self.access_key_id,
                                           access_key_secret=self.access_key_secret,
