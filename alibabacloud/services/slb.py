@@ -46,7 +46,7 @@ class LoadBalancerResource(ServiceResource):
 class SLBResource(ServiceResource):
 
     def __init__(self, _client=None):
-        ServiceResource.__init__(self, 'vpc', _client=_client)
+        ServiceResource.__init__(self, 'slb', _client=_client)
         self.load_balancers = _create_resource_collection(
             LoadBalancerResource, _client, _client.describe_load_balancers,
             'LoadBalancers.LoadBalancer', 'LoadBalancerId'

@@ -75,11 +75,11 @@ class MockResponseTest(SDKTestBase):
             print(image.image_id)
             image.refresh()
 
-    # def test_tag_resource(self):
-    #     ecs = self._get_resource('ecs')
-    #
-    #     for tag in ecs.tags.all():
-    #         print(tag.tag_key, tag.tag_value)
+    def test_tag_resource(self):
+        ecs = self._get_resource('ecs')
+
+        for tag in ecs.tags.all():
+            print(tag.tag_key, tag.tag_value)
 
     def test_new_resource(self):
 

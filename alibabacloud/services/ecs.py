@@ -278,7 +278,7 @@ class ECSResource(ServiceResource):
         self.instances = _create_resource_collection(
             ECSInstanceResource, _client, _client.describe_instances,
             'Instances.Instance', 'InstanceId',
-            singular_param_to_json={'instance_id': 'InstanceIds'},
+            singular_param_to_json={'instance_id': 'instance_ids'},
             plural_param_to_json={
                 'instance_ids': 'instance_ids',
                 'list_of_instance_id': 'instance_ids',
@@ -351,7 +351,7 @@ class ECSResource(ServiceResource):
         return events
 
     def cancel_simulated_system_events(self, **params):
-        self._client.CancelSimulatedSystemEventsRequest(**params)
+        self._client.cancel_simulated_system_events(**params)
 
     def create_disk(self, **params):
         response = self._client.create_disk(**params)

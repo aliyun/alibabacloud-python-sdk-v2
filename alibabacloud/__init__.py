@@ -13,7 +13,7 @@
 # limitations under the License.
 import logging
 
-__version__ = '0.0.4'
+__version__ = '0.4.3'
 
 from functools import wraps
 
@@ -27,6 +27,8 @@ from alibabacloud.services.slb import SLBResource, LoadBalancerResource
 from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
 from alibabacloud.utils.client_supports import _list_available_client_services
 from alibabacloud.credentials import AccessKeyCredentials
+from alibabacloud.credentials.provider import StaticCredentialsProvider
+from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
 
 
 def _get_param_from_args(args, index, name):
@@ -90,6 +92,10 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
     :return:
     """
     module_name, client_name = _prepare_module(service_name, api_version)  # ecs_20180909
+    if region_id is not None and config:
+        config.region_id = region_id
+    if endpoint is not None and config:
+        config.endpoint = endpoint
     client_config = config if config else ClientConfig(region_id=region_id, endpoint=endpoint)
 
     try:
@@ -105,11 +111,8 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
 
     elif access_key_id and access_key_secret:
         credentials = AccessKeyCredentials(access_key_id, access_key_secret)
-        from alibabacloud.credentials.provider import StaticCredentialsProvider
         credentials_provider = StaticCredentialsProvider(credentials)
-
     else:
-        from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
         credentials_provider = DefaultChainedCredentialsProvider(client_config)
 
     return getattr(client_module, client_name)(client_config,
@@ -121,11 +124,11 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
 # resource
 
 
-def get_resource(*args, api_version=None, region_id=None, endpoint=None, access_key_id=None,
+def get_resource(resource_name, resource_id=None, api_version=None, region_id=None, endpoint=None, access_key_id=None,
                  access_key_secret=None, custom_credentials_provider=None, custom_retry_policy=None,
                  endpoint_resolver=None, config=None, enable_stream_logger=None,
                  enable_file_logger=None, **kwargs):
-    resource_name = _get_param_from_args(args, 0, "resource_name")
+    # resource_name = _get_param_from_args(args, 0, "resource_name")
 
     service_resources = {
         "ecs": ECSResource,
@@ -142,10 +145,10 @@ def get_resource(*args, api_version=None, region_id=None, endpoint=None, access_
         "slb.load_balancer": LoadBalancerResource,
     }
     stream_logger_handler = {
-        "log_level": kwargs.pop('stream_log_level', logging.DEBUG),
-        "logger_name": kwargs.pop('stream_log_name', None),
-        "stream": kwargs.pop('stream', None),
-        "format_string": kwargs.pop('stream_format_string', None)
+        "log_level": kwargs.get('stream_log_level', logging.DEBUG),
+        "logger_name": kwargs.get('stream_log_name', None),
+        "stream": kwargs.get('stream', None),
+        "format_string": kwargs.get('stream_format_string', None)
     }
 
     file_logger_handler = {
@@ -177,15 +180,15 @@ def get_resource(*args, api_version=None, region_id=None, endpoint=None, access_
 
     if resource_name.lower() in service_resources:
 
-        temp_client = init_client(resource_name.lower())
+        _client = init_client(resource_name.lower())
 
-        return service_resources[resource_name](_client=temp_client)
+        return service_resources[resource_name](_client=_client)
 
     elif resource_name.lower() in normal_resources:
-        instance_id = _get_param_from_args(args, 1, "resource_id")
-        temp_client = init_client(resource_name.split('.')[0])
+        # instance_id = _get_param_from_args(args, 1, "resource_id")
+        _client = init_client(resource_name.split('.')[0])
 
-        return normal_resources[resource_name](instance_id, _client=temp_client)
+        return normal_resources[resource_name](resource_id, _client=_client)
 
     else:
         raise ClientException(msg=
