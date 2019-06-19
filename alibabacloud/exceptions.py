@@ -43,6 +43,11 @@ class InvalidRegionIDException(AlibabaCloudException):
     fmt = "No such region '{region_id}'. Please check your region ID."
 
 
+class ConnectionUsingEcsRamRoleException(AlibabaCloudException):
+    fmt = "Max number of attempts exceeded when attempting to retrieve data from metadata service." \
+          "May you need to check your ecs instance"
+
+
 class NoSuchEndpointException(AlibabaCloudException):
     fmt = "No endpoint in the region '{region_id}' for product '{product_code}'.\n" \
           "You can set an endpoint for your request explicitly.{more}\n" \
@@ -74,7 +79,8 @@ class NoRegionException(AlibabaCloudException):
 
 
 class PartialCredentialsException(AlibabaCloudException):
-    fmt = 'Partial credentials found in {provider}, missing: {cred_var}'
+    # fmt = 'Partial credentials found in {provider}, missing: {cred_var}'
+    fmt = 'Partial credentials found in {provider}, {cred_var} is empty'
 
 
 class NoModuleException(AlibabaCloudException):

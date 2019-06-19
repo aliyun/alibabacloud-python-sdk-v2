@@ -26,7 +26,7 @@ class MiniRAMClient(AlibabaCloudClient):
         self.location_endpoint_type = "openAPI"
 
     def assume_role(self, role_arn=None, role_session_name=None, duration_seconds=None):
-        api_request = APIRequest('AssumeRole', 'GET', 'https', 'RPC')
+        api_request = APIRequest('AssumeRole', 'GET', 'https', 'RPC', 'query')
         api_request._params = {
             "RoleArn": role_arn,
             "RoleSessionName": role_session_name,

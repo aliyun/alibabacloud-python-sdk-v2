@@ -115,9 +115,13 @@ class APIRequestTest(SDKTestBase):
         client.location_service_code = 'kms'
         client.location_endpoint_type = "openAPI"
         api_request = APIRequest('ListKeys', 'GET', 'https', 'RPC')
-        context = client._handle_request(api_request)
-        response = context.result
-        self.assertTrue(response.get("PageNumber"))
+        try:
+            context = client._handle_request(api_request)
+        except ServerException as e:
+            self.assertEqual(e.http_status, 403)
+        else:
+            response = context.result
+            self.assertTrue(response.get("PageNumber"))
 
     def test_request_with_body_unicode(self):
 
