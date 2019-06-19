@@ -20,8 +20,8 @@ from alibabacloud.credentials import AccessKeyCredentials
 from alibabacloud.credentials import BearerTokenCredentials
 from alibabacloud.credentials import SecurityCredentials
 from alibabacloud.credentials.assume_role_caller import AssumeRoleCaller
-from alibabacloud.exceptions import ClientException, ConfigNotFoundException, \
-    CredentialRetrievalException, PartialCredentialsException
+from alibabacloud.exceptions import ClientException, PartialCredentialsException, \
+    ConnectionUsingEcsRamRoleException
 from alibabacloud.utils.ini_helper import load_config
 
 
@@ -112,17 +112,15 @@ class ProfileCredentialsProvider(CredentialsProvider):
     @staticmethod
     def _load_profile(config_file_name, profile_name):
         full_path = os.path.expanduser(config_file_name)
-        if not os.path.isfile(full_path):
-            raise ConfigNotFoundException(path=full_path)
-        config = load_config(full_path)
-        profile = config.get(profile_name, {})
-        if not profile:
-            raise ClientException(msg='Can not find valid credentials provider.')
-        if 'type' not in profile:
-            raise CredentialRetrievalException(provider='profile',
-                                               error_msg='No needed params "type" in ({})'.format(
-                                                   full_path))
-        return profile
+        if os.path.isfile(full_path):
+            # raise ConfigNotFoundException(path=full_path)
+            config = load_config(full_path)
+            if config:
+                profile = config.get(profile_name, {})
+                if not profile:
+                    raise PartialCredentialsException(provider='profile',
+                                                      cred_var='default section')
+                return profile
 
     def _get_provider_by_profile(self, profile):
 
@@ -131,47 +129,64 @@ class ProfileCredentialsProvider(CredentialsProvider):
                 raise PartialCredentialsException(provider='profile', cred_var=key)
             return profile[key]
 
-        type_ = profile.get('type')
-        if not type_:
-            type_ = 'access_key'  # use access_key for default type
+        if profile:
+            type_ = profile.get('type')
+            if not type_:
+                type_ = 'access_key'  # use access_key for default type
 
-        if type_ == 'access_key':
-            return StaticCredentialsProvider(AccessKeyCredentials(
-                _get_value('access_key_id'),
-                _get_value('access_key_secret'),
-            ))
-
-        elif type_ == 'ecs_ram_role':
-            return InstanceProfileCredentialsProvider(_get_value('role_name'))
-
-        elif type_ == 'ram_role_arn':
-            return RamRoleCredentialsProvider(
-                self.client_config,
-                AccessKeyCredentials(
+            if type_ == 'access_key':
+                return StaticCredentialsProvider(AccessKeyCredentials(
                     _get_value('access_key_id'),
                     _get_value('access_key_secret'),
-                ), _get_value('role_arn'), role_session_name=_get_value('role_session_name'))
+                ))
 
-        elif type_ == 'bearer_token':
-            return StaticCredentialsProvider(BearerTokenCredentials(
-                _get_value('bearer_token'),
-            ))
+            elif type_ == 'ecs_ram_role':
+                return InstanceProfileCredentialsProvider(_get_value('role_name'))
 
-        elif type_ == 'rsa_key_pair':
-            raise ClientException(msg="RSA Key Pair credentials are not supported.")
+            elif type_ == 'ram_role_arn':
+                return RamRoleCredentialsProvider(
+                    self.client_config,
+                    AccessKeyCredentials(
+                        _get_value('access_key_id'),
+                        _get_value('access_key_secret'),
+                    ), _get_value('role_arn'), role_session_name=_get_value('role_session_name'))
 
-        elif type_ == 'sts_token':
-            return StaticCredentialsProvider(SecurityCredentials(
-                _get_value('access_key_id'),
-                _get_value('access_key_secret'),
-                _get_value('security_token'),
-            ))
+            elif type_ == 'bearer_token':
+                return StaticCredentialsProvider(BearerTokenCredentials(
+                    _get_value('bearer_token'),
+                ))
 
-        else:
-            raise Exception("Unexpected credentials type: {}".format(type_))
+            elif type_ == 'rsa_key_pair':
+                raise ClientException(msg="RSA Key Pair credentials are not supported.")
+
+            # elif type_ == 'sts_token':
+            #     return StaticCredentialsProvider(SecurityCredentials(
+            #         _get_value('access_key_id'),
+            #         _get_value('access_key_secret'),
+            #         _get_value('security_token'),
+            #     ))
+            elif type_ == 'sts_token':
+                from .sts_token_caller import STSTokenProvider
+                sts_provider = STSTokenProvider(client_config=self.client_config,
+                                                access_key_id=_get_value('access_key_id'),
+                                                access_key_secret=_get_value('access_key_secret'),
+                                                user_name=_get_value('user_name'),
+                                                )
+                sub_credentials = sts_provider.get_sub_credentials()
+                return RamRoleCredentialsProvider(
+                    self.client_config,
+                    AccessKeyCredentials(sub_credentials['AccessKeyId'],
+                                         sub_credentials['AccessKeySecret']),
+                    _get_value('role_arn'),
+                    role_session_name=_get_value('role_session_name')
+                )
+
+            else:
+                raise Exception("Unexpected credentials type: {}".format(type_))
 
     def provide(self):
-        return self._inner_provider.provide()
+        if self._inner_provider:
+            return self._inner_provider.provide()
 
 
 class EnvCredentialsProvider(CachedCredentialsProvider):
@@ -183,13 +198,14 @@ class EnvCredentialsProvider(CachedCredentialsProvider):
 
         if self.ENV_NAME_FOR_ACCESS_KEY_ID in os.environ:
             access_key_id = os.environ.get(self.ENV_NAME_FOR_ACCESS_KEY_ID)
-            if access_key_id is None:
-                raise PartialCredentialsException(provider='env', cred_var="access_key_id")
+            if not access_key_id:
+                raise PartialCredentialsException(provider='env',
+                                                  cred_var=self.ENV_NAME_FOR_ACCESS_KEY_ID)
             access_key_secret = os.environ.get(self.ENV_NAME_FOR_ACCESS_KEY_SECRET)
-            if access_key_secret is None:
-                raise PartialCredentialsException(provider='env', cred_var="access_key_secret")
+            if not access_key_secret:
+                raise PartialCredentialsException(provider='env',
+                                                  cred_var=self.ENV_NAME_FOR_ACCESS_KEY_SECRET)
             # context.client.logger.info('Found credentials in environment variables.')
-
             self._cached_credentials = AccessKeyCredentials(
                 access_key_id=access_key_id,
                 access_key_secret=access_key_secret)
@@ -208,7 +224,10 @@ class InstanceProfileCredentialsProvider(RotatingCredentialsProvider):
     def rotate_credentials(self):
 
         from alibabacloud.vendored import requests
-        r = requests.get(url=self.URL_PATH + self.role_name)
+        try:
+            r = requests.get(url=self.URL_PATH + self.role_name)
+        except requests.exceptions.ConnectionError:
+            raise ConnectionUsingEcsRamRoleException()
         data = json.loads(r.text)
         if data.get("Code") != "Success":
             message = "Failed to get instance profile. Code={}".format(+ data.get("Code"))

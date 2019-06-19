@@ -18,6 +18,7 @@
 # under the License.
 
 from alibabacloud.signer.algorithm import NoHandle, ShaHmac1
+from alibabacloud.signer.composer import SIGNER_MAP
 
 
 class Signer(object):
@@ -32,7 +33,6 @@ class Signer(object):
         region_id = context.config.region_id
         version = context.client.api_version
         # which token
-        from alibabacloud.signer.composer import SIGNER_MAP
         cls = SIGNER_MAP[request.style]
         auth = cls(credentials, request, region_id, version, signer=signer)
         signature, headers, params = auth.signature, auth.headers, auth.params
