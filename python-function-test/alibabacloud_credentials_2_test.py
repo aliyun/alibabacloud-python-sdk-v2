@@ -15,7 +15,6 @@
 import os
 import shutil
 import tempfile
-
 from alibabacloud import get_client
 from alibabacloud.exceptions import PartialCredentialsException, ClientException, \
     NoCredentialsException, ConnectionUsingEcsRamRoleException, ServerException
@@ -38,7 +37,7 @@ class CredentialsTest(SDKTestBase):
             f.write(credential)
 
     def test_empty(self):
-        # 有任何的配置会报错，没有任何的配置 反而是执行才报错
+        # TODO：有任何的配置会报错，没有任何的配置 反而是执行才报错
         client = get_client('ecs')
         try:
             client.describe_regions()
@@ -161,32 +160,30 @@ class CredentialsTest(SDKTestBase):
     def test_file_beartoken(self):
         # 有credentials file  有default,有type 但是没有具体的ak,
         credentials_file = (
-                               '[default]\n'
-                               'type = bearer_token\n'
-                               'bearer_token = bearer_token\n'
-                           )
+            '[default]\n'
+            'type = bearer_token\n'
+            'bearer_token = bearer_token\n'
+        )
         self.write_config(credentials_file)
         client = get_client('ecs', region_id='cn-hangzhou')
         try:
             client.describe_regions()
         except ServerException as e:
-            self.assertEqual(e.error_code,'UnsupportedSignatureType')
-            self.assertEqual(e.error_message,'This signature type is not supported.')
+            self.assertEqual(e.error_code, 'UnsupportedSignatureType')
+            self.assertEqual(e.error_message, 'This signature type is not supported.')
 
     def test_file_rsa_key_pair(self):
         # 有credentials file  有default,有type 但是没有具体的ak,
         credentials_file = (
-                               '[default]\n'
-                               'type = rsa_key_pair\n'
-                               'rsa_key_pair = rsa_key_pair\n'
-                           )
+            '[default]\n'
+            'type = rsa_key_pair\n'
+            'rsa_key_pair = rsa_key_pair\n'
+        )
         self.write_config(credentials_file)
-        client = get_client('ecs', region_id='cn-hangzhou')
         try:
-            client.describe_regions()
-        except ServerException as e:
-            self.assertEqual(e.error_code,'UnsupportedSignatureType')
-            self.assertEqual(e.error_message,'This signature type is not supported.')
+            client = get_client('ecs', region_id='cn-hangzhou')
+        except ClientException as e:
+            self.assertEqual(e.error_message, 'RSA Key Pair credentials are not supported.')
 
     def test_file_sts_token(self):
         # 有credentials file  有default,有type 但是没有具体的ak,
@@ -198,11 +195,23 @@ class CredentialsTest(SDKTestBase):
                                'user_name = alice\n'
                                'role_arn = role_arn\n'
                                'role_session_name = role_session_name\n'
-                           )%(self.access_key_id, self.access_key_secret)
+                           ) % (self.access_key_id, self.access_key_secret)
         self.write_config(credentials_file)
         try:
             client = get_client('ecs')
         except ServerException as e:
-            self.assertEqual(e.http_status,409)
-            self.assertEqual(e.error_code,'LimitExceeded.User.AccessKey')
-            self.assertEqual(e.error_message,'Too many access keys')
+            self.assertEqual(e.http_status, 409)
+            self.assertEqual(e.error_code, 'LimitExceeded.User.AccessKey')
+            self.assertEqual(e.error_message, 'Too many access keys')
+
+    def test_instance_env(self):
+        # 有ecs ram role 在环境变量
+        os.environ['ALIBABA_CLOUD_ROLE_NAME'] = 'EcsRamRoleTest'
+        client = get_client('ecs')
+        try:
+            client.describe_regions()
+        except ConnectionUsingEcsRamRoleException as e:
+            self.assertEqual(e.error_message,
+                             'Max number of attempts exceeded when attempting to retrieve data from metadata service.May you need to check your ecs instance')
+
+        os.environ.pop('ALIBABA_CLOUD_ROLE_NAME')
