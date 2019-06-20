@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# -*- coding: utf-8 -*-
 
 import json
 import os
@@ -23,6 +24,7 @@ from alibabacloud.credentials.assume_role_caller import AssumeRoleCaller
 from alibabacloud.exceptions import ClientException, PartialCredentialsException, \
     ConnectionUsingEcsRamRoleException, ConfigNotFoundException
 from alibabacloud.utils.ini_helper import load_config
+from alibabacloud.credentials.sts_token_caller import STSTokenProvider
 
 
 class CredentialsProvider(object):
@@ -102,6 +104,9 @@ class RamRoleCredentialsProvider(RotatingCredentialsProvider):
 
 
 class ProfileCredentialsProvider(CredentialsProvider):
+    """
+    文件配置 `Alibaba Cloud Python SDK` 凭证
+    """
     ENV_NAME_FOR_CREDENTIALS_FILE = 'ALIBABA_CLOUD_CREDENTIALS_FILE'
     DEFAULT_NAME_FOR_CREDENTIALS_FILE = '~/.alibabacloud/credentials'
 
@@ -178,7 +183,6 @@ class ProfileCredentialsProvider(CredentialsProvider):
                 raise ClientException(msg="RSA Key Pair credentials are not supported.")
 
             elif type_ == 'sts_token':
-                from .sts_token_caller import STSTokenProvider
                 sts_provider = STSTokenProvider(client_config=self.client_config,
                                                 access_key_id=_get_value('access_key_id'),
                                                 access_key_secret=_get_value('access_key_secret'),
@@ -202,6 +206,9 @@ class ProfileCredentialsProvider(CredentialsProvider):
 
 
 class EnvCredentialsProvider(CachedCredentialsProvider):
+    """
+    环境变量配置 `Alibaba Cloud Python SDK`凭证
+    """
     ENV_NAME_FOR_ACCESS_KEY_ID = 'ALIBABA_CLOUD_ACCESS_KEY_ID'
     ENV_NAME_FOR_ACCESS_KEY_SECRET = 'ALIBABA_CLOUD_ACCESS_KEY_SECRET'
 
@@ -224,6 +231,9 @@ class EnvCredentialsProvider(CachedCredentialsProvider):
 
 
 class InstanceProfileCredentialsProvider(RotatingCredentialsProvider):
+    """
+    环境变量配置role_name, 获取 `Alibaba Cloud Python SDK` 凭证
+    """
     REFRESH_FACTOR = 0.8
     DEFAULT_ECS_SESSION_TOKEN_DURATION = 3600 * 6
     URL_PATH = 'http://100.100.100.200/latest/meta-data/ram/security-credentials/'
@@ -272,6 +282,12 @@ class ChainedCredentialsProvider(CredentialsProvider):
 
 
 class PredefinedChainCredentialsProvider(ChainedCredentialsProvider):
+    """
+    默认的CredentialsProvider链
+    - 环境变量
+    - profile文件
+    - 配置了RAMRole的ECSInstance
+    """
 
     def __init__(self, client_config, credentials_config_file_name, profile_name, role_name):
         provider_chain = [

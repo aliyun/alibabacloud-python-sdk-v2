@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# -*- coding: utf-8 -*-
 
 import os
 import logging
@@ -18,7 +19,6 @@ import time
 from logging.handlers import RotatingFileHandler
 
 import alibabacloud.retry.retry_policy as retry_policy
-from alibabacloud.credentials import AccessKeyCredentials
 from alibabacloud.handlers import RequestContext
 from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
@@ -44,10 +44,9 @@ DEFAULT_CONFIG_VARIABLES = {
 
 class ClientConfig(object):
     """
-    handle client config
-    Configuration priority:custom > file > env > default
+    Alibaba Cloud Python SDK  Config 类
+    读取Config的优先级:custom > file > env > default
     """
-
     ENV_NAME_FOR_CONFIG_FILE = 'ALIBABA_CLOUD_CONFIG_FILE'
     DEFAULT_NAME_FOR_CONFIG_FILE = '~/.alibabacloud/config'
 
@@ -150,6 +149,9 @@ class ClientConfig(object):
 
 
 class AlibabaCloudClient(object):
+    """
+    创建Client的基类
+    """
     LOG_FORMAT = '%(thread)d %(asctime)s %(name)s %(levelname)s %(message)s'
 
     def __init__(self, client_config, credentials_provider=None, custom_retry_policy=None,
