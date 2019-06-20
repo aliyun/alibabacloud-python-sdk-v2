@@ -447,24 +447,4 @@ class CredentialsTest(SDKTestBase):
         with self.assertRaises(PartialCredentialsException) as e:
             DefaultChainedCredentialsProvider(client_config)
         self.assertEqual(e.exception.error_message,
-                         "Partial credentials found in env, missing: access_key_secret")
-
-    def test_local_file_default_config_with_path_error(self):
-        os.environ.setdefault('ALIBABA_CLOUD_CREDENTIALS_FILE', 'abc')
-        client_config = ClientConfig(region_id=self.region_id)
-        with self.assertRaises(ConfigNotFoundException) as e:
-            DefaultChainedCredentialsProvider(client_config)
-        self.assertEqual(e.exception.error_message, "The specified config file (abc) could not be found.")
-        os.environ.pop("ALIBABA_CLOUD_CREDENTIALS_FILE")
-
-    def test_local_file_default_config_with_none_error(self):
-        client_config = ClientConfig(region_id=self.region_id)
-        with self.assertRaises(ClientException) as e:
-            DefaultChainedCredentialsProvider(client_config, profile_name="abc")
-        self.assertEqual(e.exception.error_message, "Can not find valid credentials provider.")
-
-    def test_local_file_default_config_with_provider_pair_error(self):
-        client_config = ClientConfig(region_id=self.region_id)
-        with self.assertRaises(ClientException) as e:
-            DefaultChainedCredentialsProvider(client_config, profile_name="client4")
-        self.assertEqual(e.exception.error_message, "RSA Key Pair credentials are not supported.")
+                         "Partial credentials found in env, ALIBABA_CLOUD_ACCESS_KEY_SECRET is empty")

@@ -21,7 +21,7 @@ from alibabacloud.credentials import BearerTokenCredentials
 from alibabacloud.credentials import SecurityCredentials
 from alibabacloud.credentials.assume_role_caller import AssumeRoleCaller
 from alibabacloud.exceptions import ClientException, PartialCredentialsException, \
-    ConnectionUsingEcsRamRoleException
+    ConnectionUsingEcsRamRoleException, ConfigNotFoundException
 from alibabacloud.utils.ini_helper import load_config
 
 
@@ -102,25 +102,43 @@ class RamRoleCredentialsProvider(RotatingCredentialsProvider):
 
 
 class ProfileCredentialsProvider(CredentialsProvider):
+    ENV_NAME_FOR_CREDENTIALS_FILE = 'ALIBABA_CLOUD_CREDENTIALS_FILE'
+    DEFAULT_NAME_FOR_CREDENTIALS_FILE = '~/.alibabacloud/credentials'
 
     def __init__(self, client_config, credentials_config_file_name, profile_name):
         self.environ = os.environ
-        profile = self._load_profile(credentials_config_file_name, profile_name)
+        profile = self._load_profile(profile_name)
         self.client_config = client_config
         self._inner_provider = self._get_provider_by_profile(profile)
 
-    @staticmethod
-    def _load_profile(config_file_name, profile_name):
-        full_path = os.path.expanduser(config_file_name)
-        if os.path.isfile(full_path):
-            # raise ConfigNotFoundException(path=full_path)
+    def _load_profile(self, profile_name):
+        if self.environ.get(self.ENV_NAME_FOR_CREDENTIALS_FILE) is not None:
+            config_file_name = self.environ.get(self.ENV_NAME_FOR_CREDENTIALS_FILE)
+            if config_file_name:
+                full_path = os.path.expanduser(config_file_name)
+                try:
+                    config = load_config(full_path)
+                except ConfigNotFoundException as e:
+                    # Move on to the next potential config file name.
+                    raise e
+                else:
+                    if profile_name not in config:
+                        raise PartialCredentialsException(provider='profile',
+                                                          cred_var='%s section' % (profile_name))
+                    return config[profile_name]
+            raise ClientException(
+                msg='Found profile in env, but %s is empty' % self.ENV_NAME_FOR_CREDENTIALS_FILE)
+        # read the default credentials file
+
+        full_path = os.path.expanduser(self.DEFAULT_NAME_FOR_CREDENTIALS_FILE)
+        try:
             config = load_config(full_path)
-            if config:
-                profile = config.get(profile_name, {})
-                if not profile:
-                    raise PartialCredentialsException(provider='profile',
-                                                      cred_var='default section')
-                return profile
+        except ConfigNotFoundException:
+            # Move on to the next potential config file name.
+            return None
+        else:
+            if profile_name in config:
+                return config[profile_name]
 
     def _get_provider_by_profile(self, profile):
 
@@ -159,12 +177,6 @@ class ProfileCredentialsProvider(CredentialsProvider):
             elif type_ == 'rsa_key_pair':
                 raise ClientException(msg="RSA Key Pair credentials are not supported.")
 
-            # elif type_ == 'sts_token':
-            #     return StaticCredentialsProvider(SecurityCredentials(
-            #         _get_value('access_key_id'),
-            #         _get_value('access_key_secret'),
-            #         _get_value('security_token'),
-            #     ))
             elif type_ == 'sts_token':
                 from .sts_token_caller import STSTokenProvider
                 sts_provider = STSTokenProvider(client_config=self.client_config,
