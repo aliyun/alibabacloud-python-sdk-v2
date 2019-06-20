@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# -*- coding: utf-8 -*-
 import logging
 
 __version__ = '0.4.3'
@@ -42,6 +43,7 @@ def _get_param_from_args(args, index, name):
 
 def instance_cache(function):
     cache = {}
+
     @wraps(function)
     def wrapper(**kwargs):
         key = kwargs.get('service_name') + "@" + kwargs.get('api_version') if kwargs.get(
@@ -81,15 +83,33 @@ def _prepare_module(service_name, api_version):
     return module_name, client_name
 
 
-# @instance_cache
 def get_client(service_name, api_version=None, region_id=None, endpoint=None, access_key_id=None,
                access_key_secret=None, custom_credentials_provider=None, custom_retry_policy=None,
                endpoint_resolver=None, config=None):
     """
-    :param service_name: Ecs or ECS or eCS
-    :param api_version: 2018-06-09
-    :param config: ClientConfig, if user define the config ,use config,else init a config
-    :return:
+    用于操作Client的类
+    :param service_name: 即product_code，比如Ecs or ECS or eCS
+    :type service_name: str
+    :param api_version: 产品的version，格式：2018-06-09
+    :type api_version: str
+    :param region_id: 可用区，参照https://help.aliyun.com/document_detail/40654.html
+    :type region_id: str
+    :param endpoint:可自定义endpoint
+    :type endpoint:str
+    :param access_key_id:用户的秘钥AccessKey
+    :type access_key_id:str
+    :param access_key_secret:用户的秘钥AccessKey
+    :type access_key_secret:str
+    :param custom_credentials_provider:用户自定义的credentials_provider
+    :type custom_credentials_provider:一个具备provide接口的对象
+    :param custom_retry_policy:用户自定义的重试策略
+    :type custom_retry_policy:
+    :param endpoint_resolver:用户自定义的endpoint_resolver
+    :type endpoint_resolver:一个具备resolve接口的对象
+    :param config: 如果用户自定义ClientConfig，使用用户自定义的，否则，自定义一个ClientConfig
+    :type config: ClientConfig
+    :return:client
+    :rtype:AlibabaCloudClient
     """
     module_name, client_name = _prepare_module(service_name, api_version)  # ecs_20180909
     if region_id is not None and config:
@@ -124,10 +144,80 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
 # resource
 
 
-def get_resource(resource_name, resource_id=None, api_version=None, region_id=None, endpoint=None, access_key_id=None,
+def get_resource(resource_name, resource_id=None, api_version=None, region_id=None, endpoint=None,
+                 access_key_id=None,
                  access_key_secret=None, custom_credentials_provider=None, custom_retry_policy=None,
                  endpoint_resolver=None, config=None, enable_stream_logger=None,
                  enable_file_logger=None, **kwargs):
+    """
+    用于操作Resource的类
+
+    :param resource_name:资源类型，比如ecs/slb/vpc等等
+    :type resource_name:str
+
+    :param resource_id:资源ID，比如ecs的instanceid，用于操作具体的资源
+    :type resource_id:str
+
+    :param api_version: 产品的version，格式：2018-06-09
+    :type api_version: str
+
+    :param region_id: 可用区，参照https://help.aliyun.com/document_detail/40654.html
+    :type region_id: str
+
+    :param endpoint:可自定义endpoint
+    :type endpoint:str
+
+    :param access_key_id:用户的秘钥AccessKey
+    :type access_key_id:str
+
+    :param access_key_secret:用户的秘钥AccessKey
+    :type access_key_secret:str
+
+    :param custom_credentials_provider:用户自定义的credentials_provider
+    :type custom_credentials_provider:一个具备provide接口的对象
+
+    :param custom_retry_policy:用户自定义的重试策略
+    :type custom_retry_policy:
+
+    :param endpoint_resolver:用户自定义的endpoint_resolver
+    :type endpoint_resolver:一个具备resolve接口的对象
+
+    :param config: 如果用户自定义ClientConfig，使用用户自定义的，否则，自定义一个ClientConfig
+    :type config: alibabacloud.client.ClientConfig
+
+    :param enable_stream_logger:是否开启控制台日志
+    :type enable_stream_logger:bool
+
+    :param enable_file_logger:是否开启文件日志
+    :type enable_file_logger:bool
+
+    :param kwargs:主要包含日志相关的参数，为可选参数，用法
+    :type kwargs:
+    *配置控制台日志如下*
+
+     ::
+
+        >>> import logging
+        >>> from alibabacloud import get_resource
+        >>> ecs_resource = get_resource('ecs', region_id='cn-hangzhou',
+        >>>                    enable_stream_logger=True,
+        >>>                    stream_log_level=logging.DEBUG)
+        >>>
+
+    *配置文件日志如下*
+
+     ::
+
+        >>> import logging
+        >>> from alibabacloud import get_resource
+        >>> ecs_resource = get_resource('ecs', region_id='cn-hangzhou',
+        >>>                    enable_stream_logger=True,
+        >>>                    stream_log_level=logging.DEBUG,
+        >>>                    file_logger_path='alibabacloud.log')
+        >>>
+    :return:资源对象
+    :rtype:
+    """
     # resource_name = _get_param_from_args(args, 0, "resource_name")
 
     service_resources = {
