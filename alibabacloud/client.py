@@ -35,7 +35,7 @@ from alibabacloud.utils.ini_helper import load_config
 DEFAULT_CONFIG_VARIABLES = {
     'max_retry_times': 3,
     'enable_retry': True,
-    # 'enable_http_debug': None,
+    'enable_http_debug': None,
     'enable_https': True,
     'http_port': 80,
     'https_port': 443,
@@ -44,26 +44,60 @@ DEFAULT_CONFIG_VARIABLES = {
 
 class ClientConfig(object):
     """
-    Alibaba Cloud Python SDK  Config 类
+    `Alibaba Cloud Python SDK`  Config 类
     读取Config的优先级:custom > file > env > default
+
+    :param region_id: 参照 `可用区 <https://help.aliyun.com/document_detail/40654.html>`_
+    :type region_id: str
+
+    :param endpoint: 自定义的endpoint，不经过endpoint的解析流程
+    :type endpoint: str
+
+    :param enable_retry: 是否重试, 默认True
+    :type enable_retry: bool
+
+    :param max_retry_times: 请求最大重试次数，默认3次
+    :type max_retry_times: int
+
+    :param user_agent: 用户自定义的UA
+    :type user_agent: str
+
+    :param enable_https: 是否使用ssl，默认True
+    :type enable_https: bool
+
+    :param http_port: 指定 http 请求端口，默认80
+    :type http_port: int
+
+    :param https_port: 指定 https 请求端口，默认443
+    :type https_port: int
+
+    :param connection_timeout: 指定连接超时时间，默认5s
+    :type connection_timeout: int
+
+    :param read_timeout: 指定读取response超时时间，默认10s
+    :type read_timeout: int
+
+    :param enable_http_debug: 是否开启httpDEBUG功能，默认False
+    :type enable_http_debug: bool
+
+    :param http_proxy: http 代理地址
+    :type http_proxy: str
+
+    :param https_proxy: https 代理地址
+    :type https_proxy: str
+
+    :param config_file: 用户指定读取config配置的文件位置
+    :type config_file: str
+
     """
     ENV_NAME_FOR_CONFIG_FILE = 'ALIBABA_CLOUD_CONFIG_FILE'
     DEFAULT_NAME_FOR_CONFIG_FILE = '~/.alibabacloud/config'
 
-    def __init__(self,
-                 # access_key_id=None, access_key_secret=None,
-                 region_id=None, endpoint=None,
-                 max_retry_times=None, user_agent=None, extra_user_agent=None,
-
-                 enable_https=None, http_port=None, https_port=None,
-
+    def __init__(self, region_id=None, endpoint=None, max_retry_times=None, user_agent=None,
+                 enable_https=None, http_port=None, https_port=None, enable_retry=None,
                  connection_timeout=None, read_timeout=None, enable_http_debug=None,
-                 http_proxy=None, https_proxy=None,
-                 config_file=None, enable_retry=None):
+                 http_proxy=None, https_proxy=None,config_file=None):
 
-        # credentials
-        # self.access_key_id = access_key_id
-        # self.access_key_secret = access_key_secret
         self.endpoint = endpoint
         self.region_id = region_id
 
@@ -73,7 +107,6 @@ class ClientConfig(object):
 
         # user-agent, user define ua
         self.user_agent = user_agent
-        self.extra_user_agent = extra_user_agent
 
         # https
         self.enable_https = enable_https
@@ -100,7 +133,6 @@ class ClientConfig(object):
         self._read_from_default()
 
     # def merge(self):
-
 
     @property
     def proxy(self):
@@ -150,12 +182,26 @@ class ClientConfig(object):
 
 class AlibabaCloudClient(object):
     """
-    创建Client的基类
+    `Alibaba Cloud Python` 创建Client的基类
+
+    :param client_config: 创建client的配置
+    :type client_config: alibabacloud.client.ClientConfig
+
+    :param credentials_provider: 凭证链
+    :type credentials_provider:
+
+    :param custom_retry_policy: 重试策略
+    :type custom_retry_policy:
+
+    :param custom_endpoint_resolver: endpoint 解析链
+    :type custom_endpoint_resolver:
+
     """
     LOG_FORMAT = '%(thread)d %(asctime)s %(name)s %(levelname)s %(message)s'
 
     def __init__(self, client_config, credentials_provider=None, custom_retry_policy=None,
                  custom_endpoint_resolver=None):
+
         self.product_code = None
         self.location_service_code = None
         self.api_version = None

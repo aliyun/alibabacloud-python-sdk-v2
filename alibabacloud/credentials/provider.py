@@ -207,7 +207,7 @@ class ProfileCredentialsProvider(CredentialsProvider):
 
 class EnvCredentialsProvider(CachedCredentialsProvider):
     """
-    环境变量配置 `Alibaba Cloud Python SDK`凭证
+    环境变量配置 `Alibaba Cloud Python SDK` 凭证
     """
     ENV_NAME_FOR_ACCESS_KEY_ID = 'ALIBABA_CLOUD_ACCESS_KEY_ID'
     ENV_NAME_FOR_ACCESS_KEY_SECRET = 'ALIBABA_CLOUD_ACCESS_KEY_SECRET'
@@ -283,10 +283,12 @@ class ChainedCredentialsProvider(CredentialsProvider):
 
 class PredefinedChainCredentialsProvider(ChainedCredentialsProvider):
     """
-    默认的CredentialsProvider链
+    Alibaba Cloud Python 默认的CredentialsProvider链,按照以下顺序读取
+
     - 环境变量
     - profile文件
     - 配置了RAMRole的ECSInstance
+
     """
 
     def __init__(self, client_config, credentials_config_file_name, profile_name, role_name):

@@ -65,7 +65,6 @@ def _check_client_service_name(service_name):
     raise ServiceNameInvalidException(service_name=service_name,
                                       more=','.join([item for item in available_clients.keys()]))
 
-
 def _prepare_module(service_name, api_version):
     """
     :param service_name: Ecs or ECS or eCS
@@ -87,29 +86,44 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
                access_key_secret=None, custom_credentials_provider=None, custom_retry_policy=None,
                endpoint_resolver=None, config=None):
     """
-    用于操作Client的类
-    :param service_name: 即product_code，比如Ecs or ECS or eCS
+    获取 `Alibaba Cloud Python SDK` 某个产品某个Version的client
+
+    :param service_name: 产品的product_code，比如Ecs
     :type service_name: str
+
     :param api_version: 产品的version，格式：2018-06-09
     :type api_version: str
-    :param region_id: 可用区，参照https://help.aliyun.com/document_detail/40654.html
+
+    :param region_id: 参照 `可用区 <https://help.aliyun.com/document_detail/40654.html>`_
     :type region_id: str
-    :param endpoint:可自定义endpoint
-    :type endpoint:str
-    :param access_key_id:用户的秘钥AccessKey
-    :type access_key_id:str
-    :param access_key_secret:用户的秘钥AccessKey
-    :type access_key_secret:str
-    :param custom_credentials_provider:用户自定义的credentials_provider
-    :type custom_credentials_provider:一个具备provide接口的对象
-    :param custom_retry_policy:用户自定义的重试策略
+
+    :param endpoint: 自定义的endpoint，不经过endpoint的解析流程
+    :type endpoint: str
+
+    :param access_key_id: 秘钥AccessKeyID
+    :type access_key_id: str
+
+    :param access_key_secret: 秘钥AccessKeySecret
+    :type access_key_secret: str
+
+    :param custom_credentials_provider: 自定义的credentials_provider，如果用户自定义
+        credentials_provider,使用用户自定义的
+    :type custom_credentials_provider: 一个具备provide接口的对象
+
+    :param custom_retry_policy: 用户自定义的重试策略
     :type custom_retry_policy:
-    :param endpoint_resolver:用户自定义的endpoint_resolver
-    :type endpoint_resolver:一个具备resolve接口的对象
-    :param config: 如果用户自定义ClientConfig，使用用户自定义的，否则，自定义一个ClientConfig
+
+    :param endpoint_resolver: 用户自定义的endpoint_resolver，如果用户自定义
+        endpoint_resolver,使用用户自定义的
+    :type endpoint_resolver: 一个具备resolve接口的对象
+
+    :param config: 如果用户自定义ClientConfig，使用用户自定义的，否则初始化一个ClientConfig。
+        如果用户在 `get_client()` 指定region_id ,则会覆盖config当中的region_id
     :type config: ClientConfig
-    :return:client
-    :rtype:AlibabaCloudClient
+
+    :return: client
+    :rtype: AlibabaCloudClient
+
     """
     module_name, client_name = _prepare_module(service_name, api_version)  # ecs_20180909
     if region_id is not None and config:
@@ -150,50 +164,54 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
                  endpoint_resolver=None, config=None, enable_stream_logger=None,
                  enable_file_logger=None, **kwargs):
     """
-    用于操作Resource的类
+    获取 `Alibaba Cloud Python SDK` 某个Resource
 
-    :param resource_name:资源类型，比如ecs/slb/vpc等等
-    :type resource_name:str
+    :param resource_name: 资源类型，比如ecs/slb/vpc等等
+    :type resource_name: str
 
-    :param resource_id:资源ID，比如ecs的instanceid，用于操作具体的资源
-    :type resource_id:str
+    :param resource_id: 资源ID，比如ecs的InstanceId，用于操作具体的资源
+    :type resource_id: str
 
     :param api_version: 产品的version，格式：2018-06-09
     :type api_version: str
 
-    :param region_id: 可用区，参照https://help.aliyun.com/document_detail/40654.html
+    :param region_id: 参照 `可用区 <https://help.aliyun.com/document_detail/40654.html>`_
     :type region_id: str
 
-    :param endpoint:可自定义endpoint
-    :type endpoint:str
+    :param endpoint: 自定义的endpoint，不经过endpoint的解析流程
+    :type endpoint: str
 
-    :param access_key_id:用户的秘钥AccessKey
-    :type access_key_id:str
+    :param access_key_id: 秘钥AccessKeyID
+    :type access_key_id: str
 
-    :param access_key_secret:用户的秘钥AccessKey
-    :type access_key_secret:str
+    :param access_key_secret: 秘钥AccessKeySecret
+    :type access_key_secret: str
 
-    :param custom_credentials_provider:用户自定义的credentials_provider
-    :type custom_credentials_provider:一个具备provide接口的对象
+    :param custom_credentials_provider: 自定义的credentials_provider，如果用户自定义
+        credentials_provider,使用用户自定义的
+    :type custom_credentials_provider: 一个具备provide接口的对象
 
-    :param custom_retry_policy:用户自定义的重试策略
+    :param custom_retry_policy: 用户自定义的重试策略
     :type custom_retry_policy:
 
-    :param endpoint_resolver:用户自定义的endpoint_resolver
-    :type endpoint_resolver:一个具备resolve接口的对象
+    :param endpoint_resolver: 用户自定义的endpoint_resolver，如果用户自定义
+        endpoint_resolver,使用用户自定义的
+    :type endpoint_resolver: 一个具备resolve接口的对象
 
-    :param config: 如果用户自定义ClientConfig，使用用户自定义的，否则，自定义一个ClientConfig
-    :type config: alibabacloud.client.ClientConfig
+    :param config: 如果用户自定义ClientConfig，使用用户自定义的，否则初始化一个ClientConfig。
+        如果用户在 `get_client()` 指定region_id ,则会覆盖config当中的region_id
+    :type config: ClientConfig
 
-    :param enable_stream_logger:是否开启控制台日志
-    :type enable_stream_logger:bool
+    :param enable_stream_logger: 是否开启控制台日志
+    :type enable_stream_logger: bool
 
-    :param enable_file_logger:是否开启文件日志
-    :type enable_file_logger:bool
+    :param enable_file_logger: 是否开启文件日志
+    :type enable_file_logger: bool
 
-    :param kwargs:主要包含日志相关的参数，为可选参数，用法
+    :param kwargs: 主要包含日志相关的参数，为可选参数，用法
     :type kwargs:
-    *配置控制台日志如下*
+
+    **配置控制台日志如下**
 
      ::
 
@@ -202,9 +220,8 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
         >>> ecs_resource = get_resource('ecs', region_id='cn-hangzhou',
         >>>                    enable_stream_logger=True,
         >>>                    stream_log_level=logging.DEBUG)
-        >>>
 
-    *配置文件日志如下*
+    **配置文件日志如下**
 
      ::
 
@@ -214,9 +231,10 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
         >>>                    enable_stream_logger=True,
         >>>                    stream_log_level=logging.DEBUG,
         >>>                    file_logger_path='alibabacloud.log')
-        >>>
-    :return:资源对象
+
+    :return: 资源对象
     :rtype:
+
     """
     # resource_name = _get_param_from_args(args, 0, "resource_name")
 
