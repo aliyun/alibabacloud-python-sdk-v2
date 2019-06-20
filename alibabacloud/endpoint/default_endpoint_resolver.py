@@ -26,7 +26,7 @@ from alibabacloud.endpoint.user_customized_endpoint_resolver import UserCustomiz
 
 class DefaultEndpointResolver(EndpointResolver):
     """
-    endpoint 解析链
+    `Alibaba Cloud Python` endpoint 解析链
     
     .. note::
         Deprecated use for add_endpoint and modify_endpoint

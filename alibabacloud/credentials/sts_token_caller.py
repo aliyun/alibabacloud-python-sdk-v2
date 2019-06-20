@@ -1,4 +1,5 @@
-from alibabacloud import AccessKeyCredentials, StaticCredentialsProvider
+from alibabacloud.credentials import AccessKeyCredentials
+from alibabacloud.credentials import provider
 from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
 
@@ -31,7 +32,7 @@ class STSTokenProvider(object):
 
     def get_sub_credentials(self):
         credentials = AccessKeyCredentials(self.access_key_id, self.access_key_secret)
-        credentials_provider = StaticCredentialsProvider(credentials)
+        credentials_provider = provider.StaticCredentialsProvider(credentials)
         ram_client = RamClient(client_config=self.client_config,credentials_provider=credentials_provider)
         # 0，必须是主账号，使用已有角色处理已有user
         response = ram_client.create_access_key(user_name=self.user_name)

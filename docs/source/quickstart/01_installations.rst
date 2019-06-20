@@ -1,0 +1,10 @@
+安装
+------------
+
+**Alibaba Cloud Python SDK 2.0** 目前暂没有发布pypi版本，只能通过源代码安装：
+
+::
+
+    git clone https://github.com/aliyun/alibabacloud-python-sdk-v2.git
+    cd alibabacloud-python-sdk-v2
+    python setup.py install

@@ -13,9 +13,10 @@
 # limitations under the License.
 # -*- coding: utf-8 -*-
 
+
 class APIRequest:
     """
-    Alibaba Cloud Python SDK 的请求基类
+    `Alibaba Cloud Python` SDK 的请求基类
     """
 
     def __init__(self, action_name, method, scheme, style, param_position="query"):
