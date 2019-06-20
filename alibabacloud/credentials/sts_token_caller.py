@@ -1,6 +1,6 @@
 from alibabacloud import AccessKeyCredentials, StaticCredentialsProvider
-from client import AlibabaCloudClient
-from request import APIRequest
+from alibabacloud.client import AlibabaCloudClient
+from alibabacloud.request import APIRequest
 
 
 class RamClient(AlibabaCloudClient):

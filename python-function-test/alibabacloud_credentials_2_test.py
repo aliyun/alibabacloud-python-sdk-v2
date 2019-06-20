@@ -15,9 +15,10 @@
 import os
 import shutil
 import tempfile
-from alibabacloud import get_client
+from alibabacloud import get_client, ClientConfig, DefaultChainedCredentialsProvider
 from alibabacloud.exceptions import PartialCredentialsException, ClientException, \
-    NoCredentialsException, ConnectionUsingEcsRamRoleException, ServerException
+    NoCredentialsException, ConnectionUsingEcsRamRoleException, ServerException, \
+    ConfigNotFoundException
 from base import SDKTestBase
 
 
@@ -38,9 +39,9 @@ class CredentialsTest(SDKTestBase):
 
     def test_empty(self):
         # TODO：有任何的配置会报错，没有任何的配置 反而是执行才报错
-        client = get_client('ecs')
+        os.environ.pop('ALIBABA_CLOUD_CREDENTIALS_FILE')
         try:
-            client.describe_regions()
+            client = get_client('ecs')
         except NoCredentialsException as e:
             self.assertEqual(e.error_message, 'Unable to locate credentials')
 
@@ -58,7 +59,6 @@ class CredentialsTest(SDKTestBase):
         os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_SECRET")
 
     def test_env_default_client_2(self):
-
         os.environ.setdefault("ALIBABA_CLOUD_ACCESS_KEY_ID", "123")
         try:
             client = get_client('ecs')
@@ -204,14 +204,45 @@ class CredentialsTest(SDKTestBase):
             self.assertEqual(e.error_code, 'LimitExceeded.User.AccessKey')
             self.assertEqual(e.error_message, 'Too many access keys')
 
+    def test_local_file_default_config_with_none_error(self):
+        credentials_file = (
+            '[default]\n'
+            'type = rsa_key_pair\n'
+            'rsa_key_pair = rsa_key_pair\n'
+        )
+        self.write_config(credentials_file)
+        client_config = ClientConfig(region_id=self.region_id)
+        with self.assertRaises(PartialCredentialsException) as e:
+            DefaultChainedCredentialsProvider(client_config, profile_name="abc")
+        self.assertEqual(e.exception.error_message, "Partial credentials found in profile, abc section is empty")
+
     def test_instance_env(self):
         # 有ecs ram role 在环境变量
+        os.environ.pop('ALIBABA_CLOUD_CREDENTIALS_FILE')
         os.environ['ALIBABA_CLOUD_ROLE_NAME'] = 'EcsRamRoleTest'
-        client = get_client('ecs')
         try:
-            client.describe_regions()
+            client = get_client('ecs')
         except ConnectionUsingEcsRamRoleException as e:
             self.assertEqual(e.error_message,
                              'Max number of attempts exceeded when attempting to retrieve data from metadata service.May you need to check your ecs instance')
-
         os.environ.pop('ALIBABA_CLOUD_ROLE_NAME')
+
+    def test_local_file_default_config_with_provider_pair_error(self):
+        credentials_file = (
+            '[client4]\n'
+            'type = rsa_key_pair\n'
+            'rsa_key_pair = rsa_key_pair\n'
+        )
+        self.write_config(credentials_file)
+        client_config = ClientConfig(region_id=self.region_id)
+        with self.assertRaises(ClientException) as e:
+            DefaultChainedCredentialsProvider(client_config, profile_name="client4")
+        self.assertEqual(e.exception.error_message, "RSA Key Pair credentials are not supported.")
+
+    def test_local_file_default_config_with_path_error(self):
+        os.environ['ALIBABA_CLOUD_CREDENTIALS_FILE'] = 'abc'
+        client_config = ClientConfig(region_id=self.region_id)
+        with self.assertRaises(ConfigNotFoundException) as e:
+            DefaultChainedCredentialsProvider(client_config)
+        self.assertEqual(e.exception.error_message, "The specified config file (abc) could not be found.")
+        os.environ.pop("ALIBABA_CLOUD_CREDENTIALS_FILE")
