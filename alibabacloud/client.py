@@ -13,12 +13,14 @@
 # limitations under the License.
 # -*- coding: utf-8 -*-
 
-import os
 import logging
+import os
 import time
 from logging.handlers import RotatingFileHandler
 
 import alibabacloud.retry.retry_policy as retry_policy
+from alibabacloud.exceptions import ParamTypeInvalidException, ConfigNotFoundException, \
+    PartialCredentialsException, ClientException
 from alibabacloud.handlers import RequestContext
 from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
@@ -29,7 +31,6 @@ from alibabacloud.handlers.server_error_handler import ServerErrorHandler
 from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import HTTPRequest
-from alibabacloud.exceptions import ParamTypeInvalidException, ConfigNotFoundException
 from alibabacloud.utils.ini_helper import load_config
 
 DEFAULT_CONFIG_VARIABLES = {
@@ -86,9 +87,6 @@ class ClientConfig(object):
     :param https_proxy: https 代理地址
     :type https_proxy: str
 
-    :param config_file: 用户指定读取config配置的文件位置
-    :type config_file: str
-
     """
     ENV_NAME_FOR_CONFIG_FILE = 'ALIBABA_CLOUD_CONFIG_FILE'
     DEFAULT_NAME_FOR_CONFIG_FILE = '~/.alibabacloud/config'
@@ -96,7 +94,7 @@ class ClientConfig(object):
     def __init__(self, region_id=None, endpoint=None, max_retry_times=None, user_agent=None,
                  enable_https=None, http_port=None, https_port=None, enable_retry=None,
                  connection_timeout=None, read_timeout=None, enable_http_debug=None,
-                 http_proxy=None, https_proxy=None,config_file=None):
+                 http_proxy=None, https_proxy=None):
 
         self.endpoint = endpoint
         self.region_id = region_id
@@ -119,7 +117,6 @@ class ClientConfig(object):
         # TODO credentials profile, profile_name
         # self.profile_name = profile_name
         # config file, Specify the configuration file location
-        self.config_file = config_file
         self.enable_http_debug = enable_http_debug
         # proxy provider: client  env
         self.http_proxy = http_proxy
@@ -131,8 +128,6 @@ class ClientConfig(object):
         self._read_from_env()
         self._read_from_file()
         self._read_from_default()
-
-    # def merge(self):
 
     @property
     def proxy(self):
@@ -151,24 +146,32 @@ class ClientConfig(object):
 
     def _read_from_file(self):
         profile = {}
-        # TODO read from profile
-        if self.config_file is None:
-            if self.ENV_NAME_FOR_CONFIG_FILE in os.environ:
-                env_config_file_path = os.environ.get(self.ENV_NAME_FOR_CONFIG_FILE)
-                if env_config_file_path is not None:
-                    full_path = os.path.expanduser(env_config_file_path)
-                    loaded_config = load_config(full_path)
-                    profile = loaded_config.get('default', {})
+        if self.ENV_NAME_FOR_CONFIG_FILE in os.environ:
+            config_file_name = os.environ.get(self.ENV_NAME_FOR_CONFIG_FILE)
+            if not config_file_name:
+                raise ClientException(
+                    msg='Found config profile in env, but %s is empty' % self.ENV_NAME_FOR_CONFIG_FILE)
+            full_path = os.path.expanduser(config_file_name)
+            try:
+                config = load_config(full_path)
+            except ConfigNotFoundException as e:
+                # Move on to the next potential config file name.
+                raise e
             else:
-                filename = self.DEFAULT_NAME_FOR_CONFIG_FILE
-                try:
-                    loaded_config = load_config(filename)
-                    profile = loaded_config.get('default', {})
-                except ConfigNotFoundException:
-                    pass
-
+                # Alibaba Cloud only support default
+                if 'default' not in config:
+                    raise PartialCredentialsException(provider='profile',
+                                                      cred_var='default section')
+                profile = config['default']
         else:
-            profile = load_config(self.config_file)
+            full_path = os.path.expanduser(self.DEFAULT_NAME_FOR_CONFIG_FILE)
+            try:
+                config = load_config(full_path)
+            except ConfigNotFoundException:
+                raise ConfigNotFoundException
+            else:
+                if 'default' in config:
+                    profile = config['default']
 
         for key in dir(self):
             if profile.get(key) is not None and getattr(self, key) is None:

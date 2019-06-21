@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
-import os
 
 from mock import patch
 
 from alibabacloud.client import AlibabaCloudClient
+from alibabacloud.clients.ecs_20140526 import EcsClient
 from alibabacloud.endpoint.chained_endpoint_resolver import ChainedEndpointResolver
 from alibabacloud.endpoint.default_endpoint_resolver import DefaultEndpointResolver
 from alibabacloud.endpoint.local_config_global_endpoint_resolver import \
@@ -30,7 +30,7 @@ from alibabacloud.exceptions import ServerException, NoSuchEndpointException, \
     InvalidRegionIDException, HttpErrorException, InvalidProductCodeException
 from alibabacloud.request import APIRequest
 from base import SDKTestBase
-from alibabacloud.clients.ecs_20140526 import EcsClient
+
 
 class EndpointTest(SDKTestBase):
 
@@ -98,7 +98,8 @@ class EndpointTest(SDKTestBase):
 
     def test_products_without_location_service(self):
         from alibabacloud.clients.ram_20150501 import RamClient
-        client = RamClient(client_config=self.client_config, credentials_provider=self.init_credentials_provider())
+        client = RamClient(client_config=self.client_config,
+                           credentials_provider=self.init_credentials_provider())
         response = client.list_access_keys()
         self.assertTrue(response.get('RequestId'))
 
@@ -327,18 +328,37 @@ class EndpointTest(SDKTestBase):
                 " Max retries exceeded with url"))
 
     def test_invalid_access_key_id(self):
+        def my_credentials_provider():
+            from alibabacloud.credentials import AccessKeyCredentials
 
-        self.init_env(self.client_config, self.init_credentials_provider(), None)
+            credentials = AccessKeyCredentials('BadAccessKeyId',
+                                               self.access_key_secret)
+            from alibabacloud.credentials.provider import StaticCredentialsProvider
+            credentials_provider = StaticCredentialsProvider(credentials)
+            return credentials_provider
+
+        self.init_env(self.client_config, my_credentials_provider(), None)
         try:
             self.resolve("cn-hangzhou", "Ecs", "ecs", "innerAPI")
+            assert False
         except ServerException as e:
             self.assertEqual(e.error_code, 'InvalidAccessKeyId.NotFound')
             self.assertEqual(e.error_message, 'Specified access key is not found.')
 
     def test_invalid_access_key_secret(self):
-        self.init_env(self.client_config, self.init_credentials_provider(), None)
+        def my_credentials_provider():
+            from alibabacloud.credentials import AccessKeyCredentials
+
+            credentials = AccessKeyCredentials(self.access_key_id,
+                                               'BadAccessKeySecret')
+            from alibabacloud.credentials.provider import StaticCredentialsProvider
+            credentials_provider = StaticCredentialsProvider(credentials)
+            return credentials_provider
+
+        self.init_env(self.client_config, my_credentials_provider(), None)
         try:
             self.resolve("cn-hangzhou", "Ecs", "ecs", "innerAPI")
+            assert False
         except ServerException as e:
             self.assertEqual(e.error_code, 'InvalidAccessKeySecret')
             self.assertEqual(e.error_message,
@@ -439,18 +459,6 @@ class EndpointTest(SDKTestBase):
 
         request = ResolveEndpointRequest("eu-west-1", "BssOpenApi", None, None)
         self.assertEqual("business.ap-southeast-1.aliyuncs.com", resolver.resolve(request))
-
-        client = AlibabaCloudClient(self.client_config, self.init_credentials_provider())
-        client.product_code = "BssOpenApi"
-        client.api_version = "2017-12-14"
-        client.location_endpoint_type = "openAPI"
-        api_request = APIRequest('GetOrderDetail', 'GET', 'https', 'RPC')
-        api_request._params = {"OrderId": "blah"}
-
-        try:
-            client._handle_request(api_request)
-        except ServerException as e:
-            self.assertNotEqual("EndpointResolvingError", e.error_code)
 
     def test_faas_resolve(self):
         temp_client = self.temp_client("faas")

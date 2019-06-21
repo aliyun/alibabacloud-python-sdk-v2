@@ -1,5 +1,5 @@
-from base import SDKTestBase, MyServer
 from alibabacloud.clients.ecs_20140526 import EcsClient
+from base import SDKTestBase, MyServer
 
 
 class UserAgentTest(SDKTestBase):

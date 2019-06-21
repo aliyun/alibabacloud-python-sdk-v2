@@ -11,22 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
 import time
 
 from mock import patch
-from alibabacloud.exceptions import ClientException, ServerException, HttpErrorException, ParamTypeInvalidException
+
+from alibabacloud.clients.ecs_20140526 import EcsClient
+from alibabacloud.exceptions import ServerException, HttpErrorException, \
+    ParamTypeInvalidException
+from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
 from alibabacloud.handlers.endpoint_handler import EndpointHandler
 from alibabacloud.handlers.http_handler import HttpHandler
-from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.retry_handler import RetryHandler
 from alibabacloud.handlers.server_error_handler import ServerErrorHandler
 from alibabacloud.handlers.signer_handler import SignerHandler
 from alibabacloud.handlers.timeout_config_reader import TimeoutConfigReader
 from alibabacloud.request import APIRequest
 from base import SDKTestBase
-from alibabacloud.clients.ecs_20140526 import EcsClient
 
 DEFAULT_HANDLERS = [
     RetryHandler(),

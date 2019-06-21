@@ -15,10 +15,11 @@
 import logging
 import os
 import tempfile
+
 import mock
-from base import SDKTestBase
 
 from alibabacloud.clients.ecs_20140526 import EcsClient
+from base import SDKTestBase
 
 
 class AlibabaLoggerTest(SDKTestBase):
@@ -45,5 +46,3 @@ class AlibabaLoggerTest(SDKTestBase):
         get_logger.assert_called_with('foo.bar')
         get_logger.return_value.setLevel.assert_called_with(logging.ERROR)
         formatter.assert_called_with('foo')
-
-

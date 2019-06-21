@@ -20,9 +20,9 @@ import threading
 import time
 
 from alibabacloud.client import ClientConfig
-from alibabacloud.vendored.six import iteritems
-from alibabacloud.exceptions import ServerException
 from alibabacloud.clients.ram_20150501 import RamClient
+from alibabacloud.exceptions import ServerException
+from alibabacloud.vendored.six import iteritems
 
 # The unittest module got a significant overhaul
 # in 2.7, so if we're in 2.6 we can use the backported
@@ -145,7 +145,8 @@ class SDKTestBase(TestCase):
     def _create_default_ram_user(self):
         if self.ram_user_id:
             return
-        ram_client = RamClient(client_config=self.client_config, credentials_provider=self.init_credentials_provider())
+        ram_client = RamClient(client_config=self.client_config,
+                               credentials_provider=self.init_credentials_provider())
         response = ram_client.list_users()
         user_list = find_in_response(response, keys=['Users', 'User'])
         for user in user_list:
@@ -185,7 +186,8 @@ class SDKTestBase(TestCase):
 
         for access_key in find_in_response(response, keys=['AccessKeys', 'AccessKey']):
             access_key_id = access_key['AccessKeyId']
-            ram_client.delete_access_key(user_access_key_id=access_key_id, user_name=self.default_ram_user_name)
+            ram_client.delete_access_key(user_access_key_id=access_key_id,
+                                         user_name=self.default_ram_user_name)
 
         response = ram_client.create_access_key(user_name=self.default_ram_user_name)
         self.ram_user_access_key_id = find_in_response(response, keys=['AccessKey', 'AccessKeyId'])
@@ -208,7 +210,7 @@ class SDKTestBase(TestCase):
                                          connection_timeout=120)
 
         credentials = AccessKeyCredentials(self.ram_user_access_key_id,
-                                           self.ram_user_access_key_secret,)
+                                           self.ram_user_access_key_secret, )
         from alibabacloud.credentials.provider import StaticCredentialsProvider
         sub_credentials_provider = StaticCredentialsProvider(credentials)
 

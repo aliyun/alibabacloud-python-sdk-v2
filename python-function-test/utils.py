@@ -29,7 +29,7 @@ class CSBClient(AlibabaCloudClient):
         self.location_service_code = 'csb'
         self.location_endpoint_type = 'openAPI'
 
-    def approve_order_list(self, data=None,):
+    def approve_order_list(self, data=None, ):
         api_request = APIRequest(
             'ApproveOrderList',
             'POST',
@@ -82,7 +82,7 @@ class OpenanalyticsClient(AlibabaCloudClient):
         self.location_service_code = 'openanalytics'
         self.location_endpoint_type = 'openAPI'
 
-    def get_region_status(self, target_uid=None,):
+    def get_region_status(self, target_uid=None, ):
         api_request = APIRequest(
             'GetRegionStatus', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"TargetUid": target_uid, }
