@@ -24,6 +24,16 @@ from alibabacloud.utils.utils import _assert_is_not_none, _get_key_in_response
 
 
 class ECSInstanceResource(ServiceResource):
+    """
+    Ecs 实例资源类
+
+    :param instance_id: 实例ID
+    :type instance_id: str
+
+    :param _client:  Alibaba Cloud Client
+    :type _client: alibaba.client.AlibabaCloudClient
+
+    """
 
     STATUS_RUNNING = "Running"
     STATUS_STARTING = "Starting"
@@ -120,6 +130,16 @@ class ECSInstanceResource(ServiceResource):
 
 
 class ECSSystemEventResource(ServiceResource):
+    """
+    ECS 系统事件资源类
+
+    :param event_id: 事件id
+    :type event_id: str
+
+    :param _client:  Alibaba Cloud Client
+    :type _client: alibaba.client.AlibabaCloudClient
+
+    """
 
     class EventCycleStatus:
         """
@@ -158,6 +178,7 @@ class ECSSystemEventResource(ServiceResource):
         ACCOUNT_UNBALANCED_DELETE = "AccountUnbalanced.Delete"
 
     def __init__(self, event_id, _client=None):
+
         self.event_id = event_id
         self.event_finish_time = None
         _assert_is_not_none(event_id, "event_id")
@@ -185,6 +206,7 @@ class ECSSystemEventResource(ServiceResource):
 
 
 class ECSInstanceFullStatus(ServiceResource):
+    """ECS 实例状态资源类"""
 
     def _assign_attributes(self, attrs):
         ServiceResource._assign_attributes(self, attrs)
@@ -198,6 +220,16 @@ class ECSInstanceFullStatus(ServiceResource):
 
 
 class ECSDiskResource(ServiceResource):
+    """
+    ECS 硬盘资源类
+
+    :param disk_id: 硬盘id
+    :type disk_id: str
+
+    :param _client:  Alibaba Cloud Client
+    :type _client: alibaba.client.AlibabaCloudClient
+
+    """
 
     def __init__(self, disk_id, _client=None):
         self.disk_id = disk_id
@@ -238,6 +270,16 @@ class ECSDiskResource(ServiceResource):
 
 
 class ECSImageResource(ServiceResource):
+    """
+    Ecs 镜像资源类
+
+    :param image_id: 镜像id
+    :type image_id:  str
+
+    :param _client:  Alibaba Cloud Client
+    :type _client: alibaba.client.AlibabaCloudClient
+
+    """
 
     def __init__(self, image_id, _client=None):
         self.image_id = image_id
@@ -271,6 +313,13 @@ class ECSDemand(ServiceResource):
 
 
 class ECSResource(ServiceResource):
+    """
+    ECS 资源类
+
+    :param _client:  Alibaba Cloud Client
+    :type _client: alibaba.client.AlibabaCloudClient
+
+    """
 
     def __init__(self, _client=None):
         # _client is EcsClient

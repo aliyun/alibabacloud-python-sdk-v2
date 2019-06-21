@@ -49,6 +49,13 @@ class VPCEipAddressResource(ServiceResource):
 
 
 class VPCResource(ServiceResource):
+    """
+    VPC 资源类
+
+    :param _client:  Alibaba Cloud Client
+    :type _client: alibaba.client.AlibabaCloudClient
+
+    """
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'vpc', _client=_client)

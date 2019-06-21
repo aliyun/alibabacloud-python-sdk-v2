@@ -44,6 +44,13 @@ class LoadBalancerResource(ServiceResource):
 
 
 class SLBResource(ServiceResource):
+    """
+    负载均衡资源类
+
+    :param _client:  Alibaba Cloud Client
+    :type _client: alibaba.client.AlibabaCloudClient
+
+    """
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'slb', _client=_client)
