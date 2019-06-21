@@ -20,8 +20,6 @@ from alibabacloud.exceptions import ServerException, InvalidRegionIDException
 from alibabacloud.request import APIRequest
 from base import SDKTestBase
 
-from alibabacloud.clients.ecs_20140526 import EcsClient
-
 
 class ROSClient(AlibabaCloudClient):
 
@@ -50,15 +48,16 @@ class CloudLevelTest(SDKTestBase):
         return client
 
     def test_rpc_with_regions_request(self):
-        
+
         ecs_client = self._init_client('ecs')
         response = ecs_client.describe_regions()
         self.assertTrue(response.get("Regions"))
         self.assertTrue(response.get("RequestId"))
 
     def test_roa_with_resource_types_request(self):
-        
-        ros_client = ROSClient(self.client_config, credentials_provider=self.init_credentials_provider())
+
+        ros_client = ROSClient(self.client_config,
+                               credentials_provider=self.init_credentials_provider())
         response = ros_client.describe_resource_types()
         self.assertTrue(response.get("ResourceTypes"))
 
@@ -124,9 +123,9 @@ class CloudLevelTest(SDKTestBase):
     def test_rpc_regions_request_with_error(self):
         self.client_config.region_id = 'abc'
         ecs_client = get_client(service_name='ecs',
-                            access_key_id=self.access_key_id,
-                            access_key_secret=self.access_key_secret,
-                            config=self.client_config)
+                                access_key_id=self.access_key_id,
+                                access_key_secret=self.access_key_secret,
+                                config=self.client_config)
 
         with self.assertRaises(InvalidRegionIDException) as e:
             ecs_client.describe_regions()
@@ -137,6 +136,8 @@ class CloudLevelTest(SDKTestBase):
         ecs_client = self._init_client('ecs')
         try:
             ecs_client.describe_regions(owner_account="&#111;&#119;&#110;&#101;")
+            assert False
+
         except ServerException as e:
             self.assertEqual(e.error_code, "InvalidParameter.OwnerAccount")
             self.assertEqual(e.error_message, "OwnerAccount is Invalid.")
@@ -163,4 +164,3 @@ class CloudLevelTest(SDKTestBase):
                                credentials_provider=self.init_credentials_provider())
         response = ros_client.describe_resource_types(support_status='resource&types;')
         self.assertTrue(response.get("ResourceTypes") == [])
-

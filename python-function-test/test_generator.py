@@ -1,15 +1,10 @@
-import json
-import os
-
-from alibabacloud.vendored import six
-from base import SDKTestBase
-
 from alibabacloud.clients.eci_20180808 import EciClient
+from alibabacloud.clients.ecs_20140526 import EcsClient
 from alibabacloud.clients.edas_20170801 import EdasClient
 from alibabacloud.clients.linkwan_20181230 import LinkWANClient
-from alibabacloud.clients.ecs_20140526 import EcsClient
 from alibabacloud.exceptions import ServerException, HttpErrorException, ParamValidationException
-
+from alibabacloud.vendored import six
+from base import SDKTestBase
 from utils import crClient, CSBClient, OpenanalyticsClient
 
 
@@ -48,7 +43,8 @@ class GenTestBase(SDKTestBase):
                 self.assertEqual(e.error_message,
                                  "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <type 'str'>, valid types: <type 'list'>")
             else:
-                self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
 
     def test_rpc_query_get1(self):
         # TODO
@@ -64,7 +60,8 @@ class GenTestBase(SDKTestBase):
                                  "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <type 'str'>, valid types: <type 'dict'>")
 
             else:
-                self.assertEqual(e.error_message, "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
+                self.assertEqual(e.error_message,
+                                 "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
 
     def test_rpc_body_get(self):
 
@@ -88,7 +85,8 @@ class GenTestBase(SDKTestBase):
         except ServerException as e:
             self.assertEqual(e.http_status, 503)
             self.assertEqual(e.error_code, 'ServiceUnavailable')
-            self.assertEqual(e.error_message, 'The request has failed due to a temporary failure of the server.')
+            self.assertEqual(e.error_message,
+                             'The request has failed due to a temporary failure of the server.')
 
     def test_rpc_body_post(self):
         csb_client = CSBClient(self.client_config, self.init_credentials_provider())
@@ -144,5 +142,6 @@ class GenTestBase(SDKTestBase):
             self.assertEqual(e.error_message, 'RuleId is mandatory for this action.')
 
         result = edas_client.delete_application(app_id="123")
-        self.assertEqual(result.get('Message'), 'Only primary account is allowed to perform this operation.')
+        self.assertEqual(result.get('Message'),
+                         'Only primary account is allowed to perform this operation.')
         self.assertEqual(result.get('Code'), 500)

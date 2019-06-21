@@ -13,23 +13,19 @@
 # limitations under the License.
 
 import os
+
 import mock
 
 from alibabacloud import get_client
 from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.client import ClientConfig
-
 from alibabacloud.credentials import AccessKeyCredentials
-from alibabacloud.credentials.provider import RamRoleCredentialsProvider, StaticCredentialsProvider, \
-    DefaultChainedCredentialsProvider, ProfileCredentialsProvider, \
-    InstanceProfileCredentialsProvider
-from alibabacloud.exceptions import ServerException, ClientException, PartialCredentialsException, ConfigNotFoundException
+from alibabacloud.credentials.provider import RamRoleCredentialsProvider, \
+    DefaultChainedCredentialsProvider
+from alibabacloud.exceptions import ServerException, PartialCredentialsException
 from alibabacloud.request import APIRequest
-from alibabacloud.utils import ini_helper
 from alibabacloud.vendored import requests
 from base import SDKTestBase, MyServer
-from alibabacloud.clients.ecs_20140526 import EcsClient
-
 
 role_name = {u'Code': u'Success', u'LastUpdated': u'2019-04-09T10:41:31Z',
              u'AccessKeyId': u'STS.NHLK9qYbdbKgs4oYTRXqjLSdX',
@@ -94,7 +90,8 @@ class CredentialsTest(SDKTestBase):
 
         client_config = ClientConfig(region_id=self.region_id)
 
-        client = AlibabaCloudClient(client_config, credentials_provider=self.init_credentials_provider())
+        client = AlibabaCloudClient(client_config,
+                                    credentials_provider=self.init_credentials_provider())
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -354,7 +351,9 @@ class CredentialsTest(SDKTestBase):
             from alibabacloud.credentials.provider import StaticCredentialsProvider
             credentials_provider = StaticCredentialsProvider(credentials)
             return credentials_provider
-        client = AlibabaCloudClient(self.client_config, credentials_provider=init_credentials_provider())
+
+        client = AlibabaCloudClient(self.client_config,
+                                    credentials_provider=init_credentials_provider())
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -377,7 +376,9 @@ class CredentialsTest(SDKTestBase):
             from alibabacloud.credentials.provider import StaticCredentialsProvider
             credentials_provider = StaticCredentialsProvider(credentials)
             return credentials_provider
-        client = AlibabaCloudClient(self.client_config, credentials_provider=init_credentials_provider())
+
+        client = AlibabaCloudClient(self.client_config,
+                                    credentials_provider=init_credentials_provider())
         client.product_code = "ROS"
         client.api_version = "2015-09-01"
         client.location_service_code = 'ros'
@@ -401,7 +402,9 @@ class CredentialsTest(SDKTestBase):
             from alibabacloud.credentials.provider import StaticCredentialsProvider
             credentials_provider = StaticCredentialsProvider(credentials)
             return credentials_provider
-        client = AlibabaCloudClient(self.client_config, credentials_provider=init_credentials_provider())
+
+        client = AlibabaCloudClient(self.client_config,
+                                    credentials_provider=init_credentials_provider())
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -426,7 +429,9 @@ class CredentialsTest(SDKTestBase):
             from alibabacloud.credentials.provider import StaticCredentialsProvider
             credentials_provider = StaticCredentialsProvider(credentials)
             return credentials_provider
-        client = AlibabaCloudClient(self.client_config, credentials_provider=init_credentials_provider())
+
+        client = AlibabaCloudClient(self.client_config,
+                                    credentials_provider=init_credentials_provider())
         client.product_code = "ROS"
         client.api_version = "2015-09-01"
         client.location_service_code = 'ros'

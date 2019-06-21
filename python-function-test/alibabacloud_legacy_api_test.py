@@ -14,8 +14,8 @@
 
 import os
 
-from base import SDKTestBase
 from alibabacloud.clients.ecs_20140526 import EcsClient
+from base import SDKTestBase
 
 
 class AlibabaCloudTest(SDKTestBase):

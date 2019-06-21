@@ -11,11 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
 
 from mock import patch
 
 from alibabacloud.client import AlibabaCloudClient
+from alibabacloud.clients.ecs_20140526 import EcsClient
 from alibabacloud.exceptions import ServerException, InvalidRegionIDException, HttpErrorException
 from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
@@ -29,7 +29,6 @@ from alibabacloud.request import APIRequest
 from alibabacloud.vendored import six
 from alibabacloud.vendored.requests import Response
 from base import SDKTestBase
-from alibabacloud.clients.ecs_20140526 import EcsClient
 
 http_handler = HttpHandler()
 DEFAULT_HANDLERS = [
@@ -66,7 +65,6 @@ class ErrorTest(SDKTestBase):
         ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
         try:
             ecs_client.delete_instance(instance_id="blah")
-
             assert False
         except ServerException as e:
             self.assertEqual("InvalidInstanceId.NotFound", e.error_code)

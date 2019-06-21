@@ -11,13 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
 
 from mock import patch
+
+from alibabacloud.clients.ecs_20140526 import EcsClient
 from alibabacloud.exceptions import HttpErrorException
 from alibabacloud.request import APIRequest
 from base import SDKTestBase
-from alibabacloud.clients.ecs_20140526 import EcsClient
 
 
 class TimeoutTest(SDKTestBase):

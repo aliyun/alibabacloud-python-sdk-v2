@@ -14,11 +14,6 @@
 from mock import patch
 
 from alibabacloud.client import AlibabaCloudClient
-from alibabacloud.clients.cdn_20180510 import CdnClient as cdn_new
-from alibabacloud.clients.ecs_20140526 import EcsClient
-from alibabacloud.clients.ram_20150501 import RamClient
-from alibabacloud.clients.slb_20140515 import SlbClient
-from alibabacloud.clients.vpc_20160428 import VpcClient
 from alibabacloud.exceptions import ServerException
 from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
@@ -109,7 +104,8 @@ class APIRequestTest(SDKTestBase):
 
     def test_request_with_listkeys(self):
 
-        client = AlibabaCloudClient(self.client_config, credentials_provider=self.init_credentials_provider())
+        client = AlibabaCloudClient(self.client_config,
+                                    credentials_provider=self.init_credentials_provider())
         client.product_code = "Kms"
         client.api_version = "2016-01-20"
         client.location_service_code = 'kms'
