@@ -118,6 +118,7 @@ class ClientConfig(object):
         # self.profile_name = profile_name
         # config file, Specify the configuration file location
         self.enable_http_debug = enable_http_debug
+
         # proxy provider: client  env
         self.http_proxy = http_proxy
         self.https_proxy = https_proxy

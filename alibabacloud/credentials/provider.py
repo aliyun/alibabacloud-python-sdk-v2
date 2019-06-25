@@ -24,7 +24,6 @@ from alibabacloud.credentials.assume_role_caller import AssumeRoleCaller
 from alibabacloud.exceptions import ClientException, PartialCredentialsException, \
     ConnectionUsingEcsRamRoleException, ConfigNotFoundException
 from alibabacloud.utils.ini_helper import load_config
-from alibabacloud.credentials.sts_token_caller import STSTokenProvider
 
 
 class CredentialsProvider(object):
@@ -110,7 +109,7 @@ class ProfileCredentialsProvider(CredentialsProvider):
     ENV_NAME_FOR_CREDENTIALS_FILE = 'ALIBABA_CLOUD_CREDENTIALS_FILE'
     DEFAULT_NAME_FOR_CREDENTIALS_FILE = '~/.alibabacloud/credentials'
 
-    def __init__(self, client_config, credentials_config_file_name, profile_name):
+    def __init__(self, client_config, profile_name):
         self.environ = os.environ
         profile = self._load_profile(profile_name)
         self.client_config = client_config
@@ -183,19 +182,11 @@ class ProfileCredentialsProvider(CredentialsProvider):
                 raise ClientException(msg="RSA Key Pair credentials are not supported.")
 
             elif type_ == 'sts_token':
-                sts_provider = STSTokenProvider(client_config=self.client_config,
-                                                access_key_id=_get_value('access_key_id'),
-                                                access_key_secret=_get_value('access_key_secret'),
-                                                user_name=_get_value('user_name'),
-                                                )
-                sub_credentials = sts_provider.get_sub_credentials()
-                return RamRoleCredentialsProvider(
-                    self.client_config,
-                    AccessKeyCredentials(sub_credentials['AccessKeyId'],
-                                         sub_credentials['AccessKeySecret']),
-                    _get_value('role_arn'),
-                    role_session_name=_get_value('role_session_name')
-                )
+                return StaticCredentialsProvider(SecurityCredentials(
+                    _get_value('access_key_id'),
+                    _get_value('access_key_secret'),
+                    _get_value('security_token'),
+                ))
 
             else:
                 raise Exception("Unexpected credentials type: {}".format(type_))
@@ -291,10 +282,10 @@ class PredefinedChainCredentialsProvider(ChainedCredentialsProvider):
 
     """
 
-    def __init__(self, client_config, credentials_config_file_name, profile_name, role_name):
+    def __init__(self, client_config, profile_name, role_name):
         provider_chain = [
             EnvCredentialsProvider(),
-            ProfileCredentialsProvider(client_config, credentials_config_file_name, profile_name),
+            ProfileCredentialsProvider(client_config, profile_name),
         ]
         if role_name:
             provider_chain.append(InstanceProfileCredentialsProvider(role_name))
@@ -307,18 +298,9 @@ class DefaultChainedCredentialsProvider(PredefinedChainCredentialsProvider):
     DEFAULT_NAME_FOR_CREDENTIALS_FILE = '~/.alibabacloud/credentials'
 
     def __init__(self, client_config, profile_name='default'):
-        credentials_config_file = self._get_config_file_name()
         role_name = self._get_config('role_name')
         PredefinedChainCredentialsProvider.__init__(self, client_config,
-                                                    credentials_config_file, profile_name,
-                                                    role_name)
-
-    def _get_config_file_name(self):
-        if self.ENV_NAME_FOR_CREDENTIALS_FILE in os.environ and \
-                os.environ[self.ENV_NAME_FOR_CREDENTIALS_FILE]:
-            return os.environ[self.ENV_NAME_FOR_CREDENTIALS_FILE]
-        else:
-            return self.DEFAULT_NAME_FOR_CREDENTIALS_FILE
+                                                    profile_name, role_name)
 
     @staticmethod
     def _get_config(config_name):
