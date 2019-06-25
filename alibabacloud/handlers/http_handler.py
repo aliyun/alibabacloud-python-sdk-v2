@@ -71,7 +71,7 @@ class HttpHandler(RequestHandler):
         logger = context.client.logger
         http_request = context.http_request
         request_base = '\n> %s %s HTTP/1.1' % (http_request.method.upper(), http_request.url)
-        request_base += '\n> Host : %s' % http_request.endpoint
+        request_base += '\n> Host : %s' % context.endpoint
         logger.debug(request_base + self._prepare_http_debug(http_request, '>'))
 
         # logger the response
