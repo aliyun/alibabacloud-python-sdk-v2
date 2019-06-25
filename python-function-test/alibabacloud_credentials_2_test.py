@@ -209,25 +209,24 @@ class CredentialsTest(SDKTestBase):
             self.assertEqual(e.error_message, 'RSA Key Pair credentials are not supported.')
 
     def test_file_sts_token(self):
-        # 有credentials file  有default,有type 但是没有具体的ak,
+        # 有credentials file  有default
         credentials_file = (
-                               '[default]\n'
-                               'type = sts_token\n'
-                               'access_key_id = %s\n'
-                               'access_key_secret = %s\n'
-                               'user_name = alice\n'
-                               'role_arn = role_arn\n'
-                               'role_session_name = role_session_name\n'
-                           ) % (self.access_key_id, self.access_key_secret)
+            '[default]\n'
+            'type = sts_token\n'
+            'access_key_id = STS.access_key_id\n'
+            'access_key_secret = STS.access_key_secret\n'
+            'security_token = alice\n'
+        )
         self.write_config(credentials_file)
+        client = get_client('ecs')
         try:
-            client = get_client('ecs')
+            client.describe_regions()
             assert False
-
         except ServerException as e:
-            self.assertEqual(e.http_status, 409)
-            self.assertEqual(e.error_code, 'LimitExceeded.User.AccessKey')
-            self.assertEqual(e.error_message, 'Too many access keys')
+            self.assertEqual(e.http_status, 400)
+            self.assertEqual(e.error_code, 'InvalidParameter')
+            self.assertEqual(e.error_message,
+                             'The specified parameter "SecurityToken.Malformed" is not valid.')
 
     def test_local_file_default_config_with_none_error(self):
         credentials_file = (
