@@ -14,7 +14,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-__version__ = '0.4.3'
+__version__ = '0.4.4'
 
 from functools import wraps
 
@@ -64,6 +64,7 @@ def _check_client_service_name(service_name):
         return available_clients[service_name.lower()]
     raise ServiceNameInvalidException(service_name=service_name,
                                       more=','.join([item for item in available_clients.keys()]))
+
 
 def _prepare_module(service_name, api_version):
     """
@@ -160,7 +161,7 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
 
 def get_resource(resource_name, resource_id=None, api_version=None, region_id=None, endpoint=None,
                  access_key_id=None,
-                 access_key_secret=None, custom_credentials_provider=None, custom_retry_policy=None,
+                 access_key_secret=None, credentials_provider=None, retry_policy=None,
                  endpoint_resolver=None, config=None, enable_stream_logger=None,
                  enable_file_logger=None, **kwargs):
     """
@@ -187,12 +188,12 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
     :param access_key_secret: 秘钥AccessKeySecret
     :type access_key_secret: str
 
-    :param custom_credentials_provider: 自定义的credentials_provider，如果用户自定义
+    :param credentials_provider: 自定义的credentials_provider，如果用户自定义
         credentials_provider,使用用户自定义的
-    :type custom_credentials_provider: 一个具备provide接口的对象
+    :type credentials_provider: 一个具备provide接口的对象
 
-    :param custom_retry_policy: 用户自定义的重试策略
-    :type custom_retry_policy:
+    :param retry_policy: 用户自定义的重试策略
+    :type retry_policy:
 
     :param endpoint_resolver: 用户自定义的endpoint_resolver，如果用户自定义
         endpoint_resolver,使用用户自定义的
@@ -273,8 +274,8 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
                                  region_id=region_id, endpoint=endpoint,
                                  access_key_id=access_key_id,
                                  access_key_secret=access_key_secret,
-                                 custom_credentials_provider=custom_credentials_provider,
-                                 custom_retry_policy=custom_retry_policy,
+                                 credentials_provider=credentials_provider,
+                                 retry_policy=retry_policy,
                                  endpoint_resolver=endpoint_resolver, config=config)
         if enable_stream_logger:
             temp_client.add_stream_log_handler(**stream_logger_handler)
