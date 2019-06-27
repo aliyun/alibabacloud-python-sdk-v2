@@ -16,7 +16,7 @@
 # under the License.
 
 from alibabacloud.endpoint import EndpointResolver
-from alibabacloud.exceptions import InvalidProductCode, \
+from alibabacloud.exceptions import InvalidProductCodeException, \
     InvalidRegionIDException, NoSuchEndpointException
 
 
@@ -30,7 +30,7 @@ class ChainedEndpointResolver(EndpointResolver):
         for resolver in self.endpoint_resolvers:
             if resolver.is_product_code_valid(request):
                 return
-        raise InvalidProductCode(product_code=request.product_code)
+        raise InvalidProductCodeException(product_code=request.product_code)
 
     def _check_region_id(self, request):
         for resolver in self.endpoint_resolvers:

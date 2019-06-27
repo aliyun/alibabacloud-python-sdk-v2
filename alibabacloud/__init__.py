@@ -79,8 +79,7 @@ def instance_cache(function):
     cache = {}
     @wraps(function)
     def wrapper(**kwargs):
-        api_version = kwargs.get("api_version") if kwargs.get("api_version") else 'latest'
-        key = kwargs.get('service_name')+"@"+api_version
+        key = kwargs.get('service_name')+"@"+kwargs.get("api_version", 'latest')
         if key in cache:
             return cache[key]
         else:
