@@ -16,9 +16,9 @@ import json
 import os
 import re
 import sys
-
 import alibabacloud
 import alibabacloud.utils
+
 
 # The unittest module got a significant overhaul
 # in 2.7, so if we're in 2.6 we can use the backported
