@@ -18,11 +18,6 @@ from alibabacloud.utils.utils import _convert_name_from_camel_case_to_snake_case
 class ServiceResource(object):
 
     def __init__(self, service_name, _client=None):
-        """
-
-        :param service_name: such as ecs slb
-        :param _client:  such as ecsClient
-        """
         self.service_name = service_name
         self._client = _client
 

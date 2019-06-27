@@ -39,7 +39,7 @@ class CredentialsTest(SDKTestBase):
             f.write(credential)
 
     def test_empty(self):
-        # TODO：有任何的配置会报错，没有任何的配置 反而是执行才报错
+        # TODO：util describe_regions raise
         os.environ.pop('ALIBABA_CLOUD_CREDENTIALS_FILE')
         client = get_client('ecs')
         try:
@@ -76,7 +76,7 @@ class CredentialsTest(SDKTestBase):
         os.environ.pop("ALIBABA_CLOUD_ACCESS_KEY_ID")
 
     def test_file_ak(self):
-        # 有credentials file  但是没有default, 应该抛出PartialCredentialsException
+        # credentials file  no default  raise PartialCredentialsException
         credentials_file = (
             '[default1]\n'
             'enable = true\n'
@@ -92,7 +92,6 @@ class CredentialsTest(SDKTestBase):
                              'Partial credentials found in profile, default section is empty')
 
     def test_file_ak_1(self):
-        # 有credentials file  有default,但是文件格式错误
         credentials_file = (
             '[default]\n'
             'enable\n'
@@ -107,7 +106,6 @@ class CredentialsTest(SDKTestBase):
             self.assertTrue(e.error_message.endswith('format is incorrect.'))
 
     def test_file_ak_2(self):
-        # 有credentials file  有default,但是没有type
         credentials_file = (
             '[default]\n'
             'enable=false\n'
@@ -122,7 +120,6 @@ class CredentialsTest(SDKTestBase):
                              'Partial credentials found in profile, access_key_id is empty')
 
     def test_file_ak_3(self):
-        # 有credentials file  有default,有type 但是没有具体的ak,
         credentials_file = (
             '[default]\n'
             'type = access_key\n'
@@ -137,7 +134,6 @@ class CredentialsTest(SDKTestBase):
                              'Partial credentials found in profile, access_key_id is empty')
 
     def test_file_ecs_ram_role(self):
-        # 有credentials file  有default,有type 测试ecs
         credentials_file = (
             '[default]\n'
             'type = ecs_ram_role\n'
@@ -154,7 +150,6 @@ class CredentialsTest(SDKTestBase):
                              'Max number of attempts exceeded when attempting to retrieve data from metadata service.May you need to check your ecs instance')
 
     def test_file_ram_role_arn(self):
-        # 有credentials file  有default,有type 但是没有具体的ak,
         credentials_file = (
                                '[default]\n'
                                'type = ram_role_arn\n'
@@ -177,7 +172,6 @@ class CredentialsTest(SDKTestBase):
                              'You are not authorized to do this action. You should be authorized by RAM.')
 
     def test_file_beartoken(self):
-        # 有credentials file  有default,有type 但是没有具体的ak,
         credentials_file = (
             '[default]\n'
             'type = bearer_token\n'
@@ -194,7 +188,6 @@ class CredentialsTest(SDKTestBase):
             self.assertEqual(e.error_message, 'This signature type is not supported.')
 
     def test_file_rsa_key_pair(self):
-        # 有credentials file  有default,有type 但是没有具体的ak,
         credentials_file = (
             '[default]\n'
             'type = rsa_key_pair\n'
@@ -209,7 +202,6 @@ class CredentialsTest(SDKTestBase):
             self.assertEqual(e.error_message, 'RSA Key Pair credentials are not supported.')
 
     def test_file_sts_token(self):
-        # 有credentials file  有default
         credentials_file = (
             '[default]\n'
             'type = sts_token\n'
@@ -242,7 +234,6 @@ class CredentialsTest(SDKTestBase):
                          "Partial credentials found in profile, abc section is empty")
 
     def test_instance_env(self):
-        # 有ecs ram role 在环境变量
         os.environ.pop('ALIBABA_CLOUD_CREDENTIALS_FILE')
         os.environ['ALIBABA_CLOUD_ROLE_NAME'] = 'EcsRamRoleTest'
         client = get_client('ecs')

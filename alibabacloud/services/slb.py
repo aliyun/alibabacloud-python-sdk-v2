@@ -11,10 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 from alibabacloud.resources.base import ServiceResource
 from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.utils.utils import _get_key_in_response
+from alibabacloud.utils.utils import _do_request, _get_response, _assert_is_not_none
 from alibabacloud.exceptions import ClientException
+
+from aliyunsdkslb.request.v20140515.DescribeLoadBalancersRequest import DescribeLoadBalancersRequest
+from aliyunsdkslb.request.v20140515.CreateLoadBalancerRequest import CreateLoadBalancerRequest
+from aliyunsdkslb.request.v20140515.DeleteLoadBalancerRequest import DeleteLoadBalancerRequest
+from aliyunsdkslb.request.v20140515.SetLoadBalancerNameRequest import SetLoadBalancerNameRequest
+from aliyunsdkslb.request.v20140515.SetLoadBalancerStatusRequest import SetLoadBalancerStatusRequest
 
 
 class LoadBalancerResource(ServiceResource):
@@ -24,17 +31,24 @@ class LoadBalancerResource(ServiceResource):
         self.load_balancer_id = load_balancer_id
 
     def delete(self):
-        self._client.delete_load_balancer(load_balancer_id=self.load_balancer_id)
+        request = DeleteLoadBalancerRequest()
+        request.set_LoadBalancerId(self.load_balancer_id)
+        _do_request(self._client, request, {})
 
     def set_status(self, **params):
-        self._client.set_load_balancer_status(load_balancer_id=self.load_balancer_id, **params)
+        request = SetLoadBalancerStatusRequest()
+        request.set_LoadBalancerId(self.load_balancer_id)
+        _do_request(self._client, request, params)
 
     def set_name(self, **params):
-        self._client.set_load_balancer_name(load_balancer_id=self.load_balancer_id, **params)
+        request = SetLoadBalancerNameRequest()
+        request.set_LoadBalancerId(self.load_balancer_id)
+        _do_request(self._client, request, params)
 
     def refresh(self):
-        response = self._client.describe_load_balancers(load_balancer_id=self.load_balancer_id)
-        items = _get_key_in_response(response, 'LoadBalancers.LoadBalancer')
+        request = DescribeLoadBalancersRequest()
+        request.set_LoadBalancerId(self.load_balancer_id)
+        items = _get_response(self._client, request, {}, 'LoadBalancers.LoadBalancer')
         if not items:
             raise ClientException(msg=
                                   "Failed to find load balancer data from DescribeLoadBalancers "
@@ -44,22 +58,15 @@ class LoadBalancerResource(ServiceResource):
 
 
 class SLBResource(ServiceResource):
-    """
-    负载均衡资源类
-
-    :param _client:  Alibaba Cloud Client
-    :type _client: alibaba.client.AlibabaCloudClient
-
-    """
 
     def __init__(self, _client=None):
-        ServiceResource.__init__(self, 'slb', _client=_client)
+        ServiceResource.__init__(self, 'vpc', _client=_client)
         self.load_balancers = _create_resource_collection(
-            LoadBalancerResource, _client, _client.describe_load_balancers,
+            LoadBalancerResource, _client, DescribeLoadBalancersRequest,
             'LoadBalancers.LoadBalancer', 'LoadBalancerId'
         )
 
     def create_load_balancer(self, **params):
-        response = self._client.set_load_balancer_name(**params)
-        load_balancer_id = _get_key_in_response(response, 'LoadBalancerId')
+        request = CreateLoadBalancerRequest()
+        load_balancer_id = _get_response(self._client, request, params, key='LoadBalancerId')
         return LoadBalancerResource(load_balancer_id, _client=self._client)

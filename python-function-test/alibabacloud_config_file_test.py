@@ -95,7 +95,7 @@ class ConfigFileTest(SDKTestBase):
         self.write_config(config_file)
 
         api_request = APIRequest('DescribeInstances', 'GET', 'http', 'RPC')
-        client = get_client('ecs', custom_credentials_provider=self.init_credentials_provider())
+        client = get_client('ecs', credentials_provider=self.init_credentials_provider())
         globals()["_test_compute_delay"] = []
 
         def record_sleep(delay):
