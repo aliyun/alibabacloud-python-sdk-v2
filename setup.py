@@ -15,7 +15,7 @@
 
 from setuptools import setup, find_packages
 
-PACKAGE = "alibaba-cloud-python-sdk-v2"
+PACKAGE = "alibaba-cloud-python-sdk-v3"
 VERSION = __import__(PACKAGE).__version__
 
 requires = [

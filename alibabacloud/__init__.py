@@ -83,7 +83,7 @@ def _prepare_module(service_name, api_version):
 
 
 def get_client(service_name, api_version=None, region_id=None, endpoint=None, access_key_id=None,
-               access_key_secret=None, custom_credentials_provider=None, custom_retry_policy=None,
+               access_key_secret=None, credentials_provider=None, retry_policy=None,
                endpoint_resolver=None, config=None):
     """
     获取 `Alibaba Cloud Python SDK` 某个产品某个Version的client
@@ -106,12 +106,12 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
     :param access_key_secret: 秘钥AccessKeySecret
     :type access_key_secret: str
 
-    :param custom_credentials_provider: 自定义的credentials_provider，如果用户自定义
+    :param credentials_provider: 自定义的credentials_provider，如果用户自定义
         credentials_provider,使用用户自定义的
-    :type custom_credentials_provider: 一个具备provide接口的对象
+    :type credentials_provider: 一个具备provide接口的对象
 
-    :param custom_retry_policy: 用户自定义的重试策略
-    :type custom_retry_policy:
+    :param retry_policy: 用户自定义的重试策略
+    :type retry_policy:
 
     :param endpoint_resolver: 用户自定义的endpoint_resolver，如果用户自定义
         endpoint_resolver,使用用户自定义的
@@ -140,19 +140,19 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
     except ImportError:
         raise NoModuleException(name='.'.join(module_name))
 
-    if custom_credentials_provider is not None:
-        credentials_provider = custom_credentials_provider
+    if credentials_provider is not None:
+        custom_credentials_provider = credentials_provider
 
     elif access_key_id and access_key_secret:
         credentials = AccessKeyCredentials(access_key_id, access_key_secret)
-        credentials_provider = StaticCredentialsProvider(credentials)
+        custom_credentials_provider = StaticCredentialsProvider(credentials)
     else:
-        credentials_provider = DefaultChainedCredentialsProvider(client_config)
+        custom_credentials_provider = DefaultChainedCredentialsProvider(client_config)
 
     return getattr(client_module, client_name)(client_config,
-                                               custom_retry_policy=custom_retry_policy,
-                                               credentials_provider=credentials_provider,
-                                               custom_endpoint_resolver=endpoint_resolver)
+                                               retry_policy=retry_policy,
+                                               credentials_provider=custom_credentials_provider,
+                                               endpoint_resolver=endpoint_resolver)
 
 
 # resource

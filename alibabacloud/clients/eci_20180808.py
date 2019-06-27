@@ -19,12 +19,12 @@ from alibabacloud.utils.parameter_validation import verify_params
 
 class EciClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None, custom_retry_policy=None,
-                 custom_endpoint_resolver=None):
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
         AlibabaCloudClient.__init__(self, client_config,
                                     credentials_provider=credentials_provider,
-                                    custom_retry_policy=custom_retry_policy,
-                                    custom_endpoint_resolver=custom_endpoint_resolver)
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'Eci'
         self.api_version = '2018-08-08'
         self.location_service_code = 'eci'

@@ -194,17 +194,17 @@ class AlibabaCloudClient(object):
     :param credentials_provider: 凭证链
     :type credentials_provider:
 
-    :param custom_retry_policy: 重试策略
-    :type custom_retry_policy:
+    :param retry_policy: 重试策略
+    :type retry_policy:
 
-    :param custom_endpoint_resolver: endpoint 解析链
-    :type custom_endpoint_resolver:
+    :param endpoint_resolver: endpoint 解析链
+    :type endpoint_resolver:
 
     """
     LOG_FORMAT = '%(thread)d %(asctime)s %(name)s %(levelname)s %(message)s'
 
-    def __init__(self, client_config, credentials_provider=None, custom_retry_policy=None,
-                 custom_endpoint_resolver=None):
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
 
         self.product_code = None
         self.location_service_code = None
@@ -228,8 +228,8 @@ class AlibabaCloudClient(object):
 
         self.credentials_provider = credentials_provider
 
-        self._init_endpoint_resolve(custom_endpoint_resolver)
-        self._init_retry(custom_retry_policy)
+        self._init_endpoint_resolve(endpoint_resolver)
+        self._init_retry(retry_policy)
 
     def _handle_request(self, api_request, _raise_exception=True):
         http_request = HTTPRequest()

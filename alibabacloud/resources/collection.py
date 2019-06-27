@@ -17,6 +17,7 @@ from alibabacloud.exceptions import ClientException
 from alibabacloud.vendored.six import iteritems
 from alibabacloud.utils.utils import _assert_is_list_but_not_string
 from alibabacloud.utils.utils import _get_key_in_response
+import alibabacloud.utils as utils
 
 
 class ResourceCollection:
@@ -60,10 +61,9 @@ class ResourceCollection:
             params = copy.deepcopy(self._filter_params)
             if params is None:
                 params = {}
-            params['page_number'] = page_num
-
+            params['PageNumber'] = page_num
             if self._page_size:
-                params['page_size'] = self._page_size
+                params['PageSize'] = self._page_size
 
             total_count, page_size, page_num, items = self._page_handler(params)
             if self._limit is not None:
@@ -130,7 +130,6 @@ def _param_expand_to_json(params, rules, singular=True):
 
 
 def _handle_param_aliases(params, aliases):
-    # iteritems such as {'list_of_event_id': 'EventIds',}
     for key, value in iteritems(aliases):
         if key in params:
             if value in params:
@@ -151,14 +150,15 @@ def _create_resource_collection(resource_class, client, request_class,
                                 param_aliases=None):
 
     def page_handler(params):
-        # request_class is describe_regions
+        request = request_class()
         if singular_param_to_json:
             _param_expand_to_json(params, singular_param_to_json)
         if plural_param_to_json:
             _param_expand_to_json(params, plural_param_to_json, singular=False)
         if param_aliases:
             _handle_param_aliases(params, param_aliases)
-        response = request_class(**params)
+
+        response = utils._do_request(client, request, params)
         return (
             _get_key_in_response(response, key_to_total_count),
             _get_key_in_response(response, key_to_page_size),
@@ -167,10 +167,8 @@ def _create_resource_collection(resource_class, client, request_class,
         )
 
     def resource_creator(resource_data_item):
-
         resource_id = _get_key_in_response(resource_data_item, key_to_resource_id)
         del resource_data_item[key_to_resource_id]
-        # resource_class is such as ECSInstanceResource
         resource = resource_class(resource_id, _client=client)
         resource._assign_attributes(resource_data_item)
         return resource
@@ -179,7 +177,7 @@ def _create_resource_collection(resource_class, client, request_class,
         resource = resource_class(None, _client=client)
         resource._assign_attributes(resource_data_item)
         return resource
-    # key_to_resource_id :identify
+
     if key_to_resource_id is None:
         return ResourceCollection(page_handler, resource_creator2)
     else:
@@ -190,6 +188,7 @@ def _create_default_resource_collection(resource_class, client, request_class,
                                         key_to_resource_items,
                                         plural_param_to_json=None,
                                         param_aliases=None):
+    from alibabacloud.resources.base import ServiceResource
     return _create_resource_collection(resource_class, client, request_class,
                                        key_to_resource_items, None,
                                        plural_param_to_json=plural_param_to_json,

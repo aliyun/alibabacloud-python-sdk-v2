@@ -14,8 +14,17 @@
 
 from alibabacloud.resources.base import ServiceResource
 from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.utils.utils import _get_key_in_response
+from alibabacloud.utils.utils import _do_request, _get_response, _assert_is_not_none
 from alibabacloud.exceptions import ClientException
+
+
+from aliyunsdkvpc.request.v20160428.DescribeEipAddressesRequest import DescribeEipAddressesRequest
+from aliyunsdkvpc.request.v20160428.AllocateEipAddressRequest import AllocateEipAddressRequest
+from aliyunsdkvpc.request.v20160428.ReleaseEipAddressRequest import ReleaseEipAddressRequest
+from aliyunsdkvpc.request.v20160428.AssociateEipAddressRequest import AssociateEipAddressRequest
+from aliyunsdkvpc.request.v20160428.UnassociateEipAddressRequest import UnassociateEipAddressRequest
+from aliyunsdkvpc.request.v20160428.ModifyEipAddressAttributeRequest \
+    import ModifyEipAddressAttributeRequest
 
 
 class VPCEipAddressResource(ServiceResource):
@@ -25,21 +34,30 @@ class VPCEipAddressResource(ServiceResource):
         self.allocation_id = allocation_id
 
     def release(self):
-        self._client.release_eip_address(allocation_id=self.allocation_id)
+        request = ReleaseEipAddressRequest()
+        request.set_AllocationId(self.allocation_id)
+        _do_request(self._client, request, {})
 
     def associate(self, **params):
-        self._client.associate_eip_address(allocation_id=self.allocation_id, **params)
+        request = AssociateEipAddressRequest()
+        request.set_AllocationId(self.allocation_id)
+        _do_request(self._client, request, params)
 
     def unassociate(self, **params):
-        self._client.unassociate_eip_address(allocation_id=self.allocation_id, **params)
+        request = UnassociateEipAddressRequest()
+        request.set_AllocationId(self.allocation_id)
+        _do_request(self._client, request, params)
 
     def modify_attributes(self, **params):
-        self._client.modify_eip_address_attribute(allocation_id=self.allocation_id, **params)
+        request = ModifyEipAddressAttributeRequest()
+        request.set_AllocationId(self.allocation_id)
+        _do_request(self._client, request, params)
         self.refresh()
 
     def refresh(self):
-        response = self._client.describe_eip_addresses(allocation_id=self.allocation_id)
-        items = _get_key_in_response(response, 'EipAddresses.EipAddress')
+        request = DescribeEipAddressesRequest()
+        request.set_AllocationId(self.allocation_id)
+        items = _get_response(self._client, request, {}, 'EipAddresses.EipAddress')
         if not items:
             raise ClientException(msg=
                                   "Failed to find EIP Address data from DescribeEipAddresses "
@@ -49,22 +67,15 @@ class VPCEipAddressResource(ServiceResource):
 
 
 class VPCResource(ServiceResource):
-    """
-    VPC 资源类
-
-    :param _client:  Alibaba Cloud Client
-    :type _client: alibaba.client.AlibabaCloudClient
-
-    """
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'vpc', _client=_client)
         self.eip_addresses = _create_resource_collection(
-            VPCEipAddressResource, _client, _client.describe_eip_addresses,
+            VPCEipAddressResource, _client, DescribeEipAddressesRequest,
             'EipAddresses.EipAddress', 'AllocationId'
         )
 
     def allocate_eip_address(self, **params):
-        response = self._client.allocate_eip_address(**params)
-        allocate_id = _get_key_in_response(response, 'AllocationId')
+        request = AllocateEipAddressRequest()
+        allocate_id = _get_response(self._client, request, params, key='AllocationId')
         return VPCEipAddressResource(allocate_id, _client=self._client)

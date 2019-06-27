@@ -18,12 +18,12 @@ from alibabacloud.request import APIRequest
 
 class CSBClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None, custom_retry_policy=None,
-                 custom_endpoint_resolver=None):
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
         AlibabaCloudClient.__init__(self, client_config,
                                     credentials_provider=credentials_provider,
-                                    custom_retry_policy=custom_retry_policy,
-                                    custom_endpoint_resolver=custom_endpoint_resolver)
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'CSB'
         self.api_version = '2017-11-18'
         self.location_service_code = 'csb'
@@ -42,12 +42,12 @@ class CSBClient(AlibabaCloudClient):
 
 class crClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None, custom_retry_policy=None,
-                 custom_endpoint_resolver=None):
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
         AlibabaCloudClient.__init__(self, client_config,
                                     credentials_provider=credentials_provider,
-                                    custom_retry_policy=custom_retry_policy,
-                                    custom_endpoint_resolver=custom_endpoint_resolver)
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'cr'
         self.api_version = '2016-06-07'
         self.location_service_code = 'cr'
@@ -71,12 +71,12 @@ class crClient(AlibabaCloudClient):
 
 class OpenanalyticsClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None, custom_retry_policy=None,
-                 custom_endpoint_resolver=None):
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
         AlibabaCloudClient.__init__(self, client_config,
                                     credentials_provider=credentials_provider,
-                                    custom_retry_policy=custom_retry_policy,
-                                    custom_endpoint_resolver=custom_endpoint_resolver)
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'openanalytics'
         self.api_version = '2018-03-01'
         self.location_service_code = 'openanalytics'
