@@ -123,7 +123,6 @@ class ProfileCredentialsProvider(CredentialsProvider):
                 try:
                     config = load_config(full_path)
                 except ConfigNotFoundException as e:
-                    # Move on to the next potential config file name.
                     raise e
                 else:
                     if profile_name not in config:
