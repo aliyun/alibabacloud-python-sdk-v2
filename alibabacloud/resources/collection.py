@@ -64,7 +64,6 @@ class ResourceCollection:
             if self._page_size:
                 params['PageSize'] = self._page_size
             _params = _transfer_params(params)
-            print(11111111111, _params)
             total_count, page_size, page_num, items = self._page_handler(_params)
             if self._limit is not None:
                 limit = min(total_count, self._limit)
@@ -156,8 +155,8 @@ def _create_resource_collection(resource_class, client, request_class,
             _param_expand_to_json(params, plural_param_to_json, singular=False)
         if param_aliases:
             _handle_param_aliases(params, param_aliases)
-
-        response = request_class(**params)
+        _params = _transfer_params(params)
+        response = request_class(**_params)
 
         return (
             _get_key_in_response(response, key_to_total_count),

@@ -24,6 +24,7 @@ from alibabacloud.credentials.assume_role_caller import AssumeRoleCaller
 from alibabacloud.exceptions import ClientException, PartialCredentialsException, \
     ConnectionUsingEcsRamRoleException, ConfigNotFoundException
 from alibabacloud.utils.ini_helper import load_config
+from alibabacloud.vendored import requests
 
 
 class CredentialsProvider(object):
@@ -235,7 +236,6 @@ class InstanceProfileCredentialsProvider(RotatingCredentialsProvider):
 
     def rotate_credentials(self):
 
-        from alibabacloud.vendored import requests
         try:
             r = requests.get(url=self.URL_PATH + self.role_name)
         except requests.exceptions.ConnectionError:

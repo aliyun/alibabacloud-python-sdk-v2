@@ -89,7 +89,8 @@ def _assert_is_not_none(item, name):
 def _new_get_key_in_response(response, key):
     # response type dic
     json_response = json.dumps(response)
-    new_response = json.loads(json_response.decode('utf-8'), object_hook=_SearchableDict)
+    # new_response = json.loads(json_response.decode('utf-8'), object_hook=_SearchableDict)
+    new_response = json.loads(json_response, object_hook=_SearchableDict)
 
     result = jmespath.search(key, new_response)
     if result is None:

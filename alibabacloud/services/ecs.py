@@ -188,7 +188,7 @@ class ECSSystemEventResource(ServiceResource):
         ServiceResource.__init__(self, "ecs.event", _client=_client)
 
     def refresh(self):
-        response = self._client.describe_instance_history_events(event_id=self.event_id)
+        response = self._client.describe_instance_history_events(event_id=[self.event_id, ])
         items = _new_get_key_in_response(response, 'InstanceSystemEventSet.InstanceSystemEventType')
         if not items:
             raise ClientException(msg=
