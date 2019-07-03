@@ -169,7 +169,7 @@ class ClientConfig(object):
             try:
                 config = load_config(full_path)
             except ConfigNotFoundException:
-                raise ConfigNotFoundException
+                pass
             else:
                 if 'default' in config:
                     profile = config['default']
