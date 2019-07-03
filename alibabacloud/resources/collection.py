@@ -16,7 +16,7 @@ import json
 from alibabacloud.exceptions import ClientException
 from alibabacloud.vendored.six import iteritems
 from alibabacloud.utils.utils import _assert_is_list_but_not_string
-from alibabacloud.utils.utils import _get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _get_key_in_response, _transfer_params, _new_get_key_in_response
 
 
 class ResourceCollection:
@@ -159,10 +159,14 @@ def _create_resource_collection(resource_class, client, request_class,
         response = request_class(**_params)
 
         return (
-            _get_key_in_response(response, key_to_total_count),
-            _get_key_in_response(response, key_to_page_size),
-            _get_key_in_response(response, key_to_page_number),
-            _get_key_in_response(response, key_to_resource_items),
+            # _get_key_in_response(response, key_to_total_count),
+            # _get_key_in_response(response, key_to_page_size),
+            # _get_key_in_response(response, key_to_page_number),
+            # _get_key_in_response(response, key_to_resource_items),
+            _new_get_key_in_response(response, key_to_total_count),
+            _new_get_key_in_response(response, key_to_page_size),
+            _new_get_key_in_response(response, key_to_page_number),
+            _new_get_key_in_response(response, key_to_resource_items),
         )
 
     def resource_creator(resource_data_item):
