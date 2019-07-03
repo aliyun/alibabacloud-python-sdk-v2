@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from alibabacloud.handlers import RequestHandler
+from alibabacloud.exceptions import NoCredentialsException
 
 
 class CredentialsHandler(RequestHandler):
@@ -20,4 +21,6 @@ class CredentialsHandler(RequestHandler):
     def handle_request(self, context):
         if context.http_request.credentials is None:
             credentials = context.client.credentials_provider.provide()
+            if not credentials:
+                raise NoCredentialsException()
             context.http_request.credentials = credentials

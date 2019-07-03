@@ -48,12 +48,15 @@ class RetryHandler(RequestHandler):
         if should_retry & RetryCondition.NO_RETRY:
             context.retry_flag = False
         else:
+
             retry_policy_context.retryable = should_retry
             context.http_request.retries += 1
             context.retry_flag = True
             context.retry_backoff = context.client.retry_policy.compute_delay_before_next_retry(
                 retry_policy_context
             )
+            context.client.logger.debug("Retry needed. Request:%s Retries :%d",
+                                        api_request.action_name, context.http_request.retries)
 
     @staticmethod
     def _add_request_client_token(request):

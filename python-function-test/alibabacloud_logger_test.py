@@ -15,16 +15,17 @@
 import logging
 import os
 import tempfile
+
 import mock
-from base import SDKTestBase
-from alibabacloud.client import ClientConfig
+
 from alibabacloud.clients.ecs_20140526 import EcsClient
+from base import SDKTestBase
 
 
 class AlibabaLoggerTest(SDKTestBase):
 
     def test_no_retry(self):
-        client = EcsClient(self.client_config)
+        client = EcsClient(self.client_config, self.init_credentials_provider())
         tempdir = tempfile.mkdtemp()
 
         temp_file = os.path.join(tempdir, 'file_logger')
@@ -40,10 +41,8 @@ class AlibabaLoggerTest(SDKTestBase):
     @mock.patch('logging.getLogger')
     @mock.patch('logging.Formatter')
     def test_stream_logger(self, formatter, get_logger):
-        client = EcsClient(self.client_config)
+        client = EcsClient(self.client_config, self.init_credentials_provider())
         client.add_stream_log_handler(logger_name='foo.bar', log_level=40, format_string='foo')
         get_logger.assert_called_with('foo.bar')
         get_logger.return_value.setLevel.assert_called_with(logging.ERROR)
         formatter.assert_called_with('foo')
-
-

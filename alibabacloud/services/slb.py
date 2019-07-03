@@ -15,8 +15,7 @@
 from alibabacloud.resources.base import ServiceResource
 from alibabacloud.resources.collection import _create_resource_collection
 from alibabacloud.utils.utils import _do_request, _get_response, _assert_is_not_none
-import alibabacloud.errors as errors
-from aliyunsdkcore.acs_exception.exceptions import ClientException
+from alibabacloud.exceptions import ClientException
 
 from aliyunsdkslb.request.v20140515.DescribeLoadBalancersRequest import DescribeLoadBalancersRequest
 from aliyunsdkslb.request.v20140515.CreateLoadBalancerRequest import CreateLoadBalancerRequest
@@ -51,7 +50,7 @@ class LoadBalancerResource(ServiceResource):
         request.set_LoadBalancerId(self.load_balancer_id)
         items = _get_response(self._client, request, {}, 'LoadBalancers.LoadBalancer')
         if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
+            raise ClientException(msg=
                                   "Failed to find load balancer data from DescribeLoadBalancers "
                                   "response. "
                                   "LoadBalancerId = {0}".format(self.load_balancer_id))

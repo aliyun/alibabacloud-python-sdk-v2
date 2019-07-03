@@ -18,14 +18,18 @@ from alibabacloud.request import APIRequest
 
 class CSBClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider)
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config,
+                                    credentials_provider=credentials_provider,
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'CSB'
         self.api_version = '2017-11-18'
         self.location_service_code = 'csb'
         self.location_endpoint_type = 'openAPI'
 
-    def approve_order_list(self, data=None,):
+    def approve_order_list(self, data=None, ):
         api_request = APIRequest(
             'ApproveOrderList',
             'POST',
@@ -38,8 +42,12 @@ class CSBClient(AlibabaCloudClient):
 
 class crClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider)
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config,
+                                    credentials_provider=credentials_provider,
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'cr'
         self.api_version = '2016-06-07'
         self.location_service_code = 'cr'
@@ -63,14 +71,18 @@ class crClient(AlibabaCloudClient):
 
 class OpenanalyticsClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider)
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config,
+                                    credentials_provider=credentials_provider,
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'openanalytics'
         self.api_version = '2018-03-01'
         self.location_service_code = 'openanalytics'
         self.location_endpoint_type = 'openAPI'
 
-    def get_region_status(self, target_uid=None,):
+    def get_region_status(self, target_uid=None, ):
         api_request = APIRequest(
             'GetRegionStatus', 'GET', 'http', 'RPC', 'body')
         api_request._params = {"TargetUid": target_uid, }

@@ -15,14 +15,12 @@
 import time
 import json
 from tests.base import SDKTestBase
-from aliyunsdkcore.acs_exception.exceptions import ClientException
-from aliyunsdkcore.acs_exception.exceptions import ServerException
-from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
-from aliyunsdkcore.vendored.six import iteritems
+from alibabacloud.exceptions import ClientException, ParamValidationException
+from alibabacloud.exceptions import ServerException
+from alibabacloud.vendored.six import iteritems
 
 import alibabacloud
 from alibabacloud.services.ecs import ECSInstanceResource
-import alibabacloud.errors as errors
 from tests import epoch_time_to_timestamp, timestamp_to_epoch_time
 
 
@@ -65,10 +63,11 @@ class EcsResourceTest(SDKTestBase):
         return instance
 
     def status_verify(self, instance):
-        request = DescribeInstancesRequest()
-        request.set_InstanceIds(json.dumps([instance.instance_id]))
-        response = self.client.do_action_with_exception(request)
-        obj = json.loads(response.decode('utf-8'))['Instances']['Instance'][0]
+        client = alibabacloud.get_client(service_name='ecs', access_key_id=self.access_key_id,
+                                         access_key_secret=self.access_key_secret,
+                                         region_id=self.region_id)
+        response = client.describe_instances(instance_ids=json.dumps([instance.instance_id]))
+        obj = response['Instances']['Instance'][0]
         for key, value in iteritems(obj):
             attr_name = self._convert_camel_to_snake(key)
             self.assertTrue(hasattr(instance, attr_name), "instance has no " + attr_name)
@@ -76,8 +75,8 @@ class EcsResourceTest(SDKTestBase):
 
     def _find_instance(self, count, status, instance_type, to_delete=None):
         instances = []
-        for instance in self.ecs.instances.filter(Status=status, ImageId=self.image_id,
-                                                  InstanceType=instance_type):
+        for instance in self.ecs.instances.filter(status=status, image_id=self.image_id,
+                                                  instance_type=instance_type):
             if to_delete:
                 create_time = timestamp_to_epoch_time(instance.creation_time,
                                                       time_format="%Y-%m-%dT%H:%MZ")
@@ -101,8 +100,8 @@ class EcsResourceTest(SDKTestBase):
         instance = self._find_instance(1, "Stopped", "ecs.n2.small", to_delete=True)[0]
         instance.delete()
         instance = self.ecs.create_instance(
-            ImageId=self.image_id,
-            InstanceType="ecs.n2.small",
+            image_id=self.image_id,
+            instance_type="ecs.n2.small",
         )
         self._refresh_and_assert(instance, "Stopped", "ecs.n2.small")
         sg_id = instance.security_group_ids['SecurityGroupId'][0]
@@ -122,9 +121,9 @@ class EcsResourceTest(SDKTestBase):
 
     def test_empty_instances(self):
         ecs = self._get_ecs_resource()
-        self.assertEqual([], list(ecs.instances.filter(InstanceType='ABC')))
-        self.assertEqual([], list(ecs.instances.limit(10).filter(InstanceType="ABC")))
-        self.assertEqual([], list(ecs.instances.page_size(5).filter(InstanceType="ABC")))
+        self.assertEqual([], list(ecs.instances.filter(instance_type='ABC')))
+        self.assertEqual([], list(ecs.instances.limit(10).filter(instance_type="ABC")))
+        self.assertEqual([], list(ecs.instances.page_size(5).filter(instance_type="ABC")))
 
     def _create_a_lot_instances(self, num):
 
@@ -145,13 +144,13 @@ class EcsResourceTest(SDKTestBase):
         for instance_type in ['ecs.n2.large', 'ecs.n2.small']:
             for i in range(num):
                 instance = self._create_instance_helper(
-                    ImageId=self.image_id,
-                    InstanceType=instance_type,
+                    image_id=self.image_id,
+                    instance_type=instance_type,
                 )
                 instance_ids.append(instance)
                 instance = self._create_instance_helper(
-                    ImageId=self.image_id,
-                    InstanceType=instance_type,
+                    image_id=self.image_id,
+                    instance_type=instance_type,
                 )
                 instance_ids.append(instance)
                 instance.start()
@@ -178,20 +177,20 @@ class EcsResourceTest(SDKTestBase):
     def test_filter(self):
         ecs = self._get_ecs_resource()
         count = 0
-        for instance in ecs.instances.filter(InstanceType='ecs.n2.large'):
+        for instance in ecs.instances.filter(instance_type='ecs.n2.large'):
             self.assertEqual(instance.instance_type, 'ecs.n2.large')
             count += 1
         self.assertEqual(8, count)
 
         count = 0
-        for instance in ecs.instances.filter(Status=ECSInstanceResource.STATUS_RUNNING):
+        for instance in ecs.instances.filter(status=ECSInstanceResource.STATUS_RUNNING):
             self.assertEqual(instance.status, instance.STATUS_RUNNING)
             count += 1
         self.assertEqual(8, count)
 
         count = 0
-        for instance in ecs.instances.filter(InstanceType='ecs.n2.large',
-                                             Status=ECSInstanceResource.STATUS_RUNNING):
+        for instance in ecs.instances.filter(instance_type='ecs.n2.large',
+                                             status=ECSInstanceResource.STATUS_RUNNING):
             self.assertEqual(instance.instance_type, 'ecs.n2.large')
             self.assertEqual(instance.status, instance.STATUS_RUNNING)
             count += 1
@@ -199,7 +198,7 @@ class EcsResourceTest(SDKTestBase):
 
         all_ids = self._get_ids(ecs.instances.all())
         instance_id = all_ids[-1]
-        instances = list(ecs.instances.filter(instance_id=instance_id))
+        instances = list(ecs.instances.filter(instance_ids=[instance_id,]))
         self.assertEqual(1, len(instances))
         self.assertEqual(instance_id, instances[0].instance_id)
 
@@ -237,7 +236,7 @@ class EcsResourceTest(SDKTestBase):
                 pass
             assert False
         except ServerException as e:
-            self.assertEqual("InvalidParameter", e.get_error_code())
+            self.assertEqual("InvalidParameter", e.error_code)
 
         all_ids = self._get_ids(ecs.instances.all())
         instances = list(ecs.instances.page_size(100))
@@ -259,14 +258,14 @@ class EcsResourceTest(SDKTestBase):
         self.assertEqual(16, len(list(ecs.instances.page_size(28).page_size(100))))
 
         count = 0
-        for inst in ecs.instances.page_size(5).limit(7).filter(InstanceType='ecs.n2.small'):
+        for inst in ecs.instances.page_size(5).limit(7).filter(instance_type='ecs.n2.small'):
             count += 1
             self.assertEqual('ecs.n2.small', inst.instance_type)
         self.assertEqual(7, count)
 
         count = 0
-        for inst in ecs.instances.filter(InstanceType='ecs.n2.large').filter(
-                Status=ECSInstanceResource.STATUS_STOPPED):
+        for inst in ecs.instances.filter(instance_type='ecs.n2.large').filter(
+                status=ECSInstanceResource.STATUS_STOPPED):
             count += 1
             self.assertEqual('ecs.n2.large', inst.instance_type)
             self.assertEqual(ECSInstanceResource.STATUS_STOPPED, inst.status)
@@ -275,9 +274,9 @@ class EcsResourceTest(SDKTestBase):
     def test_next(self):
 
         def _get_iterator():
-            return self.ecs.instances.filter(InstanceType='ecs.n2.large',
-                                             ImageId=self.image_id,
-                                             Status="Running")
+            return self.ecs.instances.filter(instance_type='ecs.n2.large',
+                                             image_id=self.image_id,
+                                             status="Running")
 
         iterator = _get_iterator()
         for i in range(4):
@@ -302,20 +301,21 @@ class EcsResourceTest(SDKTestBase):
     def test_jmespath_search(self):
         instance = self._find_instance(1, "Running", "ecs.n2.large")[0]
         ip_address = instance.inner_ip_address['IpAddress'][0]
-        self.assertEqual(ip_address, instance.inner_ip_address.search('IpAddress[0]'))
+        # self.assertEqual(ip_address, instance.inner_ip_address.search('IpAddress[0]'))
+        self.assertEqual(ip_address, instance.inner_ip_address.get('IpAddress')[0])
 
     def test_modify_attributes(self):
         import random
         seed = random.randint(1000, 9999)
         name = "RandomName" + str(seed)
         instance = self._find_instance(1, "Running", "ecs.n2.small")[0]
-        instance.modify_attributes(InstanceName=name)
+        instance.modify_attributes(instance_name=name)
         self.assertEqual(name, instance.instance_name)
 
     def test_instance_filter_params_alias(self):
         instances = list(self.ecs.instances.limit(2))
         instance_ids = [x.instance_id for x in instances]
-        inner_ips = [x.inner_ip_address.search("IpAddress[0]") for x in instances]
+        inner_ips = [x.inner_ip_address.get("IpAddress[0]") for x in instances]
 
         def _iterator_assert(iterator, expected_count, expected_instance_ids):
             items = list(iterator)
@@ -323,7 +323,7 @@ class EcsResourceTest(SDKTestBase):
             self.assertEqual(set(expected_instance_ids), set([x.instance_id for x in items]))
 
         _iterator_assert(
-            self.ecs.instances.filter(instance_id=instance_ids[0]),
+            self.ecs.instances.filter(instance_ids=[instance_ids[0],]),
             1, instance_ids[:1])
         _iterator_assert(
             self.ecs.instances.filter(instance_ids=instance_ids),
@@ -353,25 +353,30 @@ class EcsResourceTest(SDKTestBase):
                 func()
                 assert False
             except ClientException as e:
-                self.assertEqual("SDK.InvalidParameter", e.get_error_code())
-                self.assertEqual(error_message, e.get_error_msg())
+                self.assertEqual(error_message, e.error_message)
 
         def bad_filter_param():
             for i in ecs.instances.filter(InvalidParameter=1):
                 pass
 
-        test_func(bad_filter_param,
-                  "DescribeInstancesRequest has no parameter named InvalidParameter.")
+        def test_type_error(func, error_message):
+            try:
+                func()
+            except TypeError as e:
+                self.assertEqual(e.args[0], error_message)
+
+        test_type_error(bad_filter_param,
+                  "describe_instances() got an unexpected keyword argument 'InvalidParameter'")
         test_func(lambda: ecs.instances.limit(0),
                   "count must be a positive integer.")
         test_func(lambda: ecs.instances.page_size(0),
                   "count must be a positive integer.")
         test_func(lambda: ecs.instances.page_size("blah"),
                   "count must be a positive integer.")
-        test_func(lambda: ecs.run_instances(ImageId="blah", InvalidParameter=1),
-                  "RunInstancesRequest has no parameter named InvalidParameter.")
-        test_func(lambda: ecs.create_instance(InvalidParameter=1),
-                  "CreateInstanceRequest has no parameter named InvalidParameter.")
+        test_type_error(lambda: ecs.run_instances(image_id="blah", InvalidParameter=1),
+                  "run_instances() got an unexpected keyword argument 'InvalidParameter'")
+        test_type_error(lambda: ecs.create_instance(InvalidParameter=1),
+                  "create_instance() got an unexpected keyword argument 'InvalidParameter'")
 
     def test_resource_refresh_failed(self):
         res = self._get_resource("ecs.instance", "BadId")
@@ -379,20 +384,17 @@ class EcsResourceTest(SDKTestBase):
             res.refresh()
             assert False
         except ClientException as e:
-            self.assertEqual(errors.ERROR_INVALID_SERVER_RESPONSE, e.get_error_code())
             self.assertEqual("Failed to find instance data from DescribeInstances response. "
                              "InstanceId = BadId",
-                             e.get_error_msg())
+                             e.error_message)
 
         res = self._get_resource("ecs.system_event", "BadId")
         try:
             res.refresh()
             assert False
-        except ClientException as e:
-            self.assertEqual(errors.ERROR_INVALID_SERVER_RESPONSE, e.get_error_code())
-            self.assertEqual("Failed to find event data from "
-                             "DescribeInstanceHistoryEventsRequest response. EventId = BadId",
-                             e.get_error_msg())
+        except ParamValidationException as e:
+            self.assertEqual("Parameter validation failed: Invalid type for parameter EventId, value: BadId, type: <class 'str'>, valid types: <class 'list'>",
+                             e.error_message)
 
     def test_events(self):
         # create simulated events
@@ -405,9 +407,9 @@ class EcsResourceTest(SDKTestBase):
         for event_type in ['SystemMaintenance.Reboot', 'SystemFailure.Reboot',
                            'InstanceFailure.Reboot']:
             time_str = epoch_time_to_timestamp(time.time() + 2)
-            events = self.ecs.create_simulated_system_events(InstanceIds=instance_ids,
-                                                             EventType=event_type,
-                                                             NotBefore=time_str)
+            events = self.ecs.create_simulated_system_events(instance_id=instance_ids,
+                                                             event_type=event_type,
+                                                             not_before=time_str)
             created_event_ids.extend([x.event_id for x in events])
         print("wait 60 seconds to let events to be executed")
         time.sleep(60)
@@ -416,16 +418,16 @@ class EcsResourceTest(SDKTestBase):
         end_time_str = epoch_time_to_timestamp(end_time)
         # test get all events
         event_ids = []
-        for event in self.ecs.system_events.all().filter(NotBeforeStart=start_time_str,
-                                                         NotBeforeEnd=end_time_str):
+        for event in self.ecs.system_events.all().filter(not_before_start=start_time_str,
+                                                         not_before_end=end_time_str):
             if timestamp_to_epoch_time(event.not_before) > start_time:
                 event_ids.append(event.event_id)
         self.assertEqual(set(created_event_ids), set(event_ids))
 
         # test page_size
         event_ids = []
-        for event in self.ecs.system_events.page_size(100).filter(NotBeforeStart=start_time_str,
-                                                                  NotBeforeEnd=end_time_str):
+        for event in self.ecs.system_events.page_size(100).filter(not_before_start=start_time_str,
+                                                                  not_before_end=end_time_str):
             if timestamp_to_epoch_time(event.not_before) > start_time:
                 event_ids.append(event.event_id)
         self.assertEqual(set(created_event_ids), set(event_ids))
@@ -436,9 +438,9 @@ class EcsResourceTest(SDKTestBase):
         # test get events by instance id
         instance_id = instance_ids[0]
         events = []
-        for event in self.ecs.system_events.filter(InstanceId=instance_id,
-                                                   NotBeforeStart=start_time_str,
-                                                   NotBeforeEnd=end_time_str):
+        for event in self.ecs.system_events.filter(instance_id=instance_id,
+                                                   not_before_start=start_time_str,
+                                                   not_before_end=end_time_str):
             events.append(event)
         self.assertEqual(3, len(events))
         for event in events:
@@ -446,19 +448,20 @@ class EcsResourceTest(SDKTestBase):
 
         # test get events by region id
         event_ids = []
-        for event in self.ecs.system_events.filter(RegionId=self.region_id,
-                                                   NotBeforeStart=start_time_str,
-                                                   NotBeforeEnd=end_time_str):
+        for event in self.ecs.system_events.filter(not_before_start=start_time_str,
+                                                   not_before_end=end_time_str):
             event_ids.append(event.event_id)
         self.assertEqual(set(created_event_ids), set(event_ids))
 
-        self.assertEqual(0, len(list(self.ecs.system_events.filter(RegionId="cn-shanghai",
-                                                                   NotBeforeStart=start_time_str,
-                                                                   NotBeforeEnd=end_time_str))))
+        # FIXME system_events will amend the params
+        self.assertEqual(0, len(list(self.ecs.system_events.filter(instance_id="123",
+                                                                   not_before_start=start_time_str,
+                                                                   not_before_end=end_time_str))))
 
         # test get event by id
         event_id = created_event_ids[0]
-        event = alibabacloud.get_resource("ecs.system_event", event_id,
+        # TODO event_id is list
+        event = alibabacloud.get_resource("ecs.system_event", [event_id, ],
                                           access_key_id=self.access_key_id,
                                           access_key_secret=self.access_key_secret,
                                           region_id=self.region_id)
@@ -481,16 +484,16 @@ class EcsResourceTest(SDKTestBase):
         list_of_status = [event.EventCycleStatus.AVOIDED,
                           event.EventCycleStatus.EXECUTED]
         for event in self.ecs.system_events.filter(list_of_event_cycle_status=list_of_status,
-                                                   NotBeforeStart=start_time_str,
-                                                   NotBeforeEnd=end_time_str):
+                                                   not_before_start=start_time_str,
+                                                   not_before_end=end_time_str):
             count += 1
             self.assertEqual(event.EventCycleStatus.EXECUTED, event.get_event_cycle_status())
         self.assertEqual(12, count)
 
         list_of_status = [event.EventCycleStatus.AVOIDED]
         events = list(self.ecs.system_events.filter(list_of_event_cycle_status=list_of_status,
-                                                    NotBeforeStart=start_time_str,
-                                                    NotBeforeEnd=end_time_str))
+                                                    not_before_start=start_time_str,
+                                                    not_before_end=end_time_str))
         self.assertEqual(0, len(events))
 
         # # test list_of_event_type
@@ -498,15 +501,15 @@ class EcsResourceTest(SDKTestBase):
         list_of_type = [event.EventType.SYSTEM_MAINTENANCE_REBOOT,
                         event.EventType.SYSTEM_FAILURE_REBOOT]
         for event in self.ecs.system_events.filter(list_of_event_type=list_of_type,
-                                                   NotBeforeStart=start_time_str,
-                                                   NotBeforeEnd=end_time_str):
+                                                   not_before_start=start_time_str,
+                                                   not_before_end=end_time_str):
             count += 1
             self.assertIn(event.get_event_type(), list_of_type)
         self.assertEqual(8, count)
 
         # test instance full status
         count = 0
-        statuses = list(self.ecs.instance_full_statuses.filter(InstanceIds=instance_ids))
+        statuses = list(self.ecs.instance_full_statuses.filter(instance_id=instance_ids))
         self.assertEqual(4, len(statuses))
         status = statuses[0]
         self.assertEqual(instance_ids[0], status.instance_id)

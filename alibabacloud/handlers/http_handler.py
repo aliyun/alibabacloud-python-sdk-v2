@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import alibabacloud
 from alibabacloud.exceptions import HttpErrorException
 from alibabacloud.handlers import RequestHandler
+from alibabacloud.request import HTTPResponse
 from alibabacloud.vendored.requests import Request, Session
 from alibabacloud.vendored.requests.packages import urllib3
-from alibabacloud.request import HTTPResponse
 
 
 class HttpHandler(RequestHandler):
@@ -49,10 +50,11 @@ class HttpHandler(RequestHandler):
             except IOError as e:
                 context.exception = HttpErrorException(http_error=str(e))
                 context.http_response = HTTPResponse(http_request.url, None, {}, None)
-                context.client.logger.error("HttpError occurred. Host:%s HttpException:%s",
-                                            context.endpoint, str(e))
+                context.client.logger.error(
+                    "HttpError occurred. Host:%s SDK-Version:%s HttpException:%s",
+                    context.endpoint, alibabacloud.__version__, str(e))
             else:
-                if context.config.enable_http_debug is not None:
+                if context.config.enable_http_debug:
                     # http debug information
                     self._do_http_debug(context, response)
                 context.http_response = response
@@ -69,7 +71,7 @@ class HttpHandler(RequestHandler):
         logger = context.client.logger
         http_request = context.http_request
         request_base = '\n> %s %s HTTP/1.1' % (http_request.method.upper(), http_request.url)
-        request_base += '\n> Host : %s' % http_request.endpoint
+        request_base += '\n> Host : %s' % context.endpoint
         logger.debug(request_base + self._prepare_http_debug(http_request, '>'))
 
         # logger the response

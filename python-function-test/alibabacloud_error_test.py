@@ -11,11 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
 
 from mock import patch
 
-from alibabacloud.client import ClientConfig, AlibabaCloudClient
+from alibabacloud.client import AlibabaCloudClient
+from alibabacloud.clients.ecs_20140526 import EcsClient
 from alibabacloud.exceptions import ServerException, InvalidRegionIDException, HttpErrorException
 from alibabacloud.handlers.api_protocol_handler import APIProtocolHandler
 from alibabacloud.handlers.credentials_handler import CredentialsHandler
@@ -29,7 +29,6 @@ from alibabacloud.request import APIRequest
 from alibabacloud.vendored import six
 from alibabacloud.vendored.requests import Response
 from base import SDKTestBase
-from alibabacloud.clients.ecs_20140526 import EcsClient
 
 http_handler = HttpHandler()
 DEFAULT_HANDLERS = [
@@ -49,7 +48,7 @@ class ErrorTest(SDKTestBase):
     def test_server_unreachable(self):
         client_config = self.client_config
         client_config.region_id = 'cn-abc'
-        client = AlibabaCloudClient(client_config, None)
+        client = AlibabaCloudClient(client_config, self.init_credentials_provider())
         client.product_code = "Ecs"
         client.api_version = "2014-05-26"
         client.location_service_code = 'ecs'
@@ -63,10 +62,9 @@ class ErrorTest(SDKTestBase):
                 "No such region 'cn-abc'. Please check your region ID."))
 
     def test_server_error_normal(self):
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
         try:
             ecs_client.delete_instance(instance_id="blah")
-
             assert False
         except ServerException as e:
             self.assertEqual("InvalidInstanceId.NotFound", e.error_code)
@@ -75,7 +73,7 @@ class ErrorTest(SDKTestBase):
 
     def test_server_timeout(self):
         self.client_config.read_timeout = 0.001
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
 
         try:
             ecs_client.create_instance(image_id="coreos_1745_7_0_64_30G_alibase_20180705.vhd",
@@ -96,7 +94,8 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"bad-json"
 
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
+
         ecs_client.handlers = DEFAULT_HANDLERS
 
         with patch.object(http_handler, "handle_request", wraps=_handle_request):
@@ -122,7 +121,8 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"""{"key" : "this is a valid json string"}"""
 
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
+
         ecs_client.handlers = DEFAULT_HANDLERS
         with patch.object(http_handler, "handle_request", wraps=_handle_request):
             try:
@@ -151,7 +151,8 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"{\"Message\": \"Some message\"}"
 
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
+
         ecs_client.handlers = DEFAULT_HANDLERS
 
         with patch.object(http_handler, "handle_request", wraps=_handle_request):
@@ -177,7 +178,8 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"{\"Message\": \"Some message\"}"
 
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
+
         ecs_client.handlers = DEFAULT_HANDLERS
         with patch.object(http_handler, "handle_request", wraps=_handle_request):
             try:
@@ -199,7 +201,8 @@ class ErrorTest(SDKTestBase):
             context.http_response.headers = {}
             context.http_response._content = b"{\"Code\": \"YouMessedSomethingUp\"}"
 
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
+
         ecs_client.handlers = DEFAULT_HANDLERS
 
         with patch.object(http_handler, "handle_request", wraps=_handle_request):

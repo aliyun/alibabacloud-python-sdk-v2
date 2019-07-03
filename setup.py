@@ -15,14 +15,10 @@
 
 from setuptools import setup, find_packages
 
-PACKAGE = "alibaba-cloud-python-sdk-v2"
-VERSION = "0.4.2"
+PACKAGE = "alibaba-cloud-python-sdk-v3"
+VERSION = __import__(PACKAGE).__version__
 
 requires = [
-    'aliyun-python-sdk-core>=2.11.4',
-    'aliyun-python-sdk-ecs>=4.16.3',
-    'aliyun-python-sdk-vpc',
-    'aliyun-python-sdk-slb',
     'jmespath>=0.9.3,<1.0.0',
     'mock>=2.0.0',
 ]

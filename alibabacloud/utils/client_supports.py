@@ -17,7 +17,9 @@ import inspect
 import os
 import time
 
-CLIENTS_DATA_PATH = os.path.join('alibabacloud', 'clients')
+
+ALIBABACLOUD_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CLIENTS_DATA_PATH = os.path.join(ALIBABACLOUD_ROOT, 'clients')
 
 
 def _is_subclass_of_alibabacloudclient(object):
@@ -42,6 +44,7 @@ def _list_available_client_services():
     # find py file ,get name ,split
     services = dict()
     for root, _, files in os.walk(CLIENTS_DATA_PATH):
+
         if root.endswith('clients'):
             if '__init__.py' in files:
                 files.remove('__init__.py')

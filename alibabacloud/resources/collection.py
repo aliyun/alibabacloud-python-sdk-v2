@@ -13,12 +13,11 @@
 # limitations under the License.
 import copy
 import json
-from aliyunsdkcore.acs_exception.exceptions import ClientException
-from aliyunsdkcore.vendored.six import iteritems
-from alibabacloud.errors import ERROR_INVALID_PARAMETER
+from alibabacloud.exceptions import ClientException
+from alibabacloud.vendored.six import iteritems
 from alibabacloud.utils.utils import _assert_is_list_but_not_string
 from alibabacloud.utils.utils import _get_key_in_response
-import alibabacloud.utils.utils as utils
+import alibabacloud.utils as utils
 
 
 class ResourceCollection:
@@ -97,7 +96,7 @@ class ResourceCollection:
 
     def _check_count(self, count):
         if not isinstance(count, int) or count <= 0:
-            raise ClientException(ERROR_INVALID_PARAMETER, "count must be a positive integer.")
+            raise ClientException(msg="count must be a positive integer.")
 
     def limit(self, count):
         self._check_count(count)
@@ -125,7 +124,7 @@ def _param_expand_to_json(params, rules, singular=True):
             del params[key]
 
             if value in params:
-                raise ClientException(ERROR_INVALID_PARAMETER,
+                raise ClientException(msg=
                                       "Param {0} is already set.".format(value))
             params[value] = json.dumps(to_add)
 
@@ -134,7 +133,7 @@ def _handle_param_aliases(params, aliases):
     for key, value in iteritems(aliases):
         if key in params:
             if value in params:
-                raise ClientException(ERROR_INVALID_PARAMETER,
+                raise ClientException(msg=
                                       "Param {0} is already set.".format(value))
             params[value] = params[key]
             del params[key]

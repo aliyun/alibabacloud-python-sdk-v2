@@ -15,7 +15,7 @@
 import json
 import time
 
-from aliyunsdkcore.acs_exception.exceptions import ClientException
+from alibabacloud.exceptions import ClientException
 
 from aliyunsdkecs.request.v20140526.CreateInstanceRequest import CreateInstanceRequest
 from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
@@ -64,7 +64,6 @@ from alibabacloud.resources.base import ServiceResource
 from alibabacloud.resources.collection import _create_resource_collection
 from alibabacloud.resources.collection import _create_default_resource_collection
 from alibabacloud.utils.utils import _do_request, _get_response, _assert_is_not_none
-import alibabacloud.errors as errors
 
 
 class ECSInstanceResource(ServiceResource):
@@ -107,7 +106,7 @@ class ECSInstanceResource(ServiceResource):
         request.set_InstanceIds(json.dumps([self.instance_id]))
         items = _get_response(self._client, request, {}, 'Instances.Instance')
         if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
+            raise ClientException(msg=
                                   "Failed to find instance data from DescribeInstances response. "
                                   "InstanceId = {0}".format(self.instance_id))
         self._assign_attributes(items[0])
@@ -230,7 +229,7 @@ class ECSSystemEventResource(ServiceResource):
         items = _get_response(self._client, request, {},
                               'InstanceSystemEventSet.InstanceSystemEventType')
         if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
+            raise ClientException(msg=
                                   "Failed to find event data from "
                                   "DescribeInstanceHistoryEventsRequest response. "
                                   "EventId = {0}".format(self.event_id))
@@ -293,7 +292,7 @@ class ECSDiskResource(ServiceResource):
         request.set_DiskIds(json.dumps([self.disk_id]))
         items = _get_response(self._client, request, {}, 'Disks.Disk')
         if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
+            raise ClientException(msg=
                                   "Failed to find disk data from DescribeDiks "
                                   "response. "
                                   "DiskId = {0}".format(self.disk_id))
@@ -338,7 +337,7 @@ class ECSImageResource(ServiceResource):
         request.set_ImageId(self.image_id)
         items = _get_response(self._client, request, {}, 'Images.Image')
         if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
+            raise ClientException(msg=
                                   "Failed to find image data from DescribeImages "
                                   "response. "
                                   "ImageId = {0}".format(self.image_id))

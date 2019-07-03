@@ -15,10 +15,8 @@
 import json
 import os.path
 from tests.base import SDKTestBase
-import alibabacloud
-from aliyunsdkcore.acs_exception.exceptions import ClientException
 from mock import patch
-import alibabacloud.utils as utils
+import alibabacloud.utils.utils as utils
 
 
 class MockResponseTest(SDKTestBase):

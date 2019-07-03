@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aliyunsdkcore.vendored.six import iteritems
+from alibabacloud.vendored.six import iteritems
 from alibabacloud.utils.utils import _convert_name_from_camel_case_to_snake_case
 
 

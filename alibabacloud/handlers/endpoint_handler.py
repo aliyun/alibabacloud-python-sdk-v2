@@ -29,3 +29,5 @@ class EndpointHandler(RequestHandler):
                 context.client.location_endpoint_type,
             )
             context.endpoint = context.client.endpoint_resolver.resolve(resolve_request)
+
+        context.client.logger.debug('Endpoint Resolved. Endpoint:%s', context.endpoint)
