@@ -8,5 +8,4 @@
     :maxdepth: 3
 
     01_installations
-    02_configure
-    03_usage
+    02_usage
