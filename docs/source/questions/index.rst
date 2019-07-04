@@ -1,5 +1,5 @@
 FAQ
-==========
+**************
 
 这一部分是处理一些共性问题，suchas pyinstaller 
 
@@ -9,5 +9,4 @@ FAQ
     :numbered: 2
 
     01_pyinstaller
-    02_test
     

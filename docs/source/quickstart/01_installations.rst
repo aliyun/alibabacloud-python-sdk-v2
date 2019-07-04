@@ -1,7 +1,7 @@
 安装
-------------
+============
 
-**Alibaba Cloud Python SDK** 目前暂没有发布pypi版本，只能通过源代码安装：
+**Alibaba Cloud Python SDK** 目前暂没有发布 **pypi** 版本，只能通过源代码安装：
 
 ::
 

@@ -1,36 +1,44 @@
 .. _handle-endpoint:
 
-管理endpoint
-============
+管理 Endpoint
+===============
 
-Endpoint是您使用Alibaba Cloud 访问某个产品或者服务的访问域名。
-``Alibaba Cloud Python SDK``\ 内部封装Endpoint寻址流程，获取Endpoint。您也可以通过直接指定endpoint的方式省略寻址。
+Endpoint 是您使用 ``Alibaba Cloud SDK`` 访问某个产品或者服务的访问域名。
+``Alibaba Cloud Python SDK``\ 内部封装 ``Endpoint`` 寻址流程，获取 ``Endpoint`` 。您也可以通过直接指定 ``Endpoint`` 的方式省略寻址。
 
-.. _header-n3:
 
-默认endpoint寻址流程
+默认Endpoint寻址流程
 --------------------
 
 .. autoclass:: alibabacloud.endpoint.default_endpoint_resolver.DefaultEndpointResolver
 
-.. _header-n5:
 
-用户自定义endpoint寻址
+用户自定义Endpoint寻址
 ----------------------
 
-您的endpoint解析需要实现一个resolve的接口，返回一个endpoint
+您的 ``Endpoint`` 解析需要实现一个 ``resolve`` 的接口，返回一个可用的 ``endpoint``
 
-.. _header-n8:
+例如，您想自定义一个名为 ``CustomEndpointResolve`` 的 ``Endpoint`` 管理工具 ，可以参照以下代码：
 
-使用用户自定义的重试策略
+.. code:: python
+
+   class CustomEndpointResolve(object):
+       def __init__(self):
+           pass
+
+       def resolve(self, retry_policy_context):
+   	  # 返回一个可用的endpoint
+           pass
+
+
+使用用户自定义的寻址
 ------------------------
 
-例如，您定一个CustomEndpointResolve的重试策略，您可以参照以下代码：
+例如， 您自定义了一个名为 ``CustomEndpointResolve`` 的  ``Endpoint`` 管理工具 ，您可以使用以下方式引用它，替代我们默认的 ``Endpoint`` 寻址。
 
 .. code:: python
 
    from alibabacloud import get_client, ClientConfig
-
 
    class CustomEndpointResolve(object):
        def __init__(self):

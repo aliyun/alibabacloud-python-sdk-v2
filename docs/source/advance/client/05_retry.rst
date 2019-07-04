@@ -1,7 +1,5 @@
-.. _header-n0:
-
 重试
-====
+---------
 
 ``Alibaba Cloud Python SDK`` 对当前仅对 ECS 产品的API
 设置了默认重试。但是您可以在配置当中关闭默认重试或者定制自己的重试策略。
@@ -22,7 +20,6 @@
                            access_key_secret=access_key_secret,
                            region_id='cn-hangzhou',
                            config=client_config)
-   ecs_client.add_stream_log_handler()
    response = ecs_client.describe_regions()
    print(response)
 

@@ -1,5 +1,3 @@
-.. _header-n0:
-
 PyInstaller 打包出现【No such file or directory】
 =================================================
 
@@ -8,7 +6,6 @@ PyInstaller 打包出现【No such file or directory】
 构造的应用，都会出现\ ``FileNotFoundError：No such file or directory：'...\retry_config.json'``
 这样的问题。
 
-.. _header-n3:
 
 原因
 ---------------
@@ -19,12 +16,10 @@ PyInstaller 打包出现【No such file or directory】
 搜索的相对路径是针对自己的打包文件bundle文件，因此\ ``PyInstaller`` 打包
 ``Alibaba Cloud Python SDK`` 构造的应用会出现以上错误。
 
-.. _header-n6:
 
 解决方案：
 ---------------
 
-.. _header-n7:
 
 1，使用py2exe 或者 freeze 来代替PyInstaller
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +33,6 @@ PyInstaller 打包出现【No such file or directory】
 -  `PyInstaller <https://www.pyinstaller.org/>`__
    ，和py2exe类似，它能够在Linux及Unix上使用，并且能够生成自安装的二进制文件
 
-.. _header-n16:
 
 2，PyInstaller 提供的方法
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,7 +1,5 @@
-.. _header-n0:
-
 超时
-====
+-----
 
 ``Alibaba Cloud Python SDK`` 超时分为连接超时（ ``connection_timeout``
 ）和读超时（ ``read_timeout`` ）。
@@ -24,7 +22,6 @@
                            access_key_secret=access_key_secret,
                            region_id='cn-hangzhou',
                            config=client_config)
-   ecs_client.add_stream_log_handler()
    response = ecs_client.describe_regions()
    print(response)
 

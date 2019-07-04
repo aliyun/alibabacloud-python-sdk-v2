@@ -1,7 +1,7 @@
 .. _credentials-config:
 
 使用Alibaba Cloud Python SDK 凭证
-=================================
+====================================
 
 ``Alibaba Cloud Python SDK``
 有两种类型的凭证数据：凭证提供者（\ ``credentials_provider``\ ）和凭证（\ ``credentials``
