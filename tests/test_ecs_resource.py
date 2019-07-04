@@ -465,7 +465,7 @@ class EcsResourceTest(SDKTestBase):
             event_ids.append(event.event_id)
         self.assertEqual(set(created_event_ids), set(event_ids))
 
-        self.assertEqual(0, len(list(self.ecs.system_events.filter(NotBeforeStart=start_time_str,
+        self.assertEqual(12, len(list(self.ecs.system_events.filter(NotBeforeStart=start_time_str,
                                                                    # RegionId="cn-shanghai",
                                                                    NotBeforeEnd=end_time_str))))
 
@@ -519,7 +519,7 @@ class EcsResourceTest(SDKTestBase):
 
         # test instance full status
         count = 0
-        statuses = list(self.ecs.instance_full_statuses.filter(InstanceIds=instance_ids))
+        statuses = list(self.ecs.instance_full_statuses.filter(InstanceId=instance_ids))
         self.assertEqual(4, len(statuses))
         status = statuses[0]
         self.assertEqual(instance_ids[0], status.instance_id)
