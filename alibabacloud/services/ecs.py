@@ -352,9 +352,9 @@ class ECSResource(ServiceResource):
             ECSSystemEventResource, _client, _client.describe_instance_history_events,
             'InstanceSystemEventSet.InstanceSystemEventType', 'EventId',
             param_aliases={
-                'list_of_event_id': 'EventIds',
-                'list_of_event_cycle_status': 'InstanceEventCycleStatuss',
-                'list_of_event_type': 'InstanceEventTypes'
+                'list_of_event_id': 'EventId',
+                'list_of_event_cycle_status': 'InstanceEventCycleStatus',
+                'list_of_event_type': 'InstanceEventType'
             }
         )
 
@@ -367,7 +367,7 @@ class ECSResource(ServiceResource):
             ECSDiskResource, _client, _client.describe_disks,
             'Disks.Disk', 'DiskId',
             plural_param_to_json={
-                'list_of_disk_id': 'DiskIds',
+                'list_of_disk_id': 'DiskId',
             }
         )
 
