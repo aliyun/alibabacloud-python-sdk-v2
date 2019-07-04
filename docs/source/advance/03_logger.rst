@@ -1,5 +1,3 @@
-.. _header-n0:
-
 使用Alibaba Cloud Python SDK 日志
 =================================
 

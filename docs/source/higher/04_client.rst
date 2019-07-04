@@ -15,19 +15,17 @@
 
 -  默认配置
 
-.. _header-n12:
 
 创建客户端时显式传递参数
 -------------------------------
 
-.. _header-n13:
 
 方式一：get_client接口显式传递
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``get_client`` 接口递仅仅支持 ``region_id`` 以及 ``endpoint``
 显式传递。此处指定的 ``region_id`` 和 ``endpoint``
-优先级高于任何其他的链式Config指定。
+优先级高于任何其他的链式 ``Config`` 指定。
 
 **endpoint:**
 Endpoint是阿里云服务的API服务端地址。针对不同的地域，单个服务可能有不同的Endpoint。例如，云服务器（ECS）在华东1（杭州）地域的Endpoint是
@@ -48,12 +46,11 @@ Client时指定的地域ID（Region ID）和产品ID来找到Endpoint。
    ret = response.get('Tags')
    print(ret)
 
-.. _header-n17:
 
 方式二：get_client接口通过config传递
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``get_client`` 接口 支持用户显式传递ClientConfig对象。
+``get_client`` 接口 支持用户显式传递 ``ClientConfig`` 对象。
 
 .. code:: python
 
@@ -68,15 +65,16 @@ Client时指定的地域ID（Region ID）和产品ID来找到Endpoint。
    ret = response.get('Tags')
    print(ret)
 
-.. _header-n20:
 
 环境变量配置
 -------------------------------
 
-``Alibaba Cloud Python SDK`` 支持从环境变量读取部分config相关配置
-HTTPS\ *PROXY：HTTPS代理 HTTP*\ PROXY：HTTP代理
+``Alibaba Cloud Python SDK`` 支持从环境变量读取部分 ``config`` 相关配置
 
-.. _header-n22:
+**HTTPS_PROXY**：HTTPS代理
+
+**HTTP_PROXY**：HTTP代理
+
 
 文件
 -------------------------------
@@ -86,11 +84,11 @@ HTTPS\ *PROXY：HTTPS代理 HTTP*\ PROXY：HTTP代理
 
 以下是\ ``~/.alibabacloud/config``\ 支持的所有的配置变量：
 
--  region\ *id：要使用的默认地域，参考[地域与可用区](https://help.aliyun.com/document*\ detail/40654.html)
+-  region_id：要使用的默认地域，参考 `地域与可用区 <https://help.aliyun.com/document_detail/40654.html>`__
 
 -  endpoint：默认的endpoint,即服务请求地址
 
--  max\ *retry*\ times：单个请求的最大重试次数
+-  max_retry_times：单个请求的最大重试次数
 
 -  http_port：HTTP代理服务器
 
@@ -104,7 +102,7 @@ HTTPS\ *PROXY：HTTPS代理 HTTP*\ PROXY：HTTP代理
 
 -  https_proxy：HTTPS代理
 
--  user\ *agent：用户自定义的user*\ gent
+-  user_agent：用户自定义的user_gent
 
 **注意：**
 目前文件暂不支持开关类接口配置。开关类接口在文件中一经配置，默认为开启
@@ -113,7 +111,6 @@ HTTPS\ *PROXY：HTTPS代理 HTTP*\ PROXY：HTTP代理
 
 -  enable_https：使用HTTPS
 
-.. _header-n52:
 
 默认配置
 -------------------------------

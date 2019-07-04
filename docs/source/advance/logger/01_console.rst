@@ -1,10 +1,11 @@
 生成控制台日志
-====================
+---------------------
 
-.. _header-n2:
+日志文件，我们使用logging模块下的 ``RotatingFileHandler`` , 单文件最大字节为 10M ，备份文件为 5 个。
+因此，使用我们默认的日志文件配置，请确保磁盘最低有 60M 可用空间。
 
 client创建控制台日志
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 使用 ``Alibaba Cloud Python SDK`` 创建的 Client 创建控制台日志
 
@@ -16,10 +17,8 @@ client创建控制台日志
                                region_id='cn-hangzhou')
    client.add_stream_log_handler()
 
-.. _header-n5:
-
 resource创建控制台日志
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 使用 ``Alibaba Cloud Python SDK`` 创建的 Resource 创建控制台日志
 

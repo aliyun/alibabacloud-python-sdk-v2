@@ -1,12 +1,9 @@
-.. _header-n0:
-
 生成文件日志
-============
+---------------
 
-.. _header-n2:
 
 Client 创建文件日志
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 使用 ``Alibaba Cloud Python SDK`` 创建的 Client 在当前目录下创建一个名为
 ``ecs.log`` 的日志文件
@@ -19,10 +16,9 @@ Client 创建文件日志
                                region_id='cn-hangzhou')
    ecs_client.add_rotating_file_log_handler(path="ecs.log")
 
-.. _header-n5:
 
 Resource 创建文件日志
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 使用 ``Alibaba Cloud Python SDK`` 创建的 Resource
 在当前目录下创建一个名为 ``ecs.log`` 的日志文件
