@@ -16,8 +16,7 @@ import json
 from alibabacloud.exceptions import ClientException
 from alibabacloud.vendored.six import iteritems
 from alibabacloud.utils.utils import _assert_is_list_but_not_string
-from alibabacloud.utils.utils import _get_key_in_response
-import alibabacloud.utils as utils
+from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response
 
 
 class ResourceCollection:
@@ -64,8 +63,8 @@ class ResourceCollection:
             params['PageNumber'] = page_num
             if self._page_size:
                 params['PageSize'] = self._page_size
-
-            total_count, page_size, page_num, items = self._page_handler(params)
+            _params = _transfer_params(params)
+            total_count, page_size, page_num, items = self._page_handler(_params)
             if self._limit is not None:
                 limit = min(total_count, self._limit)
             else:
@@ -150,24 +149,24 @@ def _create_resource_collection(resource_class, client, request_class,
                                 param_aliases=None):
 
     def page_handler(params):
-        request = request_class()
         if singular_param_to_json:
             _param_expand_to_json(params, singular_param_to_json)
         if plural_param_to_json:
             _param_expand_to_json(params, plural_param_to_json, singular=False)
         if param_aliases:
             _handle_param_aliases(params, param_aliases)
+        _params = _transfer_params(params)
+        response = request_class(**_params)
 
-        response = utils._do_request(client, request, params)
         return (
-            _get_key_in_response(response, key_to_total_count),
-            _get_key_in_response(response, key_to_page_size),
-            _get_key_in_response(response, key_to_page_number),
-            _get_key_in_response(response, key_to_resource_items),
+            _new_get_key_in_response(response, key_to_total_count),
+            _new_get_key_in_response(response, key_to_page_size),
+            _new_get_key_in_response(response, key_to_page_number),
+            _new_get_key_in_response(response, key_to_resource_items),
         )
 
     def resource_creator(resource_data_item):
-        resource_id = _get_key_in_response(resource_data_item, key_to_resource_id)
+        resource_id = _new_get_key_in_response(resource_data_item, key_to_resource_id)
         del resource_data_item[key_to_resource_id]
         resource = resource_class(resource_id, _client=client)
         resource._assign_attributes(resource_data_item)
@@ -188,7 +187,6 @@ def _create_default_resource_collection(resource_class, client, request_class,
                                         key_to_resource_items,
                                         plural_param_to_json=None,
                                         param_aliases=None):
-    from alibabacloud.resources.base import ServiceResource
     return _create_resource_collection(resource_class, client, request_class,
                                        key_to_resource_items, None,
                                        plural_param_to_json=plural_param_to_json,

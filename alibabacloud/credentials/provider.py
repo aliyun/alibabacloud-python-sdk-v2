@@ -24,6 +24,7 @@ from alibabacloud.credentials.assume_role_caller import AssumeRoleCaller
 from alibabacloud.exceptions import ClientException, PartialCredentialsException, \
     ConnectionUsingEcsRamRoleException, ConfigNotFoundException
 from alibabacloud.utils.ini_helper import load_config
+from alibabacloud.vendored import requests
 
 
 class CredentialsProvider(object):
@@ -123,7 +124,6 @@ class ProfileCredentialsProvider(CredentialsProvider):
                 try:
                     config = load_config(full_path)
                 except ConfigNotFoundException as e:
-                    # Move on to the next potential config file name.
                     raise e
                 else:
                     if profile_name not in config:
@@ -236,7 +236,6 @@ class InstanceProfileCredentialsProvider(RotatingCredentialsProvider):
 
     def rotate_credentials(self):
 
-        from alibabacloud.vendored import requests
         try:
             r = requests.get(url=self.URL_PATH + self.role_name)
         except requests.exceptions.ConnectionError:

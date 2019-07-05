@@ -59,7 +59,6 @@ def _get_key_in_response(response, key):
         )
     return result
 
-
 def _get_response(client, request, params, key):
     response = _do_request(client, request, params)
     return _get_key_in_response(response, key)
@@ -85,3 +84,48 @@ def _assert_is_not_none(item, name):
     if item is None:
         raise ClientException(msg=
                               "{0} should not be None".format(name))
+
+
+def _new_get_key_in_response(response, key):
+    # response type dic
+    json_response = json.dumps(response)
+    # new_response = json.loads(json_response.decode('utf-8'), object_hook=_SearchableDict)
+    new_response = json.loads(json_response, object_hook=_SearchableDict)
+
+    result = jmespath.search(key, new_response)
+    if result is None:
+        raise ClientException(
+            msg=
+            "No '{0}' in server response.".format(key)
+        )
+    return result
+
+
+def hump_to_underline(key):
+    new_key = ''
+    for i in range(len(key)):
+        c = key[i]
+        if c.isupper():
+            if i == 0:
+                new_key += c.lower()
+            elif i == len(key) - 1:
+                if key[i - 1].isupper():
+                    new_key += c.lower()
+                else:
+                    new_key += c.lower()
+            elif key[i - 1].isupper() and (key[i + 1].isupper() or not key[i + 1].isalpha()):
+                new_key += c.lower()
+            else:
+                new_key += '_'+c.lower()
+        else:
+            new_key += c
+    return new_key
+
+
+def _transfer_params(params):
+    _params = {}
+    for key, value in params.items():
+        _key = hump_to_underline(key)
+        _params[_key] = value
+
+    return _params

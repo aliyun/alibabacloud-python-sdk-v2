@@ -19,7 +19,7 @@ __version__ = '0.4.4'
 from functools import wraps
 
 from alibabacloud.client import ClientConfig
-from alibabacloud.exceptions import ClientException
+from alibabacloud.exceptions import ClientException, ParamValidationException
 from alibabacloud.exceptions import NoModuleException, ServiceNameInvalidException, \
     ApiVersionInvalidException
 from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource, \
@@ -39,24 +39,6 @@ def _get_param_from_args(args, index, name):
 
 
 # Client
-
-
-def instance_cache(function):
-    cache = {}
-
-    @wraps(function)
-    def wrapper(**kwargs):
-        key = kwargs.get('service_name') + "@" + kwargs.get('api_version') if kwargs.get(
-            'api_version') else 'latest'
-        if key in cache:
-            return cache[key]
-        else:
-            rv = function(**kwargs)
-            cache[key] = rv
-            return rv
-
-    return wrapper
-
 
 def _check_client_service_name(service_name):
     available_clients = _list_available_client_services()
@@ -145,8 +127,8 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
         custom_credentials_provider = credentials_provider
 
     elif access_key_id and access_key_secret:
-        credentials = AccessKeyCredentials(access_key_id, access_key_secret)
-        custom_credentials_provider = StaticCredentialsProvider(credentials)
+        custom_credentials_provider = StaticCredentialsProvider(
+            AccessKeyCredentials(access_key_id, access_key_secret))
     else:
         custom_credentials_provider = DefaultChainedCredentialsProvider(client_config)
 
@@ -237,7 +219,6 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
     :rtype:
 
     """
-    # resource_name = _get_param_from_args(args, 0, "resource_name")
 
     service_resources = {
         "ecs": ECSResource,
@@ -296,6 +277,8 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
     elif resource_name.lower() in normal_resources:
         # instance_id = _get_param_from_args(args, 1, "resource_id")
         _client = init_client(resource_name.split('.')[0])
+        if not resource_id:
+            raise ClientException(msg="Parameter resource_id required.")
 
         return normal_resources[resource_name](resource_id, _client=_client)
 

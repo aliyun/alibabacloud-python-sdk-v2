@@ -16,9 +16,9 @@ import json
 import os
 import re
 import sys
-
 import alibabacloud
 import alibabacloud.utils
+
 
 # The unittest module got a significant overhaul
 # in 2.7, so if we're in 2.6 we can use the backported
@@ -56,8 +56,8 @@ class SDKTestBase(TestCase):
                 return json.loads(fp.read())
 
     def _read_key_from_env_or_config(self, key_name):
-        if key_name.upper() in os.environ:
-            return os.environ.get(key_name.upper())
+        # if key_name.upper() in os.environ:
+        #     return os.environ.get(key_name.upper())
         if self._sdk_config is not None and key_name.lower() in self._sdk_config:
             return self._sdk_config[key_name.lower()]
 

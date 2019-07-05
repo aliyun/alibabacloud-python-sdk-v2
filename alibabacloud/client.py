@@ -156,7 +156,6 @@ class ClientConfig(object):
             try:
                 config = load_config(full_path)
             except ConfigNotFoundException as e:
-                # Move on to the next potential config file name.
                 raise e
             else:
                 # Alibaba Cloud only support default
