@@ -1,12 +1,13 @@
 用户指南
-==========
-
-这一部分是介绍用户使用相关的文档
+**************
+这部分主要是API文档说明
 
 
 .. toctree::
     :maxdepth: 2
     :numbered: 2
 
-    01_pythonstart
-    02_pythonfunc
+    01_client
+    02_resource
+    03_api
+    

@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath('..')))
 import alibabacloud
 # -- Project information -----------------------------------------------------
 
-project = '阿里云Python SDK文档测试版'
+project = '阿里云Python SDK使用文档'
 copyright = '2019, sdk'
 author = 'sdk'
 
