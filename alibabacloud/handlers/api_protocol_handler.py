@@ -15,14 +15,14 @@
 import json
 import platform
 
+import jmespath
+
 from alibabacloud.compat import urlencode
 from alibabacloud.exceptions import ParamTypeInvalidException, ClientException
 from alibabacloud.handlers import RequestHandler
 from alibabacloud.utils import format_type
 from alibabacloud.vendored.requests.structures import CaseInsensitiveDict
 from alibabacloud.vendored.requests.structures import OrderedDict
-
-DEPTH = 0
 
 
 def _user_agent_header():
@@ -44,6 +44,12 @@ def _default_user_agent():
         ['vendored', 'requests', '__version__'], 0).__version__
 
     return CaseInsensitiveDict(default_agent)
+
+
+class _SearchableDict(dict):
+
+    def search(self, expression):
+        return jmespath.search(expression, self)
 
 
 def _merge_user_agent(default_agent, extra_agent):
@@ -162,7 +168,7 @@ class APIProtocolHandler(RequestHandler):
     def handle_response(self, context):
         if not context.exception:
             try:
-                context.result = json.loads(context.http_response.text)
+                context.result = json.loads(context.http_response.text, object_hook=_SearchableDict)
             except ValueError:
                 # failed to parse body as json format
                 raise ClientException(
