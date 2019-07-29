@@ -418,7 +418,7 @@ class EcsResourceTest(SDKTestBase):
         for event_type in ['SystemMaintenance.Reboot', 'SystemFailure.Reboot',
                            'InstanceFailure.Reboot']:
             time_str = epoch_time_to_timestamp(time.time() + 2)
-            events = self.ecs.create_simulated_system_events(InstanceId=instance_ids,
+            events = self.ecs.create_simulated_system_events(InstanceIds=instance_ids,
                                                              EventType=event_type,
                                                              NotBefore=time_str)
             created_event_ids.extend([x.event_id for x in events])
@@ -460,13 +460,13 @@ class EcsResourceTest(SDKTestBase):
         # test get events by region id
         event_ids = []
         for event in self.ecs.system_events.filter(NotBeforeStart=start_time_str,
-                                                   # RegionId=self.region_id,
+                                                   RegionId=self.region_id,
                                                    NotBeforeEnd=end_time_str):
             event_ids.append(event.event_id)
         self.assertEqual(set(created_event_ids), set(event_ids))
 
-        self.assertEqual(12, len(list(self.ecs.system_events.filter(NotBeforeStart=start_time_str,
-                                                                   # RegionId="cn-shanghai",
+        self.assertEqual(0, len(list(self.ecs.system_events.filter(NotBeforeStart=start_time_str,
+                                                                   RegionId="cn-shanghai",
                                                                    NotBeforeEnd=end_time_str))))
 
         # test get event by id
@@ -519,7 +519,7 @@ class EcsResourceTest(SDKTestBase):
 
         # test instance full status
         count = 0
-        statuses = list(self.ecs.instance_full_statuses.filter(InstanceId=instance_ids))
+        statuses = list(self.ecs.instance_full_statuses.filter(InstanceIds=instance_ids))
         self.assertEqual(4, len(statuses))
         status = statuses[0]
         self.assertEqual(instance_ids[0], status.instance_id)

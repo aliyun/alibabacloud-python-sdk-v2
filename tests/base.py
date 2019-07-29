@@ -74,8 +74,8 @@ class SDKTestBase(TestCase):
 
     def create_simple_instance(self):
         instance = self.ecs.create_instance(
-            image_id="coreos_1745_7_0_64_30G_alibase_20180705.vhd",
-            instance_type="ecs.n2.small",
+            ImageId="coreos_1745_7_0_64_30G_alibase_20180705.vhd",
+            InstanceType="ecs.n2.small",
         )
 
         return instance
