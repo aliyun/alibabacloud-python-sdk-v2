@@ -16,17 +16,12 @@ import logging
 
 __version__ = '0.4.4'
 
-from functools import wraps
-
 from alibabacloud.client import ClientConfig
-from alibabacloud.exceptions import ClientException, ParamValidationException
+from alibabacloud.exceptions import ClientException
 from alibabacloud.exceptions import NoModuleException, ServiceNameInvalidException, \
     ApiVersionInvalidException
-from alibabacloud.services.ecs import ECSResource, ECSInstanceResource, ECSSystemEventResource, \
-    ECSImageResource, ECSDiskResource
-from alibabacloud.services.slb import SLBResource, LoadBalancerResource
-from alibabacloud.services.vpc import VPCResource, VPCEipAddressResource
-from alibabacloud.utils.client_supports import _list_available_client_services
+from alibabacloud.utils.client_supports import _list_available_client_services, \
+    _list_available_resource_services
 from alibabacloud.credentials import AccessKeyCredentials
 from alibabacloud.credentials.provider import StaticCredentialsProvider
 from alibabacloud.credentials.provider import DefaultChainedCredentialsProvider
@@ -141,6 +136,14 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
 # resource
 
 
+def _check_resource_service_name(service_name):
+    resources_services = _list_available_resource_services()
+    if service_name.lower() in resources_services:
+        return resources_services[service_name.lower()]
+    raise ServiceNameInvalidException(service_name=service_name,
+                                      more=','.join([item for item in resources_services.keys()]))
+
+
 def get_resource(resource_name, resource_id=None, api_version=None, region_id=None, endpoint=None,
                  access_key_id=None,
                  access_key_secret=None, credentials_provider=None, retry_policy=None,
@@ -220,20 +223,8 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
 
     """
 
-    service_resources = {
-        "ecs": ECSResource,
-        "vpc": VPCResource,
-        "slb": SLBResource,
-    }
+    class_name, service_module = _check_resource_service_name(resource_name)
 
-    normal_resources = {
-        "ecs.instance": ECSInstanceResource,
-        "ecs.system_event": ECSSystemEventResource,
-        "ecs.disk": ECSDiskResource,
-        "ecs.image": ECSImageResource,
-        "vpc.eip_address": VPCEipAddressResource,
-        "slb.load_balancer": LoadBalancerResource,
-    }
     stream_logger_handler = {
         "log_level": kwargs.get('stream_log_level', logging.DEBUG),
         "logger_name": kwargs.get('stream_log_name', None),
@@ -268,19 +259,22 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
 
         return temp_client
 
-    if resource_name.lower() in service_resources:
-
+    if len(resource_name.split(".")) == 1:
         _client = init_client(resource_name.lower())
+        __import__(
+            '.'.join(['alibabacloud', 'services', service_module]), globals(), locals(),
+            ['services', service_module, class_name], 0)
 
-        return service_resources[resource_name](_client=_client)
-
-    elif resource_name.lower() in normal_resources:
-        # instance_id = _get_param_from_args(args, 1, "resource_id")
+        return class_name(_client=_client)
+    elif len(resource_name.split(".")) == 2:
         _client = init_client(resource_name.split('.')[0])
+        __import__(
+            '.'.join(['alibabacloud', 'services', service_module]), globals(), locals(),
+            ['clients', service_module, class_name], 0)
         if not resource_id:
             raise ClientException(msg="Parameter resource_id required.")
 
-        return normal_resources[resource_name](resource_id, _client=_client)
+        return class_name(resource_id, _client=_client)
 
     else:
         raise ClientException(msg=

@@ -453,7 +453,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def describe_master_slave_v_server_groups(
+    def describe_master_slave_vserver_groups(
             self,
             access_key_id=None,
             resource_owner_id=None,
@@ -473,11 +473,11 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def describe_master_slave_v_server_group_attribute(
+    def describe_master_slave_vserver_group_attribute(
             self,
             access_key_id=None,
             resource_owner_id=None,
-            master_slave_v_server_group_id=None,
+            master_slave_vserver_group_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -491,18 +491,18 @@ class SlbClient(AlibabaCloudClient):
         api_request._params = {
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
-            "MasterSlaveVServerGroupId": master_slave_v_server_group_id,
+            "MasterSlaveVServerGroupId": master_slave_vserver_group_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def delete_master_slave_v_server_group(
+    def delete_master_slave_vserver_group(
             self,
             access_key_id=None,
             resource_owner_id=None,
-            master_slave_v_server_group_id=None,
+            master_slave_vserver_group_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -511,14 +511,14 @@ class SlbClient(AlibabaCloudClient):
         api_request._params = {
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
-            "MasterSlaveVServerGroupId": master_slave_v_server_group_id,
+            "MasterSlaveVServerGroupId": master_slave_vserver_group_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def create_master_slave_v_server_group(
+    def create_master_slave_vserver_group(
             self,
             access_key_id=None,
             resource_owner_id=None,
@@ -526,7 +526,7 @@ class SlbClient(AlibabaCloudClient):
             load_balancer_id=None,
             resource_owner_account=None,
             owner_account=None,
-            master_slave_v_server_group_name=None,
+            master_slave_vserver_group_name=None,
             owner_id=None,
             tags=None):
         api_request = APIRequest('CreateMasterSlaveVServerGroup', 'GET', 'http', 'RPC', 'query')
@@ -537,7 +537,7 @@ class SlbClient(AlibabaCloudClient):
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
-            "MasterSlaveVServerGroupName": master_slave_v_server_group_name,
+            "MasterSlaveVServerGroupName": master_slave_vserver_group_name,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
@@ -695,7 +695,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def set_v_server_group_attribute(
+    def set_vserver_group_attribute(
             self,
             access_key_id=None,
             v_server_group_id=None,
@@ -773,7 +773,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckHttpCode": health_check_http_code}
         return self._handle_request(api_request).result
 
-    def remove_v_server_group_backend_servers(
+    def remove_vserver_group_backend_servers(
             self,
             access_key_id=None,
             v_server_group_id=None,
@@ -795,7 +795,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def modify_v_server_group_backend_servers(
+    def modify_vserver_group_backend_servers(
             self,
             access_key_id=None,
             v_server_group_id=None,
@@ -819,7 +819,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def describe_v_server_groups(
+    def describe_vserver_groups(
             self,
             access_key_id=None,
             include_rule=None,
@@ -843,7 +843,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def describe_v_server_group_attribute(
+    def describe_vserver_group_attribute(
             self,
             access_key_id=None,
             v_server_group_id=None,
@@ -907,7 +907,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def delete_v_server_group(
+    def delete_vserver_group(
             self,
             access_key_id=None,
             v_server_group_id=None,
@@ -947,7 +947,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def create_v_server_group(
+    def create_vserver_group(
             self,
             access_key_id=None,
             resource_owner_id=None,
@@ -997,7 +997,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def add_v_server_group_backend_servers(
+    def add_vserver_group_backend_servers(
             self,
             access_key_id=None,
             v_server_group_id=None,

@@ -18,7 +18,7 @@ import time
 import alibabacloud
 from alibabacloud.exceptions import ClientException
 from alibabacloud.exceptions import ServerException
-from alibabacloud.services.ecs import ECSInstanceResource
+from alibabacloud._services.ecs import ECSInstanceResource
 from alibabacloud.vendored.six import iteritems
 from tests import epoch_time_to_timestamp, timestamp_to_epoch_time
 from tests.base import SDKTestBase
