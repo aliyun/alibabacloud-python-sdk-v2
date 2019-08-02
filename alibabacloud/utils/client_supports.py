@@ -17,9 +17,9 @@ import inspect
 import os
 import time
 
-
 ALIBABACLOUD_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CLIENTS_DATA_PATH = os.path.join(ALIBABACLOUD_ROOT, 'clients')
+SERVICES_DATA_PATH = os.path.join(ALIBABACLOUD_ROOT, 'services')
 
 
 def _is_subclass_of_alibabacloudclient(object):
@@ -61,4 +61,67 @@ def _list_available_client_services():
                         services[service_name] = (client_name, [api_version])
                     elif api_version not in services[service_name][1]:
                         services[service_name][1].append(api_version)
+    return services
+
+
+def _get_resources_classes(path):
+    services = dict()
+    services_file = path.__name__.split("\\")[-1].split(".")[-1]
+    for class_name, obj in inspect.getmembers(path):
+
+        if inspect.isclass(obj):
+            from alibabacloud.resources.base import ServiceResource
+            if obj is ServiceResource:
+                continue
+            if issubclass(obj, ServiceResource):
+                try:
+                    services[getattr(obj(""), "service_name")] = obj, services_file
+                except AttributeError:
+                    services[services_file.lstrip("_")] = obj, services_file
+    return services
+
+def _get_modified_resources_classes(path):
+    services = dict()
+    services_file = path.__name__.split("\\")[-1].split(".")[-1]
+    for class_name, obj in inspect.getmembers(path):
+
+        if inspect.isclass(obj):
+            from alibabacloud.resources.base import ServiceResource
+            if obj is ServiceResource:
+                continue
+            if obj.__mro__[2] is ServiceResource:
+                try:
+                    services[getattr(obj(""), "service_name")] = obj, services_file
+                except AttributeError:
+                    services[services_file.lstrip("_")] = obj, services_file
+    return services
+
+
+def _list_available_resource_services():
+    services = dict()
+    new_file_list = set()
+    for root, _, files in os.walk(SERVICES_DATA_PATH):
+        if root.endswith('services'):
+            if '__init__.py' in files:
+                files.remove('__init__.py')
+            generator_files = [file for file in files if file.startswith("_")]
+            for file in generator_files:
+                if file.endswith('.py'):
+                    module_name = file.rstrip('.py')
+                    services_module = __import__(
+                        '.'.join(['alibabacloud', 'services', module_name]), globals(), locals(),
+                        ['services', module_name], 0)
+                    service = _get_resources_classes(services_module)
+                    services.update(service)
+
+            modified_files = set(files)-set(generator_files)
+            for file in modified_files:
+                if file.endswith('.py'):
+                    module_name = file.rstrip('.py')
+                    services_module = __import__(
+                        '.'.join(['alibabacloud', 'services', module_name]), globals(), locals(),
+                        ['services', module_name], 0)
+                    service = _get_modified_resources_classes(services_module)
+                    services.update(service)
+
     return services
