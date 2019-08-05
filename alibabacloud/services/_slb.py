@@ -72,37 +72,37 @@ class _SLBResource(ServiceResource):
         )
     def create_access_control_list(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_access_control_list(**params)
+        response = self._client.create_access_control_list(**_params)
         acl_id = _new_get_key_in_response(response, 'AclId')
         return _SLBAccessControlListResource(acl_id, _client=self._client)
 
     def create_domain_extension(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_domain_extension(**params)
+        response = self._client.create_domain_extension(**_params)
         domain_extension_id = _new_get_key_in_response(response, 'DomainExtensionId')
         return _SLBDomainExtensionResource(domain_extension_id, _client=self._client)
 
     def create_load_balancer(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_load_balancer(**params)
+        response = self._client.create_load_balancer(**_params)
         load_balancer_id = _new_get_key_in_response(response, 'LoadBalancerId')
         return _SLBLoadBalancerResource(load_balancer_id, _client=self._client)
 
     def create_master_slave_server_group(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_master_slave_server_group(**params)
+        response = self._client.create_master_slave_server_group(**_params)
         master_slave_server_group_id = _new_get_key_in_response(response, 'MasterSlaveServerGroupId')
         return _SLBMasterSlaveServerGroupResource(master_slave_server_group_id, _client=self._client)
 
     def create_master_slave_vserver_group(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_master_slave_vserver_group(**params)
+        response = self._client.create_master_slave_vserver_group(**_params)
         master_slave_vserver_group_id = _new_get_key_in_response(response, 'MasterSlaveVServerGroupId')
         return _SLBMasterSlaveVServerGroupResource(master_slave_vserver_group_id, _client=self._client)
 
     def create_multi_rules(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_rules(**params)
+        response = self._client.create_rules(**_params)
         rule_ids = _new_get_key_in_response(response, 'RuleId')
         rules = []
         for rule_id in rule_ids:
@@ -112,7 +112,7 @@ class _SLBResource(ServiceResource):
 
     def create_vserver_group(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_vserver_group(**params)
+        response = self._client.create_vserver_group(**_params)
         vserver_group_id = _new_get_key_in_response(response, 'VServerGroupId')
         return _SLBVServerGroupResource(vserver_group_id, _client=self._client)
 

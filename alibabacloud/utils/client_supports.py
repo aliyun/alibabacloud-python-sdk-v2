@@ -122,6 +122,8 @@ def _list_available_resource_services():
                         '.'.join(['alibabacloud', 'services', module_name]), globals(), locals(),
                         ['services', module_name], 0)
                     service = _get_modified_resources_classes(services_module)
+
                     services.update(service)
 
     return services
+

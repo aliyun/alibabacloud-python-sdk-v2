@@ -42,8 +42,10 @@ class _ECSResource(ServiceResource):
             _ECSCommandResource, _client, _client.describe_commands,
             'Commands.Command', 'CommandId',
         )
+        from alibabacloud.services.ecs import ECSDedicatedHostResource
+
         self.dedicated_hosts = _create_resource_collection(
-            _ECSDedicatedHostResource, _client, _client.describe_dedicated_hosts,
+            ECSDedicatedHostResource, _client, _client.describe_dedicated_hosts,
             'DedicatedHosts.DedicatedHost', 'DedicatedHostId',
         )
         self.deployment_sets = _create_resource_collection(
@@ -70,8 +72,9 @@ class _ECSResource(ServiceResource):
             _ECSImageResource, _client, _client.describe_images,
             'Images.Image', 'ImageId',
         )
+        from alibabacloud.services.ecs import ECSInstanceResource
         self.instances = _create_resource_collection(
-            _ECSInstanceResource, _client, _client.describe_instances,
+            ECSInstanceResource, _client, _client.describe_instances,
             'Instances.Instance', 'InstanceId',
         )
         self.instance_types = _create_resource_collection(
@@ -148,147 +151,152 @@ class _ECSResource(ServiceResource):
         )
     def create_auto_snapshot_policy(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_auto_snapshot_policy(**params)
+        response = self._client.create_auto_snapshot_policy(**_params)
         auto_snapshot_policy_id = _new_get_key_in_response(response, 'AutoSnapshotPolicyId')
         return _ECSAutoSnapshotPolicyResource(auto_snapshot_policy_id, _client=self._client)
 
     def create_command(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_command(**params)
+        response = self._client.create_command(**_params)
         command_id = _new_get_key_in_response(response, 'CommandId')
         return _ECSCommandResource(command_id, _client=self._client)
 
     def create_multi_dedicated_hosts(self, **params):
         _params = _transfer_params(params)
-        response = self._client.allocate_dedicated_hosts(**params)
+        response = self._client.allocate_dedicated_hosts(**_params)
         dedicated_host_ids = _new_get_key_in_response(response, 'DedicatedHostId')
         dedicated_hosts = []
+        from alibabacloud.services.ecs import ECSDedicatedHostResource
         for dedicated_host_id in dedicated_host_ids:
-            dedicated_host = _ECSDedicatedHostResource(dedicated_host_id, _client=self._client)
+            dedicated_host = ECSDedicatedHostResource(dedicated_host_id, _client=self._client)
             dedicated_hosts.append(dedicated_host)
         return dedicated_hosts
 
     def create_deployment_set(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_deployment_set(**params)
+        response = self._client.create_deployment_set(**_params)
         deployment_set_id = _new_get_key_in_response(response, 'DeploymentSetId')
         return _ECSDeploymentSetResource(deployment_set_id, _client=self._client)
 
     def create_disk(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_disk(**params)
+        response = self._client.create_disk(**_params)
         disk_id = _new_get_key_in_response(response, 'DiskId')
         return _ECSDiskResource(disk_id, _client=self._client)
 
     def create_eip_address(self, **params):
         _params = _transfer_params(params)
-        response = self._client.allocate_eip_address(**params)
+        response = self._client.allocate_eip_address(**_params)
         allocation_id = _new_get_key_in_response(response, 'AllocationId')
         return _ECSEipAddressResource(allocation_id, _client=self._client)
 
     def create_forward_entry(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_forward_entry(**params)
+        response = self._client.create_forward_entry(**_params)
         forward_entry_id = _new_get_key_in_response(response, 'ForwardEntryId')
         return _ECSForwardEntryResource(forward_entry_id, _client=self._client)
 
     def create_ha_vip(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_ha_vip(**params)
+        response = self._client.create_ha_vip(**_params)
         ha_vip_id = _new_get_key_in_response(response, 'HaVipId')
         return _ECSHaVipResource(ha_vip_id, _client=self._client)
 
     def create_hpc_cluster(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_hpc_cluster(**params)
+        response = self._client.create_hpc_cluster(**_params)
         hpc_cluster_id = _new_get_key_in_response(response, 'HpcClusterId')
         return _ECSHpcClusterResource(hpc_cluster_id, _client=self._client)
 
     def create_image(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_image(**params)
+        response = self._client.create_image(**_params)
         image_id = _new_get_key_in_response(response, 'ImageId')
         return _ECSImageResource(image_id, _client=self._client)
 
     def create_instance(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_instance(**params)
+        response = self._client.create_instance(**_params)
         instance_id = _new_get_key_in_response(response, 'InstanceId')
-        return _ECSInstanceResource(instance_id, _client=self._client)
+        from alibabacloud.services.ecs import ECSInstanceResource
+
+        return ECSInstanceResource(instance_id, _client=self._client)
 
     def create_multi_instances(self, **params):
         _params = _transfer_params(params)
-        response = self._client.run_instances(**params)
+        response = self._client.run_instances(**_params)
         instance_ids = _new_get_key_in_response(response, 'InstanceId')
         instances = []
+        from alibabacloud.services.ecs import ECSInstanceResource
+
         for instance_id in instance_ids:
-            instance = _ECSInstanceResource(instance_id, _client=self._client)
+            instance = ECSInstanceResource(instance_id, _client=self._client)
             instances.append(instance)
         return instances
 
     def create_key_pair(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_key_pair(**params)
+        response = self._client.create_key_pair(**_params)
         key_pair_id = _new_get_key_in_response(response, 'KeyPairId')
         return _ECSKeyPairResource(key_pair_id, _client=self._client)
 
     def create_launch_template(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_launch_template(**params)
+        response = self._client.create_launch_template(**_params)
         launch_template_id = _new_get_key_in_response(response, 'LaunchTemplateId')
         return _ECSLaunchTemplateResource(launch_template_id, _client=self._client)
 
     def create_nat_gateway(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_nat_gateway(**params)
+        response = self._client.create_nat_gateway(**_params)
         nat_gateway_id = _new_get_key_in_response(response, 'NatGatewayId')
         return _ECSNatGatewayResource(nat_gateway_id, _client=self._client)
 
     def create_network_interface(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_network_interface(**params)
+        response = self._client.create_network_interface(**_params)
         network_interface_id = _new_get_key_in_response(response, 'NetworkInterfaceId')
         return _ECSNetworkInterfaceResource(network_interface_id, _client=self._client)
 
     def create_physical_connection(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_physical_connection(**params)
+        response = self._client.create_physical_connection(**_params)
         physical_connection_id = _new_get_key_in_response(response, 'PhysicalConnectionId')
         return _ECSPhysicalConnectionResource(physical_connection_id, _client=self._client)
 
     def create_router_interface(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_router_interface(**params)
+        response = self._client.create_router_interface(**_params)
         router_interface_id = _new_get_key_in_response(response, 'RouterInterfaceId')
         return _ECSRouterInterfaceResource(router_interface_id, _client=self._client)
 
     def create_security_group(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_security_group(**params)
+        response = self._client.create_security_group(**_params)
         security_group_id = _new_get_key_in_response(response, 'SecurityGroupId')
         return _ECSSecurityGroupResource(security_group_id, _client=self._client)
 
     def create_snapshot(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_snapshot(**params)
+        response = self._client.create_snapshot(**_params)
         snapshot_id = _new_get_key_in_response(response, 'SnapshotId')
         return _ECSSnapshotResource(snapshot_id, _client=self._client)
 
     def create_vswitch(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_vswitch(**params)
+        response = self._client.create_vswitch(**_params)
         vswitch_id = _new_get_key_in_response(response, 'VSwitchId')
         return _ECSVSwitchResource(vswitch_id, _client=self._client)
 
     def create_virtual_border_router(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_virtual_border_router(**params)
+        response = self._client.create_virtual_border_router(**_params)
         vbr_id = _new_get_key_in_response(response, 'VbrId')
         return _ECSVirtualBorderRouterResource(vbr_id, _client=self._client)
 
     def create_vpc(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_vpc(**params)
+        response = self._client.create_vpc(**_params)
         vpc_id = _new_get_key_in_response(response, 'VpcId')
         return _ECSVpcResource(vpc_id, _client=self._client)
 
@@ -779,8 +787,7 @@ class _ECSImageResource(ServiceResource):
         self._client.modify_image_share_permission(image_id=self.image_id, **_params)
 
     def refresh(self):
-        # result = self._client.describe_images(image_id=json.dumps([self.image_id, ]))
-        result = self._client.describe_images(image_id=self.image_id)
+        result = self._client.describe_images(image_id=json.dumps([self.image_id],))
         items = _new_get_key_in_response(result, 'Images.Image')
         if not items:
             raise ClientException(msg=
@@ -1158,7 +1165,7 @@ class _ECSNetworkInterfacePermissionResource(ServiceResource):
         self.network_interface_id = None
         self.permission = None
         self.permission_state = None
-        self._service_name = None
+        self.service_name = None
 
     def delete(self, **params):
         _params = _transfer_params(params)

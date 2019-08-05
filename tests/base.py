@@ -63,14 +63,14 @@ class SDKTestBase(TestCase):
 
         raise Exception("Failed to find sdk config: " + key_name)
 
-    def _get_resource(self, *args):
+    def _get_resource(self, *args, **kwargs):
         ecs_resource = alibabacloud.get_resource(*args, access_key_id=self.access_key_id,
                                                  access_key_secret=self.access_key_secret,
-                                                 region_id=self.region_id)
+                                                 region_id=self.region_id, **kwargs)
         return ecs_resource
 
-    def _get_ecs_resource(self):
-        return self._get_resource("ecs")
+    def _get_ecs_resource(self, **kwargs):
+        return self._get_resource("ecs", **kwargs)
 
     def create_simple_instance(self):
         instance = self.ecs.create_instance(

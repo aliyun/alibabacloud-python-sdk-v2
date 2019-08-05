@@ -82,10 +82,10 @@ class _VPCResource(ServiceResource):
             _VPCNatGatewayResource, _client, _client.describe_nat_gateways,
             'NatGateways.NatGateway', 'NatGatewayId',
         )
-        self.nqas = _create_resource_collection(
-            _VPCNqaResource, _client, _client.describe_nqas,
-            'Nqas.Nqa', 'NqaId',
-        )
+        # self.nqas = _create_resource_collection(
+        #     _VPCNqaResource, _client, _client.describe_nqas,
+        #     'Nqas.Nqa', 'NqaId',
+        # )
         self.physical_connections = _create_resource_collection(
             _VPCPhysicalConnectionResource, _client, _client.describe_physical_connections,
             'PhysicalConnectionSet.PhysicalConnectionType', 'PhysicalConnectionId',
@@ -140,157 +140,157 @@ class _VPCResource(ServiceResource):
         )
     def create_bandwidth_package(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_bandwidth_package(**params)
+        response = self._client.create_bandwidth_package(**_params)
         bandwidth_package_id = _new_get_key_in_response(response, 'BandwidthPackageId')
         return _VPCBandwidthPackageResource(bandwidth_package_id, _client=self._client)
 
     def create_bgp_group(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_bgp_group(**params)
+        response = self._client.create_bgp_group(**_params)
         bgp_group_id = _new_get_key_in_response(response, 'BgpGroupId')
         return _VPCBgpGroupResource(bgp_group_id, _client=self._client)
 
     def create_bgp_peer(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_bgp_peer(**params)
+        response = self._client.create_bgp_peer(**_params)
         bgp_peer_id = _new_get_key_in_response(response, 'BgpPeerId')
         return _VPCBgpPeerResource(bgp_peer_id, _client=self._client)
 
     def create_customer_gateway(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_customer_gateway(**params)
+        response = self._client.create_customer_gateway(**_params)
         customer_gateway_id = _new_get_key_in_response(response, 'CustomerGatewayId')
         return _VPCCustomerGatewayResource(customer_gateway_id, _client=self._client)
 
     def create_eip_address(self, **params):
         _params = _transfer_params(params)
-        response = self._client.allocate_eip_address(**params)
+        response = self._client.allocate_eip_address(**_params)
         allocation_id = _new_get_key_in_response(response, 'AllocationId')
         return _VPCEipAddressResource(allocation_id, _client=self._client)
 
     def create_flow_log(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_flow_log(**params)
+        response = self._client.create_flow_log(**_params)
         flow_log_id = _new_get_key_in_response(response, 'FlowLogId')
         return _VPCFlowLogResource(flow_log_id, _client=self._client)
 
     def create_forward_entry(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_forward_entry(**params)
+        response = self._client.create_forward_entry(**_params)
         forward_entry_id = _new_get_key_in_response(response, 'ForwardEntryId')
         return _VPCForwardEntryResource(forward_entry_id, _client=self._client)
 
     def create_global_acceleration_instance(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_global_acceleration_instance(**params)
+        response = self._client.create_global_acceleration_instance(**_params)
         global_acceleration_instance_id = _new_get_key_in_response(response, 'GlobalAccelerationInstanceId')
         return _VPCGlobalAccelerationInstanceResource(global_acceleration_instance_id, _client=self._client)
 
     def create_ha_vip(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_ha_vip(**params)
+        response = self._client.create_ha_vip(**_params)
         ha_vip_id = _new_get_key_in_response(response, 'HaVipId')
         return _VPCHaVipResource(ha_vip_id, _client=self._client)
 
     def create_ipv6_translator(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_ipv6_translator(**params)
+        response = self._client.create_ipv6_translator(**_params)
         ipv6_translator_id = _new_get_key_in_response(response, 'Ipv6TranslatorId')
         return _VPCIPv6TranslatorResource(ipv6_translator_id, _client=self._client)
 
     def create_ipv6_translator_entry(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_ipv6_translator_entry(**params)
+        response = self._client.create_ipv6_translator_entry(**_params)
         ipv6_translator_entry_id = _new_get_key_in_response(response, 'Ipv6TranslatorEntryId')
         return _VPCIPv6TranslatorEntryResource(ipv6_translator_entry_id, _client=self._client)
 
     def create_ipv6_gateway(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_ipv6_gateway(**params)
+        response = self._client.create_ipv6_gateway(**_params)
         ipv6_gateway_id = _new_get_key_in_response(response, 'Ipv6GatewayId')
         return _VPCIpv6GatewayResource(ipv6_gateway_id, _client=self._client)
 
     def create_nat_gateway(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_nat_gateway(**params)
+        response = self._client.create_nat_gateway(**_params)
         nat_gateway_id = _new_get_key_in_response(response, 'NatGatewayId')
         return _VPCNatGatewayResource(nat_gateway_id, _client=self._client)
 
     def create_nqa(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_nqa(**params)
+        response = self._client.create_nqa(**_params)
         nqa_id = _new_get_key_in_response(response, 'NqaId')
         return _VPCNqaResource(nqa_id, _client=self._client)
 
     def create_physical_connection(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_physical_connection(**params)
+        response = self._client.create_physical_connection(**_params)
         physical_connection_id = _new_get_key_in_response(response, 'PhysicalConnectionId')
         return _VPCPhysicalConnectionResource(physical_connection_id, _client=self._client)
 
     def create_route_table(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_route_table(**params)
+        response = self._client.create_route_table(**_params)
         route_table_id = _new_get_key_in_response(response, 'RouteTableId')
         return _VPCRouteTableResource(route_table_id, _client=self._client)
 
     def create_router_interface(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_router_interface(**params)
+        response = self._client.create_router_interface(**_params)
         router_interface_id = _new_get_key_in_response(response, 'RouterInterfaceId')
         return _VPCRouterInterfaceResource(router_interface_id, _client=self._client)
 
     def create_snat_entry(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_snat_entry(**params)
+        response = self._client.create_snat_entry(**_params)
         snat_entry_id = _new_get_key_in_response(response, 'SnatEntryId')
         return _VPCSnatEntryResource(snat_entry_id, _client=self._client)
 
     def create_ssl_vpn_client_cert(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_ssl_vpn_client_cert(**params)
+        response = self._client.create_ssl_vpn_client_cert(**_params)
         ssl_vpn_client_cert_id = _new_get_key_in_response(response, 'SslVpnClientCertId')
         return _VPCSslVpnClientCertResource(ssl_vpn_client_cert_id, _client=self._client)
 
     def create_ssl_vpn_server(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_ssl_vpn_server(**params)
+        response = self._client.create_ssl_vpn_server(**_params)
         ssl_vpn_server_id = _new_get_key_in_response(response, 'SslVpnServerId')
         return _VPCSslVpnServerResource(ssl_vpn_server_id, _client=self._client)
 
     def create_vswitch(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_vswitch(**params)
+        response = self._client.create_vswitch(**_params)
         vswitch_id = _new_get_key_in_response(response, 'VSwitchId')
         return _VPCVSwitchResource(vswitch_id, _client=self._client)
 
     def create_virtual_border_router(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_virtual_border_router(**params)
+        response = self._client.create_virtual_border_router(**_params)
         vbr_id = _new_get_key_in_response(response, 'VbrId')
         return _VPCVirtualBorderRouterResource(vbr_id, _client=self._client)
 
     def create_vpc(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_vpc(**params)
+        response = self._client.create_vpc(**_params)
         vpc_id = _new_get_key_in_response(response, 'VpcId')
         return _VPCVpcResource(vpc_id, _client=self._client)
 
     def create_vpn_connection(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_vpn_connection(**params)
+        response = self._client.create_vpn_connection(**_params)
         vpn_connection_id = _new_get_key_in_response(response, 'VpnConnectionId')
         return _VPCVpnConnectionResource(vpn_connection_id, _client=self._client)
 
     def create_vpn_gateway(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_vpn_gateway(**params)
+        response = self._client.create_vpn_gateway(**_params)
         vpn_gateway_id = _new_get_key_in_response(response, 'VpnGatewayId')
         return _VPCVpnGatewayResource(vpn_gateway_id, _client=self._client)
 
     def create_vpn_route_entry(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_vpn_route_entry(**params)
+        response = self._client.create_vpn_route_entry(**_params)
         vpn_instance_id = _new_get_key_in_response(response, 'VpnInstanceId')
         return _VPCVpnRouteEntryResource(vpn_instance_id, _client=self._client)
 
@@ -569,7 +569,7 @@ class _VPCEipAddressResource(ServiceResource):
         if not items:
             raise ClientException(msg=
                                   "Failed to find eip_address data from DescribeEipAddresses response. "
-                                  "EipAddressId = {0}".format(self.eip_address_id))
+                                  "EipAddressId = {0}".format(self.allocation_id))
         self._assign_attributes(items[0])
 
 class _VPCFlowLogResource(ServiceResource):
