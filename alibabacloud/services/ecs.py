@@ -11,79 +11,93 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from alibabacloud import ClientException
 from alibabacloud.services._ecs import _ECSDedicatedHostResource
 from alibabacloud.services._ecs import _ECSInstanceResource
+from alibabacloud.services._ecs import _ECSResource
 from alibabacloud.services._ecs import _ECSSystemEventResource
-from alibabacloud.utils.utils import _assert_is_not_none
+from alibabacloud.resources.collection import _create_resource_collection
+from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response, _assert_is_not_none
 
 
 class ECSDedicatedHostResource(_ECSDedicatedHostResource):
 
-    PermanentFailure = 'PermanentFailure'
-    Released = 'Released'
-    Creating = 'Creating'
-    Available = 'Available'
-    UnderAssessment = 'UnderAssessment'
+    STATUS_PERMANENTFAILURE = 'PermanentFailure'
+    STATUS_RELEASED = 'Released'
+    STATUS_CREATING = 'Creating'
+    STATUS_AVAILABLE = 'Available'
+    STATUS_UNDERASSESSMENT = 'UnderAssessment'
 
     def __init__(self, dedicatedhost_id, _client=None):
         _ECSDedicatedHostResource.__init__(self, dedicatedhost_id, _client=_client)
 
     def wait_until_permanentfailure(self):
-        self.wait_until(self.PermanentFailure)
+        self.wait_until(self.STATUS_PERMANENTFAILURE)
 
     def wait_until_released(self):
-        self.wait_until(self.Released)
+        self.wait_until(self.STATUS_RELEASED)
 
     def wait_until_creating(self):
-        self.wait_until(self.Creating)
+        self.wait_until(self.STATUS_CREATING)
 
     def wait_until_available(self):
-        self.wait_until(self.Available)
+        self.wait_until(self.STATUS_AVAILABLE)
 
     def wait_until_underassessment(self):
-        self.wait_until(self.UnderAssessment)
+        self.wait_until(self.STATUS_UNDERASSESSMENT)
 
 
 class ECSInstanceResource(_ECSInstanceResource):
 
-    Stopping = 'Stopping'
-    Stopped = 'Stopped'
-    Transferring = 'Transferring'
-    Running = 'Running'
-    Starting = 'Starting'
-    Pending = 'Pending'
-    Deleted = 'Deleted'
-    Resetting = 'Resetting'
+    STATUS_STOPPING = 'Stopping'
+    STATUS_STOPPED = 'Stopped'
+    STATUS_TRANSFERRING = 'Transferring'
+    STATUS_RUNNING = 'Running'
+    STATUS_STARTING = 'Starting'
+    STATUS_PENDING = 'Pending'
+    STATUS_DELETED = 'Deleted'
+    STATUS_RESETTING = 'Resetting'
 
     def __init__(self, instance_id, _client=None):
         _ECSInstanceResource.__init__(self, instance_id, _client=_client)
 
     def wait_until_stopping(self):
-        self.wait_until(self.Stopping)
+        self.wait_until(self.STATUS_STOPPING)
 
     def wait_until_stopped(self):
-        self.wait_until(self.Stopped)
+        self.wait_until(self.STATUS_STOPPED)
 
     def wait_until_transferring(self):
-        self.wait_until(self.Transferring)
+        self.wait_until(self.STATUS_TRANSFERRING)
 
     def wait_until_running(self):
-        self.wait_until(self.Running)
+        self.wait_until(self.STATUS_RUNNING)
 
     def wait_until_starting(self):
-        self.wait_until(self.Starting)
+        self.wait_until(self.STATUS_STARTING)
 
     def wait_until_pending(self):
-        self.wait_until(self.Pending)
+        self.wait_until(self.STATUS_PENDING)
 
     def wait_until_deleted(self):
-        self.wait_until(self.Deleted)
+        self.wait_until(self.STATUS_DELETED)
 
     def wait_until_resetting(self):
-        self.wait_until(self.Resetting)
+        self.wait_until(self.STATUS_RESETTING)
 
 
 class ECSSystemEventResource(_ECSSystemEventResource):
+    """
+    ECS 系统事件资源类
+
+    :param event_id: 事件id
+    :type event_id: str
+
+    :param _client:  Alibaba Cloud Client
+    :type _client: alibaba.client.AlibabaCloudClient
+
+    """
+
     class EventCycleStatus:
         """
         Scheduled: The event is waiting for processing.
@@ -121,9 +135,56 @@ class ECSSystemEventResource(_ECSSystemEventResource):
         ACCOUNT_UNBALANCED_DELETE = "AccountUnbalanced.Delete"
 
     def __init__(self, event_id, _client=None):
-        _ECSSystemEventResource.__init__(self, "ecs.system_event", _client=_client)
         self.event_id = event_id
         self.event_finish_time = None
         _assert_is_not_none(event_id, "event_id")
+        _ECSSystemEventResource.__init__(self, "ecs.event", _client=_client)
 
+    def refresh(self):
+        response = self._client.describe_instance_history_events(list_of_event_id=[self.event_id, ])
+        items = _new_get_key_in_response(response, 'InstanceSystemEventSet.InstanceSystemEventType')
+        if not items:
+            raise ClientException(msg=
+                                  "Failed to find event data from "
+                                  "DescribeInstanceHistoryEventsRequest response. "
+                                  "EventId = {0}".format(self.event_id))
+        self._assign_attributes(items[0])
+
+    def get_event_type(self):
+        if not hasattr(self, "event_type"):
+            return None
+        return self.event_type.search("Name")
+
+    def get_event_cycle_status(self):
+        if not hasattr(self, "event_cycle_status"):
+            return None
+        return self.event_cycle_status.search("Name")
+
+
+class ECSResource(_ECSResource):
+    def __init__(self, _client=None):
+        _ECSResource.__init__(self, _client=_client)
+
+        self.dedicated_hosts = _create_resource_collection(
+            ECSDedicatedHostResource, _client, _client.describe_dedicated_hosts,
+            'DedicatedHosts.DedicatedHost', 'DedicatedHostId',
+        )
+
+        self.instances = _create_resource_collection(
+            ECSInstanceResource, _client, _client.describe_instances,
+            'Instances.Instance', 'InstanceId',
+        )
+
+    def run_instances(self, **params):
+        self.create_multi_instances(**params)
+
+    def create_simulated_system_events(self, **params):
+        _params = _transfer_params(params)
+        response = self._client.create_simulated_system_events(**_params)
+        event_ids = _new_get_key_in_response(response, 'EventIdSet.EventId')
+        events = []
+        for event_id in event_ids:
+            event = ECSSystemEventResource(event_id, _client=self._client)
+            events.append(event)
+        return events
 

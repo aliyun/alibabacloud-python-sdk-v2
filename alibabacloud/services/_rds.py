@@ -52,37 +52,37 @@ class _RDSResource(ServiceResource):
         )
     def create_db_instance(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_db_instance(**params)
+        response = self._client.create_db_instance(**_params)
         db_instance_id = _new_get_key_in_response(response, 'DBInstanceId')
         return _RDSDBInstanceResource(db_instance_id, _client=self._client)
 
     def create_db_instance_replica(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_db_instance_replica(**params)
+        response = self._client.create_db_instance_replica(**_params)
         workflow_id = _new_get_key_in_response(response, 'WorkflowId')
         return _RDSDBInstanceReplicaResource(workflow_id, _client=self._client)
 
     def create_migrate_task(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_migrate_task(**params)
+        response = self._client.create_migrate_task(**_params)
         migrate_task_id = _new_get_key_in_response(response, 'MigrateTaskId')
         return _RDSMigrateTaskResource(migrate_task_id, _client=self._client)
 
     def create_migrate_task_for_sql_server(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_migrate_task_for_sql_server(**params)
+        response = self._client.create_migrate_task_for_sql_server(**_params)
         migrate_iask_id = _new_get_key_in_response(response, 'MigrateIaskId')
         return _RDSMigrateTaskForSQLServerResource(migrate_iask_id, _client=self._client)
 
     def create_read_only_db_instance(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_read_only_db_instance(**params)
+        response = self._client.create_read_only_db_instance(**_params)
         order_id = _new_get_key_in_response(response, 'OrderId')
         return _RDSReadOnlyDBInstanceResource(order_id, _client=self._client)
 
     def create_temp_db_instance(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_temp_db_instance(**params)
+        response = self._client.create_temp_db_instance(**_params)
         temp_db_instance_id = _new_get_key_in_response(response, 'TempDBInstanceId')
         return _RDSTempDBInstanceResource(temp_db_instance_id, _client=self._client)
 
