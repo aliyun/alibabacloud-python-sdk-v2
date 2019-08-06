@@ -28,7 +28,7 @@ class _SLBResource(ServiceResource):
         ServiceResource.__init__(self, 'slb', _client=_client)
         self.access_control_lists = _create_resource_collection(
             _SLBAccessControlListResource, _client, _client.describe_access_control_lists,
-            'Acls.Acl', 'AccessControlListId',
+            'Acls.Acl', 'AclId',
         )
         self.ca_certificates = _create_resource_collection(
             _SLBCACertificateResource, _client, _client.describe_ca_certificates,
@@ -100,10 +100,10 @@ class _SLBResource(ServiceResource):
         master_slave_vserver_group_id = _new_get_key_in_response(response, 'MasterSlaveVServerGroupId')
         return _SLBMasterSlaveVServerGroupResource(master_slave_vserver_group_id, _client=self._client)
 
-    def create_multi_rules(self, **params):
+    def create_rules(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_rules(**_params)
-        rule_ids = _new_get_key_in_response(response, 'RuleId')
+        rule_ids = _new_get_key_in_response(response, 'None')
         rules = []
         for rule_id in rule_ids:
             rule = _SLBRuleResource(rule_id, _client=self._client)
@@ -165,7 +165,7 @@ class _SLBCACertificateResource(ServiceResource):
         self._client.set_ca_certificate_name(ca_certificate_id=self.ca_certificate_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_ca_certificates(ca_certificate_id=json.dumps([self.ca_certificate_id],))
+        result = self._client.describe_ca_certificates(ca_certificate_id=self.ca_certificate_id)
         items = _new_get_key_in_response(result, 'CACertificates.CACertificate')
         if not items:
             raise ClientException(msg=
@@ -191,7 +191,7 @@ class _SLBDomainExtensionResource(ServiceResource):
         self._client.set_domain_extension_attribute(domain_extension_id=self.domain_extension_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_domain_extensions(domain_extension_id=json.dumps([self.domain_extension_id],))
+        result = self._client.describe_domain_extensions(domain_extension_id=self.domain_extension_id)
         items = _new_get_key_in_response(result, 'DomainExtensions.DomainExtension')
         if not items:
             raise ClientException(msg=
@@ -337,7 +337,7 @@ class _SLBLoadBalancerResource(ServiceResource):
         self._client.create_load_balancer_https_listener(load_balancer_id=self.load_balancer_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_load_balancers(load_balancer_id=json.dumps([self.load_balancer_id],))
+        result = self._client.describe_load_balancers(load_balancer_id=self.load_balancer_id)
         items = _new_get_key_in_response(result, 'LoadBalancers.LoadBalancer')
         if not items:
             raise ClientException(msg=
@@ -381,7 +381,7 @@ class _SLBRegionResource(ServiceResource):
         self.status = None
 
     def refresh(self):
-        result = self._client.describe_regions(region_id=json.dumps([self.region_id],))
+        result = self._client.describe_regions(region_id=self.region_id)
         items = _new_get_key_in_response(result, 'Regions.Region')
         if not items:
             raise ClientException(msg=
@@ -458,7 +458,7 @@ class _SLBServerCertificateResource(ServiceResource):
         self._client.set_server_certificate_name(server_certificate_id=self.server_certificate_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_server_certificates(server_certificate_id=json.dumps([self.server_certificate_id],))
+        result = self._client.describe_server_certificates(server_certificate_id=self.server_certificate_id)
         items = _new_get_key_in_response(result, 'ServerCertificates.ServerCertificate')
         if not items:
             raise ClientException(msg=

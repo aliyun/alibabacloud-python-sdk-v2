@@ -46,7 +46,7 @@ class _ENSEnsRegionResource(ServiceResource):
         self.province = None
 
     def refresh(self):
-        result = self._client.describe_ens_regions(ens_region_id=json.dumps([self.ens_region_id],))
+        result = self._client.describe_ens_regions(ens_region_id=self.ens_region_id)
         items = _new_get_key_in_response(result, 'EnsRegions.EnsRegions')
         if not items:
             raise ClientException(msg=
@@ -89,7 +89,7 @@ class _ENSImageResource(ServiceResource):
         self._client.modify_image_attribute(image_id=self.image_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_images(image_id=json.dumps([self.image_id],))
+        result = self._client.describe_images(image_id=self.image_id)
         items = _new_get_key_in_response(result, 'Images.Image')
         if not items:
             raise ClientException(msg=
