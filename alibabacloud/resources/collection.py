@@ -155,6 +155,7 @@ def _create_resource_collection(resource_class, client, request_class,
             _param_expand_to_json(params, plural_param_to_json, singular=False)
         if param_aliases:
             _handle_param_aliases(params, param_aliases)
+
         _params = _transfer_params(params)
         response = request_class(**_params)
 

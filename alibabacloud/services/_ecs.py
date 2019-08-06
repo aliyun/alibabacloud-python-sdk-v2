@@ -42,10 +42,8 @@ class _ECSResource(ServiceResource):
             _ECSCommandResource, _client, _client.describe_commands,
             'Commands.Command', 'CommandId',
         )
-        from alibabacloud.services.ecs import ECSDedicatedHostResource
-
         self.dedicated_hosts = _create_resource_collection(
-            ECSDedicatedHostResource, _client, _client.describe_dedicated_hosts,
+            _ECSDedicatedHostResource, _client, _client.describe_dedicated_hosts,
             'DedicatedHosts.DedicatedHost', 'DedicatedHostId',
         )
         self.deployment_sets = _create_resource_collection(
@@ -58,7 +56,7 @@ class _ECSResource(ServiceResource):
         )
         self.eip_addresses = _create_resource_collection(
             _ECSEipAddressResource, _client, _client.describe_eip_addresses,
-            'EipAddresses.EipAddress', 'EipAddressId',
+            'EipAddresses.EipAddress', 'AllocationId',
         )
         self.ha_vips = _create_resource_collection(
             _ECSHaVipResource, _client, _client.describe_ha_vips,
@@ -72,9 +70,8 @@ class _ECSResource(ServiceResource):
             _ECSImageResource, _client, _client.describe_images,
             'Images.Image', 'ImageId',
         )
-        from alibabacloud.services.ecs import ECSInstanceResource
         self.instances = _create_resource_collection(
-            ECSInstanceResource, _client, _client.describe_instances,
+            _ECSInstanceResource, _client, _client.describe_instances,
             'Instances.Instance', 'InstanceId',
         )
         self.instance_types = _create_resource_collection(
@@ -139,7 +136,7 @@ class _ECSResource(ServiceResource):
         )
         self.virtual_border_routers = _create_resource_collection(
             _ECSVirtualBorderRouterResource, _client, _client.describe_virtual_border_routers,
-            'VirtualBorderRouterSet.VirtualBorderRouterType', 'VirtualBorderRouterId',
+            'VirtualBorderRouterSet.VirtualBorderRouterType', 'VbrId',
         )
         self.vpcs = _create_resource_collection(
             _ECSVpcResource, _client, _client.describe_vpcs,
@@ -161,14 +158,13 @@ class _ECSResource(ServiceResource):
         command_id = _new_get_key_in_response(response, 'CommandId')
         return _ECSCommandResource(command_id, _client=self._client)
 
-    def create_multi_dedicated_hosts(self, **params):
+    def allocate_dedicated_hosts(self, **params):
         _params = _transfer_params(params)
         response = self._client.allocate_dedicated_hosts(**_params)
-        dedicated_host_ids = _new_get_key_in_response(response, 'DedicatedHostId')
+        dedicated_host_ids = _new_get_key_in_response(response, 'DedicatedHostIdSets.DedicatedHostId')
         dedicated_hosts = []
-        from alibabacloud.services.ecs import ECSDedicatedHostResource
         for dedicated_host_id in dedicated_host_ids:
-            dedicated_host = ECSDedicatedHostResource(dedicated_host_id, _client=self._client)
+            dedicated_host = _ECSDedicatedHostResource(dedicated_host_id, _client=self._client)
             dedicated_hosts.append(dedicated_host)
         return dedicated_hosts
 
@@ -184,7 +180,7 @@ class _ECSResource(ServiceResource):
         disk_id = _new_get_key_in_response(response, 'DiskId')
         return _ECSDiskResource(disk_id, _client=self._client)
 
-    def create_eip_address(self, **params):
+    def allocate_eip_address(self, **params):
         _params = _transfer_params(params)
         response = self._client.allocate_eip_address(**_params)
         allocation_id = _new_get_key_in_response(response, 'AllocationId')
@@ -218,19 +214,15 @@ class _ECSResource(ServiceResource):
         _params = _transfer_params(params)
         response = self._client.create_instance(**_params)
         instance_id = _new_get_key_in_response(response, 'InstanceId')
-        from alibabacloud.services.ecs import ECSInstanceResource
+        return _ECSInstanceResource(instance_id, _client=self._client)
 
-        return ECSInstanceResource(instance_id, _client=self._client)
-
-    def create_multi_instances(self, **params):
+    def run_instances(self, **params):
         _params = _transfer_params(params)
         response = self._client.run_instances(**_params)
-        instance_ids = _new_get_key_in_response(response, 'InstanceId')
+        instance_ids = _new_get_key_in_response(response, 'InstanceIdSets.InstanceIdSet')
         instances = []
-        from alibabacloud.services.ecs import ECSInstanceResource
-
         for instance_id in instance_ids:
-            instance = ECSInstanceResource(instance_id, _client=self._client)
+            instance = _ECSInstanceResource(instance_id, _client=self._client)
             instances.append(instance)
         return instances
 
@@ -371,7 +363,7 @@ class _ECSBandwidthPackageResource(ServiceResource):
         self._client.remove_bandwidth_package_ips(bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_bandwidth_packages(bandwidth_package_id=json.dumps([self.bandwidth_package_id],))
+        result = self._client.describe_bandwidth_packages(bandwidth_package_id=self.bandwidth_package_id)
         items = _new_get_key_in_response(result, 'BandwidthPackages.BandwidthPackage')
         if not items:
             raise ClientException(msg=
@@ -413,7 +405,7 @@ class _ECSCommandResource(ServiceResource):
         self._client.modify_command(command_id=self.command_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_commands(command_id=json.dumps([self.command_id],))
+        result = self._client.describe_commands(command_id=self.command_id)
         items = _new_get_key_in_response(result, 'Commands.Command')
         if not items:
             raise ClientException(msg=
@@ -474,7 +466,7 @@ class _ECSDedicatedHostResource(ServiceResource):
         self._client.release_dedicated_host(dedicated_host_id=self.dedicated_host_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_dedicated_hosts(dedicated_host_ids=json.dumps([self.dedicated_host_id],))
+        result = self._client.describe_dedicated_hosts(dedicated_host_ids=self.dedicated_host_id)
         items = _new_get_key_in_response(result, 'DedicatedHosts.DedicatedHost')
         if not items:
             raise ClientException(msg=
@@ -520,7 +512,7 @@ class _ECSDeploymentSetResource(ServiceResource):
         self._client.modify_deployment_set_attribute(deployment_set_id=self.deployment_set_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_deployment_sets(deployment_set_ids=json.dumps([self.deployment_set_id],))
+        result = self._client.describe_deployment_sets(deployment_set_ids=self.deployment_set_id)
         items = _new_get_key_in_response(result, 'DeploymentSets.DeploymentSet')
         if not items:
             raise ClientException(msg=
@@ -602,7 +594,7 @@ class _ECSDiskResource(ServiceResource):
         self._client.reset_disk(disk_id=self.disk_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_disks(disk_ids=json.dumps([self.disk_id],))
+        result = self._client.describe_disks(disk_ids=self.disk_id)
         items = _new_get_key_in_response(result, 'Disks.Disk')
         if not items:
             raise ClientException(msg=
@@ -646,12 +638,12 @@ class _ECSEipAddressResource(ServiceResource):
         self._client.unassociate_eip_address(allocation_id=self.allocation_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_eip_addresses(allocation_id=json.dumps([self.allocation_id],))
+        result = self._client.describe_eip_addresses(allocation_id=self.allocation_id)
         items = _new_get_key_in_response(result, 'EipAddresses.EipAddress')
         if not items:
             raise ClientException(msg=
                                   "Failed to find eip_address data from DescribeEipAddresses response. "
-                                  "EipAddressId = {0}".format(self.eip_address_id))
+                                  "EipAddressId = {0}".format(self.allocation_id))
         self._assign_attributes(items[0])
 
 class _ECSForwardEntryResource(ServiceResource):
@@ -720,7 +712,7 @@ class _ECSHpcClusterResource(ServiceResource):
         self._client.modify_hpc_cluster_attribute(hpc_cluster_id=self.hpc_cluster_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_hpc_clusters(hpc_cluster_ids=json.dumps([self.hpc_cluster_id],))
+        result = self._client.describe_hpc_clusters(hpc_cluster_ids=self.hpc_cluster_id)
         items = _new_get_key_in_response(result, 'HpcClusters.HpcCluster')
         if not items:
             raise ClientException(msg=
@@ -787,7 +779,7 @@ class _ECSImageResource(ServiceResource):
         self._client.modify_image_share_permission(image_id=self.image_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_images(image_id=json.dumps([self.image_id],))
+        result = self._client.describe_images(image_id=self.image_id)
         items = _new_get_key_in_response(result, 'Images.Image')
         if not items:
             raise ClientException(msg=
@@ -966,7 +958,7 @@ class _ECSInstanceResource(ServiceResource):
         self._client.modify_instance_vpc_attribute(instance_id=self.instance_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id],))
+        result = self._client.describe_instances(instance_ids=self.instance_id)
         items = _new_get_key_in_response(result, 'Instances.Instance')
         if not items:
             raise ClientException(msg=
@@ -1076,7 +1068,7 @@ class _ECSNatGatewayResource(ServiceResource):
         self._client.delete_nat_gateway(nat_gateway_id=self.nat_gateway_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_nat_gateways(nat_gateway_id=json.dumps([self.nat_gateway_id],))
+        result = self._client.describe_nat_gateways(nat_gateway_id=self.nat_gateway_id)
         items = _new_get_key_in_response(result, 'NatGateways.NatGateway')
         if not items:
             raise ClientException(msg=
@@ -1165,7 +1157,7 @@ class _ECSNetworkInterfacePermissionResource(ServiceResource):
         self.network_interface_id = None
         self.permission = None
         self.permission_state = None
-        self.service_name = None
+        self.service_name_ = None
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -1235,7 +1227,7 @@ class _ECSRegionResource(ServiceResource):
         self.status = None
 
     def refresh(self):
-        result = self._client.describe_regions(region_id=json.dumps([self.region_id],))
+        result = self._client.describe_regions(region_id=self.region_id)
         items = _new_get_key_in_response(result, 'Regions.Region')
         if not items:
             raise ClientException(msg=
@@ -1264,7 +1256,7 @@ class _ECSRouteTableResource(ServiceResource):
         self._client.delete_route_entry(route_table_id=self.route_table_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_route_tables(route_table_id=json.dumps([self.route_table_id],))
+        result = self._client.describe_route_tables(route_table_id=self.route_table_id)
         items = _new_get_key_in_response(result, 'RouteTables.RouteTable')
         if not items:
             raise ClientException(msg=
@@ -1387,7 +1379,7 @@ class _ECSSecurityGroupResource(ServiceResource):
         self._client.leave_security_group(security_group_id=self.security_group_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_security_groups(security_group_ids=json.dumps([self.security_group_id],))
+        result = self._client.describe_security_groups(security_group_ids=self.security_group_id)
         items = _new_get_key_in_response(result, 'SecurityGroups.SecurityGroup')
         if not items:
             raise ClientException(msg=
@@ -1432,7 +1424,7 @@ class _ECSSnapshotResource(ServiceResource):
         self._client.modify_snapshot_attribute(snapshot_id=self.snapshot_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_snapshots(snapshot_ids=json.dumps([self.snapshot_id],))
+        result = self._client.describe_snapshots(snapshot_ids=self.snapshot_id)
         items = _new_get_key_in_response(result, 'Snapshots.Snapshot')
         if not items:
             raise ClientException(msg=
@@ -1457,7 +1449,7 @@ class _ECSSnapshotLinkResource(ServiceResource):
         self.total_size = None
 
     def refresh(self):
-        result = self._client.describe_snapshot_links(snapshot_link_ids=json.dumps([self.snapshot_link_id],))
+        result = self._client.describe_snapshot_links(snapshot_link_ids=self.snapshot_link_id)
         items = _new_get_key_in_response(result, 'SnapshotLinks.SnapshotLink')
         if not items:
             raise ClientException(msg=
@@ -1497,7 +1489,7 @@ class _ECSTaskResource(ServiceResource):
         self._client.cancel_task(task_id=self.task_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_tasks(task_ids=json.dumps([self.task_id],))
+        result = self._client.describe_tasks(task_ids=self.task_id)
         items = _new_get_key_in_response(result, 'TaskSet.Task')
         if not items:
             raise ClientException(msg=
@@ -1523,7 +1515,7 @@ class _ECSVRouterResource(ServiceResource):
         self._client.modify_vrouter_attribute(vrouter_id=self.vrouter_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_vrouters(vrouter_id=json.dumps([self.vrouter_id],))
+        result = self._client.describe_vrouters(vrouter_id=self.vrouter_id)
         items = _new_get_key_in_response(result, 'VRouters.VRouter')
         if not items:
             raise ClientException(msg=
@@ -1557,7 +1549,7 @@ class _ECSVSwitchResource(ServiceResource):
         self._client.modify_vswitch_attribute(vswitch_id=self.vswitch_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_vswitches(vswitch_id=json.dumps([self.vswitch_id],))
+        result = self._client.describe_vswitches(vswitch_id=self.vswitch_id)
         items = _new_get_key_in_response(result, 'VSwitches.VSwitch')
         if not items:
             raise ClientException(msg=
@@ -1641,7 +1633,7 @@ class _ECSVpcResource(ServiceResource):
         self._client.detach_classic_link_vpc(vpc_id=self.vpc_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_vpcs(vpc_id=json.dumps([self.vpc_id],))
+        result = self._client.describe_vpcs(vpc_id=self.vpc_id)
         items = _new_get_key_in_response(result, 'Vpcs.Vpc')
         if not items:
             raise ClientException(msg=

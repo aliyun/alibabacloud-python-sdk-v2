@@ -48,7 +48,7 @@ class _VPCResource(ServiceResource):
         )
         self.eip_addresses = _create_resource_collection(
             _VPCEipAddressResource, _client, _client.describe_eip_addresses,
-            'EipAddresses.EipAddress', 'EipAddressId',
+            'EipAddresses.EipAddress', 'AllocationId',
         )
         self.flow_logs = _create_resource_collection(
             _VPCFlowLogResource, _client, _client.describe_flow_logs,
@@ -64,7 +64,7 @@ class _VPCResource(ServiceResource):
         )
         self.ipv6_translators = _create_resource_collection(
             _VPCIPv6TranslatorResource, _client, _client.describe_ipv6_translators,
-            'Ipv6Translators.Ipv6Translator', 'IPv6TranslatorId',
+            'Ipv6Translators.Ipv6Translator', 'Ipv6TranslatorId',
         )
         self.ipv6_addresses = _create_resource_collection(
             _VPCIpv6AddressResource, _client, _client.describe_ipv6_addresses,
@@ -120,7 +120,7 @@ class _VPCResource(ServiceResource):
         )
         self.virtual_border_routers = _create_resource_collection(
             _VPCVirtualBorderRouterResource, _client, _client.describe_virtual_border_routers,
-            'VirtualBorderRouterSet.VirtualBorderRouterType', 'VirtualBorderRouterId',
+            'VirtualBorderRouterSet.VirtualBorderRouterType', 'VbrId',
         )
         self.vpcs = _create_resource_collection(
             _VPCVpcResource, _client, _client.describe_vpcs,
@@ -162,7 +162,7 @@ class _VPCResource(ServiceResource):
         customer_gateway_id = _new_get_key_in_response(response, 'CustomerGatewayId')
         return _VPCCustomerGatewayResource(customer_gateway_id, _client=self._client)
 
-    def create_eip_address(self, **params):
+    def allocate_eip_address(self, **params):
         _params = _transfer_params(params)
         response = self._client.allocate_eip_address(**_params)
         allocation_id = _new_get_key_in_response(response, 'AllocationId')
@@ -417,7 +417,7 @@ class _VPCBandwidthPackageResource(ServiceResource):
         self._client.modify_common_bandwidth_package_ip_bandwidth(bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_bandwidth_packages(bandwidth_package_id=json.dumps([self.bandwidth_package_id],))
+        result = self._client.describe_bandwidth_packages(bandwidth_package_id=self.bandwidth_package_id)
         items = _new_get_key_in_response(result, 'BandwidthPackages.BandwidthPackage')
         if not items:
             raise ClientException(msg=
@@ -453,7 +453,7 @@ class _VPCBgpGroupResource(ServiceResource):
         self._client.modify_bgp_group_attribute(bgp_group_id=self.bgp_group_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_bgp_groups(bgp_group_id=json.dumps([self.bgp_group_id],))
+        result = self._client.describe_bgp_groups(bgp_group_id=self.bgp_group_id)
         items = _new_get_key_in_response(result, 'BgpGroups.BgpGroup')
         if not items:
             raise ClientException(msg=
@@ -488,7 +488,7 @@ class _VPCBgpPeerResource(ServiceResource):
         self._client.delete_bgp_peer(bgp_peer_id=self.bgp_peer_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_bgp_peers(bgp_peer_id=json.dumps([self.bgp_peer_id],))
+        result = self._client.describe_bgp_peers(bgp_peer_id=self.bgp_peer_id)
         items = _new_get_key_in_response(result, 'BgpPeers.BgpPeer')
         if not items:
             raise ClientException(msg=
@@ -520,7 +520,7 @@ class _VPCCustomerGatewayResource(ServiceResource):
         self._client.modify_customer_gateway_attribute(customer_gateway_id=self.customer_gateway_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_customer_gateways(customer_gateway_id=json.dumps([self.customer_gateway_id],))
+        result = self._client.describe_customer_gateways(customer_gateway_id=self.customer_gateway_id)
         items = _new_get_key_in_response(result, 'CustomerGateways.CustomerGateway')
         if not items:
             raise ClientException(msg=
@@ -564,7 +564,7 @@ class _VPCEipAddressResource(ServiceResource):
         self._client.unassociate_eip_address(allocation_id=self.allocation_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_eip_addresses(allocation_id=json.dumps([self.allocation_id],))
+        result = self._client.describe_eip_addresses(allocation_id=self.allocation_id)
         items = _new_get_key_in_response(result, 'EipAddresses.EipAddress')
         if not items:
             raise ClientException(msg=
@@ -606,7 +606,7 @@ class _VPCFlowLogResource(ServiceResource):
         self._client.modify_flow_log_attribute(flow_log_id=self.flow_log_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_flow_logs(flow_log_id=json.dumps([self.flow_log_id],))
+        result = self._client.describe_flow_logs(flow_log_id=self.flow_log_id)
         items = _new_get_key_in_response(result, 'FlowLogs.FlowLog')
         if not items:
             raise ClientException(msg=
@@ -686,7 +686,7 @@ class _VPCGlobalAccelerationInstanceResource(ServiceResource):
         self._client.unassociate_global_acceleration_instance(global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_global_acceleration_instances(global_acceleration_instance_id=json.dumps([self.global_acceleration_instance_id],))
+        result = self._client.describe_global_acceleration_instances(global_acceleration_instance_id=self.global_acceleration_instance_id)
         items = _new_get_key_in_response(result, 'GlobalAccelerationInstances.GlobalAccelerationInstance')
         if not items:
             raise ClientException(msg=
@@ -761,7 +761,7 @@ class _VPCIPv6TranslatorResource(ServiceResource):
         self._client.modify_ipv6_translator_bandwidth(ipv6_translator_id=self.ipv6_translator_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_ipv6_translators(ipv6_translator_id=json.dumps([self.ipv6_translator_id],))
+        result = self._client.describe_ipv6_translators(ipv6_translator_id=self.ipv6_translator_id)
         items = _new_get_key_in_response(result, 'Ipv6Translators.Ipv6Translator')
         if not items:
             raise ClientException(msg=
@@ -831,7 +831,7 @@ class _VPCIpv6AddressResource(ServiceResource):
         self._client.modify_ipv6_address_attribute(ipv6_address_id=self.ipv6_address_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_ipv6_addresses(ipv6_address_id=json.dumps([self.ipv6_address_id],))
+        result = self._client.describe_ipv6_addresses(ipv6_address_id=self.ipv6_address_id)
         items = _new_get_key_in_response(result, 'Ipv6Addresses.Ipv6Address')
         if not items:
             raise ClientException(msg=
@@ -856,7 +856,7 @@ class _VPCIpv6EgressOnlyRuleResource(ServiceResource):
         self._client.delete_ipv6_egress_only_rule(ipv6_egress_only_rule_id=self.ipv6_egress_only_rule_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_ipv6_egress_only_rules(ipv6_egress_only_rule_id=json.dumps([self.ipv6_egress_only_rule_id],))
+        result = self._client.describe_ipv6_egress_only_rules(ipv6_egress_only_rule_id=self.ipv6_egress_only_rule_id)
         items = _new_get_key_in_response(result, 'Ipv6EgressOnlyRules.Ipv6EgressOnlyRule')
         if not items:
             raise ClientException(msg=
@@ -898,7 +898,7 @@ class _VPCIpv6GatewayResource(ServiceResource):
         self._client.modify_ipv6_gateway_spec(ipv6_gateway_id=self.ipv6_gateway_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_ipv6_gateways(ipv6_gateway_id=json.dumps([self.ipv6_gateway_id],))
+        result = self._client.describe_ipv6_gateways(ipv6_gateway_id=self.ipv6_gateway_id)
         items = _new_get_key_in_response(result, 'Ipv6Gateways.Ipv6Gateway')
         if not items:
             raise ClientException(msg=
@@ -937,7 +937,7 @@ class _VPCNatGatewayResource(ServiceResource):
         self._client.modify_nat_gateway_spec(nat_gateway_id=self.nat_gateway_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_nat_gateways(nat_gateway_id=json.dumps([self.nat_gateway_id],))
+        result = self._client.describe_nat_gateways(nat_gateway_id=self.nat_gateway_id)
         items = _new_get_key_in_response(result, 'NatGateways.NatGateway')
         if not items:
             raise ClientException(msg=
@@ -965,7 +965,7 @@ class _VPCNqaResource(ServiceResource):
         self._client.modify_nqa(nqa_id=self.nqa_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_nqas(nqa_id=json.dumps([self.nqa_id],))
+        result = self._client.describe_nqas(nqa_id=self.nqa_id)
         items = _new_get_key_in_response(result, 'Nqas.Nqa')
         if not items:
             raise ClientException(msg=
@@ -1036,7 +1036,7 @@ class _VPCRegionResource(ServiceResource):
         self.status = None
 
     def refresh(self):
-        result = self._client.describe_regions(region_id=json.dumps([self.region_id],))
+        result = self._client.describe_regions(region_id=self.region_id)
         items = _new_get_key_in_response(result, 'Regions.Region')
         if not items:
             raise ClientException(msg=
@@ -1088,7 +1088,7 @@ class _VPCRouteTableResource(ServiceResource):
         self._client.unassociate_route_table(route_table_id=self.route_table_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_route_tables(route_table_id=json.dumps([self.route_table_id],))
+        result = self._client.describe_route_tables(route_table_id=self.route_table_id)
         items = _new_get_key_in_response(result, 'RouteTables.RouteTable')
         if not items:
             raise ClientException(msg=
@@ -1207,7 +1207,7 @@ class _VPCSslVpnClientCertResource(ServiceResource):
         self._client.modify_ssl_vpn_client_cert(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_ssl_vpn_client_certs(ssl_vpn_client_cert_id=json.dumps([self.ssl_vpn_client_cert_id],))
+        result = self._client.describe_ssl_vpn_client_certs(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id)
         items = _new_get_key_in_response(result, 'SslVpnClientCertKeys.SslVpnClientCertKey')
         if not items:
             raise ClientException(msg=
@@ -1244,7 +1244,7 @@ class _VPCSslVpnServerResource(ServiceResource):
         self._client.modify_ssl_vpn_server(ssl_vpn_server_id=self.ssl_vpn_server_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_ssl_vpn_servers(ssl_vpn_server_id=json.dumps([self.ssl_vpn_server_id],))
+        result = self._client.describe_ssl_vpn_servers(ssl_vpn_server_id=self.ssl_vpn_server_id)
         items = _new_get_key_in_response(result, 'SslVpnServers.SslVpnServer')
         if not items:
             raise ClientException(msg=
@@ -1270,7 +1270,7 @@ class _VPCVRouterResource(ServiceResource):
         self._client.modify_vrouter_attribute(vrouter_id=self.vrouter_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_vrouters(vrouter_id=json.dumps([self.vrouter_id],))
+        result = self._client.describe_vrouters(vrouter_id=self.vrouter_id)
         items = _new_get_key_in_response(result, 'VRouters.VRouter')
         if not items:
             raise ClientException(msg=
@@ -1304,7 +1304,7 @@ class _VPCVSwitchResource(ServiceResource):
         self._client.modify_vswitch_attribute(vswitch_id=self.vswitch_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_vswitches(vswitch_id=json.dumps([self.vswitch_id],))
+        result = self._client.describe_vswitches(vswitch_id=self.vswitch_id)
         items = _new_get_key_in_response(result, 'VSwitches.VSwitch')
         if not items:
             raise ClientException(msg=
@@ -1396,7 +1396,7 @@ class _VPCVpcResource(ServiceResource):
         self._client.modify_vpc_attribute(vpc_id=self.vpc_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_vpcs(vpc_id=json.dumps([self.vpc_id],))
+        result = self._client.describe_vpcs(vpc_id=self.vpc_id)
         items = _new_get_key_in_response(result, 'Vpcs.Vpc')
         if not items:
             raise ClientException(msg=
@@ -1439,7 +1439,7 @@ class _VPCVpnConnectionResource(ServiceResource):
         self._client.modify_vpn_connection_attribute(vpn_connection_id=self.vpn_connection_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_vpn_connections(vpn_connection_id=json.dumps([self.vpn_connection_id],))
+        result = self._client.describe_vpn_connections(vpn_connection_id=self.vpn_connection_id)
         items = _new_get_key_in_response(result, 'VpnConnections.VpnConnection')
         if not items:
             raise ClientException(msg=
@@ -1506,7 +1506,7 @@ class _VPCVpnGatewayResource(ServiceResource):
         self._client.publish_vpn_route_entry(vpn_gateway_id=self.vpn_gateway_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_vpn_gateways(vpn_gateway_id=json.dumps([self.vpn_gateway_id],))
+        result = self._client.describe_vpn_gateways(vpn_gateway_id=self.vpn_gateway_id)
         items = _new_get_key_in_response(result, 'VpnGateways.VpnGateway')
         if not items:
             raise ClientException(msg=

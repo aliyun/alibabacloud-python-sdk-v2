@@ -52,7 +52,7 @@ class _RAMAccessKeyResource(ServiceResource):
         self.status = None
 
     def refresh(self):
-        result = self._client.list_access_keys(access_key_id=json.dumps([self.access_key_id],))
+        result = self._client.list_access_keys(access_key_id=self.access_key_id)
         items = _new_get_key_in_response(result, 'AccessKeys.AccessKey')
         if not items:
             raise ClientException(msg=

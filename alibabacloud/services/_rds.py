@@ -116,7 +116,7 @@ class _RDSBackupResource(ServiceResource):
         self._client.delete_backup(backup_id=self.backup_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_backups(backup_id=json.dumps([self.backup_id],))
+        result = self._client.describe_backups(backup_id=self.backup_id)
         items = _new_get_key_in_response(result, 'Items.Backup')
         if not items:
             raise ClientException(msg=
@@ -442,7 +442,7 @@ class _RDSDBInstanceResource(ServiceResource):
         self._client.upgrade_db_instance_kernel_version(db_instance_id=self.db_instance_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_db_instances(db_instance_id=json.dumps([self.db_instance_id],))
+        result = self._client.describe_db_instances(db_instance_id=self.db_instance_id)
         items = _new_get_key_in_response(result, 'Items.DBInstance')
         if not items:
             raise ClientException(msg=
@@ -500,7 +500,7 @@ class _RDSRegionResource(ServiceResource):
         self.status = None
 
     def refresh(self):
-        result = self._client.describe_regions(region_id=json.dumps([self.region_id],))
+        result = self._client.describe_regions(region_id=self.region_id)
         items = _new_get_key_in_response(result, 'Regions.Region')
         if not items:
             raise ClientException(msg=
@@ -559,7 +559,7 @@ class _RDSTaskResource(ServiceResource):
         self.task_status = None
 
     def refresh(self):
-        result = self._client.describe_tasks(task_ids=json.dumps([self.task_id],))
+        result = self._client.describe_tasks(task_ids=self.task_id)
         items = _new_get_key_in_response(result, 'TaskSet.Task')
         if not items:
             raise ClientException(msg=

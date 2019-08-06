@@ -3716,7 +3716,7 @@ class EcsClient(AlibabaCloudClient):
                                "Filter.1.Value": filter1_value, "NeedSaleCycle": need_sale_cycle,
                                "Filter.2.Key": filter2_key, "OwnerId": owner_id,
                                "VSwitchId": vswitch_id, "EipAddresses": eip_addresses,
-                               "InstanceName": instance_name, "InstanceId": instance_ids,
+                               "InstanceName": instance_name, "InstanceIds": instance_ids,
                                "InternetChargeType": internet_charge_type, "VpcId": vpc_id,
                                "ZoneId": zone_id, "Filter.3.Key": filter3_key,
                                "InstanceNetworkType": instance_network_type, "Status": status}
