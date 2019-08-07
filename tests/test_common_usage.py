@@ -15,7 +15,7 @@
 import unittest
 from tests.base import SDKTestBase
 import alibabacloud
-from alibabacloud.exceptions import ClientException
+from alibabacloud.exceptions import ClientException, ServiceNameInvalidException
 
 
 class CommonTest(SDKTestBase):
@@ -24,8 +24,8 @@ class CommonTest(SDKTestBase):
         try:
             ecs = alibabacloud.get_resource("blah")
             assert False
-        except ClientException as e:
-            self.assertEqual(e.error_message, "Resource 'blah' is not currently supported.")
+        except ServiceNameInvalidException as e:
+            self.assertTrue(e.error_message.startswith("No such service_name 'blah'. Please check your Service Name."))
 
     def test_get_resource(self):
         alibabacloud.get_resource("ecs",

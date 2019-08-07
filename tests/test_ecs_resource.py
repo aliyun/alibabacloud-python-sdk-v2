@@ -25,16 +25,16 @@ from tests.base import SDKTestBase
 
 
 class EcsResourceTest(SDKTestBase):
+    _created = False
 
     def __init__(self, *args, **kwargs):
         SDKTestBase.__init__(self, *args, **kwargs)
         self.image_id = "coreos_1745_7_0_64_30G_alibase_20180705.vhd"
-        self._created = False
 
     def setUp(self):
-        if not self._created:
+        if not EcsResourceTest._created:
             self._create_a_lot_instances(4)
-            self._created = True
+            EcsResourceTest._created = True
 
     def _env_clean_up(self):
         print("clean up all instances if any")
@@ -198,7 +198,7 @@ class EcsResourceTest(SDKTestBase):
 
         all_ids = self._get_ids(ecs.instances.all())
         instance_id = all_ids[-1]
-        instances = list(ecs.instances.filter(instance_id=instance_id))
+        instances = list(ecs.instances.filter(instance_ids=[instance_id,]))
         self.assertEqual(1, len(instances))
         self.assertEqual(instance_id, instances[0].instance_id)
 
@@ -309,6 +309,7 @@ class EcsResourceTest(SDKTestBase):
         name = "RandomName" + str(seed)
         instance = self._find_instance(1, "Running", "ecs.n2.small")[0]
         instance.modify_attributes(InstanceName=name)
+        instance.refresh()
         self.assertEqual(name, instance.instance_name)
 
     def test_instance_filter_params_alias(self):
@@ -322,7 +323,7 @@ class EcsResourceTest(SDKTestBase):
             self.assertEqual(set(expected_instance_ids), set([x.instance_id for x in items]))
 
         _iterator_assert(
-            self.ecs.instances.filter(instance_id=instance_ids[0]),
+            self.ecs.instances.filter(instance_ids=[instance_ids[0],]),
             1, instance_ids[:1])
         _iterator_assert(
             self.ecs.instances.filter(instance_ids=instance_ids),

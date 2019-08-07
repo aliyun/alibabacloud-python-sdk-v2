@@ -1,4 +1,4 @@
-# Copyright 2018 Alibaba Cloud Inc. All rights reserved.
+# Copyright 2019 Alibaba Cloud Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,65 +11,91 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import json
-import time
+from functools import wraps
 
-from alibabacloud.exceptions import ClientException
-
+from alibabacloud import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_default_resource_collection
+from alibabacloud.services._ecs import _ECSDedicatedHostResource
+from alibabacloud.services._ecs import _ECSDiskResource
+from alibabacloud.services._ecs import _ECSInstanceResource
+from alibabacloud.services._ecs import _ECSResource
+from alibabacloud.services._ecs import _ECSSystemEventResource
+from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response, _assert_is_not_none
 
 
-class ECSInstanceResource(ServiceResource):
-    """
-    Ecs 实例资源类
+class ECSDedicatedHostResource(_ECSDedicatedHostResource):
 
-    :param instance_id: 实例ID
-    :type instance_id: str
+    STATUS_RELEASED = 'Released'
+    STATUS_AVAILABLE = 'Available'
+    STATUS_UNDERASSESSMENT = 'UnderAssessment'
+    STATUS_PERMANENTFAILURE = 'PermanentFailure'
+    STATUS_CREATING = 'Creating'
 
-    :param _client:  Alibaba Cloud Client
-    :type _client: alibaba.client.AlibabaCloudClient
+    def __init__(self, dedicatedhost_id, _client=None):
+        _ECSDedicatedHostResource.__init__(self, dedicatedhost_id, _client=_client)
 
-    """
+    def wait_until_released(self):
+        self.wait_until(self.STATUS_RELEASED)
 
-    STATUS_RUNNING = "Running"
-    STATUS_STARTING = "Starting"
-    STATUS_STOPPING = "Stopping"
-    STATUS_STOPPED = "Stopped"
+    def wait_until_available(self):
+        self.wait_until(self.STATUS_AVAILABLE)
+
+    def wait_until_underassessment(self):
+        self.wait_until(self.STATUS_UNDERASSESSMENT)
+
+    def wait_until_permanentfailure(self):
+        self.wait_until(self.STATUS_PERMANENTFAILURE)
+
+    def wait_until_creating(self):
+        self.wait_until(self.STATUS_CREATING)
+
+
+class ECSInstanceResource(_ECSInstanceResource):
+
+    STATUS_RUNNING = 'Running'
+    STATUS_STOPPING = 'Stopping'
+    STATUS_PENDING = 'Pending'
+    STATUS_STARTING = 'Starting'
+    STATUS_RESETTING = 'Resetting'
+    STATUS_TRANSFERRING = 'Transferring'
+    STATUS_STOPPED = 'Stopped'
+    STATUS_DELETED = 'Deleted'
 
     def __init__(self, instance_id, _client=None):
-        ServiceResource.__init__(self, 'ecs.instance', _client=_client)
-        self.instance_id = instance_id
-        _assert_is_not_none(instance_id, "instance_id")
-        self.region_id = None
-        self.inner_ip_address = None
-        self.creation_time = None
-        self.expired_time = None
-        self.io_optimized = None
-        self.public_ip_address = None
-        self.internet_charge_type = None
-        self.vpc_attributes = None
-        self.status = None
-        self.host_name = None
-        self.image_id = None
-        self.instance_charge_type = None
-        self.instance_network_type = None
-        self.instance_type = None
-        self.eip_address = None
-        self.serial_number = None
-        self.operation_locks = None
-        self.security_group_ids = None
-        self.internet_max_bandwidth_out = None
-        self.zone_id = None
-        self.instance_name = None
-        self.internet_max_bandwidth_in = None
-        self.device_available = None
+        _ECSInstanceResource.__init__(self, instance_id, _client=_client)
+
+    def wait_until_running(self):
+        self.wait_until(self.STATUS_RUNNING)
+
+    def wait_until_stopping(self):
+        self.wait_until(self.STATUS_STOPPING)
+
+    def wait_until_pending(self):
+        self.wait_until(self.STATUS_PENDING)
+
+    def wait_until_starting(self):
+        self.wait_until(self.STATUS_STARTING)
+
+    def wait_until_resetting(self):
+        self.wait_until(self.STATUS_RESETTING)
+
+    def wait_until_transferring(self):
+        self.wait_until(self.STATUS_TRANSFERRING)
+
+    def wait_until_stopped(self):
+        self.wait_until(self.STATUS_STOPPED)
+
+    def wait_until_deleted(self):
+        self.wait_until(self.STATUS_DELETED)
+
+    def modify_attributes(self, **params):
+        self.modify_attribute(**params)
 
     def refresh(self):
-        result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id]))
+        result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id, ]))
         items = _new_get_key_in_response(result, 'Instances.Instance')
         if not items:
             raise ClientException(msg=
@@ -77,63 +103,28 @@ class ECSInstanceResource(ServiceResource):
                                   "InstanceId = {0}".format(self.instance_id))
         self._assign_attributes(items[0])
 
-    def wait_until(self, target_status, timeout=120):
-        start_time = time.time()
-        while True:
-            end_time = time.time()
-            if end_time - start_time >= timeout:
-                raise Exception("Timed out: no {0} status after {1} seconds.".format(
-                    target_status, timeout))
 
-            self.refresh()
-            if self.status == target_status:
-                return
-            time.sleep(1)
+# 人工补充部分
+# 对list_of_instance_id 以及instance_ids 进行映射处理
+def transfer(rules):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, **params):
+            for key, value in rules.items():
+                # key is like: InstanceIds or instance_ids
+                # value is like: list_of_instance_id
+                if key in params:
+                    temp = params[key]
+                    del params[key]
 
-    def wait_until_running(self):
-        self.wait_until(self.STATUS_RUNNING)
+                    params[value] = temp
+            return func(self, **params)
+        return wrapper
 
-    def wait_until_starting(self):
-        self.wait_until(self.STATUS_STARTING)
-
-    def wait_until_stopping(self):
-        self.wait_until(self.STATUS_STOPPING)
-
-    def wait_until_stopped(self):
-        self.wait_until(self.STATUS_STOPPED)
-
-    def start(self):
-        self._client.start_instance(instance_id=self.instance_id)
-
-    def stop(self):
-        self._client.stop_instance(instance_id=self.instance_id)
-
-    def reboot(self):
-        self._client.reboot_instance(instance_id=self.instance_id)
-
-    def delete(self):
-        self._client.delete_instance(instance_id=self.instance_id)
-
-    def redeploy(self, **params):
-        _params = _transfer_params(params)
-        self._client.redeploy_instance(instance_id=self.instance_id, **_params)
-
-    def modify_attributes(self, **params):
-        _params = _transfer_params(params)
-        self._client.modify_instance_attribute(instance_id=self.instance_id, **_params)
-        self.refresh()
-
-    def replace_system_disk(self, **params):
-        _params = _transfer_params(params)
-        response = self._client.replace_system_disk(instance_id=self.instance_id, **_params)
-        return response['DiskId']
-
-    def modify_vnc_password(self, **params):
-        _params = _transfer_params(params)
-        self._client.modify_instance_vnc_passwd(instance_id=self.instance_id, **_params)
+    return decorator
 
 
-class ECSSystemEventResource(ServiceResource):
+class ECSSystemEventResource(_ECSSystemEventResource):
     """
     ECS 系统事件资源类
 
@@ -185,10 +176,10 @@ class ECSSystemEventResource(ServiceResource):
         self.event_id = event_id
         self.event_finish_time = None
         _assert_is_not_none(event_id, "event_id")
-        ServiceResource.__init__(self, "ecs.event", _client=_client)
+        _ECSSystemEventResource.__init__(self, event_id, _client=_client)
 
     def refresh(self):
-        response = self._client.describe_instance_history_events(event_id=[self.event_id, ])
+        response = self._client.describe_instance_history_events(list_of_event_id=[self.event_id, ])
         items = _new_get_key_in_response(response, 'InstanceSystemEventSet.InstanceSystemEventType')
         if not items:
             raise ClientException(msg=
@@ -208,6 +199,14 @@ class ECSSystemEventResource(ServiceResource):
         return self.event_cycle_status.search("Name")
 
 
+class ECSTagResource(ServiceResource):
+    pass
+
+
+class ECSDemand(ServiceResource):
+    pass
+
+
 class ECSInstanceFullStatus(ServiceResource):
     """ECS 实例状态资源类"""
 
@@ -222,119 +221,31 @@ class ECSInstanceFullStatus(ServiceResource):
             self.system_events.append(event)
 
 
-class ECSDiskResource(ServiceResource):
-    """
-    ECS 硬盘资源类
-
-    :param disk_id: 硬盘id
-    :type disk_id: str
-
-    :param _client:  Alibaba Cloud Client
-    :type _client: alibaba.client.AlibabaCloudClient
-
-    """
+class ECSDiskResource(_ECSDiskResource):
 
     def __init__(self, disk_id, _client=None):
+        _ECSDiskResource.__init__(self, disk_id, _client=_client)
         self.disk_id = disk_id
-        _assert_is_not_none(disk_id, "disk_id")
-        ServiceResource.__init__(self, "ecs.disk", _client=_client)
-
-    def delete(self, **params):
-        _params = _transfer_params(params)
-        self._client.delete_disk(disk_id=self.disk_id, **_params)
-
-    def attach(self, **params):
-        _params = _transfer_params(params)
-        self._client.attach_disk(disk_id=self.disk_id, **_params)
-
-    def detach(self, **params):
-        _params = _transfer_params(params)
-        self._client.detach_disk(disk_id=self.disk_id, **_params)
-
-    def modify_attributes(self, **params):
-        _params = _transfer_params(params)
-        self._client.modify_disk_attribute(disk_id=self.disk_id, **_params)
-        self.refresh()
 
     def refresh(self):
-        response = self._client.describe_disks(disk_ids=json.dumps([self.disk_id]))
-        items = _new_get_key_in_response(response, 'Disks.Disk')
+        result = self._client.describe_disks(disk_ids=json.dumps([self.disk_id, ]))
+        items = _new_get_key_in_response(result, 'Disks.Disk')
         if not items:
             raise ClientException(msg=
-                                  "Failed to find disk data from DescribeDiks "
-                                  "response. "
+                                  "Failed to find disk data from DescribeDisks response. "
                                   "DiskId = {0}".format(self.disk_id))
         self._assign_attributes(items[0])
 
-    def reinit(self, **params):
-        _params = _transfer_params(params)
-        self._client.re_init_disk(disk_id=self.disk_id, **_params)
 
-    def resize(self, **params):
-        _params = _transfer_params(params)
-        self._client.resize_disk(disk_id=self.disk_id, **_params)
-
-    def reset(self, **params):
-        _params = _transfer_params(params)
-        self._client.reset_disk(disk_id=self.disk_id, **_params)
-
-
-class ECSImageResource(ServiceResource):
-    """
-    Ecs 镜像资源类
-
-    :param image_id: 镜像id
-    :type image_id:  str
-
-    :param _client:  Alibaba Cloud Client
-    :type _client: alibaba.client.AlibabaCloudClient
-
-    """
-
-    def __init__(self, image_id, _client=None):
-        self.image_id = image_id
-        _assert_is_not_none(image_id, "image_id")
-        ServiceResource.__init__(self, "ecs.image", _client=_client)
-
-    def delete(self, **params):
-        _params = _transfer_params(params)
-        self._client.delete_image(image_id=self.image_id, **_params)
-
-    def modify_attributes(self, **params):
-        _params = _transfer_params(params)
-        self._client.modify_image_attribute(image_id=self.image_id, **_params)
-        self.refresh()
-
-    def refresh(self):
-        response = self._client.describe_images(image_id=self.image_id)
-        items = _new_get_key_in_response(response, 'Images.Image')
-        if not items:
-            raise ClientException(msg=
-                                  "Failed to find image data from DescribeImages "
-                                  "response. "
-                                  "ImageId = {0}".format(self.image_id))
-        self._assign_attributes(items[0])
-
-
-class ECSTagResource(ServiceResource):
-    pass
-
-
-class ECSDemand(ServiceResource):
-    pass
-
-
-class ECSResource(ServiceResource):
-    """
-    ECS 资源类
-
-    :param _client:  Alibaba Cloud Client
-    :type _client: alibaba.client.AlibabaCloudClient
-
-    """
-
+class ECSResource(_ECSResource):
     def __init__(self, _client=None):
-        ServiceResource.__init__(self, 'ecs', _client=_client)
+        _ECSResource.__init__(self, _client=_client)
+
+        self.dedicated_hosts = _create_resource_collection(
+            ECSDedicatedHostResource, _client, _client.describe_dedicated_hosts,
+            'DedicatedHosts.DedicatedHost', 'DedicatedHostId',
+        )
+
         self.instances = _create_resource_collection(
             ECSInstanceResource, _client, _client.describe_instances,
             'Instances.Instance', 'InstanceId',
@@ -346,15 +257,6 @@ class ECSResource(ServiceResource):
                 'list_of_inner_ip_address': 'InnerIpAddresses',
                 'list_of_public_ip_address': 'PublicIpAddresses',
                 'list_of_eip_address': 'EipAddresses',
-            }
-        )
-        self.system_events = _create_resource_collection(
-            ECSSystemEventResource, _client, _client.describe_instance_history_events,
-            'InstanceSystemEventSet.InstanceSystemEventType', 'EventId',
-            param_aliases={
-                'list_of_event_id': 'EventId',
-                'list_of_event_cycle_status': 'InstanceEventCycleStatus',
-                'list_of_event_type': 'InstanceEventType'
             }
         )
 
@@ -371,11 +273,6 @@ class ECSResource(ServiceResource):
             }
         )
 
-        self.images = _create_resource_collection(
-            ECSImageResource, _client, _client.describe_images,
-            'Images.Image', 'ImageId',
-        )
-
         self.tags = _create_default_resource_collection(
             ECSTagResource, _client, _client.describe_tags,
             'Tags.Tag',
@@ -385,6 +282,26 @@ class ECSResource(ServiceResource):
             ECSDemand, _client, _client.describe_demands,
             'Demands.Demand',
         )
+
+        self.system_events = _create_resource_collection(
+            ECSSystemEventResource, _client, _client.describe_instance_history_events,
+            'InstanceSystemEventSet.InstanceSystemEventType', 'EventId',
+            param_aliases={
+                'list_of_event_id': 'EventId',
+                'list_of_event_cycle_status': 'InstanceEventCycleStatus',
+                'list_of_event_type': 'InstanceEventType',
+            }
+        )
+
+    def allocate_dedicated_hosts(self, **params):
+        _params = _transfer_params(params)
+        response = self._client.allocate_dedicated_hosts(**_params)
+        dedicated_host_ids = _new_get_key_in_response(response, 'DedicatedHostIdSets.DedicatedHostId')
+        dedicated_hosts = []
+        for dedicated_host_id in dedicated_host_ids:
+            dedicated_host = ECSDedicatedHostResource(dedicated_host_id, _client=self._client)
+            dedicated_hosts.append(dedicated_host)
+        return dedicated_hosts
 
     def create_instance(self, **params):
         _params = _transfer_params(params)
@@ -396,13 +313,13 @@ class ECSResource(ServiceResource):
         _params = _transfer_params(params)
         response = self._client.run_instances(**_params)
         instance_ids = _new_get_key_in_response(response, 'InstanceIdSets.InstanceIdSet')
-
         instances = []
         for instance_id in instance_ids:
             instance = ECSInstanceResource(instance_id, _client=self._client)
             instances.append(instance)
         return instances
 
+    @transfer({"InstanceIds": "list_of_instance_id"})
     def create_simulated_system_events(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_simulated_system_events(**_params)
@@ -412,27 +329,3 @@ class ECSResource(ServiceResource):
             event = ECSSystemEventResource(event_id, _client=self._client)
             events.append(event)
         return events
-
-    def cancel_simulated_system_events(self, **params):
-        _params = _transfer_params(params)
-        self._client.cancel_simulated_system_events(**_params)
-
-    def create_disk(self, **params):
-        _params = _transfer_params(params)
-        response = self._client.create_disk(**params)
-        disk_id = _new_get_key_in_response(response, 'DiskId')
-        return ECSDiskResource(disk_id, _client=self._client)
-
-    def create_image(self, **params):
-        _params = _transfer_params(params)
-        response = self._client.create_image(**params)
-        image_id = _new_get_key_in_response(response, 'ImageId')
-        return ECSImageResource(image_id, _client=self._client)
-
-    def add_tags(self, **params):
-        _params = _transfer_params(params)
-        self._client.add_tags(**_params)
-
-    def remove_tags(self, **params):
-        _params = _transfer_params(params)
-        self._client.remove_tags(**_params)

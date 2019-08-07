@@ -34,7 +34,7 @@ class MockResponseTest(SDKTestBase):
                     _self.result = self._read_mock_data("instance_full_status.json")
             return MockData()
         from alibabacloud import get_client
-        from alibabacloud import ECSResource
+        from alibabacloud.services.ecs import ECSResource
         ecs_client = get_client('ecs')
         with patch.object(ecs_client, "_handle_request", mock_do_request):
             ecs = ECSResource(_client=ecs_client)
