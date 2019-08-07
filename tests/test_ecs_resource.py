@@ -25,16 +25,16 @@ from tests.base import SDKTestBase
 
 
 class EcsResourceTest(SDKTestBase):
+    _created = False
 
     def __init__(self, *args, **kwargs):
         SDKTestBase.__init__(self, *args, **kwargs)
         self.image_id = "coreos_1745_7_0_64_30G_alibase_20180705.vhd"
-        self._created = False
 
     def setUp(self):
-        if not self._created:
+        if not EcsResourceTest._created:
             self._create_a_lot_instances(4)
-            self._created = True
+            EcsResourceTest._created = True
 
     def _env_clean_up(self):
         print("clean up all instances if any")

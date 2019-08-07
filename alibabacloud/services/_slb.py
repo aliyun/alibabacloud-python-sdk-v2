@@ -244,10 +244,6 @@ class _SLBLoadBalancerResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.create_load_balancer_tcp_listener(load_balancer_id=self.load_balancer_id, **_params)
 
-    def create_load_balancer_udp_listener(self, **params):
-        _params = _transfer_params(params)
-        self._client.create_load_balancer_udp_listener(load_balancer_id=self.load_balancer_id, **_params)
-
     def delete(self, **params):
         _params = _transfer_params(params)
         self._client.delete_load_balancer(load_balancer_id=self.load_balancer_id, **_params)
@@ -299,6 +295,10 @@ class _SLBLoadBalancerResource(ServiceResource):
     def set_listener_access_control_status(self, **params):
         _params = _transfer_params(params)
         self._client.set_listener_access_control_status(load_balancer_id=self.load_balancer_id, **_params)
+
+    def set_load_balancer_delete_protection(self, **params):
+        _params = _transfer_params(params)
+        self._client.set_load_balancer_delete_protection(load_balancer_id=self.load_balancer_id, **_params)
 
     def set_load_balancer_http_listener_attribute(self, **params):
         _params = _transfer_params(params)

@@ -30,10 +30,6 @@ class _RAMResource(ServiceResource):
             _RAMAccessKeyResource, _client, _client.list_access_keys,
             'AccessKeys.AccessKey', 'AccessKeyId',
         )
-        self.public_keys = _create_resource_collection(
-            _RAMPublicKeyResource, _client, _client.list_public_keys,
-            'PublicKeys.PublicKey', 'PublicKeyId',
-        )
         self.roles = _create_resource_collection(
             _RAMRoleResource, _client, _client.list_roles,
             'Roles.Role', 'RoleId',
@@ -59,15 +55,6 @@ class _RAMAccessKeyResource(ServiceResource):
                                   "Failed to find access_key data from ListAccessKeys response. "
                                   "AccessKeyId = {0}".format(self.access_key_id))
         self._assign_attributes(items[0])
-
-class _RAMPublicKeyResource(ServiceResource):
-
-    def __init__(self, public_key_id, _client=None):
-        ServiceResource.__init__(self, "ram.public_key", _client=_client)
-        self.public_key_id = public_key_id
-
-        self.create_date = None
-        self.status = None
 
 class _RAMRoleResource(ServiceResource):
 

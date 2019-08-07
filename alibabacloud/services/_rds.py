@@ -124,6 +124,17 @@ class _RDSBackupResource(ServiceResource):
                                   "BackupId = {0}".format(self.backup_id))
         self._assign_attributes(items[0])
 
+class _RDSCrossBackupResource(ServiceResource):
+
+    def __init__(self, cross_backup_id, _client=None):
+        ServiceResource.__init__(self, "rds.cross_backup", _client=_client)
+        self.cross_backup_id = cross_backup_id
+
+
+    def describe_available_recovery_time(self, **params):
+        _params = _transfer_params(params)
+        self._client.describe_available_recovery_time(cross_backup_id=self.cross_backup_id, **_params)
+
 class _RDSDBInstanceResource(ServiceResource):
 
     def __init__(self, db_instance_id, _client=None):
@@ -209,6 +220,10 @@ class _RDSDBInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.create_database(db_instance_id=self.db_instance_id, **_params)
 
+    def create_diagnostic_report(self, **params):
+        _params = _transfer_params(params)
+        self._client.create_diagnostic_report(db_instance_id=self.db_instance_id, **_params)
+
     def delete(self, **params):
         _params = _transfer_params(params)
         self._client.delete_db_instance(db_instance_id=self.db_instance_id, **_params)
@@ -233,6 +248,10 @@ class _RDSDBInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.describe_cloud_db_expert_service(db_instance_id=self.db_instance_id, **_params)
 
+    def describe_db_instance_ip_hostname(self, **params):
+        _params = _transfer_params(params)
+        self._client.describe_db_instance_ip_hostname(db_instance_id=self.db_instance_id, **_params)
+
     def describe_db_instance_monitor(self, **params):
         _params = _transfer_params(params)
         self._client.describe_db_instance_monitor(db_instance_id=self.db_instance_id, **_params)
@@ -244,6 +263,10 @@ class _RDSDBInstanceResource(ServiceResource):
     def describe_db_instance_ssl(self, **params):
         _params = _transfer_params(params)
         self._client.describe_db_instance_ssl(db_instance_id=self.db_instance_id, **_params)
+
+    def describe_instance_cross_backup_policy(self, **params):
+        _params = _transfer_params(params)
+        self._client.describe_instance_cross_backup_policy(db_instance_id=self.db_instance_id, **_params)
 
     def describe_proxy_function_support(self, **params):
         _params = _transfer_params(params)
@@ -281,6 +304,10 @@ class _RDSDBInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.modify_account_description(db_instance_id=self.db_instance_id, **_params)
 
+    def modify_auto_upgrade_minor_version(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_db_instance_auto_upgrade_minor_version(db_instance_id=self.db_instance_id, **_params)
+
     def modify_backup_policy(self, **params):
         _params = _transfer_params(params)
         self._client.modify_backup_policy(db_instance_id=self.db_instance_id, **_params)
@@ -301,6 +328,10 @@ class _RDSDBInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.modify_db_description(db_instance_id=self.db_instance_id, **_params)
 
+    def modify_dtc_security_ip_hosts_for_sql_server(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_dtc_security_ip_hosts_for_sql_server(db_instance_id=self.db_instance_id, **_params)
+
     def modify_description(self, **params):
         _params = _transfer_params(params)
         self._client.modify_db_instance_description(db_instance_id=self.db_instance_id, **_params)
@@ -308,6 +339,10 @@ class _RDSDBInstanceResource(ServiceResource):
     def modify_instance_auto_renewal_attribute(self, **params):
         _params = _transfer_params(params)
         self._client.modify_instance_auto_renewal_attribute(db_instance_id=self.db_instance_id, **_params)
+
+    def modify_instance_cross_backup_policy(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_instance_cross_backup_policy(db_instance_id=self.db_instance_id, **_params)
 
     def modify_maintain_time(self, **params):
         _params = _transfer_params(params)
@@ -332,6 +367,10 @@ class _RDSDBInstanceResource(ServiceResource):
     def modify_parameter(self, **params):
         _params = _transfer_params(params)
         self._client.modify_parameter(db_instance_id=self.db_instance_id, **_params)
+
+    def modify_pay_type(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_db_instance_pay_type(db_instance_id=self.db_instance_id, **_params)
 
     def modify_proxy_configuration(self, **params):
         _params = _transfer_params(params)

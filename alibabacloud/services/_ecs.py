@@ -30,6 +30,10 @@ class _ECSResource(ServiceResource):
             _ECSAccessPointResource, _client, _client.describe_access_points,
             'AccessPointSet.AccessPointType', 'AccessPointId',
         )
+        self.auto_provisioning_groups = _create_resource_collection(
+            _ECSAutoProvisioningGroupResource, _client, _client.describe_auto_provisioning_groups,
+            'AutoProvisioningGroups.AutoProvisioningGroup', 'AutoProvisioningGroupId',
+        )
         self.bandwidth_packages = _create_resource_collection(
             _ECSBandwidthPackageResource, _client, _client.describe_bandwidth_packages,
             'BandwidthPackages.BandwidthPackage', 'BandwidthPackageId',
@@ -57,6 +61,10 @@ class _ECSResource(ServiceResource):
         self.eip_addresses = _create_resource_collection(
             _ECSEipAddressResource, _client, _client.describe_eip_addresses,
             'EipAddresses.EipAddress', 'AllocationId',
+        )
+        self.fleets = _create_resource_collection(
+            _ECSFleetResource, _client, _client.describe_fleets,
+            'Fleets.Fleet', 'FleetId',
         )
         self.ha_vips = _create_resource_collection(
             _ECSHaVipResource, _client, _client.describe_ha_vips,
@@ -102,6 +110,10 @@ class _ECSResource(ServiceResource):
             _ECSRegionResource, _client, _client.describe_regions,
             'Regions.Region', 'RegionId',
         )
+        self.reserved_instances = _create_resource_collection(
+            _ECSReservedInstanceResource, _client, _client.describe_reserved_instances,
+            'ReservedInstances.ReservedInstance', 'ReservedInstanceId',
+        )
         self.route_tables = _create_resource_collection(
             _ECSRouteTableResource, _client, _client.describe_route_tables,
             'RouteTables.RouteTable', 'RouteTableId',
@@ -121,6 +133,10 @@ class _ECSResource(ServiceResource):
         self.snapshot_links = _create_resource_collection(
             _ECSSnapshotLinkResource, _client, _client.describe_snapshot_links,
             'SnapshotLinks.SnapshotLink', 'SnapshotLinkId',
+        )
+        self.storage_sets = _create_resource_collection(
+            _ECSStorageSetResource, _client, _client.describe_storage_sets,
+            'StorageSets.StorageSet', 'StorageSetId',
         )
         self.tasks = _create_resource_collection(
             _ECSTaskResource, _client, _client.describe_tasks,
@@ -305,6 +321,17 @@ class _ECSAccessPointResource(ServiceResource):
         self.name = None
         self.status = None
         self.type_ = None
+
+class _ECSAutoProvisioningGroupResource(ServiceResource):
+
+    def __init__(self, auto_provisioning_group_id, _client=None):
+        ServiceResource.__init__(self, "ecs.auto_provisioning_group", _client=_client)
+        self.auto_provisioning_group_id = auto_provisioning_group_id
+
+
+    def delete(self, **params):
+        _params = _transfer_params(params)
+        self._client.delete_auto_provisioning_group(auto_provisioning_group_id=self.auto_provisioning_group_id, **_params)
 
 class _ECSAutoSnapshotPolicyResource(ServiceResource):
 
@@ -573,6 +600,10 @@ class _ECSDiskResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.modify_disk_attribute(disk_id=self.disk_id, **_params)
 
+    def modify_spec(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_disk_spec(disk_id=self.disk_id, **_params)
+
     def reinit(self, **params):
         _params = _transfer_params(params)
         self._client.reinit_disk(disk_id=self.disk_id, **_params)
@@ -645,6 +676,17 @@ class _ECSEipAddressResource(ServiceResource):
                                   "Failed to find eip_address data from DescribeEipAddresses response. "
                                   "EipAddressId = {0}".format(self.allocation_id))
         self._assign_attributes(items[0])
+
+class _ECSFleetResource(ServiceResource):
+
+    def __init__(self, fleet_id, _client=None):
+        ServiceResource.__init__(self, "ecs.fleet", _client=_client)
+        self.fleet_id = fleet_id
+
+
+    def delete(self, **params):
+        _params = _transfer_params(params)
+        self._client.delete_fleet(fleet_id=self.fleet_id, **_params)
 
 class _ECSForwardEntryResource(ServiceResource):
 
@@ -848,9 +890,17 @@ class _ECSInstanceResource(ServiceResource):
         self.vpc_attributes = None
         self.zone_id = None
 
+    def delete(self, **params):
+        _params = _transfer_params(params)
+        self._client.delete_instances(instance_id=self.instance_id, **_params)
+
     def install_cloud_assistant(self, **params):
         _params = _transfer_params(params)
         self._client.install_cloud_assistant(instance_id=self.instance_id, **_params)
+
+    def report_instances_status(self, **params):
+        _params = _transfer_params(params)
+        self._client.report_instances_status(instance_id=self.instance_id, **_params)
 
     def allocate_public_ip_address(self, **params):
         _params = _transfer_params(params)
@@ -1235,6 +1285,17 @@ class _ECSRegionResource(ServiceResource):
                                   "RegionId = {0}".format(self.region_id))
         self._assign_attributes(items[0])
 
+class _ECSReservedInstanceResource(ServiceResource):
+
+    def __init__(self, reserved_instance_id, _client=None):
+        ServiceResource.__init__(self, "ecs.reserved_instance", _client=_client)
+        self.reserved_instance_id = reserved_instance_id
+
+
+    def modify_attribute(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_reserved_instance_attribute(reserved_instance_id=self.reserved_instance_id, **_params)
+
 class _ECSRouteTableResource(ServiceResource):
 
     def __init__(self, route_table_id, _client=None):
@@ -1456,6 +1517,21 @@ class _ECSSnapshotLinkResource(ServiceResource):
                                   "Failed to find snapshot_link data from DescribeSnapshotLinks response. "
                                   "SnapshotLinkId = {0}".format(self.snapshot_link_id))
         self._assign_attributes(items[0])
+
+class _ECSStorageSetResource(ServiceResource):
+
+    def __init__(self, storage_set_id, _client=None):
+        ServiceResource.__init__(self, "ecs.storage_set", _client=_client)
+        self.storage_set_id = storage_set_id
+
+
+    def delete(self, **params):
+        _params = _transfer_params(params)
+        self._client.delete_storage_set(storage_set_id=self.storage_set_id, **_params)
+
+    def modify_attribute(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_storage_set_attribute(storage_set_id=self.storage_set_id, **_params)
 
 class _ECSSystemEventResource(ServiceResource):
 

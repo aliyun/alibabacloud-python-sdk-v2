@@ -82,10 +82,10 @@ class _VPCResource(ServiceResource):
             _VPCNatGatewayResource, _client, _client.describe_nat_gateways,
             'NatGateways.NatGateway', 'NatGatewayId',
         )
-        # self.nqas = _create_resource_collection(
-        #     _VPCNqaResource, _client, _client.describe_nqas,
-        #     'Nqas.Nqa', 'NqaId',
-        # )
+        self.network_acls = _create_resource_collection(
+            _VPCNetworkAclResource, _client, _client.describe_network_acls,
+            'NetworkAcls.NetworkAcl', 'NetworkAclId',
+        )
         self.physical_connections = _create_resource_collection(
             _VPCPhysicalConnectionResource, _client, _client.describe_physical_connections,
             'PhysicalConnectionSet.PhysicalConnectionType', 'PhysicalConnectionId',
@@ -216,11 +216,11 @@ class _VPCResource(ServiceResource):
         nat_gateway_id = _new_get_key_in_response(response, 'NatGatewayId')
         return _VPCNatGatewayResource(nat_gateway_id, _client=self._client)
 
-    def create_nqa(self, **params):
+    def create_network_acl(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_nqa(**_params)
-        nqa_id = _new_get_key_in_response(response, 'NqaId')
-        return _VPCNqaResource(nqa_id, _client=self._client)
+        response = self._client.create_network_acl(**_params)
+        network_acl_id = _new_get_key_in_response(response, 'NetworkAclId')
+        return _VPCNetworkAclResource(network_acl_id, _client=self._client)
 
     def create_physical_connection(self, **params):
         _params = _transfer_params(params)
@@ -487,6 +487,10 @@ class _VPCBgpPeerResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.delete_bgp_peer(bgp_peer_id=self.bgp_peer_id, **_params)
 
+    def modify_attribute(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_bgp_peer_attribute(bgp_peer_id=self.bgp_peer_id, **_params)
+
     def refresh(self):
         result = self._client.describe_bgp_peers(bgp_peer_id=self.bgp_peer_id)
         items = _new_get_key_in_response(result, 'BgpPeers.BgpPeer')
@@ -571,6 +575,21 @@ class _VPCEipAddressResource(ServiceResource):
                                   "Failed to find eip_address data from DescribeEipAddresses response. "
                                   "EipAddressId = {0}".format(self.allocation_id))
         self._assign_attributes(items[0])
+
+class _VPCExpressCloudConnectionResource(ServiceResource):
+
+    def __init__(self, ecc_id, _client=None):
+        ServiceResource.__init__(self, "vpc.express_cloud_connection", _client=_client)
+        self.ecc_id = ecc_id
+
+
+    def modify_attribute(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_express_cloud_connection_attribute(ecc_id=self.ecc_id, **_params)
+
+    def modify_bandwidth(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_express_cloud_connection_bandwidth(ecc_id=self.ecc_id, **_params)
 
 class _VPCFlowLogResource(ServiceResource):
 
@@ -945,32 +964,57 @@ class _VPCNatGatewayResource(ServiceResource):
                                   "NatGatewayId = {0}".format(self.nat_gateway_id))
         self._assign_attributes(items[0])
 
-class _VPCNqaResource(ServiceResource):
+class _VPCNetworkAclResource(ServiceResource):
 
-    def __init__(self, nqa_id, _client=None):
-        ServiceResource.__init__(self, "vpc.nqa", _client=_client)
-        self.nqa_id = nqa_id
+    def __init__(self, network_acl_id, _client=None):
+        ServiceResource.__init__(self, "vpc.network_acl", _client=_client)
+        self.network_acl_id = network_acl_id
 
-        self.destination_ip = None
+        self.creation_time = None
+        self.description = None
+        self.egress_acl_entries = None
+        self.ingress_acl_entries = None
+        self.network_acl_name = None
         self.region_id = None
-        self.router_id = None
+        self.resources = None
         self.status = None
+        self.vpc_id = None
+
+    def associate(self, **params):
+        _params = _transfer_params(params)
+        self._client.associate_network_acl(network_acl_id=self.network_acl_id, **_params)
+
+    def copy_network_acl_entries(self, **params):
+        _params = _transfer_params(params)
+        self._client.copy_network_acl_entries(network_acl_id=self.network_acl_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_nqa(nqa_id=self.nqa_id, **_params)
+        self._client.delete_network_acl(network_acl_id=self.network_acl_id, **_params)
 
-    def modify(self, **params):
+    def describe_network_acl_attributes(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_nqa(nqa_id=self.nqa_id, **_params)
+        self._client.describe_network_acl_attributes(network_acl_id=self.network_acl_id, **_params)
+
+    def modify_attributes(self, **params):
+        _params = _transfer_params(params)
+        self._client.modify_network_acl_attributes(network_acl_id=self.network_acl_id, **_params)
+
+    def unassociate(self, **params):
+        _params = _transfer_params(params)
+        self._client.unassociate_network_acl(network_acl_id=self.network_acl_id, **_params)
+
+    def update_network_acl_entries(self, **params):
+        _params = _transfer_params(params)
+        self._client.update_network_acl_entries(network_acl_id=self.network_acl_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_nqas(nqa_id=self.nqa_id)
-        items = _new_get_key_in_response(result, 'Nqas.Nqa')
+        result = self._client.describe_network_acls(network_acl_id=self.network_acl_id)
+        items = _new_get_key_in_response(result, 'NetworkAcls.NetworkAcl')
         if not items:
             raise ClientException(msg=
-                                  "Failed to find nqa data from DescribeNqas response. "
-                                  "NqaId = {0}".format(self.nqa_id))
+                                  "Failed to find network_acl data from DescribeNetworkAcls response. "
+                                  "NetworkAclId = {0}".format(self.network_acl_id))
         self._assign_attributes(items[0])
 
 class _VPCPhysicalConnectionResource(ServiceResource):
@@ -1008,10 +1052,6 @@ class _VPCPhysicalConnectionResource(ServiceResource):
     def delete(self, **params):
         _params = _transfer_params(params)
         self._client.delete_physical_connection(physical_connection_id=self.physical_connection_id, **_params)
-
-    def describe_physical_connection_order(self, **params):
-        _params = _transfer_params(params)
-        self._client.describe_physical_connection_order(physical_connection_id=self.physical_connection_id, **_params)
 
     def enable(self, **params):
         _params = _transfer_params(params)
@@ -1157,6 +1197,10 @@ class _VPCRouterInterfaceResource(ServiceResource):
     def delete(self, **params):
         _params = _transfer_params(params)
         self._client.delete_router_interface(router_interface_id=self.router_interface_id, **_params)
+
+    def delete_express_connect(self, **params):
+        _params = _transfer_params(params)
+        self._client.delete_express_connect(router_interface_id=self.router_interface_id, **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
