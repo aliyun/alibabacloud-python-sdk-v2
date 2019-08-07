@@ -27,23 +27,18 @@ from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response,
 
 
 class ECSDedicatedHostResource(_ECSDedicatedHostResource):
-    STATUS_PERMANENTFAILURE = 'PermanentFailure'
+
     STATUS_RELEASED = 'Released'
-    STATUS_CREATING = 'Creating'
     STATUS_AVAILABLE = 'Available'
     STATUS_UNDERASSESSMENT = 'UnderAssessment'
+    STATUS_PERMANENTFAILURE = 'PermanentFailure'
+    STATUS_CREATING = 'Creating'
 
     def __init__(self, dedicatedhost_id, _client=None):
         _ECSDedicatedHostResource.__init__(self, dedicatedhost_id, _client=_client)
 
-    def wait_until_permanentfailure(self):
-        self.wait_until(self.STATUS_PERMANENTFAILURE)
-
     def wait_until_released(self):
         self.wait_until(self.STATUS_RELEASED)
-
-    def wait_until_creating(self):
-        self.wait_until(self.STATUS_CREATING)
 
     def wait_until_available(self):
         self.wait_until(self.STATUS_AVAILABLE)
@@ -51,43 +46,50 @@ class ECSDedicatedHostResource(_ECSDedicatedHostResource):
     def wait_until_underassessment(self):
         self.wait_until(self.STATUS_UNDERASSESSMENT)
 
+    def wait_until_permanentfailure(self):
+        self.wait_until(self.STATUS_PERMANENTFAILURE)
+
+    def wait_until_creating(self):
+        self.wait_until(self.STATUS_CREATING)
+
 
 class ECSInstanceResource(_ECSInstanceResource):
-    STATUS_STOPPING = 'Stopping'
-    STATUS_STOPPED = 'Stopped'
-    STATUS_TRANSFERRING = 'Transferring'
+
     STATUS_RUNNING = 'Running'
-    STATUS_STARTING = 'Starting'
+    STATUS_STOPPING = 'Stopping'
     STATUS_PENDING = 'Pending'
-    STATUS_DELETED = 'Deleted'
+    STATUS_STARTING = 'Starting'
     STATUS_RESETTING = 'Resetting'
+    STATUS_TRANSFERRING = 'Transferring'
+    STATUS_STOPPED = 'Stopped'
+    STATUS_DELETED = 'Deleted'
 
     def __init__(self, instance_id, _client=None):
         _ECSInstanceResource.__init__(self, instance_id, _client=_client)
 
-    def wait_until_stopping(self):
-        self.wait_until(self.STATUS_STOPPING)
-
-    def wait_until_stopped(self):
-        self.wait_until(self.STATUS_STOPPED)
-
-    def wait_until_transferring(self):
-        self.wait_until(self.STATUS_TRANSFERRING)
-
     def wait_until_running(self):
         self.wait_until(self.STATUS_RUNNING)
 
-    def wait_until_starting(self):
-        self.wait_until(self.STATUS_STARTING)
+    def wait_until_stopping(self):
+        self.wait_until(self.STATUS_STOPPING)
 
     def wait_until_pending(self):
         self.wait_until(self.STATUS_PENDING)
 
-    def wait_until_deleted(self):
-        self.wait_until(self.STATUS_DELETED)
+    def wait_until_starting(self):
+        self.wait_until(self.STATUS_STARTING)
 
     def wait_until_resetting(self):
         self.wait_until(self.STATUS_RESETTING)
+
+    def wait_until_transferring(self):
+        self.wait_until(self.STATUS_TRANSFERRING)
+
+    def wait_until_stopped(self):
+        self.wait_until(self.STATUS_STOPPED)
+
+    def wait_until_deleted(self):
+        self.wait_until(self.STATUS_DELETED)
 
     def modify_attributes(self, **params):
         self.modify_attribute(**params)

@@ -21,34 +21,76 @@ import time
 from mock import patch
 
 from alibabacloud import ClientConfig, get_resource
-from alibabacloud.exceptions import HttpErrorException, ServerException
-from clients.ecs_20140526 import EcsClient
+from alibabacloud.clients.ecs_20140526 import EcsClient
+from alibabacloud.exceptions import HttpErrorException
 from tests.base import SDKTestBase
-
-tags = [
-    {
-        "Key": "python",
-        "Value": "sdk",
-    },
-]
-ecs = get_resource("ecs")
-launch_template = list(ecs.launch_templates)[0]
-
-instances = ecs.run_instances(launch_template_id=launch_template.launch_template_id,
-                              list_of_tag=tags)
-
-Instance = list(instances)[0]
 
 
 class EcsResourceTest(SDKTestBase):
+    _created = False
+    proprietary_instance = ""
+    classics_instance = ""
+
     def __init__(self, *args, **kwargs):
         SDKTestBase.__init__(self, *args, **kwargs)
-        self.instance = Instance
+        self.image_id = "coreos_1745_7_0_64_30G_alibase_20180705.vhd"
+
+    def setUp(self):
+        if not EcsResourceTest._created:
+            self._create_instances()
+            EcsResourceTest._created = True
+
+    def _env_clean_up(self):
+        print("clean up all instances if any")
+        ecs = self._get_ecs_resource()
+
+        has_instance = False
+        for inst in ecs.instances.all():
+            has_instance = True
+            if inst.status != inst.STATUS_STOPPED:
+                if inst.status == inst.STATUS_STARTING:
+                    inst.wait_until(inst.STATUS_RUNNING)
+                    inst.stop()
+                elif inst.status == inst.STATUS_RUNNING:
+                    inst.stop()
+
+        if has_instance:
+            print("wait 60 seconds, in instance_clean_up()")
+            time.sleep(60)
+
+        for inst in list(ecs.instances.all()):
+            inst.wait_until(inst.STATUS_STOPPED)
+            inst.delete()
+
+    def _create_instances(self):
+        instances = self.ecs.instances.all()
+        if instances:
+            self._env_clean_up()
+        # 创建一台专有网络
+        tags = [
+            {
+                "Key": "python",
+                "Value": "sdk",
+            },
+        ]
+        ecs = get_resource("ecs")
+        launch_template = list(ecs.launch_templates.all())[0]
+
+        EcsResourceTest.proprietary_instance = \
+            ecs.run_instances(launch_template_id=launch_template.launch_template_id,
+                              list_of_tag=tags)[0]
+        # 创建一台经典网络
+        instance_type = "ecs.n2.small"
+        EcsResourceTest.classics_instance = self.ecs.create_instance(ImageId=self.image_id,
+                                                                     InstanceType=instance_type, )
+
+        time.sleep(90)
 
     def test_private_ip_address_and_tags(self):
-        # 测试一台机器的私有IP地址,PrivateIpAddress以及ECS实例的tags属性的读取
-        print(1111111111111, self.instance.vpc_attributes)
-        private_ip_address = self.instance.vpc_attributes.search("PrivateIpAddress.IpAddress")
+        instance = EcsResourceTest.proprietary_instance
+        instance.refresh()
+        # 测试一台机器的私有IP地址,PrivateIpAddress以及ECS实例的tags属性的读取, 测试search
+        private_ip_address = instance.vpc_attributes.search("PrivateIpAddress.IpAddress")[0]
         pattern = re.compile(
             r'((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}')
         self.assertTrue(pattern.search(private_ip_address).group())
@@ -59,7 +101,7 @@ class EcsResourceTest(SDKTestBase):
             },
         ]
 
-        tags = self.instance.tags
+        tags = instance.tags
         self.assertTrue(tags, tags_1)
 
     def test_logger_request_id(self):
@@ -87,25 +129,14 @@ class EcsResourceTest(SDKTestBase):
         self.assertEqual(ecs_instance.instance_name, "web1")
 
     def test_filter_inner_ip_address(self):
-        your_inner_ip_list = [self.instance.inner_ip_address, ]
+        # inner_ip_address 必须是经典网络下的ecs 才有此属性
+        instance = EcsResourceTest.classics_instance
+        your_inner_ip_list = [instance.inner_ip_address, ]
+
         ecs = self._get_ecs_resource()
-        self.assertTrue(len(list(ecs.instances))>=1)
+
         ecs_instance = ecs.instances.filter(InnerIpAddresses=json.dumps(your_inner_ip_list))
-        self.assertEqual(len(list(ecs_instance)), 1)
-
-    def test_vpc_search(self):
-        print(11111111, self.instance.vpc_attributes)
-        ret = self.instance.vpc_attributes.search('PrivateIpAddress.IpAddress')
-        self.assertEqual(len(ret), 1)
-
-    def test_next(self):
-        # __next__(iterator) 这样方式的使用，验证是否能获得下一个资源对象
-        ecs = self._get_ecs_resource()
-        ecs_instance = ecs.instances.all()
-        ret1 = next(ecs_instance)
-        ret2 = next(ecs_instance)
-        self.assertNotEqual(ret1, ret2)
-        self.assertTrue(ret2.instance_id)
+        self.assertTrue(len(list(ecs_instance)))
 
     def init_credentials_provider(self):
         from alibabacloud.credentials import AccessKeyCredentials
@@ -117,7 +148,7 @@ class EcsResourceTest(SDKTestBase):
         return credentials_provider
 
     def test_retry_to_create_instance(self):
-        image_id = "coreos_1745_7_0_64_30G_alibase_20180705.vhd"
+
         # 测试重试
         config = ClientConfig(region_id=self.region_id, connection_timeout=120, endpoint="nowhere")
         client = EcsClient(config, self.init_credentials_provider())
@@ -128,20 +159,11 @@ class EcsResourceTest(SDKTestBase):
                           wraps=client.handlers[-1].handle_request) as monkey:
             ecs_resource = ECSResource(_client=client)
             try:
-                ecs_resource.create_instance(image_id=image_id, instance_type="ecs.n2.small")
+                ecs_resource.create_instance(image_id=self.image_id, instance_type="ecs.n2.small")
                 assert False
             except HttpErrorException as e:
                 pass
         self.assertEqual(4, monkey.call_count)
-
-    def test_timeout_to_create_instance(self):
-        image_id = "coreos_1745_7_0_64_30G_alibase_20180705.vhd"
-        # 测试超时
-        ecs_resource = self._get_ecs_resource(endpoint="nowhere")
-        start_time = time.time()
-        ecs_resource.create_instance(image_id=image_id, instance_type="ecs.n2.small")
-        end_time = time.time()
-        self.assertTrue((end_time - start_time) >= 86)
 
     # def test_events(self):
     #     # TODO 一直为None
@@ -186,28 +208,55 @@ class EcsResourceTest(SDKTestBase):
         pass
 
     def test_init(self):
-        pass
+        ecs = self._get_ecs_resource()
+        for instance in ecs.instances.all():
+            self.assertTrue(instance.instance_id)
+            self.assertTrue(instance.image_id)
+            self.assertTrue(instance.creation_time)
+
+
+class VPCResourceTest(SDKTestBase):
+    def __init__(self, *args, **kwargs):
+        SDKTestBase.__init__(self, *args, **kwargs)
 
     def get_vpc_resource(self, **kwargs):
         return self._get_resource("vpc", **kwargs)
 
-    def test_vpc(self):
-        vpc = self.get_vpc_resource()
-        eip_address = list(vpc.eip_addresses.filter(Status='Available', region_id="cn-hangzhou"))[0]
-        eip_address.associate(instance_id=self.instance.instance_id)
-        eip_address.refresh()
-        self.assertTrue(len(list(vpc.eip_addresses.filter(status="InUse")))>=1)
-
-
     def test_eip_associate(self):
+        slb = self._get_resource("slb")
+        load_balancer = list(slb.load_balancers.filter(load_balancer_status="active"))[0]
+
         # 测试eip address等,需要缓解准备
         vpc = self.get_vpc_resource()
-        eip_address = list(vpc.eip_addresses.all())[0]
+        # 先全部解绑
+        for eip in vpc.eip_addresses.filter(status="InUse"):
+            eip.unassociate(instance_id=load_balancer.load_balancer_id, instance_type="SlbInstance")
+            eip.refresh()
 
-        try:
-            eip_address.associate(instance_id=self.instance.instance_id)
-        except ServerException as e:
-            self.assertEqual(e.error_message, "OperationDenied Specified instance is not in VPC.")
+        # allocation_id 是 eip_address 的identifer, instance_id 是绑定的实例的id
+        eip_address = list(vpc.eip_addresses.filter(status="Available"))[0]
+        self.assertEqual(eip_address.instance_id, "")
+        self.assertEqual(eip_address.status, "Available")
 
-    def test_eip_address(self):
-        pass
+        eip_address.associate(instance_id=load_balancer.load_balancer_id,
+                              instance_type="SlbInstance")
+        eip_address.refresh()
+        while eip_address.status == "Associating":
+            time.sleep(5)
+            eip_address.refresh()
+
+        self.assertEqual(eip_address.instance_id, load_balancer.load_balancer_id)
+        self.assertEqual(eip_address.status, "InUse")
+
+        eip_address.unassociate(instance_id=load_balancer.load_balancer_id,
+                                instance_type="SlbInstance")
+        eip_address.refresh()
+
+        while eip_address.status == "Unassociating":
+            time.sleep(5)
+            eip_address.refresh()
+
+        self.assertEqual(eip_address.instance_id, "")
+        self.assertEqual(eip_address.status, "Available")
+
+        self.assertTrue(eip_address.ip_address)

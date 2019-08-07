@@ -37,6 +37,10 @@ class _CDNConfigResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.delete_specific_config(config_id=self.config_id, **_params)
 
+    def delete_specific_staging(self, **params):
+        _params = _transfer_params(params)
+        self._client.delete_specific_staging_config(config_id=self.config_id, **_params)
+
     def describe_custom_log(self, **params):
         _params = _transfer_params(params)
         self._client.describe_custom_log_config(config_id=self.config_id, **_params)
