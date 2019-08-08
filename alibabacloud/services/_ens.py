@@ -12,21 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import time
 
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _ENSResource(ServiceResource):
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'ens', _client=_client)
-        self.ens_regions = _create_resource_collection(
+        self.ens_regions = _create_special_resource_collection(
             _ENSEnsRegionResource, _client, _client.describe_ens_regions,
             'EnsRegions.EnsRegions', 'EnsRegionId',
         )
@@ -38,10 +37,11 @@ class _ENSResource(ServiceResource):
             _ENSInstanceResource, _client, _client.describe_instances,
             'Instances.Instance', 'InstanceId',
         )
-        self.instance_types = _create_resource_collection(
+        self.instance_types = _create_special_resource_collection(
             _ENSInstanceTypeResource, _client, _client.describe_instance_types,
             'InstanceTypes.InstanceType', 'InstanceTypeId',
         )
+
     def create_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_instance(**_params)
@@ -51,6 +51,7 @@ class _ENSResource(ServiceResource):
             instance = _ENSInstanceResource(instance_id, _client=self._client)
             instances.append(instance)
         return instances
+
 
 class _ENSEnsRegionResource(ServiceResource):
 
@@ -71,6 +72,7 @@ class _ENSEnsRegionResource(ServiceResource):
                                   "Failed to find ens_region data from DescribeEnsRegions response. "
                                   "EnsRegionId = {0}".format(self.ens_region_id))
         self._assign_attributes(items[0])
+
 
 class _ENSImageResource(ServiceResource):
 
@@ -115,6 +117,7 @@ class _ENSImageResource(ServiceResource):
                                   "ImageId = {0}".format(self.image_id))
         self._assign_attributes(items[0])
 
+
 class _ENSInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
@@ -127,6 +130,7 @@ class _ENSInstanceResource(ServiceResource):
         self.creation_time = None
         self.credit_specification = None
         self.dedicated_host_attribute = None
+        self.dedicated_instance_attribute = None
         self.deletion_protection = None
         self.deployment_set_id = None
         self.description = None
@@ -213,6 +217,7 @@ class _ENSInstanceResource(ServiceResource):
             if self.status == target_status:
                 return
             time.sleep(1)
+
 
 class _ENSInstanceTypeResource(ServiceResource):
 

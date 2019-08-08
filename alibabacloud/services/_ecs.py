@@ -17,7 +17,7 @@ import time
 
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection
+from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
 from alibabacloud.resources.collection import _create_default_resource_collection
 from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
 
@@ -38,7 +38,7 @@ class _ECSResource(ServiceResource):
             _ECSBandwidthPackageResource, _client, _client.describe_bandwidth_packages,
             'BandwidthPackages.BandwidthPackage', 'BandwidthPackageId',
         )
-        self.clusters = _create_resource_collection(
+        self.clusters = _create_special_resource_collection(
             _ECSClusterResource, _client, _client.describe_clusters,
             'Clusters.Cluster', 'ClusterId',
         )
@@ -82,7 +82,7 @@ class _ECSResource(ServiceResource):
             _ECSInstanceResource, _client, _client.describe_instances,
             'Instances.Instance', 'InstanceId',
         )
-        self.instance_types = _create_resource_collection(
+        self.instance_types = _create_special_resource_collection(
             _ECSInstanceTypeResource, _client, _client.describe_instance_types,
             'InstanceTypes.InstanceType', 'InstanceTypeId',
         )
@@ -106,7 +106,7 @@ class _ECSResource(ServiceResource):
             _ECSPhysicalConnectionResource, _client, _client.describe_physical_connections,
             'PhysicalConnectionSet.PhysicalConnectionType', 'PhysicalConnectionId',
         )
-        self.regions = _create_resource_collection(
+        self.regions = _create_special_resource_collection(
             _ECSRegionResource, _client, _client.describe_regions,
             'Regions.Region', 'RegionId',
         )
@@ -158,10 +158,16 @@ class _ECSResource(ServiceResource):
             _ECSVpcResource, _client, _client.describe_vpcs,
             'Vpcs.Vpc', 'VpcId',
         )
-        self.zones = _create_resource_collection(
+        self.zones = _create_special_resource_collection(
             _ECSZoneResource, _client, _client.describe_zones,
             'Zones.Zone', 'ZoneId',
         )
+    def create_auto_provisioning_group(self, **params):
+        _params = _transfer_params(params)
+        response = self._client.create_auto_provisioning_group(**_params)
+        auto_provisioning_group_id = _new_get_key_in_response(response, 'AutoProvisioningGroupId')
+        return _ECSAutoProvisioningGroupResource(auto_provisioning_group_id, _client=self._client)
+
     def create_auto_snapshot_policy(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_auto_snapshot_policy(**_params)
@@ -201,6 +207,12 @@ class _ECSResource(ServiceResource):
         response = self._client.allocate_eip_address(**_params)
         allocation_id = _new_get_key_in_response(response, 'AllocationId')
         return _ECSEipAddressResource(allocation_id, _client=self._client)
+
+    def create_fleet(self, **params):
+        _params = _transfer_params(params)
+        response = self._client.create_fleet(**_params)
+        fleet_id = _new_get_key_in_response(response, 'FleetId')
+        return _ECSFleetResource(fleet_id, _client=self._client)
 
     def create_forward_entry(self, **params):
         _params = _transfer_params(params)
@@ -272,6 +284,16 @@ class _ECSResource(ServiceResource):
         physical_connection_id = _new_get_key_in_response(response, 'PhysicalConnectionId')
         return _ECSPhysicalConnectionResource(physical_connection_id, _client=self._client)
 
+    def modify_reserved_instances(self, **params):
+        _params = _transfer_params(params)
+        response = self._client.modify_reserved_instances(**_params)
+        reserved_instance_ids = _new_get_key_in_response(response, 'ReservedInstanceIdSets.ReservedInstanceId')
+        reserved_instances = []
+        for reserved_instance_id in reserved_instance_ids:
+            reserved_instance = _ECSReservedInstanceResource(reserved_instance_id, _client=self._client)
+            reserved_instances.append(reserved_instance)
+        return reserved_instances
+
     def create_router_interface(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_router_interface(**_params)
@@ -289,6 +311,12 @@ class _ECSResource(ServiceResource):
         response = self._client.create_snapshot(**_params)
         snapshot_id = _new_get_key_in_response(response, 'SnapshotId')
         return _ECSSnapshotResource(snapshot_id, _client=self._client)
+
+    def create_storage_set(self, **params):
+        _params = _transfer_params(params)
+        response = self._client.create_storage_set(**_params)
+        storage_set_id = _new_get_key_in_response(response, 'StorageSetId')
+        return _ECSStorageSetResource(storage_set_id, _client=self._client)
 
     def create_vswitch(self, **params):
         _params = _transfer_params(params)
@@ -328,10 +356,50 @@ class _ECSAutoProvisioningGroupResource(ServiceResource):
         ServiceResource.__init__(self, "ecs.auto_provisioning_group", _client=_client)
         self.auto_provisioning_group_id = auto_provisioning_group_id
 
+        self.auto_provisioning_group_name = None
+        self.auto_provisioning_group_type = None
+        self.creation_time = None
+        self.excess_capacity_termination_policy = None
+        self.launch_template_configs = None
+        self.launch_template_id = None
+        self.launch_template_version = None
+        self.max_spot_price = None
+        self.pay_as_you_go_options = None
+        self.region_id = None
+        self.spot_options = None
+        self.state = None
+        self.status = None
+        self.target_capacity_specification = None
+        self.terminate_instances = None
+        self.terminate_instances_with_expiration = None
+        self.valid_from = None
+        self.valid_until = None
 
     def delete(self, **params):
         _params = _transfer_params(params)
         self._client.delete_auto_provisioning_group(auto_provisioning_group_id=self.auto_provisioning_group_id, **_params)
+
+    def refresh(self):
+        result = self._client.describe_auto_provisioning_groups(list_of_auto_provisioning_group_id=[self.auto_provisioning_group_id,])
+        items = _new_get_key_in_response(result, 'AutoProvisioningGroups.AutoProvisioningGroup')
+        if not items:
+            raise ClientException(msg=
+                                  "Failed to find auto_provisioning_group data from DescribeAutoProvisioningGroups response. "
+                                  "AutoProvisioningGroupId = {0}".format(self.auto_provisioning_group_id))
+        self._assign_attributes(items[0])
+
+    def wait_until(self, target_status, timeout=120):
+        start_time = time.time()
+        while True:
+            end_time = time.time()
+            if end_time - start_time >= timeout:
+                raise Exception("Timed out: no {0} status after {1} seconds.".format(
+                    target_status, timeout))
+
+            self.refresh()
+            if self.status == target_status:
+                return
+            time.sleep(1)
 
 class _ECSAutoSnapshotPolicyResource(ServiceResource):
 
@@ -414,7 +482,9 @@ class _ECSCommandResource(ServiceResource):
         self.command_content = None
         self.creation_time = None
         self.description = None
+        self.enable_parameter = None
         self.name = None
+        self.parameter_names = None
         self.timeout = None
         self.type_ = None
         self.working_dir = None
@@ -447,6 +517,7 @@ class _ECSDedicatedHostResource(ServiceResource):
         self.dedicated_host_id = dedicated_host_id
 
         self.action_on_maintenance = None
+        self.auto_placement = None
         self.auto_release_time = None
         self.capacity = None
         self.charge_type = None
@@ -555,6 +626,7 @@ class _ECSDiskResource(ServiceResource):
 
         self.attached_time = None
         self.auto_snapshot_policy_id = None
+        self.bdf_id = None
         self.category = None
         self.creation_time = None
         self.delete_auto_snapshot = None
@@ -577,6 +649,7 @@ class _ECSDiskResource(ServiceResource):
         self.mount_instance_num = None
         self.mount_instances = None
         self.operation_locks = None
+        self.performance_level = None
         self.portable = None
         self.product_code = None
         self.region_id = None
@@ -584,6 +657,8 @@ class _ECSDiskResource(ServiceResource):
         self.size = None
         self.source_snapshot_id = None
         self.status = None
+        self.storage_set_id = None
+        self.storage_set_partition_number = None
         self.tags = None
         self.type_ = None
         self.zone_id = None
@@ -683,10 +758,37 @@ class _ECSFleetResource(ServiceResource):
         ServiceResource.__init__(self, "ecs.fleet", _client=_client)
         self.fleet_id = fleet_id
 
+        self.creation_time = None
+        self.excess_capacity_termination_policy = None
+        self.fleet_name = None
+        self.fleet_type = None
+        self.launch_template_id = None
+        self.launch_template_version = None
+        self.max_spot_price = None
+        self.on_demand_options = None
+        self.region_id = None
+        self.spot_options = None
+        self.state = None
+        self.status = None
+        self.target_capacity_specification = None
+        self.terminate_instances = None
+        self.terminate_instances_with_expiration = None
+        self.valid_from = None
+        self.valid_until = None
+        self.launch_template_configs = None
 
     def delete(self, **params):
         _params = _transfer_params(params)
         self._client.delete_fleet(fleet_id=self.fleet_id, **_params)
+
+    def refresh(self):
+        result = self._client.describe_fleets(list_of_fleet_id=[self.fleet_id,])
+        items = _new_get_key_in_response(result, 'Fleets.Fleet')
+        if not items:
+            raise ClientException(msg=
+                                  "Failed to find fleet data from DescribeFleets response. "
+                                  "FleetId = {0}".format(self.fleet_id))
+        self._assign_attributes(items[0])
 
 class _ECSForwardEntryResource(ServiceResource):
 
@@ -841,6 +943,7 @@ class _ECSInstanceResource(ServiceResource):
         self.creation_time = None
         self.credit_specification = None
         self.dedicated_host_attribute = None
+        self.dedicated_instance_attribute = None
         self.deletion_protection = None
         self.deployment_set_id = None
         self.description = None
@@ -1291,10 +1394,47 @@ class _ECSReservedInstanceResource(ServiceResource):
         ServiceResource.__init__(self, "ecs.reserved_instance", _client=_client)
         self.reserved_instance_id = reserved_instance_id
 
+        self.creation_time = None
+        self.description = None
+        self.expired_time = None
+        self.instance_amount = None
+        self.instance_type = None
+        self.offering_type = None
+        self.operation_locks = None
+        self.platform = None
+        self.region_id = None
+        self.reserved_instance_name = None
+        self.resource_group_id = None
+        self.scope = None
+        self.start_time = None
+        self.status = None
+        self.zone_id = None
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
         self._client.modify_reserved_instance_attribute(reserved_instance_id=self.reserved_instance_id, **_params)
+
+    def refresh(self):
+        result = self._client.describe_reserved_instances(list_of_reserved_instance_id=[self.reserved_instance_id,])
+        items = _new_get_key_in_response(result, 'ReservedInstances.ReservedInstance')
+        if not items:
+            raise ClientException(msg=
+                                  "Failed to find reserved_instance data from DescribeReservedInstances response. "
+                                  "ReservedInstanceId = {0}".format(self.reserved_instance_id))
+        self._assign_attributes(items[0])
+
+    def wait_until(self, target_status, timeout=120):
+        start_time = time.time()
+        while True:
+            end_time = time.time()
+            if end_time - start_time >= timeout:
+                raise Exception("Timed out: no {0} status after {1} seconds.".format(
+                    target_status, timeout))
+
+            self.refresh()
+            if self.status == target_status:
+                return
+            time.sleep(1)
 
 class _ECSRouteTableResource(ServiceResource):
 
@@ -1392,6 +1532,7 @@ class _ECSSecurityGroupResource(ServiceResource):
         self.ecs_count = None
         self.resource_group_id = None
         self.security_group_name = None
+        self.security_group_type = None
         self.tags = None
         self.vpc_id = None
 
@@ -1458,6 +1599,7 @@ class _ECSSnapshotResource(ServiceResource):
         self.description = None
         self.encrypted = None
         self.kms_key_id = None
+        self.last_modified_time = None
         self.product_code = None
         self.progress = None
         self.remain_time = None
@@ -1524,6 +1666,12 @@ class _ECSStorageSetResource(ServiceResource):
         ServiceResource.__init__(self, "ecs.storage_set", _client=_client)
         self.storage_set_id = storage_set_id
 
+        self.creation_time = None
+        self.description = None
+        self.region_id = None
+        self.storage_set_name = None
+        self.storage_set_partition_number = None
+        self.zone_id = None
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -1532,6 +1680,15 @@ class _ECSStorageSetResource(ServiceResource):
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
         self._client.modify_storage_set_attribute(storage_set_id=self.storage_set_id, **_params)
+
+    def refresh(self):
+        result = self._client.describe_storage_sets(storage_set_ids=self.storage_set_id)
+        items = _new_get_key_in_response(result, 'StorageSets.StorageSet')
+        if not items:
+            raise ClientException(msg=
+                                  "Failed to find storage_set data from DescribeStorageSets response. "
+                                  "StorageSetId = {0}".format(self.storage_set_id))
+        self._assign_attributes(items[0])
 
 class _ECSSystemEventResource(ServiceResource):
 

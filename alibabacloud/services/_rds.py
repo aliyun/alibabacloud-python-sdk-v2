@@ -12,14 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _RDSResource(ServiceResource):
@@ -38,7 +35,7 @@ class _RDSResource(ServiceResource):
             _RDSMigrateTaskResource, _client, _client.describe_migrate_tasks,
             'Items.MigrateTask', 'MigrateTaskId',
         )
-        self.regions = _create_resource_collection(
+        self.regions = _create_special_resource_collection(
             _RDSRegionResource, _client, _client.describe_regions,
             'Regions.RDSRegion', 'RegionId',
         )
@@ -50,6 +47,7 @@ class _RDSResource(ServiceResource):
             _RDSTaskResource, _client, _client.describe_tasks,
             'Items.TaskProgressInfo', 'TaskId',
         )
+
     def create_db_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_db_instance(**_params)
@@ -86,6 +84,7 @@ class _RDSResource(ServiceResource):
         temp_db_instance_id = _new_get_key_in_response(response, 'TempDBInstanceId')
         return _RDSTempDBInstanceResource(temp_db_instance_id, _client=self._client)
 
+
 class _RDSBackupResource(ServiceResource):
 
     def __init__(self, backup_id, _client=None):
@@ -108,6 +107,7 @@ class _RDSBackupResource(ServiceResource):
         self.db_instance_id = None
         self.host_instance_id = None
         self.meta_status = None
+        self.slave_status = None
         self.store_status = None
         self.total_backup_size = None
 
@@ -124,16 +124,18 @@ class _RDSBackupResource(ServiceResource):
                                   "BackupId = {0}".format(self.backup_id))
         self._assign_attributes(items[0])
 
+
 class _RDSCrossBackupResource(ServiceResource):
 
     def __init__(self, cross_backup_id, _client=None):
         ServiceResource.__init__(self, "rds.cross_backup", _client=_client)
         self.cross_backup_id = cross_backup_id
 
-
     def describe_available_recovery_time(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_available_recovery_time(cross_backup_id=self.cross_backup_id, **_params)
+        self._client.describe_available_recovery_time(cross_backup_id=self.cross_backup_id,
+                                                      **_params)
+
 
 class _RDSDBInstanceResource(ServiceResource):
 
@@ -141,6 +143,7 @@ class _RDSDBInstanceResource(ServiceResource):
         ServiceResource.__init__(self, "rds.db_instance", _client=_client)
         self.db_instance_id = db_instance_id
 
+        self.auto_upgrade_minor_version = None
         self.category = None
         self.connection_mode = None
         self.create_time = None
@@ -178,19 +181,23 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def allocate_instance_private_connection(self, **params):
         _params = _transfer_params(params)
-        self._client.allocate_instance_private_connection(db_instance_id=self.db_instance_id, **_params)
+        self._client.allocate_instance_private_connection(db_instance_id=self.db_instance_id,
+                                                          **_params)
 
     def allocate_instance_public_connection(self, **params):
         _params = _transfer_params(params)
-        self._client.allocate_instance_public_connection(db_instance_id=self.db_instance_id, **_params)
+        self._client.allocate_instance_public_connection(db_instance_id=self.db_instance_id,
+                                                         **_params)
 
     def allocate_instance_vpc_network_type(self, **params):
         _params = _transfer_params(params)
-        self._client.allocate_instance_vpc_network_type(db_instance_id=self.db_instance_id, **_params)
+        self._client.allocate_instance_vpc_network_type(db_instance_id=self.db_instance_id,
+                                                        **_params)
 
     def allocate_read_write_splitting_connection(self, **params):
         _params = _transfer_params(params)
-        self._client.allocate_read_write_splitting_connection(db_instance_id=self.db_instance_id, **_params)
+        self._client.allocate_read_write_splitting_connection(db_instance_id=self.db_instance_id,
+                                                              **_params)
 
     def calculate_db_instance_weight(self, **params):
         _params = _transfer_params(params)
@@ -258,7 +265,8 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def describe_db_instance_proxy_configuration(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_db_instance_proxy_configuration(db_instance_id=self.db_instance_id, **_params)
+        self._client.describe_db_instance_proxy_configuration(db_instance_id=self.db_instance_id,
+                                                              **_params)
 
     def describe_db_instance_ssl(self, **params):
         _params = _transfer_params(params)
@@ -266,7 +274,8 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def describe_instance_cross_backup_policy(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_instance_cross_backup_policy(db_instance_id=self.db_instance_id, **_params)
+        self._client.describe_instance_cross_backup_policy(db_instance_id=self.db_instance_id,
+                                                           **_params)
 
     def describe_proxy_function_support(self, **params):
         _params = _transfer_params(params)
@@ -290,7 +299,8 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def import_database_between_instances(self, **params):
         _params = _transfer_params(params)
-        self._client.import_database_between_instances(db_instance_id=self.db_instance_id, **_params)
+        self._client.import_database_between_instances(db_instance_id=self.db_instance_id,
+                                                       **_params)
 
     def migrate_security_ip_mode(self, **params):
         _params = _transfer_params(params)
@@ -306,7 +316,8 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def modify_auto_upgrade_minor_version(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_db_instance_auto_upgrade_minor_version(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_db_instance_auto_upgrade_minor_version(
+            db_instance_id=self.db_instance_id, **_params)
 
     def modify_backup_policy(self, **params):
         _params = _transfer_params(params)
@@ -318,11 +329,13 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def modify_connection_mode(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_db_instance_connection_mode(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_db_instance_connection_mode(db_instance_id=self.db_instance_id,
+                                                        **_params)
 
     def modify_connection_string(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_db_instance_connection_string(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_db_instance_connection_string(db_instance_id=self.db_instance_id,
+                                                          **_params)
 
     def modify_db_description(self, **params):
         _params = _transfer_params(params)
@@ -330,7 +343,8 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def modify_dtc_security_ip_hosts_for_sql_server(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_dtc_security_ip_hosts_for_sql_server(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_dtc_security_ip_hosts_for_sql_server(db_instance_id=self.db_instance_id,
+                                                                 **_params)
 
     def modify_description(self, **params):
         _params = _transfer_params(params)
@@ -338,11 +352,13 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def modify_instance_auto_renewal_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_instance_auto_renewal_attribute(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_instance_auto_renewal_attribute(db_instance_id=self.db_instance_id,
+                                                            **_params)
 
     def modify_instance_cross_backup_policy(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_instance_cross_backup_policy(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_instance_cross_backup_policy(db_instance_id=self.db_instance_id,
+                                                         **_params)
 
     def modify_maintain_time(self, **params):
         _params = _transfer_params(params)
@@ -358,7 +374,8 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def modify_network_expire_time(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_db_instance_network_expire_time(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_db_instance_network_expire_time(db_instance_id=self.db_instance_id,
+                                                            **_params)
 
     def modify_network_type(self, **params):
         _params = _transfer_params(params)
@@ -374,15 +391,18 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def modify_proxy_configuration(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_db_instance_proxy_configuration(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_db_instance_proxy_configuration(db_instance_id=self.db_instance_id,
+                                                            **_params)
 
     def modify_read_write_splitting_connection(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_read_write_splitting_connection(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_read_write_splitting_connection(db_instance_id=self.db_instance_id,
+                                                            **_params)
 
     def modify_readonly_instance_delay_replication_time(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_readonly_instance_delay_replication_time(db_instance_id=self.db_instance_id, **_params)
+        self._client.modify_readonly_instance_delay_replication_time(
+            db_instance_id=self.db_instance_id, **_params)
 
     def modify_sql_collector_policy(self, **params):
         _params = _transfer_params(params)
@@ -410,11 +430,13 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def release_instance_public_connection(self, **params):
         _params = _transfer_params(params)
-        self._client.release_instance_public_connection(db_instance_id=self.db_instance_id, **_params)
+        self._client.release_instance_public_connection(db_instance_id=self.db_instance_id,
+                                                        **_params)
 
     def release_read_write_splitting_connection(self, **params):
         _params = _transfer_params(params)
-        self._client.release_read_write_splitting_connection(db_instance_id=self.db_instance_id, **_params)
+        self._client.release_read_write_splitting_connection(db_instance_id=self.db_instance_id,
+                                                             **_params)
 
     def remove_tags_from_resource(self, **params):
         _params = _transfer_params(params)
@@ -426,7 +448,8 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def request_service_of_cloud_db_expert(self, **params):
         _params = _transfer_params(params)
-        self._client.request_service_of_cloud_db_expert(db_instance_id=self.db_instance_id, **_params)
+        self._client.request_service_of_cloud_db_expert(db_instance_id=self.db_instance_id,
+                                                        **_params)
 
     def reset_account(self, **params):
         _params = _transfer_params(params)
@@ -474,11 +497,13 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def upgrade_db_instance_engine_version(self, **params):
         _params = _transfer_params(params)
-        self._client.upgrade_db_instance_engine_version(db_instance_id=self.db_instance_id, **_params)
+        self._client.upgrade_db_instance_engine_version(db_instance_id=self.db_instance_id,
+                                                        **_params)
 
     def upgrade_db_instance_kernel_version(self, **params):
         _params = _transfer_params(params)
-        self._client.upgrade_db_instance_kernel_version(db_instance_id=self.db_instance_id, **_params)
+        self._client.upgrade_db_instance_kernel_version(db_instance_id=self.db_instance_id,
+                                                        **_params)
 
     def refresh(self):
         result = self._client.describe_db_instances(db_instance_id=self.db_instance_id)
@@ -488,6 +513,7 @@ class _RDSDBInstanceResource(ServiceResource):
                                   "Failed to find db_instance data from DescribeDBInstances response. "
                                   "DBInstanceId = {0}".format(self.db_instance_id))
         self._assign_attributes(items[0])
+
 
 class _RDSDBInstanceReplicaResource(ServiceResource):
 
@@ -513,6 +539,7 @@ class _RDSMigrateTaskResource(ServiceResource):
     def create_online_database_task(self, **params):
         _params = _transfer_params(params)
         self._client.create_online_database_task(migrate_task_id=self.migrate_task_id, **_params)
+
 
 class _RDSMigrateTaskForSQLServerResource(ServiceResource):
 
@@ -547,16 +574,17 @@ class _RDSRegionResource(ServiceResource):
                                   "RegionId = {0}".format(self.region_id))
         self._assign_attributes(items[0])
 
+
 class _RDSReplicaResource(ServiceResource):
 
     def __init__(self, replica_id, _client=None):
         ServiceResource.__init__(self, "rds.replica", _client=_client)
         self.replica_id = replica_id
 
-
     def modify_description(self, **params):
         _params = _transfer_params(params)
         self._client.modify_replica_description(replica_id=self.replica_id, **_params)
+
 
 class _RDSSlowLogResource(ServiceResource):
 
@@ -585,6 +613,7 @@ class _RDSSlowLogResource(ServiceResource):
         self.total_logical_read_counts = None
         self.total_physical_read_counts = None
 
+
 class _RDSTaskResource(ServiceResource):
 
     def __init__(self, task_id, _client=None):
@@ -606,6 +635,7 @@ class _RDSTaskResource(ServiceResource):
                                   "TaskId = {0}".format(self.task_id))
         self._assign_attributes(items[0])
 
+
 class _RDSTempDBInstanceResource(ServiceResource):
 
     def __init__(self, temp_db_instance_id, _client=None):
@@ -618,7 +648,6 @@ class _RDSZoneResource(ServiceResource):
     def __init__(self, zone_id, _client=None):
         ServiceResource.__init__(self, "rds.zone", _client=_client)
         self.zone_id = zone_id
-
 
     def check_resource(self, **params):
         _params = _transfer_params(params)

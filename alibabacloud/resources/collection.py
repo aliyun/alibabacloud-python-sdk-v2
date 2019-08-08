@@ -13,10 +13,11 @@
 # limitations under the License.
 import copy
 import json
+
 from alibabacloud.exceptions import ClientException
-from alibabacloud.vendored.six import iteritems
 from alibabacloud.utils.utils import _assert_is_list_but_not_string
 from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response
+from alibabacloud.vendored.six import iteritems
 
 
 class ResourceCollection:
@@ -49,7 +50,7 @@ class ResourceCollection:
             filter_params=copy.deepcopy(self._filter_params),
         )
 
-    def pages(self):
+    def pages(self, **kwargs):
 
         count = 0
         page_num = 1
@@ -60,6 +61,8 @@ class ResourceCollection:
             params = copy.deepcopy(self._filter_params)
             if params is None:
                 params = {}
+            if kwargs:
+                params.update(kwargs)
             params['PageNumber'] = page_num
             if self._page_size:
                 params['PageSize'] = self._page_size
@@ -82,7 +85,9 @@ class ResourceCollection:
                 break
             page_num += 1
 
-    def all(self):
+    def all(self, **kwargs):
+        if kwargs:
+            return self.filter(**kwargs)
         return self
 
     def filter(self, **params):
@@ -108,6 +113,28 @@ class ResourceCollection:
         clone = self._clone()
         clone._page_size = count
         return clone
+
+
+class NoPageResourceCollection(ResourceCollection):
+    def pages(self, **kwargs):
+        # prepare parameters
+        params = copy.deepcopy(self._filter_params)
+        if params is None:
+            params = {}
+        if kwargs:
+            params.update(kwargs)
+        _params = _transfer_params(params)
+        items = self._page_handler(_params)
+
+        resources = []
+        for item in items:
+            resource = self._resource_creator(item)
+            resources.append(resource)
+        return resources
+
+    def __iter__(self):
+        for item in self.pages():
+            yield item
 
 
 def _param_expand_to_json(params, rules, singular=True):
@@ -147,7 +174,6 @@ def _create_resource_collection(resource_class, client, request_class,
                                 singular_param_to_json=None,
                                 plural_param_to_json=None,
                                 param_aliases=None):
-
     def page_handler(params):
         if singular_param_to_json:
             _param_expand_to_json(params, singular_param_to_json)
@@ -158,7 +184,6 @@ def _create_resource_collection(resource_class, client, request_class,
 
         _params = _transfer_params(params)
         response = request_class(**_params)
-
         return (
             _new_get_key_in_response(response, key_to_total_count),
             _new_get_key_in_response(response, key_to_page_size),
@@ -192,3 +217,40 @@ def _create_default_resource_collection(resource_class, client, request_class,
                                        key_to_resource_items, None,
                                        plural_param_to_json=plural_param_to_json,
                                        param_aliases=param_aliases)
+
+
+def _create_special_resource_collection(resource_class, client, request_class,
+                                        key_to_resource_items,
+                                        key_to_resource_id,
+                                        singular_param_to_json=None,
+                                        plural_param_to_json=None,
+                                        param_aliases=None):
+    def page_handler(params):
+        if singular_param_to_json:
+            _param_expand_to_json(params, singular_param_to_json)
+        if plural_param_to_json:
+            _param_expand_to_json(params, plural_param_to_json, singular=False)
+        if param_aliases:
+            _handle_param_aliases(params, param_aliases)
+
+        _params = _transfer_params(params)
+        response = request_class(**_params)
+
+        return _new_get_key_in_response(response, key_to_resource_items)
+
+    def resource_creator(resource_data_item):
+        resource_id = _new_get_key_in_response(resource_data_item, key_to_resource_id)
+        del resource_data_item[key_to_resource_id]
+        resource = resource_class(resource_id, _client=client)
+        resource._assign_attributes(resource_data_item)
+        return resource
+
+    def resource_creator2(resource_data_item):
+        resource = resource_class(None, _client=client)
+        resource._assign_attributes(resource_data_item)
+        return resource
+
+    if key_to_resource_id is None:
+        return NoPageResourceCollection(page_handler, resource_creator2)
+    else:
+        return NoPageResourceCollection(page_handler, resource_creator)

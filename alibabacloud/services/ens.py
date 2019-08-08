@@ -13,19 +13,18 @@
 # limitations under the License.
 import json
 
-from alibabacloud.services._ens import _ENSInstanceResource
 from alibabacloud import ClientException
+from alibabacloud.services._ens import _ENSInstanceResource
 from alibabacloud.utils.utils import _new_get_key_in_response
 
 
 class ENSInstanceResource(_ENSInstanceResource):
 
-
     def __init__(self, instance_id, _client=None):
         _ENSInstanceResource.__init__(self, instance_id, _client=_client)
 
     def refresh(self):
-        result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id,]))
+        result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id, ]))
         items = _new_get_key_in_response(result, 'Instances.Instance')
         if not items:
             raise ClientException(msg=
