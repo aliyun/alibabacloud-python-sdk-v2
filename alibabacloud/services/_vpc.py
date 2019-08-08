@@ -727,7 +727,7 @@ class _VPCHaVipResource(ServiceResource):
         self.master_instance_id = None
         self.region_id = None
         self.status = None
-        self.v_switch_id = None
+        self.vswitch_id = None
         self.vpc_id = None
 
     def delete(self, **params):
@@ -842,7 +842,7 @@ class _VPCIpv6AddressResource(ServiceResource):
         self.network_type = None
         self.real_bandwidth = None
         self.status = None
-        self.v_switch_id = None
+        self.vswitch_id = None
         self.vpc_id = None
 
     def modify_attribute(self, **params):
@@ -1105,7 +1105,7 @@ class _VPCRouteTableResource(ServiceResource):
         self.resource_group_id = None
         self.route_entrys = None
         self.route_table_type = None
-        self.v_router_id = None
+        self.vrouter_id = None
 
     def create_route_entry(self, **params):
         _params = _transfer_params(params)
@@ -1306,7 +1306,8 @@ class _VPCVRouterResource(ServiceResource):
         self.description = None
         self.region_id = None
         self.route_table_ids = None
-        self.v_router_name = None
+        self.vrouter_id = None
+        self.vrouter_name = None
         self.vpc_id = None
 
     def modify_attribute(self, **params):
@@ -1335,7 +1336,8 @@ class _VPCVSwitchResource(ServiceResource):
         self.is_default = None
         self.resource_group_id = None
         self.status = None
-        self.v_switch_name = None
+        self.vswitch_id = None
+        self.vswitch_name = None
         self.vpc_id = None
         self.zone_id = None
 
@@ -1419,8 +1421,8 @@ class _VPCVpcResource(ServiceResource):
         self.region_id = None
         self.status = None
         self.user_cidrs = None
-        self.v_router_id = None
-        self.v_switch_ids = None
+        self.vrouter_id = None
+        self.vswitch_ids = None
         self.vpc_name = None
 
     def delete(self, **params):
@@ -1510,7 +1512,7 @@ class _VPCVpnGatewayResource(ServiceResource):
         self.ssl_vpn = None
         self.status = None
         self.tag = None
-        self.v_switch_id = None
+        self.vswitch_id = None
         self.vpc_id = None
 
     def create_vpn_pbr_route_entry(self, **params):

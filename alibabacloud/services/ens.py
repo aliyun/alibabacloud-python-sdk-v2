@@ -11,44 +11,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import json
+
 from alibabacloud.services._ens import _ENSInstanceResource
+from alibabacloud import ClientException
+from alibabacloud.utils.utils import _new_get_key_in_response
 
 
 class ENSInstanceResource(_ENSInstanceResource):
 
-    STATUS_TRANSFERRING = 'Transferring'
-    STATUS_PENDING = 'Pending'
-    STATUS_RUNNING = 'Running'
-    STATUS_STARTING = 'Starting'
-    STATUS_STOPPING = 'Stopping'
-    STATUS_STOPPED = 'Stopped'
-    STATUS_DELETED = 'Deleted'
-    STATUS_RESETTING = 'Resetting'
 
     def __init__(self, instance_id, _client=None):
         _ENSInstanceResource.__init__(self, instance_id, _client=_client)
 
-    def wait_until_transferring(self):
-        self.wait_until(self.STATUS_TRANSFERRING)
-
-    def wait_until_pending(self):
-        self.wait_until(self.STATUS_PENDING)
-
-    def wait_until_running(self):
-        self.wait_until(self.STATUS_RUNNING)
-
-    def wait_until_starting(self):
-        self.wait_until(self.STATUS_STARTING)
-
-    def wait_until_stopping(self):
-        self.wait_until(self.STATUS_STOPPING)
-
-    def wait_until_stopped(self):
-        self.wait_until(self.STATUS_STOPPED)
-
-    def wait_until_deleted(self):
-        self.wait_until(self.STATUS_DELETED)
-
-    def wait_until_resetting(self):
-        self.wait_until(self.STATUS_RESETTING)
-
+    def refresh(self):
+        result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id,]))
+        items = _new_get_key_in_response(result, 'Instances.Instance')
+        if not items:
+            raise ClientException(msg=
+                                  "Failed to find instance data from DescribeInstances response. "
+                                  "InstanceId = {0}".format(self.instance_id))
+        self._assign_attributes(items[0])

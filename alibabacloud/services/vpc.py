@@ -1,4 +1,4 @@
-# Copyright 2018 Alibaba Cloud Inc. All rights reserved.
+# Copyright 2019 Alibaba Cloud Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,16 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from alibabacloud.vendored.six import iteritems
-from alibabacloud.utils.utils import _convert_name_from_camel_case_to_snake_case
+from alibabacloud.services._vpc import _VPCResource
 
 
-class ServiceResource(object):
+class VPCResource(_VPCResource):
 
-    def __init__(self, service_name, _client=None):
-        self._service_name = service_name
-        self._client = _client
+    def __init__(self, _client=None):
+        _VPCResource.__init__(self, _client=_client)
 
-    def _assign_attributes(self, attrs):
-        for key, value in iteritems(attrs):
-            setattr(self, _convert_name_from_camel_case_to_snake_case(key), value)
+

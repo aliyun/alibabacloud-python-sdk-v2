@@ -221,7 +221,7 @@ class _SLBLoadBalancerResource(ServiceResource):
         self.resource_group_id = None
         self.slave_zone_id = None
         self.tags = None
-        self.v_switch_id = None
+        self.vswitch_id = None
         self.vpc_id = None
 
     def add_backend_servers(self, **params):
@@ -364,7 +364,8 @@ class _SLBMasterSlaveVServerGroupResource(ServiceResource):
         ServiceResource.__init__(self, "slb.master_slave_vserver_group", _client=_client)
         self.master_slave_vserver_group_id = master_slave_vserver_group_id
 
-        self.master_slave_v_server_group_name = None
+        self.master_slave_vserver_group_id = None
+        self.master_slave_vserver_group_name = None
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -413,7 +414,7 @@ class _SLBRuleResource(ServiceResource):
         self.sticky_session_type = None
         self.unhealthy_threshold = None
         self.url = None
-        self.v_server_group_id = None
+        self.vserver_group_id = None
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -473,7 +474,8 @@ class _SLBVServerGroupResource(ServiceResource):
         self.vserver_group_id = vserver_group_id
 
         self.associated_objects = None
-        self.v_server_group_name = None
+        self.vserver_group_id = None
+        self.vserver_group_name = None
 
     def add_vserver_group_backend_servers(self, **params):
         _params = _transfer_params(params)
