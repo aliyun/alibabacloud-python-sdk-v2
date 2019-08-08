@@ -26,33 +26,6 @@ from alibabacloud.services._ecs import _ECSSystemEventResource
 from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response, _assert_is_not_none
 
 
-class ECSDedicatedHostResource(_ECSDedicatedHostResource):
-
-    STATUS_RELEASED = 'Released'
-    STATUS_AVAILABLE = 'Available'
-    STATUS_UNDERASSESSMENT = 'UnderAssessment'
-    STATUS_PERMANENTFAILURE = 'PermanentFailure'
-    STATUS_CREATING = 'Creating'
-
-    def __init__(self, dedicatedhost_id, _client=None):
-        _ECSDedicatedHostResource.__init__(self, dedicatedhost_id, _client=_client)
-
-    def wait_until_released(self):
-        self.wait_until(self.STATUS_RELEASED)
-
-    def wait_until_available(self):
-        self.wait_until(self.STATUS_AVAILABLE)
-
-    def wait_until_underassessment(self):
-        self.wait_until(self.STATUS_UNDERASSESSMENT)
-
-    def wait_until_permanentfailure(self):
-        self.wait_until(self.STATUS_PERMANENTFAILURE)
-
-    def wait_until_creating(self):
-        self.wait_until(self.STATUS_CREATING)
-
-
 class ECSInstanceResource(_ECSInstanceResource):
 
     STATUS_RUNNING = 'Running'
@@ -241,11 +214,6 @@ class ECSResource(_ECSResource):
     def __init__(self, _client=None):
         _ECSResource.__init__(self, _client=_client)
 
-        self.dedicated_hosts = _create_resource_collection(
-            ECSDedicatedHostResource, _client, _client.describe_dedicated_hosts,
-            'DedicatedHosts.DedicatedHost', 'DedicatedHostId',
-        )
-
         self.instances = _create_resource_collection(
             ECSInstanceResource, _client, _client.describe_instances,
             'Instances.Instance', 'InstanceId',
@@ -293,15 +261,6 @@ class ECSResource(_ECSResource):
             }
         )
 
-    def allocate_dedicated_hosts(self, **params):
-        _params = _transfer_params(params)
-        response = self._client.allocate_dedicated_hosts(**_params)
-        dedicated_host_ids = _new_get_key_in_response(response, 'DedicatedHostIdSets.DedicatedHostId')
-        dedicated_hosts = []
-        for dedicated_host_id in dedicated_host_ids:
-            dedicated_host = ECSDedicatedHostResource(dedicated_host_id, _client=self._client)
-            dedicated_hosts.append(dedicated_host)
-        return dedicated_hosts
 
     def create_instance(self, **params):
         _params = _transfer_params(params)

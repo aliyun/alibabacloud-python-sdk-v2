@@ -717,7 +717,7 @@ class _ECSHaVipResource(ServiceResource):
         self.master_instance_id = None
         self.region_id = None
         self.status = None
-        self.v_switch_id = None
+        self.vswitch_id = None
         self.vpc_id = None
 
     def delete(self, **params):
@@ -1148,7 +1148,7 @@ class _ECSNetworkInterfaceResource(ServiceResource):
         self.status = None
         self.tags = None
         self.type_ = None
-        self.v_switch_id = None
+        self.vswitch_id = None
         self.vpc_id = None
         self.zone_id = None
 
@@ -1207,7 +1207,7 @@ class _ECSNetworkInterfacePermissionResource(ServiceResource):
         self.network_interface_id = None
         self.permission = None
         self.permission_state = None
-        self.service_name_ = None
+        self.service_name = None
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -1306,7 +1306,7 @@ class _ECSRouteTableResource(ServiceResource):
         self.resource_group_id = None
         self.route_entrys = None
         self.route_table_type = None
-        self.v_router_id = None
+        self.vrouter_id = None
 
     def create_route_entry(self, **params):
         _params = _transfer_params(params)
@@ -1583,7 +1583,8 @@ class _ECSVRouterResource(ServiceResource):
         self.description = None
         self.region_id = None
         self.route_table_ids = None
-        self.v_router_name = None
+        self.vrouter_id = None
+        self.vrouter_name = None
         self.vpc_id = None
 
     def modify_attribute(self, **params):
@@ -1612,7 +1613,8 @@ class _ECSVSwitchResource(ServiceResource):
         self.is_default = None
         self.resource_group_id = None
         self.status = None
-        self.v_switch_name = None
+        self.vswitch_id = None
+        self.vswitch_name = None
         self.vpc_id = None
         self.zone_id = None
 
@@ -1688,8 +1690,8 @@ class _ECSVpcResource(ServiceResource):
         self.region_id = None
         self.status = None
         self.user_cidrs = None
-        self.v_router_id = None
-        self.v_switch_ids = None
+        self.vrouter_id = None
+        self.vswitch_ids = None
         self.vpc_name = None
 
     def delete(self, **params):

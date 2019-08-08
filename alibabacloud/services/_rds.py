@@ -160,14 +160,14 @@ class _RDSDBInstanceResource(ServiceResource):
         self.lock_mode = None
         self.lock_reason = None
         self.master_instance_id = None
-        self.mutri_o_rsignle = None
+        self.mutri_orsignle = None
         self.pay_type = None
         self.read_only_db_instance_ids = None
         self.region_id = None
         self.replicate_id = None
         self.resource_group_id = None
         self.temp_db_instance_id = None
-        self.v_switch_id = None
+        self.vswitch_id = None
         self.vpc_cloud_instance_id = None
         self.vpc_id = None
         self.zone_id = None
