@@ -18,5 +18,3 @@ class SLBResource(_SLBResource):
 
     def __init__(self, _client=None):
         _SLBResource.__init__(self, _client=_client)
-
-

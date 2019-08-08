@@ -18,5 +18,3 @@ class VPCResource(_VPCResource):
 
     def __init__(self, _client=None):
         _VPCResource.__init__(self, _client=_client)
-
-

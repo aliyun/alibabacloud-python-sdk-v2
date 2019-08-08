@@ -18,7 +18,6 @@ from alibabacloud import ClientException
 from alibabacloud.resources.base import ServiceResource
 from alibabacloud.resources.collection import _create_resource_collection, \
     _create_default_resource_collection
-from alibabacloud.services._ecs import _ECSDedicatedHostResource
 from alibabacloud.services._ecs import _ECSDiskResource
 from alibabacloud.services._ecs import _ECSInstanceResource
 from alibabacloud.services._ecs import _ECSResource
@@ -27,7 +26,6 @@ from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response,
 
 
 class ECSInstanceResource(_ECSInstanceResource):
-
     STATUS_RUNNING = 'Running'
     STATUS_STOPPING = 'Stopping'
     STATUS_PENDING = 'Pending'
@@ -92,6 +90,7 @@ def transfer(rules):
 
                     params[value] = temp
             return func(self, **params)
+
         return wrapper
 
     return decorator
@@ -260,7 +259,6 @@ class ECSResource(_ECSResource):
                 'list_of_event_type': 'InstanceEventType',
             }
         )
-
 
     def create_instance(self, **params):
         _params = _transfer_params(params)

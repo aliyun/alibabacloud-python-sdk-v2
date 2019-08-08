@@ -12,32 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response
 
 
 class _RAMResource(ServiceResource):
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'ram', _client=_client)
-        self.access_keys = _create_resource_collection(
+        self.access_keys = _create_special_resource_collection(
             _RAMAccessKeyResource, _client, _client.list_access_keys,
             'AccessKeys.AccessKey', 'AccessKeyId',
         )
-        self.roles = _create_resource_collection(
+        self.roles = _create_special_resource_collection(
             _RAMRoleResource, _client, _client.list_roles,
             'Roles.Role', 'RoleId',
         )
-        self.users = _create_resource_collection(
+        self.users = _create_special_resource_collection(
             _RAMUserResource, _client, _client.list_users,
             'Users.User', 'UserId',
         )
+
+
 class _RAMAccessKeyResource(ServiceResource):
 
     def __init__(self, access_key_id, _client=None):
@@ -56,6 +54,7 @@ class _RAMAccessKeyResource(ServiceResource):
                                   "AccessKeyId = {0}".format(self.access_key_id))
         self._assign_attributes(items[0])
 
+
 class _RAMRoleResource(ServiceResource):
 
     def __init__(self, role_id, _client=None):
@@ -67,6 +66,7 @@ class _RAMRoleResource(ServiceResource):
         self.description = None
         self.role_name = None
         self.update_date = None
+
 
 class _RAMUserResource(ServiceResource):
 

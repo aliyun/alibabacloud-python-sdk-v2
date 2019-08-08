@@ -12,14 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _VPCResource(ServiceResource):
@@ -55,8 +52,10 @@ class _VPCResource(ServiceResource):
             'FlowLogs.FlowLog', 'FlowLogId',
         )
         self.global_acceleration_instances = _create_resource_collection(
-            _VPCGlobalAccelerationInstanceResource, _client, _client.describe_global_acceleration_instances,
-            'GlobalAccelerationInstances.GlobalAccelerationInstance', 'GlobalAccelerationInstanceId',
+            _VPCGlobalAccelerationInstanceResource, _client,
+            _client.describe_global_acceleration_instances,
+            'GlobalAccelerationInstances.GlobalAccelerationInstance',
+            'GlobalAccelerationInstanceId',
         )
         self.ha_vips = _create_resource_collection(
             _VPCHaVipResource, _client, _client.describe_ha_vips,
@@ -90,7 +89,7 @@ class _VPCResource(ServiceResource):
             _VPCPhysicalConnectionResource, _client, _client.describe_physical_connections,
             'PhysicalConnectionSet.PhysicalConnectionType', 'PhysicalConnectionId',
         )
-        self.regions = _create_resource_collection(
+        self.regions = _create_special_resource_collection(
             _VPCRegionResource, _client, _client.describe_regions,
             'Regions.Region', 'RegionId',
         )
@@ -134,10 +133,11 @@ class _VPCResource(ServiceResource):
             _VPCVpnGatewayResource, _client, _client.describe_vpn_gateways,
             'VpnGateways.VpnGateway', 'VpnGatewayId',
         )
-        self.zones = _create_resource_collection(
+        self.zones = _create_special_resource_collection(
             _VPCZoneResource, _client, _client.describe_zones,
             'Zones.Zone', 'ZoneId',
         )
+
     def create_bandwidth_package(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_bandwidth_package(**_params)
@@ -168,6 +168,12 @@ class _VPCResource(ServiceResource):
         allocation_id = _new_get_key_in_response(response, 'AllocationId')
         return _VPCEipAddressResource(allocation_id, _client=self._client)
 
+    def create_express_cloud_connection(self, **params):
+        _params = _transfer_params(params)
+        response = self._client.create_express_cloud_connection(**_params)
+        ecc_id = _new_get_key_in_response(response, 'EccId')
+        return _VPCExpressCloudConnectionResource(ecc_id, _client=self._client)
+
     def create_flow_log(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_flow_log(**_params)
@@ -183,8 +189,10 @@ class _VPCResource(ServiceResource):
     def create_global_acceleration_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_global_acceleration_instance(**_params)
-        global_acceleration_instance_id = _new_get_key_in_response(response, 'GlobalAccelerationInstanceId')
-        return _VPCGlobalAccelerationInstanceResource(global_acceleration_instance_id, _client=self._client)
+        global_acceleration_instance_id = _new_get_key_in_response(response,
+                                                                   'GlobalAccelerationInstanceId')
+        return _VPCGlobalAccelerationInstanceResource(global_acceleration_instance_id,
+                                                      _client=self._client)
 
     def create_ha_vip(self, **params):
         _params = _transfer_params(params)
@@ -294,6 +302,7 @@ class _VPCResource(ServiceResource):
         vpn_instance_id = _new_get_key_in_response(response, 'VpnInstanceId')
         return _VPCVpnRouteEntryResource(vpn_instance_id, _client=self._client)
 
+
 class _VPCAccessPointResource(ServiceResource):
 
     def __init__(self, access_point_id, _client=None):
@@ -310,14 +319,15 @@ class _VPCAccessPointResource(ServiceResource):
 
     def create_physical_connection_setup_order(self, **params):
         _params = _transfer_params(params)
-        self._client.create_physical_connection_setup_order(access_point_id=self.access_point_id, **_params)
+        self._client.create_physical_connection_setup_order(access_point_id=self.access_point_id,
+                                                            **_params)
+
 
 class _VPCAclResource(ServiceResource):
 
     def __init__(self, acl_id, _client=None):
         ServiceResource.__init__(self, "vpc.acl", _client=_client)
         self.acl_id = acl_id
-
 
     def add_ipv6_translator_acl_list_entry(self, **params):
         _params = _transfer_params(params)
@@ -338,6 +348,7 @@ class _VPCAclResource(ServiceResource):
     def remove_ipv6_translator_acl_list_entry(self, **params):
         _params = _transfer_params(params)
         self._client.remove_ipv6_translator_acl_list_entry(acl_id=self.acl_id, **_params)
+
 
 class _VPCBandwidthPackageResource(ServiceResource):
 
@@ -362,68 +373,84 @@ class _VPCBandwidthPackageResource(ServiceResource):
 
     def add_bandwidth_package_ips(self, **params):
         _params = _transfer_params(params)
-        self._client.add_bandwidth_package_ips(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.add_bandwidth_package_ips(bandwidth_package_id=self.bandwidth_package_id,
+                                               **_params)
 
     def add_common_bandwidth_package_ip(self, **params):
         _params = _transfer_params(params)
-        self._client.add_common_bandwidth_package_ip(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.add_common_bandwidth_package_ip(bandwidth_package_id=self.bandwidth_package_id,
+                                                     **_params)
 
     def convert(self, **params):
         _params = _transfer_params(params)
-        self._client.convert_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.convert_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id,
+                                               **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.delete_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id,
+                                              **_params)
 
     def delete_common(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_common_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.delete_common_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id,
+                                                     **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_bandwidth_package_attribute(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.modify_bandwidth_package_attribute(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def modify_common_bandwidth_package_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_common_bandwidth_package_attribute(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.modify_common_bandwidth_package_attribute(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def modify_common_bandwidth_package_pay_type(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_common_bandwidth_package_pay_type(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.modify_common_bandwidth_package_pay_type(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def modify_common_bandwidth_package_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_common_bandwidth_package_spec(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.modify_common_bandwidth_package_spec(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def modify_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_bandwidth_package_spec(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.modify_bandwidth_package_spec(bandwidth_package_id=self.bandwidth_package_id,
+                                                   **_params)
 
     def remove_bandwidth_package_ips(self, **params):
         _params = _transfer_params(params)
-        self._client.remove_bandwidth_package_ips(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.remove_bandwidth_package_ips(bandwidth_package_id=self.bandwidth_package_id,
+                                                  **_params)
 
     def remove_common_bandwidth_package_ip(self, **params):
         _params = _transfer_params(params)
-        self._client.remove_common_bandwidth_package_ip(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.remove_common_bandwidth_package_ip(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def cancel_common_bandwidth_package_ip_bandwidth(self, **params):
         _params = _transfer_params(params)
-        self._client.cancel_common_bandwidth_package_ip_bandwidth(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.cancel_common_bandwidth_package_ip_bandwidth(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def modify_common_bandwidth_package_ip_bandwidth(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_common_bandwidth_package_ip_bandwidth(bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.modify_common_bandwidth_package_ip_bandwidth(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_bandwidth_packages(bandwidth_package_id=self.bandwidth_package_id)
+        result = self._client.describe_bandwidth_packages(
+            bandwidth_package_id=self.bandwidth_package_id)
         items = _new_get_key_in_response(result, 'BandwidthPackages.BandwidthPackage')
         if not items:
             raise ClientException(msg=
                                   "Failed to find bandwidth_package data from DescribeBandwidthPackages response. "
                                   "BandwidthPackageId = {0}".format(self.bandwidth_package_id))
         self._assign_attributes(items[0])
+
 
 class _VPCBgpGroupResource(ServiceResource):
 
@@ -461,6 +488,7 @@ class _VPCBgpGroupResource(ServiceResource):
                                   "BgpGroupId = {0}".format(self.bgp_group_id))
         self._assign_attributes(items[0])
 
+
 class _VPCBgpPeerResource(ServiceResource):
 
     def __init__(self, bgp_peer_id, _client=None):
@@ -471,6 +499,7 @@ class _VPCBgpPeerResource(ServiceResource):
         self.bgp_group_id = None
         self.bgp_status = None
         self.description = None
+        self.enable_bfd = None
         self.hold = None
         self.is_fake = None
         self.keepalive = None
@@ -500,6 +529,7 @@ class _VPCBgpPeerResource(ServiceResource):
                                   "BgpPeerId = {0}".format(self.bgp_peer_id))
         self._assign_attributes(items[0])
 
+
 class _VPCCustomerGatewayResource(ServiceResource):
 
     def __init__(self, customer_gateway_id, _client=None):
@@ -513,24 +543,29 @@ class _VPCCustomerGatewayResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_customer_gateway(customer_gateway_id=self.customer_gateway_id, **_params)
+        self._client.delete_customer_gateway(customer_gateway_id=self.customer_gateway_id,
+                                             **_params)
 
     def describe(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_customer_gateway(customer_gateway_id=self.customer_gateway_id, **_params)
+        self._client.describe_customer_gateway(customer_gateway_id=self.customer_gateway_id,
+                                               **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_customer_gateway_attribute(customer_gateway_id=self.customer_gateway_id, **_params)
+        self._client.modify_customer_gateway_attribute(customer_gateway_id=self.customer_gateway_id,
+                                                       **_params)
 
     def refresh(self):
-        result = self._client.describe_customer_gateways(customer_gateway_id=self.customer_gateway_id)
+        result = self._client.describe_customer_gateways(
+            customer_gateway_id=self.customer_gateway_id)
         items = _new_get_key_in_response(result, 'CustomerGateways.CustomerGateway')
         if not items:
             raise ClientException(msg=
                                   "Failed to find customer_gateway data from DescribeCustomerGateways response. "
                                   "CustomerGatewayId = {0}".format(self.customer_gateway_id))
         self._assign_attributes(items[0])
+
 
 class _VPCEipAddressResource(ServiceResource):
 
@@ -576,12 +611,12 @@ class _VPCEipAddressResource(ServiceResource):
                                   "EipAddressId = {0}".format(self.allocation_id))
         self._assign_attributes(items[0])
 
+
 class _VPCExpressCloudConnectionResource(ServiceResource):
 
     def __init__(self, ecc_id, _client=None):
         ServiceResource.__init__(self, "vpc.express_cloud_connection", _client=_client)
         self.ecc_id = ecc_id
-
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
@@ -590,6 +625,7 @@ class _VPCExpressCloudConnectionResource(ServiceResource):
     def modify_bandwidth(self, **params):
         _params = _transfer_params(params)
         self._client.modify_express_cloud_connection_bandwidth(ecc_id=self.ecc_id, **_params)
+
 
 class _VPCFlowLogResource(ServiceResource):
 
@@ -633,12 +669,12 @@ class _VPCFlowLogResource(ServiceResource):
                                   "FlowLogId = {0}".format(self.flow_log_id))
         self._assign_attributes(items[0])
 
+
 class _VPCForwardEntryResource(ServiceResource):
 
     def __init__(self, forward_entry_id, _client=None):
         ServiceResource.__init__(self, "vpc.forward_entry", _client=_client)
         self.forward_entry_id = forward_entry_id
-
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -647,6 +683,7 @@ class _VPCForwardEntryResource(ServiceResource):
     def modify(self, **params):
         _params = _transfer_params(params)
         self._client.modify_forward_entry(forward_entry_id=self.forward_entry_id, **_params)
+
 
 class _VPCGlobalAccelerationInstanceResource(ServiceResource):
 
@@ -678,40 +715,51 @@ class _VPCGlobalAccelerationInstanceResource(ServiceResource):
 
     def add_global_acceleration_instance_ip(self, **params):
         _params = _transfer_params(params)
-        self._client.add_global_acceleration_instance_ip(global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
+        self._client.add_global_acceleration_instance_ip(
+            global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
 
     def associate(self, **params):
         _params = _transfer_params(params)
-        self._client.associate_global_acceleration_instance(global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
+        self._client.associate_global_acceleration_instance(
+            global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_global_acceleration_instance(global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
+        self._client.delete_global_acceleration_instance(
+            global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
 
     def modify_attributes(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_global_acceleration_instance_attributes(global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
+        self._client.modify_global_acceleration_instance_attributes(
+            global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
 
     def modify_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_global_acceleration_instance_spec(global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
+        self._client.modify_global_acceleration_instance_spec(
+            global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
 
     def remove_global_acceleration_instance_ip(self, **params):
         _params = _transfer_params(params)
-        self._client.remove_global_acceleration_instance_ip(global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
+        self._client.remove_global_acceleration_instance_ip(
+            global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
 
     def unassociate(self, **params):
         _params = _transfer_params(params)
-        self._client.unassociate_global_acceleration_instance(global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
+        self._client.unassociate_global_acceleration_instance(
+            global_acceleration_instance_id=self.global_acceleration_instance_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_global_acceleration_instances(global_acceleration_instance_id=self.global_acceleration_instance_id)
-        items = _new_get_key_in_response(result, 'GlobalAccelerationInstances.GlobalAccelerationInstance')
+        result = self._client.describe_global_acceleration_instances(
+            global_acceleration_instance_id=self.global_acceleration_instance_id)
+        items = _new_get_key_in_response(result,
+                                         'GlobalAccelerationInstances.GlobalAccelerationInstance')
         if not items:
             raise ClientException(msg=
                                   "Failed to find global_acceleration_instance data from DescribeGlobalAccelerationInstances response. "
-                                  "GlobalAccelerationInstanceId = {0}".format(self.global_acceleration_instance_id))
+                                  "GlobalAccelerationInstanceId = {0}".format(
+                                      self.global_acceleration_instance_id))
         self._assign_attributes(items[0])
+
 
 class _VPCHaVipResource(ServiceResource):
 
@@ -746,6 +794,7 @@ class _VPCHaVipResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.unassociate_ha_vip(ha_vip_id=self.ha_vip_id, **_params)
 
+
 class _VPCIPv6TranslatorResource(ServiceResource):
 
     def __init__(self, ipv6_translator_id, _client=None):
@@ -773,11 +822,13 @@ class _VPCIPv6TranslatorResource(ServiceResource):
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_ipv6_translator_attribute(ipv6_translator_id=self.ipv6_translator_id, **_params)
+        self._client.modify_ipv6_translator_attribute(ipv6_translator_id=self.ipv6_translator_id,
+                                                      **_params)
 
     def modify_bandwidth(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_ipv6_translator_bandwidth(ipv6_translator_id=self.ipv6_translator_id, **_params)
+        self._client.modify_ipv6_translator_bandwidth(ipv6_translator_id=self.ipv6_translator_id,
+                                                      **_params)
 
     def refresh(self):
         result = self._client.describe_ipv6_translators(ipv6_translator_id=self.ipv6_translator_id)
@@ -788,23 +839,24 @@ class _VPCIPv6TranslatorResource(ServiceResource):
                                   "IPv6TranslatorId = {0}".format(self.ipv6_translator_id))
         self._assign_attributes(items[0])
 
+
 class _VPCIPv6TranslatorEntryResource(ServiceResource):
 
     def __init__(self, ipv6_translator_entry_id, _client=None):
         ServiceResource.__init__(self, "vpc.ipv6_translator_entry", _client=_client)
         self.ipv6_translator_entry_id = ipv6_translator_entry_id
 
-
     def modify(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_ipv6_translator_entry(ipv6_translator_entry_id=self.ipv6_translator_entry_id, **_params)
+        self._client.modify_ipv6_translator_entry(
+            ipv6_translator_entry_id=self.ipv6_translator_entry_id, **_params)
+
 
 class _VPCInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "vpc.instance", _client=_client)
         self.instance_id = instance_id
-
 
     def apply_physical_connection_loa(self, **params):
         _params = _transfer_params(params)
@@ -825,6 +877,7 @@ class _VPCInstanceResource(ServiceResource):
     def revoke_instance_from_cen(self, **params):
         _params = _transfer_params(params)
         self._client.revoke_instance_from_cen(instance_id=self.instance_id, **_params)
+
 
 class _VPCIpv6AddressResource(ServiceResource):
 
@@ -858,6 +911,7 @@ class _VPCIpv6AddressResource(ServiceResource):
                                   "Ipv6AddressId = {0}".format(self.ipv6_address_id))
         self._assign_attributes(items[0])
 
+
 class _VPCIpv6EgressOnlyRuleResource(ServiceResource):
 
     def __init__(self, ipv6_egress_only_rule_id, _client=None):
@@ -872,16 +926,20 @@ class _VPCIpv6EgressOnlyRuleResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_ipv6_egress_only_rule(ipv6_egress_only_rule_id=self.ipv6_egress_only_rule_id, **_params)
+        self._client.delete_ipv6_egress_only_rule(
+            ipv6_egress_only_rule_id=self.ipv6_egress_only_rule_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_ipv6_egress_only_rules(ipv6_egress_only_rule_id=self.ipv6_egress_only_rule_id)
+        result = self._client.describe_ipv6_egress_only_rules(
+            ipv6_egress_only_rule_id=self.ipv6_egress_only_rule_id)
         items = _new_get_key_in_response(result, 'Ipv6EgressOnlyRules.Ipv6EgressOnlyRule')
         if not items:
             raise ClientException(msg=
                                   "Failed to find ipv6_egress_only_rule data from DescribeIpv6EgressOnlyRules response. "
-                                  "Ipv6EgressOnlyRuleId = {0}".format(self.ipv6_egress_only_rule_id))
+                                  "Ipv6EgressOnlyRuleId = {0}".format(
+                                      self.ipv6_egress_only_rule_id))
         self._assign_attributes(items[0])
+
 
 class _VPCIpv6GatewayResource(ServiceResource):
 
@@ -906,7 +964,8 @@ class _VPCIpv6GatewayResource(ServiceResource):
 
     def describe_ipv6_gateway_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_ipv6_gateway_attribute(ipv6_gateway_id=self.ipv6_gateway_id, **_params)
+        self._client.describe_ipv6_gateway_attribute(ipv6_gateway_id=self.ipv6_gateway_id,
+                                                     **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
@@ -924,6 +983,7 @@ class _VPCIpv6GatewayResource(ServiceResource):
                                   "Failed to find ipv6_gateway data from DescribeIpv6Gateways response. "
                                   "Ipv6GatewayId = {0}".format(self.ipv6_gateway_id))
         self._assign_attributes(items[0])
+
 
 class _VPCNatGatewayResource(ServiceResource):
 
@@ -963,6 +1023,7 @@ class _VPCNatGatewayResource(ServiceResource):
                                   "Failed to find nat_gateway data from DescribeNatGateways response. "
                                   "NatGatewayId = {0}".format(self.nat_gateway_id))
         self._assign_attributes(items[0])
+
 
 class _VPCNetworkAclResource(ServiceResource):
 
@@ -1017,6 +1078,7 @@ class _VPCNetworkAclResource(ServiceResource):
                                   "NetworkAclId = {0}".format(self.network_acl_id))
         self._assign_attributes(items[0])
 
+
 class _VPCPhysicalConnectionResource(ServiceResource):
 
     def __init__(self, physical_connection_id, _client=None):
@@ -1043,27 +1105,34 @@ class _VPCPhysicalConnectionResource(ServiceResource):
 
     def cancel(self, **params):
         _params = _transfer_params(params)
-        self._client.cancel_physical_connection(physical_connection_id=self.physical_connection_id, **_params)
+        self._client.cancel_physical_connection(physical_connection_id=self.physical_connection_id,
+                                                **_params)
 
     def create_physical_connection_occupancy_order(self, **params):
         _params = _transfer_params(params)
-        self._client.create_physical_connection_occupancy_order(physical_connection_id=self.physical_connection_id, **_params)
+        self._client.create_physical_connection_occupancy_order(
+            physical_connection_id=self.physical_connection_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_physical_connection(physical_connection_id=self.physical_connection_id, **_params)
+        self._client.delete_physical_connection(physical_connection_id=self.physical_connection_id,
+                                                **_params)
 
     def enable(self, **params):
         _params = _transfer_params(params)
-        self._client.enable_physical_connection(physical_connection_id=self.physical_connection_id, **_params)
+        self._client.enable_physical_connection(physical_connection_id=self.physical_connection_id,
+                                                **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_physical_connection_attribute(physical_connection_id=self.physical_connection_id, **_params)
+        self._client.modify_physical_connection_attribute(
+            physical_connection_id=self.physical_connection_id, **_params)
 
     def terminate(self, **params):
         _params = _transfer_params(params)
-        self._client.terminate_physical_connection(physical_connection_id=self.physical_connection_id, **_params)
+        self._client.terminate_physical_connection(
+            physical_connection_id=self.physical_connection_id, **_params)
+
 
 class _VPCRegionResource(ServiceResource):
 
@@ -1084,16 +1153,17 @@ class _VPCRegionResource(ServiceResource):
                                   "RegionId = {0}".format(self.region_id))
         self._assign_attributes(items[0])
 
+
 class _VPCRouteEntryResource(ServiceResource):
 
     def __init__(self, route_entry_id, _client=None):
         ServiceResource.__init__(self, "vpc.route_entry", _client=_client)
         self.route_entry_id = route_entry_id
 
-
     def modify(self, **params):
         _params = _transfer_params(params)
         self._client.modify_route_entry(route_entry_id=self.route_entry_id, **_params)
+
 
 class _VPCRouteTableResource(ServiceResource):
 
@@ -1136,12 +1206,12 @@ class _VPCRouteTableResource(ServiceResource):
                                   "RouteTableId = {0}".format(self.route_table_id))
         self._assign_attributes(items[0])
 
+
 class _VPCRouterResource(ServiceResource):
 
     def __init__(self, router_id, _client=None):
         ServiceResource.__init__(self, "vpc.router", _client=_client)
         self.router_id = router_id
-
 
     def add_bgp_network(self, **params):
         _params = _transfer_params(params)
@@ -1150,6 +1220,7 @@ class _VPCRouterResource(ServiceResource):
     def delete_bgp_network(self, **params):
         _params = _transfer_params(params)
         self._client.delete_bgp_network(router_id=self.router_id, **_params)
+
 
 class _VPCRouterInterfaceResource(ServiceResource):
 
@@ -1184,19 +1255,23 @@ class _VPCRouterInterfaceResource(ServiceResource):
 
     def activate(self, **params):
         _params = _transfer_params(params)
-        self._client.activate_router_interface(router_interface_id=self.router_interface_id, **_params)
+        self._client.activate_router_interface(router_interface_id=self.router_interface_id,
+                                               **_params)
 
     def connect(self, **params):
         _params = _transfer_params(params)
-        self._client.connect_router_interface(router_interface_id=self.router_interface_id, **_params)
+        self._client.connect_router_interface(router_interface_id=self.router_interface_id,
+                                              **_params)
 
     def deactivate(self, **params):
         _params = _transfer_params(params)
-        self._client.deactivate_router_interface(router_interface_id=self.router_interface_id, **_params)
+        self._client.deactivate_router_interface(router_interface_id=self.router_interface_id,
+                                                 **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_router_interface(router_interface_id=self.router_interface_id, **_params)
+        self._client.delete_router_interface(router_interface_id=self.router_interface_id,
+                                             **_params)
 
     def delete_express_connect(self, **params):
         _params = _transfer_params(params)
@@ -1204,18 +1279,20 @@ class _VPCRouterInterfaceResource(ServiceResource):
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_router_interface_attribute(router_interface_id=self.router_interface_id, **_params)
+        self._client.modify_router_interface_attribute(router_interface_id=self.router_interface_id,
+                                                       **_params)
 
     def modify_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_router_interface_spec(router_interface_id=self.router_interface_id, **_params)
+        self._client.modify_router_interface_spec(router_interface_id=self.router_interface_id,
+                                                  **_params)
+
 
 class _VPCSnatEntryResource(ServiceResource):
 
     def __init__(self, snat_entry_id, _client=None):
         ServiceResource.__init__(self, "vpc.snat_entry", _client=_client)
         self.snat_entry_id = snat_entry_id
-
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -1224,6 +1301,7 @@ class _VPCSnatEntryResource(ServiceResource):
     def modify(self, **params):
         _params = _transfer_params(params)
         self._client.modify_snat_entry(snat_entry_id=self.snat_entry_id, **_params)
+
 
 class _VPCSslVpnClientCertResource(ServiceResource):
 
@@ -1240,24 +1318,29 @@ class _VPCSslVpnClientCertResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_ssl_vpn_client_cert(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id, **_params)
+        self._client.delete_ssl_vpn_client_cert(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id,
+                                                **_params)
 
     def describe(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_ssl_vpn_client_cert(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id, **_params)
+        self._client.describe_ssl_vpn_client_cert(
+            ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id, **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_ssl_vpn_client_cert(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id, **_params)
+        self._client.modify_ssl_vpn_client_cert(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id,
+                                                **_params)
 
     def refresh(self):
-        result = self._client.describe_ssl_vpn_client_certs(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id)
+        result = self._client.describe_ssl_vpn_client_certs(
+            ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id)
         items = _new_get_key_in_response(result, 'SslVpnClientCertKeys.SslVpnClientCertKey')
         if not items:
             raise ClientException(msg=
                                   "Failed to find ssl_vpn_client_cert data from DescribeSslVpnClientCerts response. "
                                   "SslVpnClientCertId = {0}".format(self.ssl_vpn_client_cert_id))
         self._assign_attributes(items[0])
+
 
 class _VPCSslVpnServerResource(ServiceResource):
 
@@ -1296,6 +1379,7 @@ class _VPCSslVpnServerResource(ServiceResource):
                                   "SslVpnServerId = {0}".format(self.ssl_vpn_server_id))
         self._assign_attributes(items[0])
 
+
 class _VPCVRouterResource(ServiceResource):
 
     def __init__(self, vrouter_id, _client=None):
@@ -1322,6 +1406,7 @@ class _VPCVRouterResource(ServiceResource):
                                   "Failed to find vrouter data from DescribeVRouters response. "
                                   "VRouterId = {0}".format(self.vrouter_id))
         self._assign_attributes(items[0])
+
 
 class _VPCVSwitchResource(ServiceResource):
 
@@ -1357,6 +1442,7 @@ class _VPCVSwitchResource(ServiceResource):
                                   "Failed to find vswitch data from DescribeVSwitches response. "
                                   "VSwitchId = {0}".format(self.vswitch_id))
         self._assign_attributes(items[0])
+
 
 class _VPCVirtualBorderRouterResource(ServiceResource):
 
@@ -1402,11 +1488,14 @@ class _VPCVirtualBorderRouterResource(ServiceResource):
 
     def associate_physical_connection_to(self, **params):
         _params = _transfer_params(params)
-        self._client.associate_physical_connection_to_virtual_border_router(vbr_id=self.vbr_id, **_params)
+        self._client.associate_physical_connection_to_virtual_border_router(vbr_id=self.vbr_id,
+                                                                            **_params)
 
     def unassociate_physical_connection_from(self, **params):
         _params = _transfer_params(params)
-        self._client.unassociate_physical_connection_from_virtual_border_router(vbr_id=self.vbr_id, **_params)
+        self._client.unassociate_physical_connection_from_virtual_border_router(vbr_id=self.vbr_id,
+                                                                                **_params)
+
 
 class _VPCVpcResource(ServiceResource):
 
@@ -1450,6 +1539,7 @@ class _VPCVpcResource(ServiceResource):
                                   "VpcId = {0}".format(self.vpc_id))
         self._assign_attributes(items[0])
 
+
 class _VPCVpnConnectionResource(ServiceResource):
 
     def __init__(self, vpn_connection_id, _client=None):
@@ -1478,11 +1568,13 @@ class _VPCVpnConnectionResource(ServiceResource):
 
     def download_vpn_connection_config(self, **params):
         _params = _transfer_params(params)
-        self._client.download_vpn_connection_config(vpn_connection_id=self.vpn_connection_id, **_params)
+        self._client.download_vpn_connection_config(vpn_connection_id=self.vpn_connection_id,
+                                                    **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_vpn_connection_attribute(vpn_connection_id=self.vpn_connection_id, **_params)
+        self._client.modify_vpn_connection_attribute(vpn_connection_id=self.vpn_connection_id,
+                                                     **_params)
 
     def refresh(self):
         result = self._client.describe_vpn_connections(vpn_connection_id=self.vpn_connection_id)
@@ -1492,6 +1584,7 @@ class _VPCVpnConnectionResource(ServiceResource):
                                   "Failed to find vpn_connection data from DescribeVpnConnections response. "
                                   "VpnConnectionId = {0}".format(self.vpn_connection_id))
         self._assign_attributes(items[0])
+
 
 class _VPCVpnGatewayResource(ServiceResource):
 
@@ -1541,7 +1634,8 @@ class _VPCVpnGatewayResource(ServiceResource):
 
     def modify_vpn_pbr_route_entry_weight(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_vpn_pbr_route_entry_weight(vpn_gateway_id=self.vpn_gateway_id, **_params)
+        self._client.modify_vpn_pbr_route_entry_weight(vpn_gateway_id=self.vpn_gateway_id,
+                                                       **_params)
 
     def modify_vpn_route_entry_weight(self, **params):
         _params = _transfer_params(params)
@@ -1559,6 +1653,7 @@ class _VPCVpnGatewayResource(ServiceResource):
                                   "Failed to find vpn_gateway data from DescribeVpnGateways response. "
                                   "VpnGatewayId = {0}".format(self.vpn_gateway_id))
         self._assign_attributes(items[0])
+
 
 class _VPCVpnRouteEntryResource(ServiceResource):
 
