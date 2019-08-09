@@ -69,9 +69,10 @@ class ECSInstanceResource(_ECSInstanceResource):
         result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id, ]))
         items = _new_get_key_in_response(result, 'Instances.Instance')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find instance data from DescribeInstances response. "
-                                  "InstanceId = {0}".format(self.instance_id))
+            raise ClientException(
+                msg="Failed to find instance data from DescribeInstances response. "
+                "InstanceId = {0}".format(
+                    self.instance_id))
         self._assign_attributes(items[0])
 
 
@@ -154,8 +155,7 @@ class ECSSystemEventResource(_ECSSystemEventResource):
         response = self._client.describe_instance_history_events(list_of_event_id=[self.event_id, ])
         items = _new_get_key_in_response(response, 'InstanceSystemEventSet.InstanceSystemEventType')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find event data from "
+            raise ClientException(msg="Failed to find event data from "
                                   "DescribeInstanceHistoryEventsRequest response. "
                                   "EventId = {0}".format(self.event_id))
         self._assign_attributes(items[0])
@@ -203,8 +203,7 @@ class ECSDiskResource(_ECSDiskResource):
         result = self._client.describe_disks(disk_ids=json.dumps([self.disk_id, ]))
         items = _new_get_key_in_response(result, 'Disks.Disk')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find disk data from DescribeDisks response. "
+            raise ClientException(msg="Failed to find disk data from DescribeDisks response. "
                                   "DiskId = {0}".format(self.disk_id))
         self._assign_attributes(items[0])
 

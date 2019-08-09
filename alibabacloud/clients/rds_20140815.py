@@ -30,6 +30,372 @@ class RdsClient(AlibabaCloudClient):
         self.location_service_code = 'rds'
         self.location_endpoint_type = 'openAPI'
 
+    def describe_dtc_security_ip_hosts_for_sql_server(
+            self,
+            resource_owner_id=None,
+            security_token=None,
+            resource_owner_account=None,
+            region_id=None,
+            owner_account=None,
+            db_instance_id=None,
+            owner_id=None):
+        api_request = APIRequest('DescribeDTCSecurityIpHostsForSQLServer',
+                                 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "SecurityToken": security_token,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "OwnerAccount": owner_account,
+            "DBInstanceId": db_instance_id,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def modify_dtc_security_ip_hosts_for_sql_server(
+            self,
+            resource_owner_id=None,
+            white_list_group_name=None,
+            security_token=None,
+            resource_owner_account=None,
+            region_id=None,
+            owner_account=None,
+            db_instance_id=None,
+            security_ip_hosts=None,
+            owner_id=None):
+        api_request = APIRequest('ModifyDTCSecurityIpHostsForSQLServer',
+                                 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "WhiteListGroupName": white_list_group_name,
+            "SecurityToken": security_token,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "OwnerAccount": owner_account,
+            "DBInstanceId": db_instance_id,
+            "SecurityIpHosts": security_ip_hosts,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def describe_db_instance_ip_hostname(
+            self,
+            resource_owner_id=None,
+            security_token=None,
+            resource_owner_account=None,
+            region_id=None,
+            owner_account=None,
+            db_instance_id=None,
+            owner_id=None):
+        api_request = APIRequest('DescribeDBInstanceIpHostname', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "SecurityToken": security_token,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "OwnerAccount": owner_account,
+            "DBInstanceId": db_instance_id,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def modify_db_instance_auto_upgrade_minor_version(
+            self,
+            auto_upgrade_minor_version=None,
+            resource_owner_id=None,
+            resource_owner_account=None,
+            client_token=None,
+            db_instance_id=None,
+            owner_id=None):
+        api_request = APIRequest(
+            'ModifyDBInstanceAutoUpgradeMinorVersion',
+            'GET',
+            'http',
+            'RPC',
+            'query')
+        api_request._params = {
+            "AutoUpgradeMinorVersion": auto_upgrade_minor_version,
+            "ResourceOwnerId": resource_owner_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "ClientToken": client_token,
+            "DBInstanceId": db_instance_id,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def describe_available_cross_region(
+            self,
+            resource_owner_id=None,
+            resource_owner_account=None,
+            region_id=None,
+            owner_id=None):
+        api_request = APIRequest('DescribeAvailableCrossRegion', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def check_create_ddr_db_instance(
+            self,
+            resource_owner_id=None,
+            restore_time=None,
+            db_instance_storage=None,
+            source_db_instance_name=None,
+            bak_set_name=None,
+            resource_owner_account=None,
+            host_type=None,
+            backup_set_id=None,
+            engine_version=None,
+            owner_id=None,
+            user_bak_set_url=None,
+            db_instance_class=None,
+            restore_type=None,
+            region_id=None,
+            engine=None,
+            source_region=None,
+            backup_set_region=None,
+            backup_set_type=None):
+        api_request = APIRequest('CheckCreateDdrDBInstance', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "RestoreTime": restore_time,
+            "DBInstanceStorage": db_instance_storage,
+            "SourceDBInstanceName": source_db_instance_name,
+            "BakSetName": bak_set_name,
+            "ResourceOwnerAccount": resource_owner_account,
+            "HostType": host_type,
+            "BackupSetId": backup_set_id,
+            "EngineVersion": engine_version,
+            "OwnerId": owner_id,
+            "UserBakSetURL": user_bak_set_url,
+            "DBInstanceClass": db_instance_class,
+            "RestoreType": restore_type,
+            "RegionId": region_id,
+            "Engine": engine,
+            "SourceRegion": source_region,
+            "BackupSetRegion": backup_set_region,
+            "BackupSetType": backup_set_type}
+        return self._handle_request(api_request).result
+
+    def describe_available_recovery_time(
+            self,
+            resource_owner_id=None,
+            resource_owner_account=None,
+            region_id=None,
+            cross_backup_id=None,
+            owner_id=None):
+        api_request = APIRequest('DescribeAvailableRecoveryTime', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "CrossBackupId": cross_backup_id,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def describe_cross_region_log_backup_files(
+            self,
+            resource_owner_id=None,
+            resource_owner_account=None,
+            region_id=None,
+            page_size=None,
+            end_time=None,
+            db_instance_id=None,
+            start_time=None,
+            owner_id=None,
+            cross_backup_region=None,
+            page_number=None):
+        api_request = APIRequest('DescribeCrossRegionLogBackupFiles', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "PageSize": page_size,
+            "EndTime": end_time,
+            "DBInstanceId": db_instance_id,
+            "StartTime": start_time,
+            "OwnerId": owner_id,
+            "CrossBackupRegion": cross_backup_region,
+            "PageNumber": page_number}
+        return self._handle_request(api_request).result
+
+    def modify_instance_cross_backup_policy(
+            self,
+            resource_owner_id=None,
+            retent_type=None,
+            resource_owner_account=None,
+            cross_backup_type=None,
+            log_backup_enabled=None,
+            backup_enabled=None,
+            rel_service=None,
+            owner_id=None,
+            cross_backup_region=None,
+            storage_type=None,
+            endpoint=None,
+            region_id=None,
+            storage_owner=None,
+            db_instance_id=None,
+            retention=None):
+        api_request = APIRequest('ModifyInstanceCrossBackupPolicy', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "RetentType": retent_type,
+            "ResourceOwnerAccount": resource_owner_account,
+            "CrossBackupType": cross_backup_type,
+            "LogBackupEnabled": log_backup_enabled,
+            "BackupEnabled": backup_enabled,
+            "RelService": rel_service,
+            "OwnerId": owner_id,
+            "CrossBackupRegion": cross_backup_region,
+            "StorageType": storage_type,
+            "Endpoint": endpoint,
+            "RegionId": region_id,
+            "StorageOwner": storage_owner,
+            "DBInstanceId": db_instance_id,
+            "Retention": retention}
+        return self._handle_request(api_request).result
+
+    def create_ddr_instance(
+            self,
+            connection_mode=None,
+            resource_owner_id=None,
+            db_instance_storage=None,
+            system_db_charset=None,
+            source_db_instance_name=None,
+            client_token=None,
+            host_type=None,
+            engine_version=None,
+            user_bak_set_url=None,
+            resource_group_id=None,
+            region_id=None,
+            engine=None,
+            db_instance_description=None,
+            db_instance_storage_type=None,
+            backup_set_region=None,
+            db_instance_net_type=None,
+            backup_set_type=None,
+            period=None,
+            restore_time=None,
+            bak_set_name=None,
+            resource_owner_account=None,
+            owner_account=None,
+            backup_set_id=None,
+            owner_id=None,
+            used_time=None,
+            db_instance_class=None,
+            security_ip_list=None,
+            vswitch_id=None,
+            private_ip_address=None,
+            restore_type=None,
+            vpc_id=None,
+            tunnel_id=None,
+            zone_id=None,
+            pay_type=None,
+            source_region=None,
+            instance_network_type=None):
+        api_request = APIRequest('CreateDdrInstance', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ConnectionMode": connection_mode,
+            "ResourceOwnerId": resource_owner_id,
+            "DBInstanceStorage": db_instance_storage,
+            "SystemDBCharset": system_db_charset,
+            "SourceDBInstanceName": source_db_instance_name,
+            "ClientToken": client_token,
+            "HostType": host_type,
+            "EngineVersion": engine_version,
+            "UserBakSetURL": user_bak_set_url,
+            "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
+            "Engine": engine,
+            "DBInstanceDescription": db_instance_description,
+            "DBInstanceStorageType": db_instance_storage_type,
+            "BackupSetRegion": backup_set_region,
+            "DBInstanceNetType": db_instance_net_type,
+            "BackupSetType": backup_set_type,
+            "Period": period,
+            "RestoreTime": restore_time,
+            "BakSetName": bak_set_name,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "BackupSetId": backup_set_id,
+            "OwnerId": owner_id,
+            "UsedTime": used_time,
+            "DBInstanceClass": db_instance_class,
+            "SecurityIPList": security_ip_list,
+            "VSwitchId": vswitch_id,
+            "PrivateIpAddress": private_ip_address,
+            "RestoreType": restore_type,
+            "VPCId": vpc_id,
+            "TunnelId": tunnel_id,
+            "ZoneId": zone_id,
+            "PayType": pay_type,
+            "SourceRegion": source_region,
+            "InstanceNetworkType": instance_network_type}
+        return self._handle_request(api_request).result
+
+    def describe_cross_region_backup_db_instance(
+            self,
+            resource_owner_id=None,
+            resource_owner_account=None,
+            region_id=None,
+            page_size=None,
+            db_instance_id=None,
+            owner_id=None,
+            page_number=None):
+        api_request = APIRequest('DescribeCrossRegionBackupDBInstance',
+                                 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "PageSize": page_size,
+            "DBInstanceId": db_instance_id,
+            "OwnerId": owner_id,
+            "PageNumber": page_number}
+        return self._handle_request(api_request).result
+
+    def describe_instance_cross_backup_policy(
+            self,
+            resource_owner_id=None,
+            resource_owner_account=None,
+            region_id=None,
+            db_instance_id=None,
+            owner_id=None):
+        api_request = APIRequest('DescribeInstanceCrossBackupPolicy', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "DBInstanceId": db_instance_id,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def describe_cross_region_backups(
+            self,
+            resource_owner_id=None,
+            resource_owner_account=None,
+            end_time=None,
+            start_time=None,
+            owner_id=None,
+            cross_backup_region=None,
+            page_number=None,
+            region_id=None,
+            page_size=None,
+            db_instance_id=None,
+            cross_backup_id=None):
+        api_request = APIRequest('DescribeCrossRegionBackups', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "EndTime": end_time,
+            "StartTime": start_time,
+            "OwnerId": owner_id,
+            "CrossBackupRegion": cross_backup_region,
+            "PageNumber": page_number,
+            "RegionId": region_id,
+            "PageSize": page_size,
+            "DBInstanceId": db_instance_id,
+            "CrossBackupId": cross_backup_id}
+        return self._handle_request(api_request).result
+
     def evaluate_support_byok_show(
             self,
             resource_owner_id=None,
@@ -39,6 +405,7 @@ class RdsClient(AlibabaCloudClient):
             engine_version=None,
             owner_id=None,
             security_token=None,
+            region_id=None,
             engine=None,
             target_region_id=None,
             db_instance_storage_type=None):
@@ -51,6 +418,7 @@ class RdsClient(AlibabaCloudClient):
             "EngineVersion": engine_version,
             "OwnerId": owner_id,
             "SecurityToken": security_token,
+            "RegionId": region_id,
             "Engine": engine,
             "TargetRegionId": target_region_id,
             "DbInstanceStorageType": db_instance_storage_type}
@@ -61,6 +429,7 @@ class RdsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             vpc_id=None,
             db_instance_id=None,
@@ -70,6 +439,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "VpcId": vpc_id,
             "DBInstanceId": db_instance_id,
@@ -105,7 +475,7 @@ class RdsClient(AlibabaCloudClient):
             owner_account=None,
             db_instance_id=None,
             target_region_id=None,
-            target_v_switch_id=None,
+            target_vswitch_id=None,
             owner_id=None):
         api_request = APIRequest('AllocateInstanceVpcNetworkType', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -116,7 +486,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "DBInstanceId": db_instance_id,
             "TargetRegionId": target_region_id,
-            "TargetVSwitchId": target_v_switch_id,
+            "TargetVSwitchId": target_vswitch_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
@@ -149,7 +519,7 @@ class RdsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             owner_account=None,
-            target_v_switch_id=None,
+            target_vswitch_id=None,
             owner_id=None,
             target_vpc_id=None,
             target_zone_id=None,
@@ -162,7 +532,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
-            "TargetVSwitchId": target_v_switch_id,
+            "TargetVSwitchId": target_vswitch_id,
             "OwnerId": owner_id,
             "TargetVpcId": target_vpc_id,
             "TargetZoneId": target_zone_id,
@@ -227,6 +597,7 @@ class RdsClient(AlibabaCloudClient):
             owner_account=None,
             engine_version=None,
             owner_id=None,
+            region_id=None,
             engine=None,
             zone_id=None,
             db_instance_id=None,
@@ -239,6 +610,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "EngineVersion": engine_version,
             "OwnerId": owner_id,
+            "RegionId": region_id,
             "Engine": engine,
             "ZoneId": zone_id,
             "DBInstanceId": db_instance_id,
@@ -392,7 +764,7 @@ class RdsClient(AlibabaCloudClient):
 
     def switch_db_instance_vpc(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             private_ip_address=None,
             resource_owner_id=None,
             resource_owner_account=None,
@@ -402,7 +774,7 @@ class RdsClient(AlibabaCloudClient):
             owner_id=None):
         api_request = APIRequest('SwitchDBInstanceVpc', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrivateIpAddress": private_ip_address,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
@@ -504,7 +876,7 @@ class RdsClient(AlibabaCloudClient):
             used_time=None,
             db_instance_class=None,
             db_names=None,
-            v_switch_id=None,
+            vswitch_id=None,
             private_ip_address=None,
             resource_group_id=None,
             target_db_instance_id=None,
@@ -527,7 +899,7 @@ class RdsClient(AlibabaCloudClient):
             "UsedTime": used_time,
             "DBInstanceClass": db_instance_class,
             "DbNames": db_names,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrivateIpAddress": private_ip_address,
             "ResourceGroupId": resource_group_id,
             "TargetDBInstanceId": target_db_instance_id,
@@ -545,6 +917,8 @@ class RdsClient(AlibabaCloudClient):
             owner_account=None,
             engine_version=None,
             owner_id=None,
+            db_instance_class=None,
+            region_id=None,
             engine=None,
             zone_id=None,
             db_instance_id=None,
@@ -557,6 +931,8 @@ class RdsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "EngineVersion": engine_version,
             "OwnerId": owner_id,
+            "DBInstanceClass": db_instance_class,
+            "RegionId": region_id,
             "Engine": engine,
             "ZoneId": zone_id,
             "DBInstanceId": db_instance_id,
@@ -850,12 +1226,14 @@ class RdsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             db_instance_id=None,
             owner_id=None):
         api_request = APIRequest('DescribeDBInstancesAsCsv', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -930,6 +1308,7 @@ class RdsClient(AlibabaCloudClient):
             system_db_charset=None,
             client_token=None,
             engine_version=None,
+            region_id=None,
             engine=None,
             db_instance_description=None,
             db_instance_net_type=None,
@@ -940,7 +1319,7 @@ class RdsClient(AlibabaCloudClient):
             used_time=None,
             db_instance_class=None,
             security_ip_list=None,
-            v_switch_id=None,
+            vswitch_id=None,
             private_ip_address=None,
             source_db_instance_id=None,
             replica_mode=None,
@@ -958,6 +1337,7 @@ class RdsClient(AlibabaCloudClient):
             "SystemDBCharset": system_db_charset,
             "ClientToken": client_token,
             "EngineVersion": engine_version,
+            "RegionId": region_id,
             "Engine": engine,
             "DBInstanceDescription": db_instance_description,
             "DBInstanceNetType": db_instance_net_type,
@@ -968,7 +1348,7 @@ class RdsClient(AlibabaCloudClient):
             "UsedTime": used_time,
             "DBInstanceClass": db_instance_class,
             "SecurityIPList": security_ip_list,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrivateIpAddress": private_ip_address,
             "SourceDBInstanceId": source_db_instance_id,
             "ReplicaMode": replica_mode,
@@ -989,6 +1369,7 @@ class RdsClient(AlibabaCloudClient):
             owner_id=None,
             used_time=None,
             db_instance_class=None,
+            region_id=None,
             promotion_code=None,
             db_instance_id=None,
             time_type=None,
@@ -1006,6 +1387,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "UsedTime": used_time,
             "DBInstanceClass": db_instance_class,
+            "RegionId": region_id,
             "PromotionCode": promotion_code,
             "DBInstanceId": db_instance_id,
             "TimeType": time_type,
@@ -1028,6 +1410,7 @@ class RdsClient(AlibabaCloudClient):
             used_time=None,
             db_instance_class=None,
             instance_used_type=None,
+            region_id=None,
             engine=None,
             zone_id=None,
             time_type=None,
@@ -1047,6 +1430,7 @@ class RdsClient(AlibabaCloudClient):
             "UsedTime": used_time,
             "DBInstanceClass": db_instance_class,
             "InstanceUsedType": instance_used_type,
+            "RegionId": region_id,
             "Engine": engine,
             "ZoneId": zone_id,
             "TimeType": time_type,
@@ -1124,6 +1508,7 @@ class RdsClient(AlibabaCloudClient):
             resource_owner_id=None,
             auto_renew=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             db_instance_id=None,
@@ -1135,6 +1520,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "AutoRenew": auto_renew,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "DBInstanceId": db_instance_id,
@@ -1146,6 +1532,7 @@ class RdsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             db_instance_id=None,
@@ -1158,6 +1545,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "DBInstanceId": db_instance_id,
@@ -1255,6 +1643,38 @@ class RdsClient(AlibabaCloudClient):
             "MaxDelayTime": max_delay_time}
         return self._handle_request(api_request).result
 
+    def modify_db_instance_pay_type(
+            self,
+            resource_owner_id=None,
+            period=None,
+            agent_id=None,
+            auto_pay=None,
+            resource_owner_account=None,
+            client_token=None,
+            resource=None,
+            owner_account=None,
+            owner_id=None,
+            used_time=None,
+            db_instance_id=None,
+            pay_type=None,
+            business_info=None):
+        api_request = APIRequest('ModifyDBInstancePayType', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "Period": period,
+            "AgentId": agent_id,
+            "AutoPay": auto_pay,
+            "ResourceOwnerAccount": resource_owner_account,
+            "ClientToken": client_token,
+            "Resource": resource,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "UsedTime": used_time,
+            "DBInstanceId": db_instance_id,
+            "PayType": pay_type,
+            "BusinessInfo": business_info}
+        return self._handle_request(api_request).result
+
     def check_resource(
             self,
             resource_owner_id=None,
@@ -1265,6 +1685,7 @@ class RdsClient(AlibabaCloudClient):
             owner_id=None,
             db_instance_class=None,
             engine=None,
+            region_id=None,
             zone_id=None,
             db_instance_use_type=None,
             db_instance_id=None):
@@ -1278,6 +1699,7 @@ class RdsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "DBInstanceClass": db_instance_class,
             "Engine": engine,
+            "RegionId": region_id,
             "ZoneId": zone_id,
             "DBInstanceUseType": db_instance_use_type,
             "DBInstanceId": db_instance_id}
@@ -1288,6 +1710,7 @@ class RdsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             engine=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DescribeCharacterSetName', 'GET', 'http', 'RPC', 'query')
@@ -1295,6 +1718,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "Engine": engine,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -1333,47 +1757,61 @@ class RdsClient(AlibabaCloudClient):
     def clone_db_instance(
             self,
             resource_owner_id=None,
+            db_instance_storage=None,
+            client_token=None,
+            zone_id_slave1=None,
+            zone_id_slave2=None,
+            resource_group_id=None,
+            region_id=None,
+            table_meta=None,
+            db_instance_description=None,
+            db_instance_id=None,
+            db_instance_storage_type=None,
             restore_time=None,
             period=None,
-            db_instance_storage=None,
             resource_owner_account=None,
-            client_token=None,
             backup_id=None,
             owner_account=None,
+            restore_table=None,
             owner_id=None,
             used_time=None,
             db_instance_class=None,
             db_names=None,
-            v_switch_id=None,
+            vswitch_id=None,
             private_ip_address=None,
-            resource_group_id=None,
             vpc_id=None,
             zone_id=None,
-            db_instance_description=None,
-            db_instance_id=None,
+            category=None,
             pay_type=None,
             instance_network_type=None):
         api_request = APIRequest('CloneDBInstance', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "DBInstanceStorage": db_instance_storage,
+            "ClientToken": client_token,
+            "ZoneIdSlave1": zone_id_slave1,
+            "ZoneIdSlave2": zone_id_slave2,
+            "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
+            "TableMeta": table_meta,
+            "DBInstanceDescription": db_instance_description,
+            "DBInstanceId": db_instance_id,
+            "DBInstanceStorageType": db_instance_storage_type,
             "RestoreTime": restore_time,
             "Period": period,
-            "DBInstanceStorage": db_instance_storage,
             "ResourceOwnerAccount": resource_owner_account,
-            "ClientToken": client_token,
             "BackupId": backup_id,
             "OwnerAccount": owner_account,
+            "RestoreTable": restore_table,
             "OwnerId": owner_id,
             "UsedTime": used_time,
             "DBInstanceClass": db_instance_class,
             "DbNames": db_names,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrivateIpAddress": private_ip_address,
-            "ResourceGroupId": resource_group_id,
             "VPCId": vpc_id,
             "ZoneId": zone_id,
-            "DBInstanceDescription": db_instance_description,
-            "DBInstanceId": db_instance_id,
+            "Category": category,
             "PayType": pay_type,
             "InstanceNetworkType": instance_network_type}
         return self._handle_request(api_request).result
@@ -1383,6 +1821,7 @@ class RdsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             db_instance_id=None,
             owner_id=None,
@@ -1393,6 +1832,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "DBInstanceId": db_instance_id,
             "OwnerId": owner_id,
@@ -1405,6 +1845,7 @@ class RdsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             db_instance_id=None,
@@ -1416,6 +1857,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "DBInstanceId": db_instance_id,
@@ -1899,6 +2341,7 @@ class RdsClient(AlibabaCloudClient):
             tags=None,
             tag1key=None,
             tag1value=None,
+            region_id=None,
             tag2value=None,
             tag4key=None,
             db_instance_id=None,
@@ -1919,6 +2362,7 @@ class RdsClient(AlibabaCloudClient):
             "Tags": tags,
             "Tag.1.key": tag1key,
             "Tag.1.value": tag1value,
+            "RegionId": region_id,
             "Tag.2.value": tag2value,
             "Tag.4.key": tag4key,
             "DBInstanceId": db_instance_id,
@@ -1979,6 +2423,7 @@ class RdsClient(AlibabaCloudClient):
     def modify_parameter(
             self,
             resource_owner_id=None,
+            parameter_group_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -1989,6 +2434,7 @@ class RdsClient(AlibabaCloudClient):
         api_request = APIRequest('ModifyParameter', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "ParameterGroupId": parameter_group_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -2160,7 +2606,7 @@ class RdsClient(AlibabaCloudClient):
             zone_id_slave1=None,
             zone_id_slave2=None,
             owner_id=None,
-            v_switch_id=None,
+            vswitch_id=None,
             effective_time=None,
             vpc_id=None,
             zone_id=None,
@@ -2174,7 +2620,7 @@ class RdsClient(AlibabaCloudClient):
             "ZoneIdSlave1": zone_id_slave1,
             "ZoneIdSlave2": zone_id_slave2,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "EffectiveTime": effective_time,
             "VPCId": vpc_id,
             "ZoneId": zone_id,
@@ -2905,6 +3351,7 @@ class RdsClient(AlibabaCloudClient):
             tags=None,
             tag1key=None,
             tag1value=None,
+            region_id=None,
             tag2value=None,
             tag4key=None,
             db_instance_id=None,
@@ -2925,6 +3372,7 @@ class RdsClient(AlibabaCloudClient):
             "Tags": tags,
             "Tag.1.key": tag1key,
             "Tag.1.value": tag1value,
+            "RegionId": region_id,
             "Tag.2.value": tag2value,
             "Tag.4.key": tag4key,
             "DBInstanceId": db_instance_id,
@@ -2980,7 +3428,7 @@ class RdsClient(AlibabaCloudClient):
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            v_switch_id=None,
+            vswitch_id=None,
             private_ip_address=None,
             retain_classic=None,
             classic_expired_days=None,
@@ -2995,7 +3443,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrivateIpAddress": private_ip_address,
             "RetainClassic": retain_classic,
             "ClassicExpiredDays": classic_expired_days,
@@ -3078,9 +3526,10 @@ class RdsClient(AlibabaCloudClient):
             engine_version=None,
             owner_id=None,
             db_instance_class=None,
-            v_switch_id=None,
+            vswitch_id=None,
             private_ip_address=None,
             resource_group_id=None,
+            region_id=None,
             vpc_id=None,
             zone_id=None,
             db_instance_id=None,
@@ -3099,9 +3548,10 @@ class RdsClient(AlibabaCloudClient):
             "EngineVersion": engine_version,
             "OwnerId": owner_id,
             "DBInstanceClass": db_instance_class,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrivateIpAddress": private_ip_address,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "VPCId": vpc_id,
             "ZoneId": zone_id,
             "DBInstanceId": db_instance_id,
@@ -3119,8 +3569,11 @@ class RdsClient(AlibabaCloudClient):
             db_instance_storage=None,
             system_db_charset=None,
             client_token=None,
+            zone_id_slave1=None,
+            zone_id_slave2=None,
             engine_version=None,
             resource_group_id=None,
+            region_id=None,
             engine=None,
             db_instance_description=None,
             db_instance_storage_type=None,
@@ -3134,13 +3587,14 @@ class RdsClient(AlibabaCloudClient):
             used_time=None,
             db_instance_class=None,
             security_ip_list=None,
-            v_switch_id=None,
+            vswitch_id=None,
             private_ip_address=None,
             auto_renew=None,
             role_arn=None,
             vpc_id=None,
             tunnel_id=None,
             zone_id=None,
+            category=None,
             pay_type=None,
             instance_network_type=None):
         api_request = APIRequest('CreateDBInstance', 'GET', 'http', 'RPC', 'query')
@@ -3150,8 +3604,11 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceStorage": db_instance_storage,
             "SystemDBCharset": system_db_charset,
             "ClientToken": client_token,
+            "ZoneIdSlave1": zone_id_slave1,
+            "ZoneIdSlave2": zone_id_slave2,
             "EngineVersion": engine_version,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "Engine": engine,
             "DBInstanceDescription": db_instance_description,
             "DBInstanceStorageType": db_instance_storage_type,
@@ -3165,13 +3622,14 @@ class RdsClient(AlibabaCloudClient):
             "UsedTime": used_time,
             "DBInstanceClass": db_instance_class,
             "SecurityIPList": security_ip_list,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrivateIpAddress": private_ip_address,
             "AutoRenew": auto_renew,
             "RoleARN": role_arn,
             "VPCId": vpc_id,
             "TunnelId": tunnel_id,
             "ZoneId": zone_id,
+            "Category": category,
             "PayType": pay_type,
             "InstanceNetworkType": instance_network_type}
         return self._handle_request(api_request).result
@@ -3206,6 +3664,7 @@ class RdsClient(AlibabaCloudClient):
             page_number=None,
             tag1value=None,
             sort_key=None,
+            region_id=None,
             page_size=None,
             db_instance_id=None,
             tag3value=None,
@@ -3230,6 +3689,7 @@ class RdsClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "Tag.1.value": tag1value,
             "SortKey": sort_key,
+            "RegionId": region_id,
             "PageSize": page_size,
             "DBInstanceId": db_instance_id,
             "Tag.3.value": tag3value,
@@ -3255,6 +3715,7 @@ class RdsClient(AlibabaCloudClient):
             page_number=None,
             tags=None,
             expired=None,
+            region_id=None,
             page_size=None,
             expire_period=None,
             proxy_id=None):
@@ -3267,6 +3728,7 @@ class RdsClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "Tags": tags,
             "Expired": expired,
+            "RegionId": region_id,
             "PageSize": page_size,
             "ExpirePeriod": expire_period,
             "proxyId": proxy_id}
@@ -3287,6 +3749,7 @@ class RdsClient(AlibabaCloudClient):
             resource_group_id=None,
             expired=None,
             engine=None,
+            region_id=None,
             page_size=None,
             db_instance_status=None,
             db_instance_id=None,
@@ -3300,7 +3763,7 @@ class RdsClient(AlibabaCloudClient):
             db_instance_type=None,
             db_instance_class=None,
             tags=None,
-            v_switch_id=None,
+            vswitch_id=None,
             tag1key=None,
             vpc_id=None,
             tag2value=None,
@@ -3323,6 +3786,7 @@ class RdsClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "Expired": expired,
             "Engine": engine,
+            "RegionId": region_id,
             "PageSize": page_size,
             "DBInstanceStatus": db_instance_status,
             "DBInstanceId": db_instance_id,
@@ -3336,7 +3800,7 @@ class RdsClient(AlibabaCloudClient):
             "DBInstanceType": db_instance_type,
             "DBInstanceClass": db_instance_class,
             "Tags": tags,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "Tag.1.key": tag1key,
             "VpcId": vpc_id,
             "Tag.2.value": tag2value,
