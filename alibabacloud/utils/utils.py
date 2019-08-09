@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import re
+from functools import wraps
+
 import jmespath
 import json
 from alibabacloud.exceptions import ClientException
@@ -129,3 +131,22 @@ def _transfer_params(params):
         _params[_key] = value
 
     return _params
+
+# 对list_of_instance_id 以及instance_ids 进行映射处理
+def transfer(rules):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, **params):
+            for key, value in rules.items():
+                # key is like: InstanceIds or instance_ids
+                # value is like: list_of_instance_id
+                if key in params:
+                    temp = params[key]
+                    del params[key]
+
+                    params[value] = temp
+            return func(self, **params)
+
+        return wrapper
+
+    return decorator
