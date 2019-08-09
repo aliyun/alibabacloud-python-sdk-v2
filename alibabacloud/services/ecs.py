@@ -76,9 +76,6 @@ class ECSInstanceResource(_ECSInstanceResource):
         self._assign_attributes(items[0])
 
 
-# 人工补充部分
-
-
 class ECSSystemEventResource(_ECSSystemEventResource):
     """
     ECS 系统事件资源类
@@ -268,7 +265,6 @@ class ECSResource(_ECSResource):
     @transfer({"Tags": "list_of_tag", "Arns": "list_of_arn", "DataDisks": "list_of_data_disk", })
     def create_instance(self, **params):
         _params = _transfer_params(params)
-        print(11111, _params)
         response = self._client.create_instance(**_params)
         instance_id = _new_get_key_in_response(response, 'InstanceId')
         return ECSInstanceResource(instance_id, _client=self._client)

@@ -11,11 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import json
 import re
 from functools import wraps
 
 import jmespath
-import json
+
 from alibabacloud.exceptions import ClientException
 
 _test_flag = False  # FIXME when sdk-core has logging we won't need it
@@ -36,10 +37,10 @@ def _do_request(client, request, params):
             request.add_query_param(key, value)
         else:
             raise ClientException(msg=
-                                  "{0} has no parameter named {1}.".format(
-                                      request.__class__.__name__,
-                                      key,
-                                  ))
+            "{0} has no parameter named {1}.".format(
+                request.__class__.__name__,
+                key,
+            ))
     if _test_flag:
         import time
         print(time.time(), request.__class__.__name__, request.get_query_params())
@@ -60,6 +61,7 @@ def _get_key_in_response(response, key):
             "No '{0}' in server response.".format(key)
         )
     return result
+
 
 def _get_response(client, request, params, key):
     response = _do_request(client, request, params)
@@ -118,7 +120,7 @@ def hump_to_underline(key):
             elif key[i - 1].isupper() and (key[i + 1].isupper() or not key[i + 1].isalpha()):
                 new_key += c.lower()
             else:
-                new_key += '_'+c.lower()
+                new_key += '_' + c.lower()
         else:
             new_key += c
     return new_key
@@ -132,7 +134,8 @@ def _transfer_params(params):
 
     return _params
 
-# 对list_of_instance_id 以及instance_ids 进行映射处理
+
+# for list_of_instance_id to instance_ids
 def transfer(rules):
     def decorator(func):
         @wraps(func)
