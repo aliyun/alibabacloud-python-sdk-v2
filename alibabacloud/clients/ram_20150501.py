@@ -35,34 +35,6 @@ class RamClient(AlibabaCloudClient):
         api_request._params = {"UserAccessKeyId": user_access_key_id, "UserName": user_name}
         return self._handle_request(api_request).result
 
-    def upload_public_key(self, public_key_spec=None, user_name=None):
-        api_request = APIRequest('UploadPublicKey', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {"PublicKeySpec": public_key_spec, "UserName": user_name}
-        return self._handle_request(api_request).result
-
-    def update_public_key(self, user_public_key_id=None, user_name=None, status=None):
-        api_request = APIRequest('UpdatePublicKey', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {
-            "UserPublicKeyId": user_public_key_id,
-            "UserName": user_name,
-            "Status": status}
-        return self._handle_request(api_request).result
-
-    def list_public_keys(self, user_name=None):
-        api_request = APIRequest('ListPublicKeys', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {"UserName": user_name}
-        return self._handle_request(api_request).result
-
-    def delete_public_key(self, user_public_key_id=None, user_name=None):
-        api_request = APIRequest('DeletePublicKey', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {"UserPublicKeyId": user_public_key_id, "UserName": user_name}
-        return self._handle_request(api_request).result
-
-    def get_public_key(self, user_public_key_id=None, user_name=None):
-        api_request = APIRequest('GetPublicKey', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {"UserPublicKeyId": user_public_key_id, "UserName": user_name}
-        return self._handle_request(api_request).result
-
     def change_password(self, old_password=None, new_password=None):
         api_request = APIRequest('ChangePassword', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"OldPassword": old_password, "NewPassword": new_password}
@@ -360,12 +332,18 @@ class RamClient(AlibabaCloudClient):
         api_request._params = {"VersionId": version_id, "PolicyName": policy_name}
         return self._handle_request(api_request).result
 
-    def create_policy_version(self, set_as_default=None, policy_name=None, policy_document=None):
+    def create_policy_version(
+            self,
+            set_as_default=None,
+            policy_name=None,
+            policy_document=None,
+            rotate_strategy=None):
         api_request = APIRequest('CreatePolicyVersion', 'GET', 'https', 'RPC', 'query')
         api_request._params = {
             "SetAsDefault": set_as_default,
             "PolicyName": policy_name,
-            "PolicyDocument": policy_document}
+            "PolicyDocument": policy_document,
+            "RotateStrategy": rotate_strategy}
         return self._handle_request(api_request).result
 
     def list_policies_for_user(self, user_name=None):

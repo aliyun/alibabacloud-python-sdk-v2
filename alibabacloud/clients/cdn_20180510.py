@@ -30,6 +30,42 @@ class CdnClient(AlibabaCloudClient):
         self.location_service_code = 'None'
         self.location_endpoint_type = 'openAPI'
 
+    def describe_domain_qps_data_by_layer(
+            self,
+            location_name_en=None,
+            start_time=None,
+            isp_name_en=None,
+            layer=None,
+            domain_name=None,
+            end_time=None,
+            owner_id=None,
+            interval=None):
+        api_request = APIRequest('DescribeDomainQpsDataByLayer', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "LocationNameEn": location_name_en,
+            "StartTime": start_time,
+            "IspNameEn": isp_name_en,
+            "Layer": layer,
+            "DomainName": domain_name,
+            "EndTime": end_time,
+            "OwnerId": owner_id,
+            "Interval": interval}
+        return self._handle_request(api_request).result
+
+    def delete_specific_staging_config(
+            self,
+            security_token=None,
+            config_id=None,
+            domain_name=None,
+            owner_id=None):
+        api_request = APIRequest('DeleteSpecificStagingConfig', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "SecurityToken": security_token,
+            "ConfigId": config_id,
+            "DomainName": domain_name,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
     def modify_cdn_domain_schdm_by_property(self, domain_name=None, owner_id=None, property_=None):
         api_request = APIRequest('ModifyCdnDomainSchdmByProperty', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -38,9 +74,18 @@ class CdnClient(AlibabaCloudClient):
             "Property": property_}
         return self._handle_request(api_request).result
 
-    def describe_cdn_https_domain_list(self, owner_id=None):
+    def describe_cdn_https_domain_list(
+            self,
+            page_number=None,
+            page_size=None,
+            keyword=None,
+            owner_id=None):
         api_request = APIRequest('DescribeCdnHttpsDomainList', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {"OwnerId": owner_id}
+        api_request._params = {
+            "PageNumber": page_number,
+            "PageSize": page_size,
+            "Keyword": keyword,
+            "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
     def describe_cdn_domain_by_certificate(self, owner_id=None, ssl_pub=None):
@@ -152,14 +197,16 @@ class CdnClient(AlibabaCloudClient):
             trigger_arn=None,
             source_arn=None,
             owner_id=None,
-            role_arn=None):
+            role_arn=None,
+            function_arn=None):
         api_request = APIRequest('UpdateFCTrigger', 'GET', 'http', 'RPC', 'body')
         api_request._params = {
             "Notes": notes,
             "TriggerARN": trigger_arn,
             "SourceARN": source_arn,
             "OwnerId": owner_id,
-            "RoleARN": role_arn}
+            "RoleARN": role_arn,
+            "FunctionARN": function_arn}
         return self._handle_request(api_request).result
 
     def set_waiting_room_config(
@@ -816,7 +863,8 @@ class CdnClient(AlibabaCloudClient):
             source_arn=None,
             owner_id=None,
             role_arn=None,
-            event_meta_name=None):
+            event_meta_name=None,
+            function_arn=None):
         api_request = APIRequest('AddFCTrigger', 'GET', 'http', 'RPC', 'body')
         api_request._params = {
             "Notes": notes,
@@ -825,7 +873,8 @@ class CdnClient(AlibabaCloudClient):
             "SourceARN": source_arn,
             "OwnerId": owner_id,
             "RoleARN": role_arn,
-            "EventMetaName": event_meta_name}
+            "EventMetaName": event_meta_name,
+            "FunctionARN": function_arn}
         return self._handle_request(api_request).result
 
     def start_cdn_domain(self, security_token=None, domain_name=None, owner_id=None):
@@ -1290,7 +1339,7 @@ class CdnClient(AlibabaCloudClient):
             security_token=None,
             cdn_type=None,
             page_size=None,
-            tag=None):
+            list_of_tag=None):
         api_request = APIRequest('DescribeUserDomains', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "FuncFilter": func_filter,
@@ -1305,7 +1354,7 @@ class CdnClient(AlibabaCloudClient):
             "SecurityToken": security_token,
             "CdnType": cdn_type,
             "PageSize": page_size,
-            "Tag": tag}
+            "Tag": list_of_tag}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
                                                        ]),

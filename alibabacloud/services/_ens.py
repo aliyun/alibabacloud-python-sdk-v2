@@ -68,9 +68,10 @@ class _ENSEnsRegionResource(ServiceResource):
         result = self._client.describe_ens_regions(ens_region_id=self.ens_region_id)
         items = _new_get_key_in_response(result, 'EnsRegions.EnsRegions')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find ens_region data from DescribeEnsRegions response. "
-                                  "EnsRegionId = {0}".format(self.ens_region_id))
+            raise ClientException(
+                msg="Failed to find ens_region data from DescribeEnsRegions response. "
+                "EnsRegionId = {0}".format(
+                    self.ens_region_id))
         self._assign_attributes(items[0])
 
 
@@ -112,8 +113,7 @@ class _ENSImageResource(ServiceResource):
         result = self._client.describe_images(image_id=self.image_id)
         items = _new_get_key_in_response(result, 'Images.Image')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find image data from DescribeImages response. "
+            raise ClientException(msg="Failed to find image data from DescribeImages response. "
                                   "ImageId = {0}".format(self.image_id))
         self._assign_attributes(items[0])
 
@@ -200,9 +200,10 @@ class _ENSInstanceResource(ServiceResource):
         result = self._client.describe_instances(instance_ids=self.instance_id)
         items = _new_get_key_in_response(result, 'Instances.Instance')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find instance data from DescribeInstances response. "
-                                  "InstanceId = {0}".format(self.instance_id))
+            raise ClientException(
+                msg="Failed to find instance data from DescribeInstances response. "
+                "InstanceId = {0}".format(
+                    self.instance_id))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_status, timeout=120):

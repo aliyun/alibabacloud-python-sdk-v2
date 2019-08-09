@@ -30,6 +30,18 @@ class EdasClient(AlibabaCloudClient):
         self.location_service_code = 'None'
         self.location_endpoint_type = 'openAPI'
 
+    def get_k8s_application(self, app_id=None, from_=None):
+        api_request = APIRequest('GetK8sApplication', 'GET', 'http', 'ROA', 'query')
+        api_request.uri_pattern = '/pop/v5/changeorder/co_application'
+        api_request._params = {"AppId": app_id, "From": from_}
+        return self._handle_request(api_request).result
+
+    def query_ecc_info(self, ecc_id=None):
+        api_request = APIRequest('QueryEccInfo', 'GET', 'http', 'ROA', 'query')
+        api_request.uri_pattern = '/pop/v5/ecc'
+        api_request._params = {"EccId": ecc_id}
+        return self._handle_request(api_request).result
+
     def continue_pipeline(self, confirm=None, pipeline_id=None):
         api_request = APIRequest('ContinuePipeline', 'GET', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/v5/changeorder/pipeline_batch_confirm'
@@ -79,7 +91,7 @@ class EdasClient(AlibabaCloudClient):
             command=None,
             custom_host_alias=None,
             deploy=None,
-            v_switch_id=None,
+            vswitch_id=None,
             jdk=None,
             app_description=None,
             jar_start_options=None,
@@ -106,7 +118,7 @@ class EdasClient(AlibabaCloudClient):
             "Command": command,
             "CustomHostAlias": custom_host_alias,
             "Deploy": deploy,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "Jdk": jdk,
             "AppDescription": app_description,
             "JarStartOptions": jar_start_options,
@@ -182,7 +194,7 @@ class EdasClient(AlibabaCloudClient):
             command=None,
             custom_host_alias=None,
             deploy=None,
-            v_switch_id=None,
+            vswitch_id=None,
             jdk=None,
             app_description=None,
             jar_start_options=None,
@@ -209,7 +221,7 @@ class EdasClient(AlibabaCloudClient):
             "Command": command,
             "CustomHostAlias": custom_host_alias,
             "Deploy": deploy,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "Jdk": jdk,
             "AppDescription": app_description,
             "JarStartOptions": jar_start_options,
@@ -1069,7 +1081,7 @@ class EdasClient(AlibabaCloudClient):
 
     def bind_slb(
             self,
-            v_server_group_id=None,
+            vserver_group_id=None,
             listener_port=None,
             slb_id=None,
             app_id=None,
@@ -1078,7 +1090,7 @@ class EdasClient(AlibabaCloudClient):
         api_request = APIRequest('BindSlb', 'POST', 'http', 'ROA', 'query')
         api_request.uri_pattern = '/pop/app/bind_slb_json'
         api_request._params = {
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "ListenerPort": listener_port,
             "SlbId": slb_id,
             "AppId": app_id,

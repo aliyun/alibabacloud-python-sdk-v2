@@ -12,11 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+import time
+
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, \
-    _create_special_resource_collection
-from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
+from alibabacloud.resources.collection import _create_default_resource_collection
+from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
 
 
 class _VPCResource(ServiceResource):
@@ -52,11 +55,12 @@ class _VPCResource(ServiceResource):
             'FlowLogs.FlowLog', 'FlowLogId',
         )
         self.global_acceleration_instances = _create_resource_collection(
-            _VPCGlobalAccelerationInstanceResource, _client,
+            _VPCGlobalAccelerationInstanceResource,
+            _client,
             _client.describe_global_acceleration_instances,
             'GlobalAccelerationInstances.GlobalAccelerationInstance',
             'GlobalAccelerationInstanceId',
-        )
+            )
         self.ha_vips = _create_resource_collection(
             _VPCHaVipResource, _client, _client.describe_ha_vips,
             'HaVips.HaVip', 'HaVipId',
@@ -189,10 +193,10 @@ class _VPCResource(ServiceResource):
     def create_global_acceleration_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_global_acceleration_instance(**_params)
-        global_acceleration_instance_id = _new_get_key_in_response(response,
-                                                                   'GlobalAccelerationInstanceId')
-        return _VPCGlobalAccelerationInstanceResource(global_acceleration_instance_id,
-                                                      _client=self._client)
+        global_acceleration_instance_id = _new_get_key_in_response(
+            response, 'GlobalAccelerationInstanceId')
+        return _VPCGlobalAccelerationInstanceResource(
+            global_acceleration_instance_id, _client=self._client)
 
     def create_ha_vip(self, **params):
         _params = _transfer_params(params)
@@ -319,8 +323,8 @@ class _VPCAccessPointResource(ServiceResource):
 
     def create_physical_connection_setup_order(self, **params):
         _params = _transfer_params(params)
-        self._client.create_physical_connection_setup_order(access_point_id=self.access_point_id,
-                                                            **_params)
+        self._client.create_physical_connection_setup_order(
+            access_point_id=self.access_point_id, **_params)
 
 
 class _VPCAclResource(ServiceResource):
@@ -373,28 +377,28 @@ class _VPCBandwidthPackageResource(ServiceResource):
 
     def add_bandwidth_package_ips(self, **params):
         _params = _transfer_params(params)
-        self._client.add_bandwidth_package_ips(bandwidth_package_id=self.bandwidth_package_id,
-                                               **_params)
+        self._client.add_bandwidth_package_ips(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def add_common_bandwidth_package_ip(self, **params):
         _params = _transfer_params(params)
-        self._client.add_common_bandwidth_package_ip(bandwidth_package_id=self.bandwidth_package_id,
-                                                     **_params)
+        self._client.add_common_bandwidth_package_ip(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def convert(self, **params):
         _params = _transfer_params(params)
-        self._client.convert_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id,
-                                               **_params)
+        self._client.convert_bandwidth_package(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id,
-                                              **_params)
+        self._client.delete_bandwidth_package(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def delete_common(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_common_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id,
-                                                     **_params)
+        self._client.delete_common_bandwidth_package(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
@@ -418,13 +422,13 @@ class _VPCBandwidthPackageResource(ServiceResource):
 
     def modify_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_bandwidth_package_spec(bandwidth_package_id=self.bandwidth_package_id,
-                                                   **_params)
+        self._client.modify_bandwidth_package_spec(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def remove_bandwidth_package_ips(self, **params):
         _params = _transfer_params(params)
-        self._client.remove_bandwidth_package_ips(bandwidth_package_id=self.bandwidth_package_id,
-                                                  **_params)
+        self._client.remove_bandwidth_package_ips(
+            bandwidth_package_id=self.bandwidth_package_id, **_params)
 
     def remove_common_bandwidth_package_ip(self, **params):
         _params = _transfer_params(params)
@@ -446,9 +450,10 @@ class _VPCBandwidthPackageResource(ServiceResource):
             bandwidth_package_id=self.bandwidth_package_id)
         items = _new_get_key_in_response(result, 'BandwidthPackages.BandwidthPackage')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find bandwidth_package data from DescribeBandwidthPackages response. "
-                                  "BandwidthPackageId = {0}".format(self.bandwidth_package_id))
+            raise ClientException(
+                msg="Failed to find bandwidth_package data from DescribeBandwidthPackages response. "
+                "BandwidthPackageId = {0}".format(
+                    self.bandwidth_package_id))
         self._assign_attributes(items[0])
 
 
@@ -483,9 +488,10 @@ class _VPCBgpGroupResource(ServiceResource):
         result = self._client.describe_bgp_groups(bgp_group_id=self.bgp_group_id)
         items = _new_get_key_in_response(result, 'BgpGroups.BgpGroup')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find bgp_group data from DescribeBgpGroups response. "
-                                  "BgpGroupId = {0}".format(self.bgp_group_id))
+            raise ClientException(
+                msg="Failed to find bgp_group data from DescribeBgpGroups response. "
+                "BgpGroupId = {0}".format(
+                    self.bgp_group_id))
         self._assign_attributes(items[0])
 
 
@@ -524,9 +530,10 @@ class _VPCBgpPeerResource(ServiceResource):
         result = self._client.describe_bgp_peers(bgp_peer_id=self.bgp_peer_id)
         items = _new_get_key_in_response(result, 'BgpPeers.BgpPeer')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find bgp_peer data from DescribeBgpPeers response. "
-                                  "BgpPeerId = {0}".format(self.bgp_peer_id))
+            raise ClientException(
+                msg="Failed to find bgp_peer data from DescribeBgpPeers response. "
+                "BgpPeerId = {0}".format(
+                    self.bgp_peer_id))
         self._assign_attributes(items[0])
 
 
@@ -543,27 +550,28 @@ class _VPCCustomerGatewayResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_customer_gateway(customer_gateway_id=self.customer_gateway_id,
-                                             **_params)
+        self._client.delete_customer_gateway(
+            customer_gateway_id=self.customer_gateway_id, **_params)
 
     def describe(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_customer_gateway(customer_gateway_id=self.customer_gateway_id,
-                                               **_params)
+        self._client.describe_customer_gateway(
+            customer_gateway_id=self.customer_gateway_id, **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_customer_gateway_attribute(customer_gateway_id=self.customer_gateway_id,
-                                                       **_params)
+        self._client.modify_customer_gateway_attribute(
+            customer_gateway_id=self.customer_gateway_id, **_params)
 
     def refresh(self):
         result = self._client.describe_customer_gateways(
             customer_gateway_id=self.customer_gateway_id)
         items = _new_get_key_in_response(result, 'CustomerGateways.CustomerGateway')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find customer_gateway data from DescribeCustomerGateways response. "
-                                  "CustomerGatewayId = {0}".format(self.customer_gateway_id))
+            raise ClientException(
+                msg="Failed to find customer_gateway data from DescribeCustomerGateways response. "
+                "CustomerGatewayId = {0}".format(
+                    self.customer_gateway_id))
         self._assign_attributes(items[0])
 
 
@@ -606,9 +614,10 @@ class _VPCEipAddressResource(ServiceResource):
         result = self._client.describe_eip_addresses(allocation_id=self.allocation_id)
         items = _new_get_key_in_response(result, 'EipAddresses.EipAddress')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find eip_address data from DescribeEipAddresses response. "
-                                  "EipAddressId = {0}".format(self.allocation_id))
+            raise ClientException(
+                msg="Failed to find eip_address data from DescribeEipAddresses response. "
+                "EipAddressId = {0}".format(
+                    self.allocation_id))
         self._assign_attributes(items[0])
 
 
@@ -664,9 +673,10 @@ class _VPCFlowLogResource(ServiceResource):
         result = self._client.describe_flow_logs(flow_log_id=self.flow_log_id)
         items = _new_get_key_in_response(result, 'FlowLogs.FlowLog')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find flow_log data from DescribeFlowLogs response. "
-                                  "FlowLogId = {0}".format(self.flow_log_id))
+            raise ClientException(
+                msg="Failed to find flow_log data from DescribeFlowLogs response. "
+                "FlowLogId = {0}".format(
+                    self.flow_log_id))
         self._assign_attributes(items[0])
 
 
@@ -751,13 +761,13 @@ class _VPCGlobalAccelerationInstanceResource(ServiceResource):
     def refresh(self):
         result = self._client.describe_global_acceleration_instances(
             global_acceleration_instance_id=self.global_acceleration_instance_id)
-        items = _new_get_key_in_response(result,
-                                         'GlobalAccelerationInstances.GlobalAccelerationInstance')
+        items = _new_get_key_in_response(
+            result, 'GlobalAccelerationInstances.GlobalAccelerationInstance')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find global_acceleration_instance data from DescribeGlobalAccelerationInstances response. "
-                                  "GlobalAccelerationInstanceId = {0}".format(
-                                      self.global_acceleration_instance_id))
+            raise ClientException(
+                msg="Failed to find global_acceleration_instance data from DescribeGlobalAccelerationInstances response. "
+                "GlobalAccelerationInstanceId = {0}".format(
+                    self.global_acceleration_instance_id))
         self._assign_attributes(items[0])
 
 
@@ -822,21 +832,22 @@ class _VPCIPv6TranslatorResource(ServiceResource):
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_ipv6_translator_attribute(ipv6_translator_id=self.ipv6_translator_id,
-                                                      **_params)
+        self._client.modify_ipv6_translator_attribute(
+            ipv6_translator_id=self.ipv6_translator_id, **_params)
 
     def modify_bandwidth(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_ipv6_translator_bandwidth(ipv6_translator_id=self.ipv6_translator_id,
-                                                      **_params)
+        self._client.modify_ipv6_translator_bandwidth(
+            ipv6_translator_id=self.ipv6_translator_id, **_params)
 
     def refresh(self):
         result = self._client.describe_ipv6_translators(ipv6_translator_id=self.ipv6_translator_id)
         items = _new_get_key_in_response(result, 'Ipv6Translators.Ipv6Translator')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find ipv6_translator data from DescribeIPv6Translators response. "
-                                  "IPv6TranslatorId = {0}".format(self.ipv6_translator_id))
+            raise ClientException(
+                msg="Failed to find ipv6_translator data from DescribeIPv6Translators response. "
+                "IPv6TranslatorId = {0}".format(
+                    self.ipv6_translator_id))
         self._assign_attributes(items[0])
 
 
@@ -906,9 +917,10 @@ class _VPCIpv6AddressResource(ServiceResource):
         result = self._client.describe_ipv6_addresses(ipv6_address_id=self.ipv6_address_id)
         items = _new_get_key_in_response(result, 'Ipv6Addresses.Ipv6Address')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find ipv6_address data from DescribeIpv6Addresses response. "
-                                  "Ipv6AddressId = {0}".format(self.ipv6_address_id))
+            raise ClientException(
+                msg="Failed to find ipv6_address data from DescribeIpv6Addresses response. "
+                "Ipv6AddressId = {0}".format(
+                    self.ipv6_address_id))
         self._assign_attributes(items[0])
 
 
@@ -934,10 +946,10 @@ class _VPCIpv6EgressOnlyRuleResource(ServiceResource):
             ipv6_egress_only_rule_id=self.ipv6_egress_only_rule_id)
         items = _new_get_key_in_response(result, 'Ipv6EgressOnlyRules.Ipv6EgressOnlyRule')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find ipv6_egress_only_rule data from DescribeIpv6EgressOnlyRules response. "
-                                  "Ipv6EgressOnlyRuleId = {0}".format(
-                                      self.ipv6_egress_only_rule_id))
+            raise ClientException(
+                msg="Failed to find ipv6_egress_only_rule data from DescribeIpv6EgressOnlyRules response. "
+                "Ipv6EgressOnlyRuleId = {0}".format(
+                    self.ipv6_egress_only_rule_id))
         self._assign_attributes(items[0])
 
 
@@ -964,8 +976,8 @@ class _VPCIpv6GatewayResource(ServiceResource):
 
     def describe_ipv6_gateway_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_ipv6_gateway_attribute(ipv6_gateway_id=self.ipv6_gateway_id,
-                                                     **_params)
+        self._client.describe_ipv6_gateway_attribute(
+            ipv6_gateway_id=self.ipv6_gateway_id, **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
@@ -979,9 +991,10 @@ class _VPCIpv6GatewayResource(ServiceResource):
         result = self._client.describe_ipv6_gateways(ipv6_gateway_id=self.ipv6_gateway_id)
         items = _new_get_key_in_response(result, 'Ipv6Gateways.Ipv6Gateway')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find ipv6_gateway data from DescribeIpv6Gateways response. "
-                                  "Ipv6GatewayId = {0}".format(self.ipv6_gateway_id))
+            raise ClientException(
+                msg="Failed to find ipv6_gateway data from DescribeIpv6Gateways response. "
+                "Ipv6GatewayId = {0}".format(
+                    self.ipv6_gateway_id))
         self._assign_attributes(items[0])
 
 
@@ -1019,9 +1032,10 @@ class _VPCNatGatewayResource(ServiceResource):
         result = self._client.describe_nat_gateways(nat_gateway_id=self.nat_gateway_id)
         items = _new_get_key_in_response(result, 'NatGateways.NatGateway')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find nat_gateway data from DescribeNatGateways response. "
-                                  "NatGatewayId = {0}".format(self.nat_gateway_id))
+            raise ClientException(
+                msg="Failed to find nat_gateway data from DescribeNatGateways response. "
+                "NatGatewayId = {0}".format(
+                    self.nat_gateway_id))
         self._assign_attributes(items[0])
 
 
@@ -1073,9 +1087,10 @@ class _VPCNetworkAclResource(ServiceResource):
         result = self._client.describe_network_acls(network_acl_id=self.network_acl_id)
         items = _new_get_key_in_response(result, 'NetworkAcls.NetworkAcl')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find network_acl data from DescribeNetworkAcls response. "
-                                  "NetworkAclId = {0}".format(self.network_acl_id))
+            raise ClientException(
+                msg="Failed to find network_acl data from DescribeNetworkAcls response. "
+                "NetworkAclId = {0}".format(
+                    self.network_acl_id))
         self._assign_attributes(items[0])
 
 
@@ -1105,8 +1120,8 @@ class _VPCPhysicalConnectionResource(ServiceResource):
 
     def cancel(self, **params):
         _params = _transfer_params(params)
-        self._client.cancel_physical_connection(physical_connection_id=self.physical_connection_id,
-                                                **_params)
+        self._client.cancel_physical_connection(
+            physical_connection_id=self.physical_connection_id, **_params)
 
     def create_physical_connection_occupancy_order(self, **params):
         _params = _transfer_params(params)
@@ -1115,13 +1130,13 @@ class _VPCPhysicalConnectionResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_physical_connection(physical_connection_id=self.physical_connection_id,
-                                                **_params)
+        self._client.delete_physical_connection(
+            physical_connection_id=self.physical_connection_id, **_params)
 
     def enable(self, **params):
         _params = _transfer_params(params)
-        self._client.enable_physical_connection(physical_connection_id=self.physical_connection_id,
-                                                **_params)
+        self._client.enable_physical_connection(
+            physical_connection_id=self.physical_connection_id, **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
@@ -1148,8 +1163,7 @@ class _VPCRegionResource(ServiceResource):
         result = self._client.describe_regions(region_id=self.region_id)
         items = _new_get_key_in_response(result, 'Regions.Region')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find region data from DescribeRegions response. "
+            raise ClientException(msg="Failed to find region data from DescribeRegions response. "
                                   "RegionId = {0}".format(self.region_id))
         self._assign_attributes(items[0])
 
@@ -1201,9 +1215,10 @@ class _VPCRouteTableResource(ServiceResource):
         result = self._client.describe_route_tables(route_table_id=self.route_table_id)
         items = _new_get_key_in_response(result, 'RouteTables.RouteTable')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find route_table data from DescribeRouteTables response. "
-                                  "RouteTableId = {0}".format(self.route_table_id))
+            raise ClientException(
+                msg="Failed to find route_table data from DescribeRouteTables response. "
+                "RouteTableId = {0}".format(
+                    self.route_table_id))
         self._assign_attributes(items[0])
 
 
@@ -1255,23 +1270,23 @@ class _VPCRouterInterfaceResource(ServiceResource):
 
     def activate(self, **params):
         _params = _transfer_params(params)
-        self._client.activate_router_interface(router_interface_id=self.router_interface_id,
-                                               **_params)
+        self._client.activate_router_interface(
+            router_interface_id=self.router_interface_id, **_params)
 
     def connect(self, **params):
         _params = _transfer_params(params)
-        self._client.connect_router_interface(router_interface_id=self.router_interface_id,
-                                              **_params)
+        self._client.connect_router_interface(
+            router_interface_id=self.router_interface_id, **_params)
 
     def deactivate(self, **params):
         _params = _transfer_params(params)
-        self._client.deactivate_router_interface(router_interface_id=self.router_interface_id,
-                                                 **_params)
+        self._client.deactivate_router_interface(
+            router_interface_id=self.router_interface_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_router_interface(router_interface_id=self.router_interface_id,
-                                             **_params)
+        self._client.delete_router_interface(
+            router_interface_id=self.router_interface_id, **_params)
 
     def delete_express_connect(self, **params):
         _params = _transfer_params(params)
@@ -1279,13 +1294,13 @@ class _VPCRouterInterfaceResource(ServiceResource):
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_router_interface_attribute(router_interface_id=self.router_interface_id,
-                                                       **_params)
+        self._client.modify_router_interface_attribute(
+            router_interface_id=self.router_interface_id, **_params)
 
     def modify_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_router_interface_spec(router_interface_id=self.router_interface_id,
-                                                  **_params)
+        self._client.modify_router_interface_spec(
+            router_interface_id=self.router_interface_id, **_params)
 
 
 class _VPCSnatEntryResource(ServiceResource):
@@ -1318,8 +1333,8 @@ class _VPCSslVpnClientCertResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_ssl_vpn_client_cert(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id,
-                                                **_params)
+        self._client.delete_ssl_vpn_client_cert(
+            ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id, **_params)
 
     def describe(self, **params):
         _params = _transfer_params(params)
@@ -1328,17 +1343,18 @@ class _VPCSslVpnClientCertResource(ServiceResource):
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_ssl_vpn_client_cert(ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id,
-                                                **_params)
+        self._client.modify_ssl_vpn_client_cert(
+            ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id, **_params)
 
     def refresh(self):
         result = self._client.describe_ssl_vpn_client_certs(
             ssl_vpn_client_cert_id=self.ssl_vpn_client_cert_id)
         items = _new_get_key_in_response(result, 'SslVpnClientCertKeys.SslVpnClientCertKey')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find ssl_vpn_client_cert data from DescribeSslVpnClientCerts response. "
-                                  "SslVpnClientCertId = {0}".format(self.ssl_vpn_client_cert_id))
+            raise ClientException(
+                msg="Failed to find ssl_vpn_client_cert data from DescribeSslVpnClientCerts response. "
+                "SslVpnClientCertId = {0}".format(
+                    self.ssl_vpn_client_cert_id))
         self._assign_attributes(items[0])
 
 
@@ -1374,9 +1390,10 @@ class _VPCSslVpnServerResource(ServiceResource):
         result = self._client.describe_ssl_vpn_servers(ssl_vpn_server_id=self.ssl_vpn_server_id)
         items = _new_get_key_in_response(result, 'SslVpnServers.SslVpnServer')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find ssl_vpn_server data from DescribeSslVpnServers response. "
-                                  "SslVpnServerId = {0}".format(self.ssl_vpn_server_id))
+            raise ClientException(
+                msg="Failed to find ssl_vpn_server data from DescribeSslVpnServers response. "
+                "SslVpnServerId = {0}".format(
+                    self.ssl_vpn_server_id))
         self._assign_attributes(items[0])
 
 
@@ -1402,8 +1419,7 @@ class _VPCVRouterResource(ServiceResource):
         result = self._client.describe_vrouters(vrouter_id=self.vrouter_id)
         items = _new_get_key_in_response(result, 'VRouters.VRouter')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find vrouter data from DescribeVRouters response. "
+            raise ClientException(msg="Failed to find vrouter data from DescribeVRouters response. "
                                   "VRouterId = {0}".format(self.vrouter_id))
         self._assign_attributes(items[0])
 
@@ -1438,9 +1454,10 @@ class _VPCVSwitchResource(ServiceResource):
         result = self._client.describe_vswitches(vswitch_id=self.vswitch_id)
         items = _new_get_key_in_response(result, 'VSwitches.VSwitch')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find vswitch data from DescribeVSwitches response. "
-                                  "VSwitchId = {0}".format(self.vswitch_id))
+            raise ClientException(
+                msg="Failed to find vswitch data from DescribeVSwitches response. "
+                "VSwitchId = {0}".format(
+                    self.vswitch_id))
         self._assign_attributes(items[0])
 
 
@@ -1488,13 +1505,13 @@ class _VPCVirtualBorderRouterResource(ServiceResource):
 
     def associate_physical_connection_to(self, **params):
         _params = _transfer_params(params)
-        self._client.associate_physical_connection_to_virtual_border_router(vbr_id=self.vbr_id,
-                                                                            **_params)
+        self._client.associate_physical_connection_to_virtual_border_router(
+            vbr_id=self.vbr_id, **_params)
 
     def unassociate_physical_connection_from(self, **params):
         _params = _transfer_params(params)
-        self._client.unassociate_physical_connection_from_virtual_border_router(vbr_id=self.vbr_id,
-                                                                                **_params)
+        self._client.unassociate_physical_connection_from_virtual_border_router(
+            vbr_id=self.vbr_id, **_params)
 
 
 class _VPCVpcResource(ServiceResource):
@@ -1534,8 +1551,7 @@ class _VPCVpcResource(ServiceResource):
         result = self._client.describe_vpcs(vpc_id=self.vpc_id)
         items = _new_get_key_in_response(result, 'Vpcs.Vpc')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find vpc data from DescribeVpcs response. "
+            raise ClientException(msg="Failed to find vpc data from DescribeVpcs response. "
                                   "VpcId = {0}".format(self.vpc_id))
         self._assign_attributes(items[0])
 
@@ -1568,21 +1584,22 @@ class _VPCVpnConnectionResource(ServiceResource):
 
     def download_vpn_connection_config(self, **params):
         _params = _transfer_params(params)
-        self._client.download_vpn_connection_config(vpn_connection_id=self.vpn_connection_id,
-                                                    **_params)
+        self._client.download_vpn_connection_config(
+            vpn_connection_id=self.vpn_connection_id, **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_vpn_connection_attribute(vpn_connection_id=self.vpn_connection_id,
-                                                     **_params)
+        self._client.modify_vpn_connection_attribute(
+            vpn_connection_id=self.vpn_connection_id, **_params)
 
     def refresh(self):
         result = self._client.describe_vpn_connections(vpn_connection_id=self.vpn_connection_id)
         items = _new_get_key_in_response(result, 'VpnConnections.VpnConnection')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find vpn_connection data from DescribeVpnConnections response. "
-                                  "VpnConnectionId = {0}".format(self.vpn_connection_id))
+            raise ClientException(
+                msg="Failed to find vpn_connection data from DescribeVpnConnections response. "
+                "VpnConnectionId = {0}".format(
+                    self.vpn_connection_id))
         self._assign_attributes(items[0])
 
 
@@ -1634,8 +1651,8 @@ class _VPCVpnGatewayResource(ServiceResource):
 
     def modify_vpn_pbr_route_entry_weight(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_vpn_pbr_route_entry_weight(vpn_gateway_id=self.vpn_gateway_id,
-                                                       **_params)
+        self._client.modify_vpn_pbr_route_entry_weight(
+            vpn_gateway_id=self.vpn_gateway_id, **_params)
 
     def modify_vpn_route_entry_weight(self, **params):
         _params = _transfer_params(params)
@@ -1649,9 +1666,10 @@ class _VPCVpnGatewayResource(ServiceResource):
         result = self._client.describe_vpn_gateways(vpn_gateway_id=self.vpn_gateway_id)
         items = _new_get_key_in_response(result, 'VpnGateways.VpnGateway')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find vpn_gateway data from DescribeVpnGateways response. "
-                                  "VpnGatewayId = {0}".format(self.vpn_gateway_id))
+            raise ClientException(
+                msg="Failed to find vpn_gateway data from DescribeVpnGateways response. "
+                "VpnGatewayId = {0}".format(
+                    self.vpn_gateway_id))
         self._assign_attributes(items[0])
 
 

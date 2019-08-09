@@ -27,7 +27,8 @@ class ENSInstanceResource(_ENSInstanceResource):
         result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id, ]))
         items = _new_get_key_in_response(result, 'Instances.Instance')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find instance data from DescribeInstances response. "
-                                  "InstanceId = {0}".format(self.instance_id))
+            raise ClientException(
+                msg="Failed to find instance data from DescribeInstances response. "
+                "InstanceId = {0}".format(
+                    self.instance_id))
         self._assign_attributes(items[0])

@@ -35,21 +35,30 @@ def _get_param_from_args(args, index, name):
 
 # Client
 
-def _check_client_service_name(service_name):
-    available_clients = _list_available_client_services()
-    if service_name.lower() in available_clients:
-        return available_clients[service_name.lower()]
+def get_services(service_name, available_services):
+    if service_name.lower() in available_services:
+        return available_services[service_name.lower()]
     raise ServiceNameInvalidException(service_name=service_name,
-                                      more=','.join([item for item in available_clients.keys()]))
+                                      more=','.join([item for item in available_services.keys()]))
+
+
+def _check_and_get_service(service_name, service="client"):
+    if service == "client":
+        available_services = _list_available_client_services()
+    elif service == "resource":
+        available_services = _list_available_resource_services()
+    else:
+        raise
+    return get_services(service_name, available_services)
 
 
 def _prepare_module(service_name, api_version):
     """
     :param service_name: Ecs or ECS or eCS
     :param api_version: 2018-06-09
-    :return:
+    :return: 比如ecs_20140526, 比如EcsClient
     """
-    client_name, client_versions = _check_client_service_name(service_name)
+    client_name, client_versions = _check_and_get_service(service_name)
     if api_version is None:
         api_version = max(client_versions)
     elif api_version not in client_versions:
@@ -103,7 +112,7 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
     :rtype: AlibabaCloudClient
 
     """
-    module_name, client_name = _prepare_module(service_name, api_version)  # ecs_20180909
+    module_name, client_name = _prepare_module(service_name, api_version)  # ecs_20180909, EcsClient
     if region_id is not None and config:
         config.region_id = region_id
     if endpoint is not None and config:
@@ -134,14 +143,6 @@ def get_client(service_name, api_version=None, region_id=None, endpoint=None, ac
 
 
 # resource
-
-
-def _check_resource_service_name(service_name):
-    resources_services = _list_available_resource_services()
-    if service_name.lower() in resources_services:
-        return resources_services[service_name.lower()]
-    raise ServiceNameInvalidException(service_name=service_name,
-                                      more=','.join([item for item in resources_services.keys()]))
 
 
 def get_resource(resource_name, resource_id=None, api_version=None, region_id=None, endpoint=None,
@@ -223,7 +224,7 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
 
     """
 
-    class_name, service_module = _check_resource_service_name(resource_name)
+    class_name, service_module = _check_and_get_service(resource_name, service="resource")
 
     stream_logger_handler = {
         "log_level": kwargs.get('stream_log_level', logging.DEBUG),
