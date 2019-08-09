@@ -11,13 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.collection import _create_resource_collection
 from alibabacloud.services._slb import _SLBResource, _SLBLoadBalancerResource
+from alibabacloud.utils.utils import transfer, _new_get_key_in_response
 
 
 class LoadBalancerResource(_SLBLoadBalancerResource):
+
     def __init__(self, load_balancer_id, _client=None):
         _SLBLoadBalancerResource.__init__(self, load_balancer_id, _client=_client)
+        self.load_balancer_id = load_balancer_id
+
+    @transfer({"Tags": "list_of_tags",})
+    def refresh(self):
+        response = self._client.describe_load_balancers(load_balancer_id=self.load_balancer_id)
+        items = _new_get_key_in_response(response, 'LoadBalancers.LoadBalancer')
+        if not items:
+            raise ClientException(msg=
+                                  "Failed to find load balancer data from DescribeLoadBalancers "
+                                  "response. "
+                                  "LoadBalancerId = {0}".format(self.load_balancer_id))
+        self._assign_attributes(items[0])
 
 
 class SLBResource(_SLBResource):
@@ -28,6 +43,6 @@ class SLBResource(_SLBResource):
             LoadBalancerResource, _client, _client.describe_load_balancers,
             'LoadBalancers.LoadBalancer', 'LoadBalancerId',
             param_aliases={
-                "Tag": "list_of_tags",
+                "Tags": "list_of_tags",
             }
         )
