@@ -39,7 +39,7 @@ class VPCEipAddressResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.modify_eip_address_attribute(allocation_id=self.allocation_id, **_params)
         self.refresh()
-
+    @transfer({"Tags": "list_of_tags"})
     def refresh(self):
         response = self._client.describe_eip_addresses(allocation_id=self.allocation_id)
         items = _new_get_key_in_response(response, 'EipAddresses.EipAddress')
@@ -64,7 +64,8 @@ class VPCResource(ServiceResource):
         ServiceResource.__init__(self, 'vpc', _client=_client)
         self.eip_addresses = _create_resource_collection(
             VPCEipAddressResource, _client, _client.describe_eip_addresses,
-            'EipAddresses.EipAddress', 'AllocationId'
+            'EipAddresses.EipAddress', 'AllocationId',
+            param_aliases={"Tags": "list_of_tags"}
         )
 
     def allocate_eip_address(self, **params):
