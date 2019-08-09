@@ -21,7 +21,7 @@ class GenTestBase(SDKTestBase):
              },
         ]
         try:
-            context = ecs_client.add_tags(tag=tag, resource_type="instance",
+            context = ecs_client.add_tags(list_of_tag=tag, resource_type="instance",
                                           resource_id="i-bp13ozj6v9ckzcq8sjxw")
             assert False
         except ServerException as e:
@@ -35,7 +35,7 @@ class GenTestBase(SDKTestBase):
         ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
         tag = "hi"
         try:
-            context = ecs_client.add_tags(tag=tag, resource_type="instance",
+            context = ecs_client.add_tags(list_of_tag=tag, resource_type="instance",
                                           resource_id="i-bp13ozj6v9ckzcq8sjxw")
             assert False
         except ParamValidationException as e:
@@ -52,7 +52,7 @@ class GenTestBase(SDKTestBase):
         # tag = []
         tag = ['hi', ]
         try:
-            context = ecs_client.describe_container_groups(tag=tag)
+            context = ecs_client.describe_container_groups(list_of_tag=tag)
             assert False
         except ParamValidationException as e:
             if six.PY2:
@@ -142,6 +142,5 @@ class GenTestBase(SDKTestBase):
             self.assertEqual(e.error_message, 'RuleId is mandatory for this action.')
 
         result = edas_client.delete_application(app_id="123")
-        self.assertEqual(result.get('Message'),
-                         'Only primary account is allowed to perform this operation.')
+        self.assertEqual(result.get('Message'),'No permissions')
         self.assertEqual(result.get('Code'), 500)

@@ -12,7 +12,7 @@ class GenTestCheckParams(SDKTestBase):
         ecs_client = EcsClient(self.client_config, self.init_credentials_provider())
         tag = 'hi'
         try:
-            context = ecs_client.describe_tags(tag=tag)
+            context = ecs_client.describe_tags(list_of_tag=tag)
             assert False
         except ParamValidationException as e:
             if six.PY2:
@@ -29,7 +29,7 @@ class GenTestCheckParams(SDKTestBase):
             'hi'
         ]
         try:
-            context = ecs_client.describe_tags(tag=tag)
+            context = ecs_client.describe_tags(list_of_tag=tag)
             assert False
         except ParamValidationException as e:
             if six.PY2:
@@ -52,7 +52,7 @@ class GenTestCheckParams(SDKTestBase):
         },
         ]
         try:
-            context = eci_client.update_container_group(container=container)
+            context = eci_client.update_container_group(list_of_container=container)
             assert False
         except ParamValidationException as e:
             if six.PY2:
@@ -73,7 +73,7 @@ class GenTestCheckParams(SDKTestBase):
         },
         ]
         try:
-            context = eci_client.update_container_group(container=container)
+            context = eci_client.update_container_group(list_of_container=container)
             assert False
         except ServerException as e:
             self.assertEqual(e.http_status, 400)
@@ -92,7 +92,7 @@ class GenTestCheckParams(SDKTestBase):
         },
         ]
         try:
-            context = eci_client.update_container_group(container=container)
+            context = eci_client.update_container_group(list_of_container=container)
             assert False
         except ServerException as e:
             self.assertEqual(e.http_status, 400)
