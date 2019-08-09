@@ -11,10 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from alibabacloud.services._slb import _SLBResource
+from alibabacloud.resources.collection import _create_resource_collection
+from alibabacloud.services._slb import _SLBResource, _SLBLoadBalancerResource
+
+
+class LoadBalancerResource(_SLBLoadBalancerResource):
+    def __init__(self, load_balancer_id, _client=None):
+        _SLBLoadBalancerResource.__init__(self, load_balancer_id, _client=_client)
 
 
 class SLBResource(_SLBResource):
 
     def __init__(self, _client=None):
         _SLBResource.__init__(self, _client=_client)
+        self.load_balancers = _create_resource_collection(
+            LoadBalancerResource, _client, _client.describe_load_balancers,
+            'LoadBalancers.LoadBalancer', 'LoadBalancerId',
+            param_aliases={
+                "Tag": "list_of_tags",
+            }
+        )
