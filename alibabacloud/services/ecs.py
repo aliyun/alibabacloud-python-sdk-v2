@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
-from functools import wraps
 
 from alibabacloud import ClientException
 from alibabacloud.resources.base import ServiceResource
@@ -22,7 +21,8 @@ from alibabacloud.services._ecs import _ECSDiskResource
 from alibabacloud.services._ecs import _ECSInstanceResource
 from alibabacloud.services._ecs import _ECSResource
 from alibabacloud.services._ecs import _ECSSystemEventResource
-from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response, _assert_is_not_none
+from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response, \
+    _assert_is_not_none, transfer
 
 
 class ECSInstanceResource(_ECSInstanceResource):
@@ -65,36 +65,18 @@ class ECSInstanceResource(_ECSInstanceResource):
     def modify_attributes(self, **params):
         self.modify_attribute(**params)
 
+    @transfer({"Tags": "list_of_tag", })
     def refresh(self):
         result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id, ]))
         items = _new_get_key_in_response(result, 'Instances.Instance')
         if not items:
             raise ClientException(
                 msg="Failed to find instance data from DescribeInstances response. "
-                "InstanceId = {0}".format(
-                    self.instance_id))
+                    "InstanceId = {0}".format(self.instance_id))
         self._assign_attributes(items[0])
 
 
 # 人工补充部分
-# 对list_of_instance_id 以及instance_ids 进行映射处理
-def transfer(rules):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(self, **params):
-            for key, value in rules.items():
-                # key is like: InstanceIds or instance_ids
-                # value is like: list_of_instance_id
-                if key in params:
-                    temp = params[key]
-                    del params[key]
-
-                    params[value] = temp
-            return func(self, **params)
-
-        return wrapper
-
-    return decorator
 
 
 class ECSSystemEventResource(_ECSSystemEventResource):
@@ -151,13 +133,16 @@ class ECSSystemEventResource(_ECSSystemEventResource):
         _assert_is_not_none(event_id, "event_id")
         _ECSSystemEventResource.__init__(self, event_id, _client=_client)
 
+    @transfer({"EventIds": "list_of_event_id",
+               "InstanceEventCycleStatuss": "list_of_instance_event_cycle_status",
+               "InstanceEventTypes": "list_of_instance_event_type", })
     def refresh(self):
         response = self._client.describe_instance_history_events(list_of_event_id=[self.event_id, ])
         items = _new_get_key_in_response(response, 'InstanceSystemEventSet.InstanceSystemEventType')
         if not items:
             raise ClientException(msg="Failed to find event data from "
-                                  "DescribeInstanceHistoryEventsRequest response. "
-                                  "EventId = {0}".format(self.event_id))
+                                      "DescribeInstanceHistoryEventsRequest response. "
+                                      "EventId = {0}".format(self.event_id))
         self._assign_attributes(items[0])
 
     def get_event_type(self):
@@ -199,12 +184,13 @@ class ECSDiskResource(_ECSDiskResource):
         _ECSDiskResource.__init__(self, disk_id, _client=_client)
         self.disk_id = disk_id
 
+    @transfer({"Tags": "list_of_tag", "AdditionalAttributess": "list_of_additional_attributes", })
     def refresh(self):
         result = self._client.describe_disks(disk_ids=json.dumps([self.disk_id, ]))
         items = _new_get_key_in_response(result, 'Disks.Disk')
         if not items:
             raise ClientException(msg="Failed to find disk data from DescribeDisks response. "
-                                  "DiskId = {0}".format(self.disk_id))
+                                      "DiskId = {0}".format(self.disk_id))
         self._assign_attributes(items[0])
 
 
@@ -223,12 +209,20 @@ class ECSResource(_ECSResource):
                 'list_of_inner_ip_address': 'InnerIpAddresses',
                 'list_of_public_ip_address': 'PublicIpAddresses',
                 'list_of_eip_address': 'EipAddresses',
+                "Tags": "list_of_tag",
             }
         )
 
         self.instance_full_statuses = _create_default_resource_collection(
             ECSInstanceFullStatus, _client, _client.describe_instances_full_status,
             'InstanceFullStatusSet.InstanceFullStatusType',
+            param_aliases={
+                "InstanceEventTypes": "list_of_instance_event_type",
+                "EventIds": "event_ids",
+                "InstanceIds": "instance_ids",
+                "instance_ids": "list_of_instance_id",
+                "event_ids": "list_of_event_id"
+            }
         )
 
         self.disks = _create_resource_collection(
@@ -236,35 +230,52 @@ class ECSResource(_ECSResource):
             'Disks.Disk', 'DiskId',
             plural_param_to_json={
                 'list_of_disk_id': 'DiskId',
+                "Tags": "list_of_tag",
+                "AdditionalAttributess": "list_of_additional_attributes",
             }
         )
 
         self.tags = _create_default_resource_collection(
             ECSTagResource, _client, _client.describe_tags,
             'Tags.Tag',
+            param_aliases={
+                "Tags": "list_of_tag",
+            }
         )
 
         self.demands = _create_default_resource_collection(
             ECSDemand, _client, _client.describe_demands,
             'Demands.Demand',
+            param_aliases={
+                "Tags": "list_of_tag",
+                "DemandStatuss": "list_of_demand_status",
+            }
         )
 
         self.system_events = _create_resource_collection(
             ECSSystemEventResource, _client, _client.describe_instance_history_events,
             'InstanceSystemEventSet.InstanceSystemEventType', 'EventId',
             param_aliases={
-                'list_of_event_id': 'EventId',
-                'list_of_event_cycle_status': 'InstanceEventCycleStatus',
+                'list_of_event_id': 'EventIds',
                 'list_of_event_type': 'InstanceEventType',
+                'list_of_event_cycle_status': 'InstanceEventCycleStatus',
+                'EventIds': 'list_of_event_id',
+                'InstanceEventCycleStatus': 'list_of_instance_event_cycle_status',
+                'InstanceEventType': 'list_of_instance_event_type',
             }
         )
 
+    @transfer({"Tags": "list_of_tag", "Arns": "list_of_arn", "DataDisks": "list_of_data_disk", })
     def create_instance(self, **params):
         _params = _transfer_params(params)
+        print(11111, _params)
         response = self._client.create_instance(**_params)
         instance_id = _new_get_key_in_response(response, 'InstanceId')
         return ECSInstanceResource(instance_id, _client=self._client)
 
+    @transfer({"Tags": "list_of_tag", "Ipv6Addresss": "list_of_ipv6_address",
+               "NetworkInterfaces": "list_of_network_interface",
+               "SecurityGroupIdss": "list_of_security_group_ids", "DataDisks": "list_of_data_disk"})
     def run_instances(self, **params):
         _params = _transfer_params(params)
         response = self._client.run_instances(**_params)

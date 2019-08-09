@@ -82,7 +82,7 @@ class EcsResourceTest(SDKTestBase):
         # 创建一台经典网络
         instance_type = "ecs.n2.small"
         EcsResourceTest.classics_instance = self.ecs.create_instance(ImageId=self.image_id,
-                                                                     InstanceType=instance_type, )
+                                                                     InstanceType=instance_type,)
 
         time.sleep(90)
 
@@ -130,12 +130,15 @@ class EcsResourceTest(SDKTestBase):
 
     def test_filter_inner_ip_address(self):
         # inner_ip_address 必须是经典网络下的ecs 才有此属性
-        instance = EcsResourceTest.classics_instance
-        your_inner_ip_list = [instance.inner_ip_address, ]
+        your_inner_ip_list = []
+        for item in self.ecs.instances.all():
+            item.refresh()
+            if item.inner_ip_address:
+                your_inner_ip_list.extend(item.inner_ip_address.get('IpAddress'))
 
         ecs = self._get_ecs_resource()
 
-        ecs_instance = ecs.instances.filter(InnerIpAddresses=json.dumps(your_inner_ip_list))
+        ecs_instance = ecs.instances.filter(inner_ip_addresses=json.dumps(your_inner_ip_list))
         self.assertTrue(len(list(ecs_instance)))
 
     def init_credentials_provider(self):
@@ -164,45 +167,6 @@ class EcsResourceTest(SDKTestBase):
             except HttpErrorException as e:
                 pass
         self.assertEqual(4, monkey.call_count)
-
-    # def test_events(self):
-    #     # TODO 一直为None
-    #     ecs = self._get_ecs_resource()
-    #     ecs_instances = list(ecs.instances.all())
-    #     cur = time.localtime(time.time())
-    #     cur_time = time.strftime('%Y-%m-%dT%H:%M:%SZ', cur)
-    #
-    #     system_events = ecs.create_simulated_system_events(event_type="SystemMaintenance.Reboot",
-    #                                                        list_of_instance_id=[instance.instance_id
-    #                                                                             for instance in
-    #                                                                             ecs_instances],
-    #                                                        NotBefore=cur_time)
-    #     for event in system_events:
-    #         # print(event.event_id)
-    #         event.refresh()
-    #         # print(event.event_finish_time)
-
-    # def test_sys_events(self):
-    #     # TODO 一直为None
-    #     ecs = self._get_ecs_resource()
-    #     ecs_instance = list(ecs.instances.all())[0]
-    #     cur = time.localtime(time.time())
-    #     cur_time = time.strftime('%Y-%m-%dT%H:%M:%SZ', cur)
-    #
-    #     system_events = ecs.create_simulated_system_events(event_type="SystemMaintenance.Reboot",
-    #                                                        InstanceId=[ecs_instance.instance_id, ],
-    #                                                        NotBefore=cur_time)
-    #     for event in system_events:
-    #         # print(event.event_id)
-    #         event.refresh()
-    #         self.assertTrue(event.event_id)
-    #         self.assertTrue(event.instance_id)
-    #         self.assertTrue(event.event_type)
-    #         self.assertTrue(event.event_cycle_status)
-    #         self.assertTrue(event.event_publish_time)
-    #         self.assertTrue(event.event_finish_time)
-    #         self.assertTrue(event.not_before)
-    #         # print(event.event_finish_time)
 
     def test_ecs_agree_from_ecs(self):
         pass
