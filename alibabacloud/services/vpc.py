@@ -13,7 +13,8 @@
 # limitations under the License.
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.services._vpc import _VPCResource, _VPCEipAddressResource
+from alibabacloud.services._vpc import _VPCResource
+from alibabacloud.services._vpc import _VPCEipAddressResource
 from alibabacloud.utils.utils import transfer, _new_get_key_in_response
 
 
