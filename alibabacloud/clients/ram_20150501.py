@@ -14,7 +14,6 @@
 
 from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
-from alibabacloud.utils.parameter_validation import verify_params
 
 
 class RamClient(AlibabaCloudClient):
@@ -77,7 +76,7 @@ class RamClient(AlibabaCloudClient):
         api_request._params = {"RoleName": role_name}
         return self._handle_request(api_request).result
 
-    def get_security_preference(self,):
+    def get_security_preference(self, ):
         api_request = APIRequest('GetSecurityPreference', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
@@ -121,7 +120,7 @@ class RamClient(AlibabaCloudClient):
         api_request._params = {"UserName": user_name}
         return self._handle_request(api_request).result
 
-    def list_virtual_mfa_devices(self,):
+    def list_virtual_mfa_devices(self, ):
         api_request = APIRequest('ListVirtualMFADevices', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
@@ -294,17 +293,17 @@ class RamClient(AlibabaCloudClient):
         api_request._params = {"AccountAlias": account_alias}
         return self._handle_request(api_request).result
 
-    def get_password_policy(self,):
+    def get_password_policy(self, ):
         api_request = APIRequest('GetPasswordPolicy', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
 
-    def get_account_alias(self,):
+    def get_account_alias(self, ):
         api_request = APIRequest('GetAccountAlias', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
 
-    def clear_account_alias(self,):
+    def clear_account_alias(self, ):
         api_request = APIRequest('ClearAccountAlias', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
