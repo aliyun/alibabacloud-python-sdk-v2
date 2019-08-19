@@ -14,7 +14,6 @@
 
 from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
-from alibabacloud.utils.parameter_validation import verify_params
 
 
 class EnsClient(AlibabaCloudClient):
