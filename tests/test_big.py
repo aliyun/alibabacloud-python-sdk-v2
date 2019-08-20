@@ -73,7 +73,7 @@ class EcsResourceTest(SDKTestBase):
                 "Value": "sdk",
             },
         ]
-        ecs = get_resource("ecs")
+        ecs = get_resource("ecs",access_key_id=self.access_key_id, access_key_secret=self.access_key_secret, region_id=self.region_id)
         launch_template = list(ecs.launch_templates.all())[0]
 
         EcsResourceTest.proprietary_instance = \
