@@ -62,7 +62,7 @@ class EcsResourceTest(SDKTestBase):
         ram_user.delete()
 
     def test_rds_resource(self):
-        rds_resource = get_resource("rds")
+        rds_resource = self.get_resource("rds")
         for db_instance in rds_resource.db_instances.all():
             db_instance.delete()
         rds_instance = rds_resource.create_db_instance(Engine="MySQL", EngineVersion="5.6",
