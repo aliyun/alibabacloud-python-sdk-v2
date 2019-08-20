@@ -184,7 +184,7 @@ class LinkWANClient(AlibabaCloudClient):
         api_request._params = {"NodeGroupId": node_group_id, "FuzzyDevEui": fuzzy_dev_eui}
         return self._handle_request(api_request).result
 
-    def get_user_license(self, ):
+    def get_user_license(self,):
         api_request = APIRequest('GetUserLicense', 'GET', 'http', 'RPC', '')
 
         return self._handle_request(api_request).result
@@ -320,7 +320,7 @@ class LinkWANClient(AlibabaCloudClient):
             "Ascending": ascending}
         return self._handle_request(api_request).result
 
-    def list_active_gateways(self, ):
+    def list_active_gateways(self,):
         api_request = APIRequest('ListActiveGateways', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
@@ -352,7 +352,7 @@ class LinkWANClient(AlibabaCloudClient):
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
-    def list_freq_band_plan_groups(self, ):
+    def list_freq_band_plan_groups(self,):
         api_request = APIRequest('ListFreqBandPlanGroups', 'GET', 'http', 'RPC', '')
 
         return self._handle_request(api_request).result
@@ -565,7 +565,7 @@ class LinkWANClient(AlibabaCloudClient):
             "IsEnabled": is_enabled}
         return self._handle_request(api_request).result
 
-    def list_gateways_gis_info(self, ):
+    def list_gateways_gis_info(self,):
         api_request = APIRequest('ListGatewaysGisInfo', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
@@ -999,12 +999,12 @@ class LinkWANClient(AlibabaCloudClient):
         api_request._params = {"PublicKey": public_key}
         return self._handle_request(api_request).result
 
-    def unregister_kpm_public_key(self, ):
+    def unregister_kpm_public_key(self,):
         api_request = APIRequest('UnregisterKpmPublicKey', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
 
-    def get_kpm_public_key(self, ):
+    def get_kpm_public_key(self,):
         api_request = APIRequest('GetKpmPublicKey', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
@@ -1099,12 +1099,12 @@ class LinkWANClient(AlibabaCloudClient):
         api_request._params = {"DevEui": dev_eui}
         return self._handle_request(api_request).result
 
-    def list_activated_features(self, ):
+    def list_activated_features(self,):
         api_request = APIRequest('ListActivatedFeatures', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result
 
-    def describe_regions(self, ):
+    def describe_regions(self,):
         api_request = APIRequest('DescribeRegions', 'GET', 'https', 'RPC', '')
 
         return self._handle_request(api_request).result

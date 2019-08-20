@@ -52,7 +52,7 @@ def _list_available_client_services():
             for file in files:
                 if file.endswith('.py'):
                     module_name = file.rstrip('.py')
-                    service_name, api_version = module_name.split('_')
+                    service_name, api_version = module_name.rsplit('_', 1)
                     api_version = _format_api_version(api_version)
                     client_module = __import__(
                         '.'.join(['alibabacloud', 'clients', module_name]), globals(), locals(),

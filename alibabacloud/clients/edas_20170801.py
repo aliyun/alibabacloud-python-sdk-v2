@@ -14,6 +14,7 @@
 
 from alibabacloud.client import AlibabaCloudClient
 from alibabacloud.request import APIRequest
+from alibabacloud.utils.parameter_validation import verify_params
 
 
 class EdasClient(AlibabaCloudClient):
@@ -26,8 +27,87 @@ class EdasClient(AlibabaCloudClient):
                                     endpoint_resolver=endpoint_resolver)
         self.product_code = 'Edas'
         self.api_version = '2017-08-01'
-        self.location_service_code = 'None'
+        self.location_service_code = 'edas'
         self.location_endpoint_type = 'openAPI'
+
+    def get_scaling_rules(self, mode=None, app_id=None, group_id=None):
+        api_request = APIRequest('GetScalingRules', 'GET', 'http', 'ROA', 'query')
+        api_request.uri_pattern = '/pop/v5/app/scalingRules'
+        api_request._params = {"Mode": mode, "AppId": app_id, "GroupId": group_id}
+        return self._handle_request(api_request).result
+
+    def modify_scaling_rule(
+            self,
+            in_step=None,
+            out_instance_num=None,
+            out_rt=None,
+            in_instance_num=None,
+            vswitch_ids=None,
+            template_instance_id=None,
+            accept_eula=None,
+            out_step=None,
+            out_cpu=None,
+            key_pair_name=None,
+            password=None,
+            template_version=None,
+            in_condition=None,
+            in_rt=None,
+            in_cpu=None,
+            out_duration=None,
+            multi_az_policy=None,
+            out_load=None,
+            in_load=None,
+            group_id=None,
+            resource_from=None,
+            out_enable=None,
+            template_id=None,
+            scaling_policy=None,
+            out_condition=None,
+            in_duration=None,
+            in_enable=None,
+            app_id=None,
+            vpc_id=None,
+            template_instance_name=None):
+        api_request = APIRequest('ModifyScalingRule', 'POST', 'http', 'ROA', 'query')
+        api_request.uri_pattern = '/pop/v5/app/scaling_rules2'
+        api_request._params = {
+            "InStep": in_step,
+            "OutInstanceNum": out_instance_num,
+            "OutRT": out_rt,
+            "InInstanceNum": in_instance_num,
+            "VSwitchIds": vswitch_ids,
+            "TemplateInstanceId": template_instance_id,
+            "AcceptEULA": accept_eula,
+            "OutStep": out_step,
+            "OutCPU": out_cpu,
+            "KeyPairName": key_pair_name,
+            "Password": password,
+            "TemplateVersion": template_version,
+            "InCondition": in_condition,
+            "InRT": in_rt,
+            "InCpu": in_cpu,
+            "OutDuration": out_duration,
+            "MultiAzPolicy": multi_az_policy,
+            "OutLoad": out_load,
+            "InLoad": in_load,
+            "GroupId": group_id,
+            "ResourceFrom": resource_from,
+            "OutEnable": out_enable,
+            "TemplateId": template_id,
+            "ScalingPolicy": scaling_policy,
+            "OutCondition": out_condition,
+            "InDuration": in_duration,
+            "InEnable": in_enable,
+            "AppId": app_id,
+            "VpcId": vpc_id,
+            "TemplateInstanceName": template_instance_name}
+        return self._handle_request(api_request).result
+
+    def list_methods(self, app_id=None, service_name=None):
+        api_request = APIRequest('ListMethods', 'GET', 'http', 'ROA', 'query')
+        api_request.uri_pattern = '/pop/v5/service/list_methods'
+        api_request._params = {"AppId": app_id, "ServiceName": service_name}
+        return self._handle_request(api_request).result
 
     def get_k8s_application(self, app_id=None, from_=None):
         api_request = APIRequest('GetK8sApplication', 'GET', 'http', 'ROA', 'query')
@@ -63,7 +143,7 @@ class EdasClient(AlibabaCloudClient):
         api_request._params = {"ClusterId": cluster_id}
         return self._handle_request(api_request).result
 
-    def query_region_config(self, ):
+    def query_region_config(self,):
         api_request = APIRequest('QueryRegionConfig', 'GET', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/region_config'
 
@@ -265,13 +345,13 @@ class EdasClient(AlibabaCloudClient):
             "ClusterId": cluster_id}
         return self._handle_request(api_request).result
 
-    def list_components(self, ):
+    def list_components(self,):
         api_request = APIRequest('ListComponents', 'GET', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/resource/components'
 
         return self._handle_request(api_request).result
 
-    def get_package_storage_credential(self, ):
+    def get_package_storage_credential(self,):
         api_request = APIRequest('GetPackageStorageCredential', 'GET', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/package_storage_credential'
 
@@ -725,19 +805,19 @@ class EdasClient(AlibabaCloudClient):
         api_request._params = {"DebugEnable": debug_enable}
         return self._handle_request(api_request).result
 
-    def list_sub_account(self, ):
+    def list_sub_account(self,):
         api_request = APIRequest('ListSubAccount', 'POST', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/account/sub_account_list'
 
         return self._handle_request(api_request).result
 
-    def list_slb(self, ):
+    def list_slb(self,):
         api_request = APIRequest('ListSlb', 'GET', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/slb_list'
 
         return self._handle_request(api_request).result
 
-    def list_service_groups(self, ):
+    def list_service_groups(self,):
         api_request = APIRequest('ListServiceGroups', 'GET', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/service/serviceGroups'
 
@@ -764,13 +844,13 @@ class EdasClient(AlibabaCloudClient):
             "ClusterId": cluster_id}
         return self._handle_request(api_request).result
 
-    def list_role(self, ):
+    def list_role(self,):
         api_request = APIRequest('ListRole', 'POST', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/account/role_list'
 
         return self._handle_request(api_request).result
 
-    def list_resource_group(self, ):
+    def list_resource_group(self,):
         api_request = APIRequest('ListResourceGroup', 'POST', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/resource/reg_group_list'
 
@@ -842,13 +922,13 @@ class EdasClient(AlibabaCloudClient):
             "ClusterId": cluster_id}
         return self._handle_request(api_request).result
 
-    def list_authority(self, ):
+    def list_authority(self,):
         api_request = APIRequest('ListAuthority', 'POST', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/account/authority_list'
 
         return self._handle_request(api_request).result
 
-    def list_aliyun_region(self, ):
+    def list_aliyun_region(self,):
         api_request = APIRequest('ListAliyunRegion', 'POST', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/resource/region_list'
 
@@ -1117,7 +1197,7 @@ class EdasClient(AlibabaCloudClient):
         api_request._params = {"AppIds": app_ids, "TargetUserId": target_user_id}
         return self._handle_request(api_request).result
 
-    def list_vpc(self, ):
+    def list_vpc(self,):
         api_request = APIRequest('ListVpc', 'GET', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/vpc_list'
 
@@ -1237,13 +1317,13 @@ class EdasClient(AlibabaCloudClient):
         api_request._params = {"AppId": app_id}
         return self._handle_request(api_request).result
 
-    def list_build_pack(self, ):
+    def list_build_pack(self,):
         api_request = APIRequest('ListBuildPack', 'POST', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/app/build_pack_list'
 
         return self._handle_request(api_request).result
 
-    def list_application_ecu(self, ):
+    def list_application_ecu(self,):
         api_request = APIRequest('ListApplicationEcu', 'POST', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/resource/ecu_list'
 
@@ -1261,7 +1341,7 @@ class EdasClient(AlibabaCloudClient):
         api_request._params = {"LogicalRegionId": logical_region_id}
         return self._handle_request(api_request).result
 
-    def list_application(self, ):
+    def list_application(self,):
         api_request = APIRequest('ListApplication', 'POST', 'http', 'ROA', '')
         api_request.uri_pattern = '/pop/v5/app/app_list'
 

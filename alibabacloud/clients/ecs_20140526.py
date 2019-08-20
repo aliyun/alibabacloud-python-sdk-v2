@@ -270,7 +270,7 @@ class EcsClient(AlibabaCloudClient):
                 'list',
                 'str',
                 None),
-        }
+             }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -399,8 +399,8 @@ class EcsClient(AlibabaCloudClient):
                      'str',
                      None,
                      None),
-                ]),
-        }
+                    ]),
+             }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -670,8 +670,8 @@ class EcsClient(AlibabaCloudClient):
                      'str',
                      None,
                      None),
-                ]),
-        }
+                    ]),
+             }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -764,18 +764,18 @@ class EcsClient(AlibabaCloudClient):
                                            'str',
                                            None,
                                            None),
-                                          ('InstanceType',
-                                           'str',
-                                           None,
-                                           None),
-                                          ('Scope',
-                                           'str',
-                                           None,
-                                           None),
-                                          ('InstanceAmount',
-                                           'str',
-                                           None,
-                                           None),
+                                             ('InstanceType',
+                                              'str',
+                                              None,
+                                              None),
+                                             ('Scope',
+                                              'str',
+                                              None,
+                                              None),
+                                             ('InstanceAmount',
+                                              'str',
+                                              None,
+                                              None),
                                           ]),
                        "ReservedInstanceId": ('ReservedInstanceId',
                                               'list',
@@ -1147,6 +1147,7 @@ class EcsClient(AlibabaCloudClient):
             owner_id=None,
             instance_id=None,
             force=None,
+            migration_type=None,
             affinity=None):
         api_request = APIRequest('ModifyInstanceDeployment', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -1160,6 +1161,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceId": instance_id,
             "Force": force,
+            "MigrationType": migration_type,
             "Affinity": affinity}
         return self._handle_request(api_request).result
 
@@ -1705,22 +1707,19 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
                                                        ('Value', 'str', None, None),
                                                        ]),
-                       "NetworkInterface": (
-                       'NetworkInterface', 'list', 'dict', [('PrimaryIpAddress', 'str', None, None),
-                                                            ('VSwitchId', 'str', None, None),
-                                                            ('SecurityGroupId', 'str', None, None),
-                                                            ('NetworkInterfaceName', 'str', None,
-                                                             None),
-                                                            ('Description', 'str', None, None),
-                                                            ]),
+                       "NetworkInterface": ('NetworkInterface', 'list', 'dict', [('PrimaryIpAddress', 'str', None, None),
+                                                                                 ('VSwitchId', 'str', None, None),
+                                                                                 ('SecurityGroupId', 'str', None, None),
+                                                                                 ('NetworkInterfaceName', 'str', None, None),
+                                                                                 ('Description', 'str', None, None),
+                                                                                 ]),
                        "DataDisk": ('DataDisk', 'list', 'dict', [('Size', 'str', None, None),
                                                                  ('SnapshotId', 'str', None, None),
                                                                  ('Category', 'str', None, None),
                                                                  ('Encrypted', 'str', None, None),
                                                                  ('DiskName', 'str', None, None),
                                                                  ('Description', 'str', None, None),
-                                                                 ('DeleteWithInstance', 'str', None,
-                                                                  None),
+                                                                 ('DeleteWithInstance', 'str', None, None),
                                                                  ('Device', 'str', None, None),
                                                                  ]),
                        }
@@ -1827,22 +1826,19 @@ class EcsClient(AlibabaCloudClient):
                        "Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
                                                        ('Value', 'str', None, None),
                                                        ]),
-                       "NetworkInterface": (
-                       'NetworkInterface', 'list', 'dict', [('PrimaryIpAddress', 'str', None, None),
-                                                            ('VSwitchId', 'str', None, None),
-                                                            ('SecurityGroupId', 'str', None, None),
-                                                            ('NetworkInterfaceName', 'str', None,
-                                                             None),
-                                                            ('Description', 'str', None, None),
-                                                            ]),
+                       "NetworkInterface": ('NetworkInterface', 'list', 'dict', [('PrimaryIpAddress', 'str', None, None),
+                                                                                 ('VSwitchId', 'str', None, None),
+                                                                                 ('SecurityGroupId', 'str', None, None),
+                                                                                 ('NetworkInterfaceName', 'str', None, None),
+                                                                                 ('Description', 'str', None, None),
+                                                                                 ]),
                        "DataDisk": ('DataDisk', 'list', 'dict', [('Size', 'str', None, None),
                                                                  ('SnapshotId', 'str', None, None),
                                                                  ('Category', 'str', None, None),
                                                                  ('Encrypted', 'str', None, None),
                                                                  ('DiskName', 'str', None, None),
                                                                  ('Description', 'str', None, None),
-                                                                 ('DeleteWithInstance', 'str', None,
-                                                                  None),
+                                                                 ('DeleteWithInstance', 'str', None, None),
                                                                  ('Device', 'str', None, None),
                                                                  ]),
                        }
@@ -1968,7 +1964,7 @@ class EcsClient(AlibabaCloudClient):
                 'list',
                 'str',
                 None),
-        }
+         }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -2345,6 +2341,7 @@ class EcsClient(AlibabaCloudClient):
             hpc_cluster_id=None,
             security_enhancement_strategy=None,
             key_pair_name=None,
+            min_amount=None,
             spot_price_limit=None,
             deletion_protection=None,
             resource_group_id=None,
@@ -2353,12 +2350,10 @@ class EcsClient(AlibabaCloudClient):
             storage_set_partition_number=None,
             list_of_tag=None,
             auto_renew_period=None,
-            cpu_options_core=None,
             period=None,
             dry_run=None,
             launch_template_id=None,
             ipv6_address_count=None,
-            cpu_options_numa=None,
             owner_id=None,
             capacity_reservation_preference=None,
             vswitch_id=None,
@@ -2379,7 +2374,6 @@ class EcsClient(AlibabaCloudClient):
             security_group_id=None,
             internet_max_bandwidth_out=None,
             description=None,
-            cpu_options_threads_per_core=None,
             system_disk_category=None,
             capacity_reservation_id=None,
             system_disk_performance_level=None,
@@ -2401,7 +2395,6 @@ class EcsClient(AlibabaCloudClient):
             dedicated_host_id=None,
             credit_specification=None,
             list_of_security_group_ids=None,
-            spot_duration=None,
             list_of_data_disk=None,
             launch_template_version=None,
             storage_set_id=None,
@@ -2415,6 +2408,7 @@ class EcsClient(AlibabaCloudClient):
             "HpcClusterId": hpc_cluster_id,
             "SecurityEnhancementStrategy": security_enhancement_strategy,
             "KeyPairName": key_pair_name,
+            "MinAmount": min_amount,
             "SpotPriceLimit": spot_price_limit,
             "DeletionProtection": deletion_protection,
             "ResourceGroupId": resource_group_id,
@@ -2423,12 +2417,10 @@ class EcsClient(AlibabaCloudClient):
             "StorageSetPartitionNumber": storage_set_partition_number,
             "Tag": list_of_tag,
             "AutoRenewPeriod": auto_renew_period,
-            "CpuOptions.Core": cpu_options_core,
             "Period": period,
             "DryRun": dry_run,
             "LaunchTemplateId": launch_template_id,
             "Ipv6AddressCount": ipv6_address_count,
-            "CpuOptions.Numa": cpu_options_numa,
             "OwnerId": owner_id,
             "CapacityReservationPreference": capacity_reservation_preference,
             "VSwitchId": vswitch_id,
@@ -2449,7 +2441,6 @@ class EcsClient(AlibabaCloudClient):
             "SecurityGroupId": security_group_id,
             "InternetMaxBandwidthOut": internet_max_bandwidth_out,
             "Description": description,
-            "CpuOptions.ThreadsPerCore": cpu_options_threads_per_core,
             "SystemDisk.Category": system_disk_category,
             "CapacityReservationId": capacity_reservation_id,
             "SystemDisk.PerformanceLevel": system_disk_performance_level,
@@ -2471,7 +2462,6 @@ class EcsClient(AlibabaCloudClient):
             "DedicatedHostId": dedicated_host_id,
             "CreditSpecification": credit_specification,
             "SecurityGroupIds": list_of_security_group_ids,
-            "SpotDuration": spot_duration,
             "DataDisk": list_of_data_disk,
             "LaunchTemplateVersion": launch_template_version,
             "StorageSetId": storage_set_id,
@@ -2481,14 +2471,12 @@ class EcsClient(AlibabaCloudClient):
                                                        ('Value', 'str', None, None),
                                                        ]),
                        "Ipv6Address": ('Ipv6Address', 'list', 'str', None),
-                       "NetworkInterface": (
-                       'NetworkInterface', 'list', 'dict', [('PrimaryIpAddress', 'str', None, None),
-                                                            ('VSwitchId', 'str', None, None),
-                                                            ('SecurityGroupId', 'str', None, None),
-                                                            ('NetworkInterfaceName', 'str', None,
-                                                             None),
-                                                            ('Description', 'str', None, None),
-                                                            ]),
+                       "NetworkInterface": ('NetworkInterface', 'list', 'dict', [('PrimaryIpAddress', 'str', None, None),
+                                                                                 ('VSwitchId', 'str', None, None),
+                                                                                 ('SecurityGroupId', 'str', None, None),
+                                                                                 ('NetworkInterfaceName', 'str', None, None),
+                                                                                 ('Description', 'str', None, None),
+                                                                                 ]),
                        "SecurityGroupIds": ('SecurityGroupIds', 'list', 'str', None),
                        "DataDisk": ('DataDisk', 'list', 'dict', [('Size', 'str', None, None),
                                                                  ('SnapshotId', 'str', None, None),
@@ -2498,10 +2486,8 @@ class EcsClient(AlibabaCloudClient):
                                                                  ('DiskName', 'str', None, None),
                                                                  ('Description', 'str', None, None),
                                                                  ('Device', 'str', None, None),
-                                                                 ('DeleteWithInstance', 'str', None,
-                                                                  None),
-                                                                 ('PerformanceLevel', 'str', None,
-                                                                  None),
+                                                                 ('DeleteWithInstance', 'str', None, None),
+                                                                 ('PerformanceLevel', 'str', None, None),
                                                                  ]),
                        }
         verify_params(api_request._params, repeat_info)
@@ -4186,8 +4172,7 @@ class EcsClient(AlibabaCloudClient):
         repeat_info = {
             "BandwidthPackage": (
                 'BandwidthPackage', 'list', 'dict', [
-                    ('Bandwidth', 'str', None, None), ('Zone', 'str', None, None),
-                    ('IpCount', 'str', None, None), ]), }
+                    ('Bandwidth', 'str', None, None), ('Zone', 'str', None, None), ('IpCount', 'str', None, None), ]), }
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
@@ -4868,6 +4853,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             list_of_disk_device_mapping=None,
             resource_owner_id=None,
+            license_type=None,
             resource_owner_account=None,
             role_name=None,
             description=None,
@@ -4881,6 +4867,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "DiskDeviceMapping": list_of_disk_device_mapping,
             "ResourceOwnerId": resource_owner_id,
+            "LicenseType": license_type,
             "ResourceOwnerAccount": resource_owner_account,
             "RoleName": role_name,
             "Description": description,
@@ -4901,22 +4888,22 @@ class EcsClient(AlibabaCloudClient):
                                                'str',
                                                None,
                                                None),
-                                              ('Format',
-                                               'str',
-                                               None,
-                                               None),
-                                              ('Device',
-                                               'str',
-                                               None,
-                                               None),
-                                              ('OSSObject',
-                                               'str',
-                                               None,
-                                               None),
-                                              ('DiskImageSize',
-                                               'str',
-                                               None,
-                                               None),
+                                                 ('Format',
+                                                  'str',
+                                                  None,
+                                                  None),
+                                                 ('Device',
+                                                  'str',
+                                                  None,
+                                                  None),
+                                                 ('OSSObject',
+                                                  'str',
+                                                  None,
+                                                  None),
+                                                 ('DiskImageSize',
+                                                  'str',
+                                                  None,
+                                                  None),
                                               ]),
                        }
         verify_params(api_request._params, repeat_info)
@@ -7285,14 +7272,11 @@ class EcsClient(AlibabaCloudClient):
             client_token=None,
             owner_account=None,
             description=None,
-            snapshot_name=None,
-            owner_id=None,
-            source_snapshot_id=None,
-            remove_source_snapshot=None,
             disk_id=None,
+            snapshot_name=None,
             retention_days=None,
             list_of_tag=None,
-            category=None):
+            owner_id=None):
         api_request = APIRequest('CreateSnapshot', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
@@ -7300,14 +7284,11 @@ class EcsClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "Description": description,
-            "SnapshotName": snapshot_name,
-            "OwnerId": owner_id,
-            "SourceSnapshotId": source_snapshot_id,
-            "RemoveSourceSnapshot": remove_source_snapshot,
             "DiskId": disk_id,
+            "SnapshotName": snapshot_name,
             "RetentionDays": retention_days,
             "Tag": list_of_tag,
-            "Category": category}
+            "OwnerId": owner_id}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
                                                        ]),
@@ -7516,14 +7497,12 @@ class EcsClient(AlibabaCloudClient):
                                                                  ('SnapshotId', 'str', None, None),
                                                                  ('Size', 'str', None, None),
                                                                  ('Encrypted', 'str', None, None),
-                                                                 ('PerformanceLevel', 'str', None,
-                                                                  None),
+                                                                 ('PerformanceLevel', 'str', None, None),
                                                                  ('Description', 'str', None, None),
                                                                  ('Category', 'str', None, None),
                                                                  ('KMSKeyId', 'str', None, None),
                                                                  ('Device', 'str', None, None),
-                                                                 ('DeleteWithInstance', 'str', None,
-                                                                  None),
+                                                                 ('DeleteWithInstance', 'str', None, None),
                                                                  ]),
                        }
         verify_params(api_request._params, repeat_info)
@@ -7565,12 +7544,11 @@ class EcsClient(AlibabaCloudClient):
             "ImageVersion": image_version,
             "Tag": list_of_tag,
             "Architecture": architecture}
-        repeat_info = {"DiskDeviceMapping": (
-        'DiskDeviceMapping', 'list', 'dict', [('SnapshotId', 'str', None, None),
-                                              ('Size', 'str', None, None),
-                                              ('DiskType', 'str', None, None),
-                                              ('Device', 'str', None, None),
-                                              ]),
+        repeat_info = {"DiskDeviceMapping": ('DiskDeviceMapping', 'list', 'dict', [('SnapshotId', 'str', None, None),
+                                                                                   ('Size', 'str', None, None),
+                                                                                   ('DiskType', 'str', None, None),
+                                                                                   ('Device', 'str', None, None),
+                                                                                   ]),
                        "Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
                                                        ]),
