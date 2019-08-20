@@ -1,4 +1,4 @@
-from alibabacloud.clients.eci_20180808 import EciClient
+# from alibabacloud.clients.eci_20180808 import EciClient
 from alibabacloud.clients.ecs_20140526 import EcsClient
 from alibabacloud.clients.edas_20170801 import EdasClient
 from alibabacloud.clients.linkwan_20181230 import LinkWANClient
@@ -45,23 +45,6 @@ class GenTestBase(SDKTestBase):
             else:
                 self.assertEqual(e.error_message,
                                  "Parameter validation failed: Invalid type for parameter Tag, value: hi, type: <class 'str'>, valid types: <class 'list'>")
-
-    def test_rpc_query_get1(self):
-        # TODO
-        ecs_client = EciClient(self.client_config, self.init_credentials_provider())
-        # tag = []
-        tag = ['hi', ]
-        try:
-            context = ecs_client.describe_container_groups(list_of_tag=tag)
-            assert False
-        except ParamValidationException as e:
-            if six.PY2:
-                self.assertEqual(e.error_message,
-                                 "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <type 'str'>, valid types: <type 'dict'>")
-
-            else:
-                self.assertEqual(e.error_message,
-                                 "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
 
     def test_rpc_body_get(self):
 

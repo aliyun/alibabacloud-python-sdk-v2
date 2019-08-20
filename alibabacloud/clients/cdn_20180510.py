@@ -27,7 +27,7 @@ class CdnClient(AlibabaCloudClient):
                                     endpoint_resolver=endpoint_resolver)
         self.product_code = 'Cdn'
         self.api_version = '2018-05-10'
-        self.location_service_code = 'None'
+        self.location_service_code = 'cdn'
         self.location_endpoint_type = 'openAPI'
 
     def describe_domain_qps_data_by_layer(
@@ -93,9 +93,75 @@ class CdnClient(AlibabaCloudClient):
         api_request._params = {"OwnerId": owner_id, "SSLPub": ssl_pub}
         return self._handle_request(api_request).result
 
-    def describe_user_cdn_status(self, security_token=None, owner_id=None):
-        api_request = APIRequest('DescribeUserCdnStatus', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {"SecurityToken": security_token, "OwnerId": owner_id}
+    def tag_resources(
+            self,
+            region_id=None,
+            list_of_tag=None,
+            list_of_resource_id=None,
+            owner_id=None,
+            resource_type=None):
+        api_request = APIRequest('TagResources', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "RegionId": region_id,
+            "Tag": list_of_tag,
+            "ResourceId": list_of_resource_id,
+            "OwnerId": owner_id,
+            "ResourceType": resource_type}
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "ResourceId": ('ResourceId', 'list', 'str', None),
+                       }
+        verify_params(api_request._params, repeat_info)
+        return self._handle_request(api_request).result
+
+    def describe_user_tags(self, owner_id=None):
+        api_request = APIRequest('DescribeUserTags', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {"OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def describe_tag_resources(
+            self,
+            region_id=None,
+            scope=None,
+            list_of_tag=None,
+            list_of_resource_id=None,
+            owner_id=None,
+            resource_type=None):
+        api_request = APIRequest('DescribeTagResources', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "RegionId": region_id,
+            "Scope": scope,
+            "Tag": list_of_tag,
+            "ResourceId": list_of_resource_id,
+            "OwnerId": owner_id,
+            "ResourceType": resource_type}
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "ResourceId": ('ResourceId', 'list', 'str', None),
+                       }
+        verify_params(api_request._params, repeat_info)
+        return self._handle_request(api_request).result
+
+    def untag_resources(
+            self,
+            region_id=None,
+            list_of_resource_id=None,
+            owner_id=None,
+            resource_type=None,
+            list_of_tag_key=None):
+        api_request = APIRequest('UntagResources', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "RegionId": region_id,
+            "ResourceId": list_of_resource_id,
+            "OwnerId": owner_id,
+            "ResourceType": resource_type,
+            "TagKey": list_of_tag_key}
+        repeat_info = {"ResourceId": ('ResourceId', 'list', 'str', None),
+                       "TagKey": ('TagKey', 'list', 'str', None),
+                       }
+        verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
     def batch_set_cdn_domain_server_certificate(
@@ -956,6 +1022,14 @@ class CdnClient(AlibabaCloudClient):
             "Interval": interval}
         return self._handle_request(api_request).result
 
+    def batch_start_cdn_domain(self, security_token=None, domain_names=None, owner_id=None):
+        api_request = APIRequest('BatchStartCdnDomain', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "SecurityToken": security_token,
+            "DomainNames": domain_names,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
     def modify_file_cache_expired_config(
             self,
             security_token=None,
@@ -1239,6 +1313,14 @@ class CdnClient(AlibabaCloudClient):
             "DomainName": domain_name,
             "EndTime": end_time,
             "StartTime": start_time,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def batch_stop_cdn_domain(self, security_token=None, domain_names=None, owner_id=None):
+        api_request = APIRequest('BatchStopCdnDomain', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "SecurityToken": security_token,
+            "DomainNames": domain_names,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
