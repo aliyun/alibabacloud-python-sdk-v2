@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # -*- coding: utf-8 -*-
-import logging
-
 __version__ = '1.0.1'
 
+import logging
 
 from alibabacloud.client import ClientConfig
 from alibabacloud.exceptions import ClientException
