@@ -16,7 +16,6 @@ __version__ = '1.0.2'
 
 import logging
 
-
 from alibabacloud.client import ClientConfig
 from alibabacloud.exceptions import ClientException
 from alibabacloud.exceptions import NoModuleException, ServiceNameInvalidException, \
