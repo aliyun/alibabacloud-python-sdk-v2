@@ -65,6 +65,10 @@ class ECSInstanceResource(_ECSInstanceResource):
     def modify_attributes(self, **params):
         self.modify_attribute(**params)
 
+    def delete(self, **params):
+        _params = _transfer_params(params)
+        self._client.delete_instance(instance_id=self.instance_id, **_params)
+
     @transfer({"Tags": "list_of_tag", })
     def refresh(self):
         result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id, ]))

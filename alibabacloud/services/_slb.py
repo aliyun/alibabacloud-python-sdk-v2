@@ -575,30 +575,30 @@ class _SLBVServerGroupResource(ServiceResource):
     def add_vserver_group_backend_servers(self, **params):
         _params = _transfer_params(params)
         self._client.add_vserver_group_backend_servers(
-            vserver_group_id=self.v_server_group_id, **_params)
+            vserver_group_id=self.vserver_group_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_vserver_group(vserver_group_id=self.v_server_group_id, **_params)
+        self._client.delete_vserver_group(vserver_group_id=self.vserver_group_id, **_params)
 
     def describe_vserver_group_attribute(self, **params):
         _params = _transfer_params(params)
         self._client.describe_vserver_group_attribute(
-            vserver_group_id=self.v_server_group_id, **_params)
+            vserver_group_id=self.vserver_group_id, **_params)
 
     def modify_backend_servers(self, **params):
         _params = _transfer_params(params)
         self._client.modify_vserver_group_backend_servers(
-            vserver_group_id=self.v_server_group_id, **_params)
+            vserver_group_id=self.vserver_group_id, **_params)
 
     def remove_vserver_group_backend_servers(self, **params):
         _params = _transfer_params(params)
         self._client.remove_vserver_group_backend_servers(
-            vserver_group_id=self.v_server_group_id, **_params)
+            vserver_group_id=self.vserver_group_id, **_params)
 
     def set_vserver_group_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.set_vserver_group_attribute(vserver_group_id=self.v_server_group_id, **_params)
+        self._client.set_vserver_group_attribute(vserver_group_id=self.vserver_group_id, **_params)
 
 
 class _SLBZoneResource(ServiceResource):
