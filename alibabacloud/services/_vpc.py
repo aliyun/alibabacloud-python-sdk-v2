@@ -1336,7 +1336,7 @@ class _VPCVRouterResource(ServiceResource):
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_vrouter_attribute(vrouter_id=self.v_router_id, **_params)
+        self._client.modify_vrouter_attribute(vrouter_id=self.vrouter_id, **_params)
 
     def refresh(self):
         result = self._client.describe_vrouters(vrouter_id=self.vrouter_id)
@@ -1367,15 +1367,15 @@ class _VPCVSwitchResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_vswitch(vswitch_id=self.v_switch_id, **_params)
+        self._client.delete_vswitch(vswitch_id=self.vswitch_id, **_params)
 
     def describe_vswitch_attributes(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_vswitch_attributes(vswitch_id=self.v_switch_id, **_params)
+        self._client.describe_vswitch_attributes(vswitch_id=self.vswitch_id, **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_vswitch_attribute(vswitch_id=self.v_switch_id, **_params)
+        self._client.modify_vswitch_attribute(vswitch_id=self.vswitch_id, **_params)
 
     def refresh(self):
         result = self._client.describe_vswitches(vswitch_id=self.vswitch_id)
