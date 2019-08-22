@@ -30,8 +30,9 @@ class _CDNResource(ServiceResource):
         ServiceResource.__init__(self, 'cdn', _client=_client)
         self.fc_triggers = _create_special_resource_collection(
             _CDNFCTriggerResource, _client, _client.list_fc_trigger,
-            'FCTriggers.FCTrigger', 'FCTriggerName', 
+            'FCTriggers.FCTrigger', 'FCTriggerName',
         )
+
     def add_cdn_domain(self, **params):
         _params = _transfer_params(params)
         self._client.add_cdn_domain(**_params)
@@ -50,12 +51,12 @@ class _CDNResource(ServiceResource):
         task_id = _new_get_key_in_response(response, 'TaskId')
         return _CDNUserUsageDataExportTaskResource(task_id, _client=self._client)
 
+
 class _CDNCdnDomainResource(ServiceResource):
 
     def __init__(self, cdn_domain_name, _client=None):
         ServiceResource.__init__(self, "cdn.cdn_domain", _client=_client)
         self.cdn_domain_name = cdn_domain_name
-        
 
     def batch_add(self, **params):
         _params = _transfer_params(params)
@@ -71,7 +72,8 @@ class _CDNCdnDomainResource(ServiceResource):
 
     def batch_set_cdn_domain_server_certificate(self, **params):
         _params = _transfer_params(params)
-        self._client.batch_set_cdn_domain_server_certificate(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.batch_set_cdn_domain_server_certificate(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def batch_update(self, **params):
         _params = _transfer_params(params)
@@ -79,7 +81,8 @@ class _CDNCdnDomainResource(ServiceResource):
 
     def describe_range_data_by_locate_and_isp_service(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_range_data_by_locate_and_isp_service(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_range_data_by_locate_and_isp_service(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -107,11 +110,13 @@ class _CDNCdnDomainResource(ServiceResource):
 
     def describe_domain_bps_data_by_time_stamp(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_bps_data_by_time_stamp(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_bps_data_by_time_stamp(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_certificate_info(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_certificate_info(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_certificate_info(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_cname(self, **params):
         _params = _transfer_params(params)
@@ -119,11 +124,13 @@ class _CDNCdnDomainResource(ServiceResource):
 
     def describe_domain_custom_log_config(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_custom_log_config(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_custom_log_config(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_file_size_proportion_data(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_file_size_proportion_data(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_file_size_proportion_data(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_path_data(self, **params):
         _params = _transfer_params(params)
@@ -135,35 +142,43 @@ class _CDNCdnDomainResource(ServiceResource):
 
     def describe_domain_real_time_bps_data(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_real_time_bps_data(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_real_time_bps_data(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_real_time_byte_hit_rate_data(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_real_time_byte_hit_rate_data(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_real_time_byte_hit_rate_data(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_real_time_http_code_data(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_real_time_http_code_data(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_real_time_http_code_data(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_real_time_qps_data(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_real_time_qps_data(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_real_time_qps_data(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_real_time_req_hit_rate_data(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_real_time_req_hit_rate_data(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_real_time_req_hit_rate_data(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_real_time_src_bps_data(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_real_time_src_bps_data(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_real_time_src_bps_data(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_real_time_src_traffic_data(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_real_time_src_traffic_data(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_real_time_src_traffic_data(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_top_refer_visit(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_domain_top_refer_visit(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.describe_domain_top_refer_visit(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def describe_domain_top_url_visit(self, **params):
         _params = _transfer_params(params)
@@ -183,11 +198,13 @@ class _CDNCdnDomainResource(ServiceResource):
 
     def modify_domain_custom_log_config(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_domain_custom_log_config(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.modify_domain_custom_log_config(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def modify_file_cache_expired_config(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_file_cache_expired_config(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.modify_file_cache_expired_config(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def modify_http_header_config(self, **params):
         _params = _transfer_params(params)
@@ -195,7 +212,8 @@ class _CDNCdnDomainResource(ServiceResource):
 
     def modify_schdm_by_property(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_cdn_domain_schdm_by_property(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.modify_cdn_domain_schdm_by_property(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def set_cc_config(self, **params):
         _params = _transfer_params(params)
@@ -203,7 +221,8 @@ class _CDNCdnDomainResource(ServiceResource):
 
     def set_domain_green_manager_config(self, **params):
         _params = _transfer_params(params)
-        self._client.set_domain_green_manager_config(cdn_domain_name=self.cdn_domain_name, **_params)
+        self._client.set_domain_green_manager_config(
+            cdn_domain_name=self.cdn_domain_name, **_params)
 
     def set_domain_server_certificate(self, **params):
         _params = _transfer_params(params)
@@ -305,12 +324,13 @@ class _CDNCdnDomainResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.stop_cdn_domain(cdn_domain_name=self.cdn_domain_name, **_params)
 
+
 class _CDNFCTriggerResource(ServiceResource):
 
     def __init__(self, fc_trigger_name, _client=None):
         ServiceResource.__init__(self, "cdn.fc_trigger", _client=_client)
         self.fc_trigger_name = fc_trigger_name
-        
+
         self.event_meta_name = None
         self.event_meta_version = None
         self.notes = None
@@ -330,12 +350,12 @@ class _CDNFCTriggerResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.update_fc_trigger(fc_trigger_name=self.fc_trigger_name, **_params)
 
+
 class _CDNUserUsageDataExportTaskResource(ServiceResource):
 
     def __init__(self, task_id, _client=None):
         ServiceResource.__init__(self, "cdn.user_usage_data_export_task", _client=_client)
         self.task_id = task_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)

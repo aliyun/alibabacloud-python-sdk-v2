@@ -30,20 +30,21 @@ class _ENSResource(ServiceResource):
         ServiceResource.__init__(self, 'ens', _client=_client)
         self.ens_regions = _create_special_resource_collection(
             _ENSEnsRegionResource, _client, _client.describe_ens_regions,
-            'EnsRegions.EnsRegions', 'EnsRegionId', 
+            'EnsRegions.EnsRegions', 'EnsRegionId',
         )
         self.images = _create_resource_collection(
             _ENSImageResource, _client, _client.describe_images,
-            'Images.Image', 'ImageId', 
+            'Images.Image', 'ImageId',
         )
         self.instances = _create_resource_collection(
             _ENSInstanceResource, _client, _client.describe_instances,
-            'Instances.Instance', 'InstanceId', 
+            'Instances.Instance', 'InstanceId',
         )
         self.instance_types = _create_special_resource_collection(
             _ENSInstanceTypeResource, _client, _client.describe_instance_types,
-            'InstanceTypes.InstanceType', 'InstanceTypeId', 
+            'InstanceTypes.InstanceType', 'InstanceTypeId',
         )
+
     def create_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_instance(**_params)
@@ -54,12 +55,13 @@ class _ENSResource(ServiceResource):
             instances.append(instance)
         return instances
 
+
 class _ENSEnsRegionResource(ServiceResource):
 
     def __init__(self, ens_region_id, _client=None):
         ServiceResource.__init__(self, "ens.ens_region", _client=_client)
         self.ens_region_id = ens_region_id
-        
+
         self.area = None
         self.en_name = None
         self.name = None
@@ -69,17 +71,19 @@ class _ENSEnsRegionResource(ServiceResource):
         result = self._client.describe_ens_regions(ens_region_id=self.ens_region_id)
         items = _new_get_key_in_response(result, 'EnsRegions.EnsRegions')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find ens_region data from DescribeEnsRegions response. "
-                                  "EnsRegionId = {0}".format(self.ens_region_id))
+            raise ClientException(
+                msg="Failed to find ens_region data from DescribeEnsRegions response. "
+                "EnsRegionId = {0}".format(
+                    self.ens_region_id))
         self._assign_attributes(items[0])
+
 
 class _ENSImageResource(ServiceResource):
 
     def __init__(self, image_id, _client=None):
         ServiceResource.__init__(self, "ens.image", _client=_client)
         self.image_id = image_id
-        
+
         self.architecture = None
         self.creation_time = None
         self.description = None
@@ -112,17 +116,17 @@ class _ENSImageResource(ServiceResource):
         result = self._client.describe_images(image_id=self.image_id)
         items = _new_get_key_in_response(result, 'Images.Image')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find image data from DescribeImages response. "
+            raise ClientException(msg="Failed to find image data from DescribeImages response. "
                                   "ImageId = {0}".format(self.image_id))
         self._assign_attributes(items[0])
+
 
 class _ENSInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "ens.instance", _client=_client)
         self.instance_id = instance_id
-        
+
         self.auto_release_time = None
         self.cluster_id = None
         self.cpu = None
@@ -199,9 +203,10 @@ class _ENSInstanceResource(ServiceResource):
         result = self._client.describe_instances(instance_ids=self.instance_id)
         items = _new_get_key_in_response(result, 'Instances.Instance')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find instance data from DescribeInstances response. "
-                                  "InstanceId = {0}".format(self.instance_id))
+            raise ClientException(
+                msg="Failed to find instance data from DescribeInstances response. "
+                "InstanceId = {0}".format(
+                    self.instance_id))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_status, timeout=120):
@@ -217,12 +222,13 @@ class _ENSInstanceResource(ServiceResource):
                 return
             time.sleep(1)
 
+
 class _ENSInstanceTypeResource(ServiceResource):
 
     def __init__(self, instance_type_id, _client=None):
         ServiceResource.__init__(self, "ens.instance_type", _client=_client)
         self.instance_type_id = instance_type_id
-        
+
         self.baseline_credit = None
         self.cpu_core_count = None
         self.eni_private_ip_address_quantity = None

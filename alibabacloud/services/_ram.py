@@ -30,20 +30,21 @@ class _RAMResource(ServiceResource):
         ServiceResource.__init__(self, 'ram', _client=_client)
         self.groups = _create_special_resource_collection(
             _RAMGroupResource, _client, _client.list_groups,
-            'Groups.Group', 'GroupName', 
+            'Groups.Group', 'GroupName',
         )
         self.policies = _create_special_resource_collection(
             _RAMPolicyResource, _client, _client.list_policies,
-            'Policies.Policy', 'PolicyName', 
+            'Policies.Policy', 'PolicyName',
         )
         self.roles = _create_special_resource_collection(
             _RAMRoleResource, _client, _client.list_roles,
-            'Roles.Role', 'RoleName', 
+            'Roles.Role', 'RoleName',
         )
         self.users = _create_special_resource_collection(
             _RAMUserResource, _client, _client.list_users,
-            'Users.User', 'UserName', 
+            'Users.User', 'UserName',
         )
+
     def create_group(self, **params):
         _params = _transfer_params(params)
         self._client.create_group(**_params)
@@ -74,12 +75,13 @@ class _RAMResource(ServiceResource):
         virtual_mfa_device_name = _params.get("virtual_mfa_device_name")
         return _RAMVirtualMFADeviceResource(virtual_mfa_device_name, _client=self._client)
 
+
 class _RAMGroupResource(ServiceResource):
 
     def __init__(self, group_name, _client=None):
         ServiceResource.__init__(self, "ram.group", _client=_client)
         self.group_name = group_name
-        
+
         self.comments = None
         self.create_date = None
         self.update_date = None
@@ -108,17 +110,17 @@ class _RAMGroupResource(ServiceResource):
         result = self._client.get_group(group_name=self.group_name)
         items = _new_get_key_in_response(result, 'Group')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find group data from GetGroup response. "
+            raise ClientException(msg="Failed to find group data from GetGroup response. "
                                   "GroupName = {0}".format(self.group_name))
         self._assign_attributes(items[0])
+
 
 class _RAMPolicyResource(ServiceResource):
 
     def __init__(self, policy_name, _client=None):
         ServiceResource.__init__(self, "ram.policy", _client=_client)
         self.policy_name = policy_name
-        
+
         self.attachment_count = None
         self.create_date = None
         self.default_version = None
@@ -187,17 +189,17 @@ class _RAMPolicyResource(ServiceResource):
         result = self._client.get_policy(policy_name=self.policy_name)
         items = _new_get_key_in_response(result, 'Policy')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find policy data from GetPolicy response. "
+            raise ClientException(msg="Failed to find policy data from GetPolicy response. "
                                   "PolicyName = {0}".format(self.policy_name))
         self._assign_attributes(items[0])
+
 
 class _RAMRoleResource(ServiceResource):
 
     def __init__(self, role_name, _client=None):
         ServiceResource.__init__(self, "ram.role", _client=_client)
         self.role_name = role_name
-        
+
         self.arn = None
         self.create_date = None
         self.description = None
@@ -224,17 +226,17 @@ class _RAMRoleResource(ServiceResource):
         result = self._client.get_role(role_name=self.role_name)
         items = _new_get_key_in_response(result, 'Role')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find role data from GetRole response. "
+            raise ClientException(msg="Failed to find role data from GetRole response. "
                                   "RoleName = {0}".format(self.role_name))
         self._assign_attributes(items[0])
+
 
 class _RAMUserResource(ServiceResource):
 
     def __init__(self, user_name, _client=None):
         ServiceResource.__init__(self, "ram.user", _client=_client)
         self.user_name = user_name
-        
+
         self.comments = None
         self.create_date = None
         self.display_name = None
@@ -326,14 +328,14 @@ class _RAMUserResource(ServiceResource):
         result = self._client.get_user(user_name=self.user_name)
         items = _new_get_key_in_response(result, 'User')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find user data from GetUser response. "
+            raise ClientException(msg="Failed to find user data from GetUser response. "
                                   "UserName = {0}".format(self.user_name))
         self._assign_attributes(items)
+
 
 class _RAMVirtualMFADeviceResource(ServiceResource):
 
     def __init__(self, virtual_mfa_device_name, _client=None):
         ServiceResource.__init__(self, "ram.virtual_mfa_device", _client=_client)
         self.virtual_mfa_device_name = virtual_mfa_device_name
-        
+

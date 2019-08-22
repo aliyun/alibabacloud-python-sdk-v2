@@ -29,8 +29,7 @@ class VPCEipAddressResource(_VPCEipAddressResource):
         response = self._client.describe_eip_addresses(allocation_id=self.allocation_id)
         items = _new_get_key_in_response(response, 'EipAddresses.EipAddress')
         if not items:
-            raise ClientException(msg=
-                                  "Failed to find EIP Address data from DescribeEipAddresses "
+            raise ClientException(msg="Failed to find EIP Address data from DescribeEipAddresses "
                                   "response. "
                                   "AllocationId = {0}".format(self.allocation_id))
         self._assign_attributes(items[0])
