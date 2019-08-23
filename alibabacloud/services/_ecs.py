@@ -12,16 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import time
 
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _ECSResource(ServiceResource):
@@ -101,12 +98,11 @@ class _ECSResource(ServiceResource):
             'NetworkInterfaceSets.NetworkInterfaceSet', 'NetworkInterfaceId',
         )
         self.network_interface_permissions = _create_resource_collection(
-            _ECSNetworkInterfacePermissionResource,
-            _client,
+            _ECSNetworkInterfacePermissionResource, _client,
             _client.describe_network_interface_permissions,
             'NetworkInterfacePermissions.NetworkInterfacePermission',
             'NetworkInterfacePermissionId',
-            )
+        )
         self.physical_connections = _create_resource_collection(
             _ECSPhysicalConnectionResource, _client, _client.describe_physical_connections,
             'PhysicalConnectionSet.PhysicalConnectionType', 'PhysicalConnectionId',
@@ -193,8 +189,8 @@ class _ECSResource(ServiceResource):
     def allocate_dedicated_hosts(self, **params):
         _params = _transfer_params(params)
         response = self._client.allocate_dedicated_hosts(**_params)
-        dedicated_host_ids = _new_get_key_in_response(
-            response, 'DedicatedHostIdSets.DedicatedHostId')
+        dedicated_host_ids = _new_get_key_in_response(response,
+                                                      'DedicatedHostIdSets.DedicatedHostId')
         dedicated_hosts = []
         for dedicated_host_id in dedicated_host_ids:
             dedicated_host = _ECSDedicatedHostResource(dedicated_host_id, _client=self._client)
@@ -401,13 +397,13 @@ class _ECSAutoProvisioningGroupResource(ServiceResource):
 
     def refresh(self):
         result = self._client.describe_auto_provisioning_groups(
-            list_of_auto_provisioning_group_id=[self.auto_provisioning_group_id,])
+            list_of_auto_provisioning_group_id=[self.auto_provisioning_group_id, ])
         items = _new_get_key_in_response(result, 'AutoProvisioningGroups.AutoProvisioningGroup')
         if not items:
-            raise ClientException(
-                msg="Failed to find auto_provisioning_group data from DescribeAutoProvisioningGroups response. "
-                "AutoProvisioningGroupId = {0}".format(
-                    self.auto_provisioning_group_id))
+            raise ClientException(msg=
+                                  "Failed to find auto_provisioning_group data from DescribeAutoProvisioningGroups response. "
+                                  "AutoProvisioningGroupId = {0}".format(
+                                      self.auto_provisioning_group_id))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_status, timeout=120):
@@ -469,33 +465,32 @@ class _ECSBandwidthPackageResource(ServiceResource):
 
     def add_bandwidth_package_ips(self, **params):
         _params = _transfer_params(params)
-        self._client.add_bandwidth_package_ips(
-            bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.add_bandwidth_package_ips(bandwidth_package_id=self.bandwidth_package_id,
+                                               **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_bandwidth_package(
-            bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.delete_bandwidth_package(bandwidth_package_id=self.bandwidth_package_id,
+                                              **_params)
 
     def modify_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_bandwidth_package_spec(
-            bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.modify_bandwidth_package_spec(bandwidth_package_id=self.bandwidth_package_id,
+                                                   **_params)
 
     def remove_bandwidth_package_ips(self, **params):
         _params = _transfer_params(params)
-        self._client.remove_bandwidth_package_ips(
-            bandwidth_package_id=self.bandwidth_package_id, **_params)
+        self._client.remove_bandwidth_package_ips(bandwidth_package_id=self.bandwidth_package_id,
+                                                  **_params)
 
     def refresh(self):
         result = self._client.describe_bandwidth_packages(
             bandwidth_package_id=self.bandwidth_package_id)
         items = _new_get_key_in_response(result, 'BandwidthPackages.BandwidthPackage')
         if not items:
-            raise ClientException(
-                msg="Failed to find bandwidth_package data from DescribeBandwidthPackages response. "
-                "BandwidthPackageId = {0}".format(
-                    self.bandwidth_package_id))
+            raise ClientException(msg=
+                                  "Failed to find bandwidth_package data from DescribeBandwidthPackages response. "
+                                  "BandwidthPackageId = {0}".format(self.bandwidth_package_id))
         self._assign_attributes(items[0])
 
 
@@ -538,7 +533,8 @@ class _ECSCommandResource(ServiceResource):
         result = self._client.describe_commands(command_id=self.command_id)
         items = _new_get_key_in_response(result, 'Commands.Command')
         if not items:
-            raise ClientException(msg="Failed to find command data from DescribeCommands response. "
+            raise ClientException(msg=
+                                  "Failed to find command data from DescribeCommands response. "
                                   "CommandId = {0}".format(self.command_id))
         self._assign_attributes(items[0])
 
@@ -587,8 +583,8 @@ class _ECSDedicatedHostResource(ServiceResource):
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_dedicated_host_attribute(
-            dedicated_host_id=self.dedicated_host_id, **_params)
+        self._client.modify_dedicated_host_attribute(dedicated_host_id=self.dedicated_host_id,
+                                                     **_params)
 
     def modify_auto_release_time(self, **params):
         _params = _transfer_params(params)
@@ -603,10 +599,9 @@ class _ECSDedicatedHostResource(ServiceResource):
         result = self._client.describe_dedicated_hosts(dedicated_host_ids=self.dedicated_host_id)
         items = _new_get_key_in_response(result, 'DedicatedHosts.DedicatedHost')
         if not items:
-            raise ClientException(
-                msg="Failed to find dedicated_host data from DescribeDedicatedHosts response. "
-                "DedicatedHostId = {0}".format(
-                    self.dedicated_host_id))
+            raise ClientException(msg=
+                                  "Failed to find dedicated_host data from DescribeDedicatedHosts response. "
+                                  "DedicatedHostId = {0}".format(self.dedicated_host_id))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_status, timeout=120):
@@ -645,17 +640,16 @@ class _ECSDeploymentSetResource(ServiceResource):
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_deployment_set_attribute(
-            deployment_set_id=self.deployment_set_id, **_params)
+        self._client.modify_deployment_set_attribute(deployment_set_id=self.deployment_set_id,
+                                                     **_params)
 
     def refresh(self):
         result = self._client.describe_deployment_sets(deployment_set_ids=self.deployment_set_id)
         items = _new_get_key_in_response(result, 'DeploymentSets.DeploymentSet')
         if not items:
-            raise ClientException(
-                msg="Failed to find deployment_set data from DescribeDeploymentSets response. "
-                "DeploymentSetId = {0}".format(
-                    self.deployment_set_id))
+            raise ClientException(msg=
+                                  "Failed to find deployment_set data from DescribeDeploymentSets response. "
+                                  "DeploymentSetId = {0}".format(self.deployment_set_id))
         self._assign_attributes(items[0])
 
 
@@ -748,7 +742,8 @@ class _ECSDiskResource(ServiceResource):
         result = self._client.describe_disks(disk_ids=self.disk_id)
         items = _new_get_key_in_response(result, 'Disks.Disk')
         if not items:
-            raise ClientException(msg="Failed to find disk data from DescribeDisks response. "
+            raise ClientException(msg=
+                                  "Failed to find disk data from DescribeDisks response. "
                                   "DiskId = {0}".format(self.disk_id))
         self._assign_attributes(items[0])
 
@@ -778,8 +773,8 @@ class _ECSEipAddressResource(ServiceResource):
 
     def describe_new_project_eip_monitor_data(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_new_project_eip_monitor_data(
-            allocation_id=self.allocation_id, **_params)
+        self._client.describe_new_project_eip_monitor_data(allocation_id=self.allocation_id,
+                                                           **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
@@ -801,10 +796,9 @@ class _ECSEipAddressResource(ServiceResource):
         result = self._client.describe_eip_addresses(allocation_id=self.allocation_id)
         items = _new_get_key_in_response(result, 'EipAddresses.EipAddress')
         if not items:
-            raise ClientException(
-                msg="Failed to find eip_address data from DescribeEipAddresses response. "
-                "AllocationId = {0}".format(
-                    self.allocation_id))
+            raise ClientException(msg=
+                                  "Failed to find eip_address data from DescribeEipAddresses response. "
+                                  "AllocationId = {0}".format(self.allocation_id))
         self._assign_attributes(items[0])
 
 
@@ -846,10 +840,11 @@ class _ECSFleetResource(ServiceResource):
         self._client.describe_fleet_instances(fleet_id=self.fleet_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_fleets(list_of_fleet_id=[self.fleet_id,])
+        result = self._client.describe_fleets(list_of_fleet_id=[self.fleet_id, ])
         items = _new_get_key_in_response(result, 'Fleets.Fleet')
         if not items:
-            raise ClientException(msg="Failed to find fleet data from DescribeFleets response. "
+            raise ClientException(msg=
+                                  "Failed to find fleet data from DescribeFleets response. "
                                   "FleetId = {0}".format(self.fleet_id))
         self._assign_attributes(items[0])
 
@@ -909,10 +904,9 @@ class _ECSHpcClusterResource(ServiceResource):
         result = self._client.describe_hpc_clusters(hpc_cluster_ids=self.hpc_cluster_id)
         items = _new_get_key_in_response(result, 'HpcClusters.HpcCluster')
         if not items:
-            raise ClientException(
-                msg="Failed to find hpc_cluster data from DescribeHpcClusters response. "
-                "HpcClusterId = {0}".format(
-                    self.hpc_cluster_id))
+            raise ClientException(msg=
+                                  "Failed to find hpc_cluster data from DescribeHpcClusters response. "
+                                  "HpcClusterId = {0}".format(self.hpc_cluster_id))
         self._assign_attributes(items[0])
 
 
@@ -978,7 +972,8 @@ class _ECSImageResource(ServiceResource):
         result = self._client.describe_images(image_id=self.image_id)
         items = _new_get_key_in_response(result, 'Images.Image')
         if not items:
-            raise ClientException(msg="Failed to find image data from DescribeImages response. "
+            raise ClientException(msg=
+                                  "Failed to find image data from DescribeImages response. "
                                   "ImageId = {0}".format(self.image_id))
         self._assign_attributes(items[0])
 
@@ -1188,10 +1183,9 @@ class _ECSInstanceResource(ServiceResource):
         result = self._client.describe_instances(instance_ids=self.instance_id)
         items = _new_get_key_in_response(result, 'Instances.Instance')
         if not items:
-            raise ClientException(
-                msg="Failed to find instance data from DescribeInstances response. "
-                "InstanceId = {0}".format(
-                    self.instance_id))
+            raise ClientException(msg=
+                                  "Failed to find instance data from DescribeInstances response. "
+                                  "InstanceId = {0}".format(self.instance_id))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_status, timeout=120):
@@ -1259,10 +1253,9 @@ class _ECSKeyPairResource(ServiceResource):
         result = self._client.describe_key_pairs(key_pair_name=self.key_pair_name)
         items = _new_get_key_in_response(result, 'KeyPairs.KeyPair')
         if not items:
-            raise ClientException(
-                msg="Failed to find key_pair data from DescribeKeyPairs response. "
-                "KeyPairName = {0}".format(
-                    self.key_pair_name))
+            raise ClientException(msg=
+                                  "Failed to find key_pair data from DescribeKeyPairs response. "
+                                  "KeyPairName = {0}".format(self.key_pair_name))
         self._assign_attributes(items[0])
 
 
@@ -1283,13 +1276,12 @@ class _ECSLaunchTemplateResource(ServiceResource):
 
     def refresh(self):
         result = self._client.describe_launch_templates(
-            list_of_launch_template_id=[self.launch_template_id,])
+            list_of_launch_template_id=[self.launch_template_id, ])
         items = _new_get_key_in_response(result, 'LaunchTemplateSets.LaunchTemplateSet')
         if not items:
-            raise ClientException(
-                msg="Failed to find launch_template data from DescribeLaunchTemplates response. "
-                "LaunchTemplateId = {0}".format(
-                    self.launch_template_id))
+            raise ClientException(msg=
+                                  "Failed to find launch_template data from DescribeLaunchTemplates response. "
+                                  "LaunchTemplateId = {0}".format(self.launch_template_id))
         self._assign_attributes(items[0])
 
 
@@ -1332,18 +1324,18 @@ class _ECSNetworkInterfaceResource(ServiceResource):
 
     def assign_ipv6_addresses(self, **params):
         _params = _transfer_params(params)
-        self._client.assign_ipv6_addresses(
-            network_interface_id=self.network_interface_id, **_params)
+        self._client.assign_ipv6_addresses(network_interface_id=self.network_interface_id,
+                                           **_params)
 
     def assign_private_ip_addresses(self, **params):
         _params = _transfer_params(params)
-        self._client.assign_private_ip_addresses(
-            network_interface_id=self.network_interface_id, **_params)
+        self._client.assign_private_ip_addresses(network_interface_id=self.network_interface_id,
+                                                 **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_network_interface(
-            network_interface_id=self.network_interface_id, **_params)
+        self._client.delete_network_interface(network_interface_id=self.network_interface_id,
+                                              **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
@@ -1352,18 +1344,18 @@ class _ECSNetworkInterfaceResource(ServiceResource):
 
     def unassign_ipv6_addresses(self, **params):
         _params = _transfer_params(params)
-        self._client.unassign_ipv6_addresses(
-            network_interface_id=self.network_interface_id, **_params)
+        self._client.unassign_ipv6_addresses(network_interface_id=self.network_interface_id,
+                                             **_params)
 
     def unassign_private_ip_addresses(self, **params):
         _params = _transfer_params(params)
-        self._client.unassign_private_ip_addresses(
-            network_interface_id=self.network_interface_id, **_params)
+        self._client.unassign_private_ip_addresses(network_interface_id=self.network_interface_id,
+                                                   **_params)
 
     def attach(self, **params):
         _params = _transfer_params(params)
-        self._client.attach_network_interface(
-            network_interface_id=self.network_interface_id, **_params)
+        self._client.attach_network_interface(network_interface_id=self.network_interface_id,
+                                              **_params)
 
     def create_network_interface_permission(self, **params):
         _params = _transfer_params(params)
@@ -1372,18 +1364,17 @@ class _ECSNetworkInterfaceResource(ServiceResource):
 
     def detach(self, **params):
         _params = _transfer_params(params)
-        self._client.detach_network_interface(
-            network_interface_id=self.network_interface_id, **_params)
+        self._client.detach_network_interface(network_interface_id=self.network_interface_id,
+                                              **_params)
 
     def refresh(self):
         result = self._client.describe_network_interfaces(
-            list_of_network_interface_id=[self.network_interface_id,])
+            list_of_network_interface_id=[self.network_interface_id, ])
         items = _new_get_key_in_response(result, 'NetworkInterfaceSets.NetworkInterfaceSet')
         if not items:
-            raise ClientException(
-                msg="Failed to find network_interface data from DescribeNetworkInterfaces response. "
-                "NetworkInterfaceId = {0}".format(
-                    self.network_interface_id))
+            raise ClientException(msg=
+                                  "Failed to find network_interface data from DescribeNetworkInterfaces response. "
+                                  "NetworkInterfaceId = {0}".format(self.network_interface_id))
         self._assign_attributes(items[0])
 
 
@@ -1406,15 +1397,14 @@ class _ECSNetworkInterfacePermissionResource(ServiceResource):
 
     def refresh(self):
         result = self._client.describe_network_interface_permissions(
-            list_of_network_interface_permission_id=[
-                self.network_interface_permission_id,])
-        items = _new_get_key_in_response(
-            result, 'NetworkInterfacePermissions.NetworkInterfacePermission')
+            list_of_network_interface_permission_id=[self.network_interface_permission_id, ])
+        items = _new_get_key_in_response(result,
+                                         'NetworkInterfacePermissions.NetworkInterfacePermission')
         if not items:
-            raise ClientException(
-                msg="Failed to find network_interface_permission data from DescribeNetworkInterfacePermissions response. "
-                "NetworkInterfacePermissionId = {0}".format(
-                    self.network_interface_permission_id))
+            raise ClientException(msg=
+                                  "Failed to find network_interface_permission data from DescribeNetworkInterfacePermissions response. "
+                                  "NetworkInterfacePermissionId = {0}".format(
+                                      self.network_interface_permission_id))
         self._assign_attributes(items[0])
 
 
@@ -1444,13 +1434,13 @@ class _ECSPhysicalConnectionResource(ServiceResource):
 
     def cancel(self, **params):
         _params = _transfer_params(params)
-        self._client.cancel_physical_connection(
-            physical_connection_id=self.physical_connection_id, **_params)
+        self._client.cancel_physical_connection(physical_connection_id=self.physical_connection_id,
+                                                **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_physical_connection(
-            physical_connection_id=self.physical_connection_id, **_params)
+        self._client.delete_physical_connection(physical_connection_id=self.physical_connection_id,
+                                                **_params)
 
     def describe_virtual_border_routers_for(self, **params):
         _params = _transfer_params(params)
@@ -1459,8 +1449,8 @@ class _ECSPhysicalConnectionResource(ServiceResource):
 
     def enable(self, **params):
         _params = _transfer_params(params)
-        self._client.enable_physical_connection(
-            physical_connection_id=self.physical_connection_id, **_params)
+        self._client.enable_physical_connection(physical_connection_id=self.physical_connection_id,
+                                                **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
@@ -1487,7 +1477,8 @@ class _ECSRegionResource(ServiceResource):
         result = self._client.describe_regions(region_id=self.region_id)
         items = _new_get_key_in_response(result, 'Regions.Region')
         if not items:
-            raise ClientException(msg="Failed to find region data from DescribeRegions response. "
+            raise ClientException(msg=
+                                  "Failed to find region data from DescribeRegions response. "
                                   "RegionId = {0}".format(self.region_id))
         self._assign_attributes(items[0])
 
@@ -1521,13 +1512,12 @@ class _ECSReservedInstanceResource(ServiceResource):
 
     def refresh(self):
         result = self._client.describe_reserved_instances(
-            list_of_reserved_instance_id=[self.reserved_instance_id,])
+            list_of_reserved_instance_id=[self.reserved_instance_id, ])
         items = _new_get_key_in_response(result, 'ReservedInstances.ReservedInstance')
         if not items:
-            raise ClientException(
-                msg="Failed to find reserved_instance data from DescribeReservedInstances response. "
-                "ReservedInstanceId = {0}".format(
-                    self.reserved_instance_id))
+            raise ClientException(msg=
+                                  "Failed to find reserved_instance data from DescribeReservedInstances response. "
+                                  "ReservedInstanceId = {0}".format(self.reserved_instance_id))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_status, timeout=120):
@@ -1568,10 +1558,9 @@ class _ECSRouteTableResource(ServiceResource):
         result = self._client.describe_route_tables(route_table_id=self.route_table_id)
         items = _new_get_key_in_response(result, 'RouteTables.RouteTable')
         if not items:
-            raise ClientException(
-                msg="Failed to find route_table data from DescribeRouteTables response. "
-                "RouteTableId = {0}".format(
-                    self.route_table_id))
+            raise ClientException(msg=
+                                  "Failed to find route_table data from DescribeRouteTables response. "
+                                  "RouteTableId = {0}".format(self.route_table_id))
         self._assign_attributes(items[0])
 
 
@@ -1608,33 +1597,33 @@ class _ECSRouterInterfaceResource(ServiceResource):
 
     def activate(self, **params):
         _params = _transfer_params(params)
-        self._client.activate_router_interface(
-            router_interface_id=self.router_interface_id, **_params)
+        self._client.activate_router_interface(router_interface_id=self.router_interface_id,
+                                               **_params)
 
     def connect(self, **params):
         _params = _transfer_params(params)
-        self._client.connect_router_interface(
-            router_interface_id=self.router_interface_id, **_params)
+        self._client.connect_router_interface(router_interface_id=self.router_interface_id,
+                                              **_params)
 
     def deactivate(self, **params):
         _params = _transfer_params(params)
-        self._client.deactivate_router_interface(
-            router_interface_id=self.router_interface_id, **_params)
+        self._client.deactivate_router_interface(router_interface_id=self.router_interface_id,
+                                                 **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_router_interface(
-            router_interface_id=self.router_interface_id, **_params)
+        self._client.delete_router_interface(router_interface_id=self.router_interface_id,
+                                             **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_router_interface_attribute(
-            router_interface_id=self.router_interface_id, **_params)
+        self._client.modify_router_interface_attribute(router_interface_id=self.router_interface_id,
+                                                       **_params)
 
     def modify_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_router_interface_spec(
-            router_interface_id=self.router_interface_id, **_params)
+        self._client.modify_router_interface_spec(router_interface_id=self.router_interface_id,
+                                                  **_params)
 
 
 class _ECSSecurityGroupResource(ServiceResource):
@@ -1659,8 +1648,8 @@ class _ECSSecurityGroupResource(ServiceResource):
 
     def authorize_security_group_egress(self, **params):
         _params = _transfer_params(params)
-        self._client.authorize_security_group_egress(
-            security_group_id=self.security_group_id, **_params)
+        self._client.authorize_security_group_egress(security_group_id=self.security_group_id,
+                                                     **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -1668,23 +1657,23 @@ class _ECSSecurityGroupResource(ServiceResource):
 
     def describe_security_group_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_security_group_attribute(
-            security_group_id=self.security_group_id, **_params)
+        self._client.describe_security_group_attribute(security_group_id=self.security_group_id,
+                                                       **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_security_group_attribute(
-            security_group_id=self.security_group_id, **_params)
+        self._client.modify_security_group_attribute(security_group_id=self.security_group_id,
+                                                     **_params)
 
     def modify_egress_rule(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_security_group_egress_rule(
-            security_group_id=self.security_group_id, **_params)
+        self._client.modify_security_group_egress_rule(security_group_id=self.security_group_id,
+                                                       **_params)
 
     def modify_policy(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_security_group_policy(
-            security_group_id=self.security_group_id, **_params)
+        self._client.modify_security_group_policy(security_group_id=self.security_group_id,
+                                                  **_params)
 
     def modify_rule(self, **params):
         _params = _transfer_params(params)
@@ -1696,8 +1685,8 @@ class _ECSSecurityGroupResource(ServiceResource):
 
     def revoke_security_group_egress(self, **params):
         _params = _transfer_params(params)
-        self._client.revoke_security_group_egress(
-            security_group_id=self.security_group_id, **_params)
+        self._client.revoke_security_group_egress(security_group_id=self.security_group_id,
+                                                  **_params)
 
     def join(self, **params):
         _params = _transfer_params(params)
@@ -1711,10 +1700,9 @@ class _ECSSecurityGroupResource(ServiceResource):
         result = self._client.describe_security_groups(security_group_ids=self.security_group_id)
         items = _new_get_key_in_response(result, 'SecurityGroups.SecurityGroup')
         if not items:
-            raise ClientException(
-                msg="Failed to find security_group data from DescribeSecurityGroups response. "
-                "SecurityGroupId = {0}".format(
-                    self.security_group_id))
+            raise ClientException(msg=
+                                  "Failed to find security_group data from DescribeSecurityGroups response. "
+                                  "SecurityGroupId = {0}".format(self.security_group_id))
         self._assign_attributes(items[0])
 
 
@@ -1759,10 +1747,9 @@ class _ECSSnapshotResource(ServiceResource):
         result = self._client.describe_snapshots(snapshot_ids=self.snapshot_id)
         items = _new_get_key_in_response(result, 'Snapshots.Snapshot')
         if not items:
-            raise ClientException(
-                msg="Failed to find snapshot data from DescribeSnapshots response. "
-                "SnapshotId = {0}".format(
-                    self.snapshot_id))
+            raise ClientException(msg=
+                                  "Failed to find snapshot data from DescribeSnapshots response. "
+                                  "SnapshotId = {0}".format(self.snapshot_id))
         self._assign_attributes(items[0])
 
 
@@ -1786,10 +1773,9 @@ class _ECSSnapshotLinkResource(ServiceResource):
         result = self._client.describe_snapshot_links(snapshot_link_ids=self.snapshot_link_id)
         items = _new_get_key_in_response(result, 'SnapshotLinks.SnapshotLink')
         if not items:
-            raise ClientException(
-                msg="Failed to find snapshot_link data from DescribeSnapshotLinks response. "
-                "SnapshotLinkId = {0}".format(
-                    self.snapshot_link_id))
+            raise ClientException(msg=
+                                  "Failed to find snapshot_link data from DescribeSnapshotLinks response. "
+                                  "SnapshotLinkId = {0}".format(self.snapshot_link_id))
         self._assign_attributes(items[0])
 
 
@@ -1822,10 +1808,9 @@ class _ECSStorageSetResource(ServiceResource):
         result = self._client.describe_storage_sets(storage_set_ids=self.storage_set_id)
         items = _new_get_key_in_response(result, 'StorageSets.StorageSet')
         if not items:
-            raise ClientException(
-                msg="Failed to find storage_set data from DescribeStorageSets response. "
-                "StorageSetId = {0}".format(
-                    self.storage_set_id))
+            raise ClientException(msg=
+                                  "Failed to find storage_set data from DescribeStorageSets response. "
+                                  "StorageSetId = {0}".format(self.storage_set_id))
         self._assign_attributes(items[0])
 
 
@@ -1852,13 +1837,12 @@ class _ECSSystemEventResource(ServiceResource):
         self._client.accept_inquired_system_event(event_id=self.event_id, **_params)
 
     def refresh(self):
-        result = self._client.describe_instance_history_events(list_of_event_id=[self.event_id,])
+        result = self._client.describe_instance_history_events(list_of_event_id=[self.event_id, ])
         items = _new_get_key_in_response(result, 'InstanceSystemEventSet.InstanceSystemEventType')
         if not items:
-            raise ClientException(
-                msg="Failed to find system_event data from DescribeInstanceHistoryEvents response. "
-                "EventId = {0}".format(
-                    self.event_id))
+            raise ClientException(msg=
+                                  "Failed to find system_event data from DescribeInstanceHistoryEvents response. "
+                                  "EventId = {0}".format(self.event_id))
         self._assign_attributes(items[0])
 
 
@@ -1886,7 +1870,8 @@ class _ECSTaskResource(ServiceResource):
         result = self._client.describe_tasks(task_ids=self.task_id)
         items = _new_get_key_in_response(result, 'TaskSet.Task')
         if not items:
-            raise ClientException(msg="Failed to find task data from DescribeTasks response. "
+            raise ClientException(msg=
+                                  "Failed to find task data from DescribeTasks response. "
                                   "TaskId = {0}".format(self.task_id))
         self._assign_attributes(items[0])
 
@@ -1901,7 +1886,6 @@ class _ECSVRouterResource(ServiceResource):
         self.description = None
         self.region_id = None
         self.route_table_ids = None
-        self.vrouter_id = None
         self.vrouter_name = None
         self.vpc_id = None
 
@@ -1913,7 +1897,8 @@ class _ECSVRouterResource(ServiceResource):
         result = self._client.describe_vrouters(vrouter_id=self.vrouter_id)
         items = _new_get_key_in_response(result, 'VRouters.VRouter')
         if not items:
-            raise ClientException(msg="Failed to find vrouter data from DescribeVRouters response. "
+            raise ClientException(msg=
+                                  "Failed to find vrouter data from DescribeVRouters response. "
                                   "VRouterId = {0}".format(self.vrouter_id))
         self._assign_attributes(items[0])
 
@@ -1931,7 +1916,6 @@ class _ECSVSwitchResource(ServiceResource):
         self.is_default = None
         self.resource_group_id = None
         self.status = None
-        self.vswitch_id = None
         self.vswitch_name = None
         self.vpc_id = None
         self.zone_id = None
@@ -1948,10 +1932,9 @@ class _ECSVSwitchResource(ServiceResource):
         result = self._client.describe_vswitches(vswitch_id=self.vswitch_id)
         items = _new_get_key_in_response(result, 'VSwitches.VSwitch')
         if not items:
-            raise ClientException(
-                msg="Failed to find vswitch data from DescribeVSwitches response. "
-                "VSwitchId = {0}".format(
-                    self.vswitch_id))
+            raise ClientException(msg=
+                                  "Failed to find vswitch data from DescribeVSwitches response. "
+                                  "VSwitchId = {0}".format(self.vswitch_id))
         self._assign_attributes(items[0])
 
 
@@ -2027,7 +2010,8 @@ class _ECSVpcResource(ServiceResource):
         result = self._client.describe_vpcs(vpc_id=self.vpc_id)
         items = _new_get_key_in_response(result, 'Vpcs.Vpc')
         if not items:
-            raise ClientException(msg="Failed to find vpc data from DescribeVpcs response. "
+            raise ClientException(msg=
+                                  "Failed to find vpc data from DescribeVpcs response. "
                                   "VpcId = {0}".format(self.vpc_id))
         self._assign_attributes(items[0])
 

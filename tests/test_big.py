@@ -22,7 +22,7 @@ from mock import patch
 
 from alibabacloud import ClientConfig, get_resource
 from alibabacloud.clients.ecs_20140526 import EcsClient
-from alibabacloud.exceptions import HttpErrorException
+from alibabacloud.exceptions import HttpErrorException, ServerException
 from tests.base import SDKTestBase
 
 
@@ -224,3 +224,12 @@ class VPCResourceTest(SDKTestBase):
         self.assertEqual(eip_address.status, "Available")
 
         self.assertTrue(eip_address.ip_address)
+
+    def test_v_switch(self):
+        vpc_resource = self.get_vpc_resource()
+        for item in vpc_resource.vpcs.all():
+            try:
+                item.delete()
+            except ServerException as e:
+                self.assertTrue(e.error_code, "DependencyViolation.VSwitch")
+
