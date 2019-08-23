@@ -12,16 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _SLBResource(ServiceResource):
@@ -45,19 +40,15 @@ class _SLBResource(ServiceResource):
             'LoadBalancers.LoadBalancer', 'LoadBalancerId',
         )
         self.master_slave_server_groups = _create_special_resource_collection(
-            _SLBMasterSlaveServerGroupResource,
-            _client,
+            _SLBMasterSlaveServerGroupResource, _client,
             _client.describe_master_slave_server_groups,
-            'MasterSlaveServerGroups.MasterSlaveServerGroup',
-            'MasterSlaveServerGroupId',
-            )
+            'MasterSlaveServerGroups.MasterSlaveServerGroup', 'MasterSlaveServerGroupId',
+        )
         self.master_slave_vserver_groups = _create_special_resource_collection(
-            _SLBMasterSlaveVServerGroupResource,
-            _client,
+            _SLBMasterSlaveVServerGroupResource, _client,
             _client.describe_master_slave_vserver_groups,
-            'MasterSlaveVServerGroups.MasterSlaveVServerGroup',
-            'MasterSlaveVServerGroupId',
-            )
+            'MasterSlaveVServerGroups.MasterSlaveVServerGroup', 'MasterSlaveVServerGroupId',
+        )
         self.regions = _create_special_resource_collection(
             _SLBRegionResource, _client, _client.describe_regions,
             'Regions.Region', 'RegionId',
@@ -106,18 +97,18 @@ class _SLBResource(ServiceResource):
     def create_master_slave_server_group(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_master_slave_server_group(**_params)
-        master_slave_server_group_id = _new_get_key_in_response(
-            response, 'MasterSlaveServerGroupId')
-        return _SLBMasterSlaveServerGroupResource(
-            master_slave_server_group_id, _client=self._client)
+        master_slave_server_group_id = _new_get_key_in_response(response,
+                                                                'MasterSlaveServerGroupId')
+        return _SLBMasterSlaveServerGroupResource(master_slave_server_group_id,
+                                                  _client=self._client)
 
     def create_master_slave_vserver_group(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_master_slave_vserver_group(**_params)
-        master_slave_vserver_group_id = _new_get_key_in_response(
-            response, 'MasterSlaveVServerGroupId')
-        return _SLBMasterSlaveVServerGroupResource(
-            master_slave_vserver_group_id, _client=self._client)
+        master_slave_vserver_group_id = _new_get_key_in_response(response,
+                                                                 'MasterSlaveVServerGroupId')
+        return _SLBMasterSlaveVServerGroupResource(master_slave_vserver_group_id,
+                                                   _client=self._client)
 
     def upload_server_certificate(self, **params):
         _params = _transfer_params(params)
@@ -189,10 +180,9 @@ class _SLBCACertificateResource(ServiceResource):
         result = self._client.describe_ca_certificates(ca_certificate_id=self.ca_certificate_id)
         items = _new_get_key_in_response(result, 'CACertificates.CACertificate')
         if not items:
-            raise ClientException(
-                msg="Failed to find ca_certificate data from DescribeCACertificates response. "
-                "CACertificateId = {0}".format(
-                    self.ca_certificate_id))
+            raise ClientException(msg=
+                                  "Failed to find ca_certificate data from DescribeCACertificates response. "
+                                  "CACertificateId = {0}".format(self.ca_certificate_id))
         self._assign_attributes(items[0])
 
 
@@ -207,23 +197,22 @@ class _SLBDomainExtensionResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_domain_extension(
-            domain_extension_id=self.domain_extension_id, **_params)
+        self._client.delete_domain_extension(domain_extension_id=self.domain_extension_id,
+                                             **_params)
 
     def set_domain_extension_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.set_domain_extension_attribute(
-            domain_extension_id=self.domain_extension_id, **_params)
+        self._client.set_domain_extension_attribute(domain_extension_id=self.domain_extension_id,
+                                                    **_params)
 
     def refresh(self):
         result = self._client.describe_domain_extensions(
             domain_extension_id=self.domain_extension_id)
         items = _new_get_key_in_response(result, 'DomainExtensions.DomainExtension')
         if not items:
-            raise ClientException(
-                msg="Failed to find domain_extension data from DescribeDomainExtensions response. "
-                "DomainExtensionId = {0}".format(
-                    self.domain_extension_id))
+            raise ClientException(msg=
+                                  "Failed to find domain_extension data from DescribeDomainExtensions response. "
+                                  "DomainExtensionId = {0}".format(self.domain_extension_id))
         self._assign_attributes(items[0])
 
 
@@ -266,18 +255,18 @@ class _SLBLoadBalancerResource(ServiceResource):
 
     def create_load_balancer_http_listener(self, **params):
         _params = _transfer_params(params)
-        self._client.create_load_balancer_http_listener(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.create_load_balancer_http_listener(load_balancer_id=self.load_balancer_id,
+                                                        **_params)
 
     def create_load_balancer_tcp_listener(self, **params):
         _params = _transfer_params(params)
-        self._client.create_load_balancer_tcp_listener(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.create_load_balancer_tcp_listener(load_balancer_id=self.load_balancer_id,
+                                                       **_params)
 
     def create_load_balancer_udp_listener(self, **params):
         _params = _transfer_params(params)
-        self._client.create_load_balancer_udp_listener(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.create_load_balancer_udp_listener(load_balancer_id=self.load_balancer_id,
+                                                       **_params)
 
     def create_rules(self, **params):
         _params = _transfer_params(params)
@@ -289,8 +278,8 @@ class _SLBLoadBalancerResource(ServiceResource):
 
     def delete_load_balancer_listener(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_load_balancer_listener(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.delete_load_balancer_listener(load_balancer_id=self.load_balancer_id,
+                                                   **_params)
 
     def describe_health_status(self, **params):
         _params = _transfer_params(params)
@@ -303,8 +292,8 @@ class _SLBLoadBalancerResource(ServiceResource):
 
     def describe_load_balancer_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_load_balancer_attribute(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.describe_load_balancer_attribute(load_balancer_id=self.load_balancer_id,
+                                                      **_params)
 
     def describe_load_balancer_http_listener_attribute(self, **params):
         _params = _transfer_params(params)
@@ -328,18 +317,18 @@ class _SLBLoadBalancerResource(ServiceResource):
 
     def modify_instance_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_load_balancer_instance_spec(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.modify_load_balancer_instance_spec(load_balancer_id=self.load_balancer_id,
+                                                        **_params)
 
     def modify_internet_spec(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_load_balancer_internet_spec(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.modify_load_balancer_internet_spec(load_balancer_id=self.load_balancer_id,
+                                                        **_params)
 
     def modify_pay_type(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_load_balancer_pay_type(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.modify_load_balancer_pay_type(load_balancer_id=self.load_balancer_id,
+                                                   **_params)
 
     def remove_backend_servers(self, **params):
         _params = _transfer_params(params)
@@ -347,8 +336,8 @@ class _SLBLoadBalancerResource(ServiceResource):
 
     def remove_listener_white_list_item(self, **params):
         _params = _transfer_params(params)
-        self._client.remove_listener_white_list_item(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.remove_listener_white_list_item(load_balancer_id=self.load_balancer_id,
+                                                     **_params)
 
     def remove_tags(self, **params):
         _params = _transfer_params(params)
@@ -360,13 +349,13 @@ class _SLBLoadBalancerResource(ServiceResource):
 
     def set_listener_access_control_status(self, **params):
         _params = _transfer_params(params)
-        self._client.set_listener_access_control_status(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.set_listener_access_control_status(load_balancer_id=self.load_balancer_id,
+                                                        **_params)
 
     def set_load_balancer_delete_protection(self, **params):
         _params = _transfer_params(params)
-        self._client.set_load_balancer_delete_protection(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.set_load_balancer_delete_protection(load_balancer_id=self.load_balancer_id,
+                                                         **_params)
 
     def set_load_balancer_http_listener_attribute(self, **params):
         _params = _transfer_params(params)
@@ -406,17 +395,16 @@ class _SLBLoadBalancerResource(ServiceResource):
 
     def create_load_balancer_https_listener(self, **params):
         _params = _transfer_params(params)
-        self._client.create_load_balancer_https_listener(
-            load_balancer_id=self.load_balancer_id, **_params)
+        self._client.create_load_balancer_https_listener(load_balancer_id=self.load_balancer_id,
+                                                         **_params)
 
     def refresh(self):
         result = self._client.describe_load_balancers(load_balancer_id=self.load_balancer_id)
         items = _new_get_key_in_response(result, 'LoadBalancers.LoadBalancer')
         if not items:
-            raise ClientException(
-                msg="Failed to find load_balancer data from DescribeLoadBalancers response. "
-                "LoadBalancerId = {0}".format(
-                    self.load_balancer_id))
+            raise ClientException(msg=
+                                  "Failed to find load_balancer data from DescribeLoadBalancers response. "
+                                  "LoadBalancerId = {0}".format(self.load_balancer_id))
         self._assign_attributes(items[0])
 
 
@@ -446,7 +434,6 @@ class _SLBMasterSlaveVServerGroupResource(ServiceResource):
         ServiceResource.__init__(self, "slb.master_slave_vserver_group", _client=_client)
         self.master_slave_vserver_group_id = master_slave_vserver_group_id
 
-        self.master_slave_vserver_group_id = None
         self.master_slave_vserver_group_name = None
 
     def delete(self, **params):
@@ -474,7 +461,8 @@ class _SLBRegionResource(ServiceResource):
         result = self._client.describe_regions(region_id=self.region_id)
         items = _new_get_key_in_response(result, 'Regions.Region')
         if not items:
-            raise ClientException(msg="Failed to find region data from DescribeRegions response. "
+            raise ClientException(msg=
+                                  "Failed to find region data from DescribeRegions response. "
                                   "RegionId = {0}".format(self.region_id))
         self._assign_attributes(items[0])
 
@@ -542,23 +530,22 @@ class _SLBServerCertificateResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        self._client.delete_server_certificate(
-            server_certificate_id=self.server_certificate_id, **_params)
+        self._client.delete_server_certificate(server_certificate_id=self.server_certificate_id,
+                                               **_params)
 
     def set_server_certificate_name(self, **params):
         _params = _transfer_params(params)
-        self._client.set_server_certificate_name(
-            server_certificate_id=self.server_certificate_id, **_params)
+        self._client.set_server_certificate_name(server_certificate_id=self.server_certificate_id,
+                                                 **_params)
 
     def refresh(self):
         result = self._client.describe_server_certificates(
             server_certificate_id=self.server_certificate_id)
         items = _new_get_key_in_response(result, 'ServerCertificates.ServerCertificate')
         if not items:
-            raise ClientException(
-                msg="Failed to find server_certificate data from DescribeServerCertificates response. "
-                "ServerCertificateId = {0}".format(
-                    self.server_certificate_id))
+            raise ClientException(msg=
+                                  "Failed to find server_certificate data from DescribeServerCertificates response. "
+                                  "ServerCertificateId = {0}".format(self.server_certificate_id))
         self._assign_attributes(items[0])
 
 
@@ -569,13 +556,12 @@ class _SLBVServerGroupResource(ServiceResource):
         self.vserver_group_id = vserver_group_id
 
         self.associated_objects = None
-        self.vserver_group_id = None
         self.vserver_group_name = None
 
     def add_vserver_group_backend_servers(self, **params):
         _params = _transfer_params(params)
-        self._client.add_vserver_group_backend_servers(
-            vserver_group_id=self.vserver_group_id, **_params)
+        self._client.add_vserver_group_backend_servers(vserver_group_id=self.vserver_group_id,
+                                                       **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -583,18 +569,18 @@ class _SLBVServerGroupResource(ServiceResource):
 
     def describe_vserver_group_attribute(self, **params):
         _params = _transfer_params(params)
-        self._client.describe_vserver_group_attribute(
-            vserver_group_id=self.vserver_group_id, **_params)
+        self._client.describe_vserver_group_attribute(vserver_group_id=self.vserver_group_id,
+                                                      **_params)
 
     def modify_backend_servers(self, **params):
         _params = _transfer_params(params)
-        self._client.modify_vserver_group_backend_servers(
-            vserver_group_id=self.vserver_group_id, **_params)
+        self._client.modify_vserver_group_backend_servers(vserver_group_id=self.vserver_group_id,
+                                                          **_params)
 
     def remove_vserver_group_backend_servers(self, **params):
         _params = _transfer_params(params)
-        self._client.remove_vserver_group_backend_servers(
-            vserver_group_id=self.vserver_group_id, **_params)
+        self._client.remove_vserver_group_backend_servers(vserver_group_id=self.vserver_group_id,
+                                                          **_params)
 
     def set_vserver_group_attribute(self, **params):
         _params = _transfer_params(params)

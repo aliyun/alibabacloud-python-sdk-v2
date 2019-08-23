@@ -116,6 +116,9 @@ class ResourceCollection:
 
 
 class NoPageResourceCollection(ResourceCollection):
+    """
+    不分页的处理方法, collection
+    """
     def pages(self, **kwargs):
         # prepare parameters
         params = copy.deepcopy(self._filter_params)
@@ -152,123 +155,9 @@ class NoPageResourceCollection(ResourceCollection):
 
 
 class SubResourceCollection(ResourceCollection):
-    def __init__(self, get_resource_page_handler, resource_creator,
-                 limit=None, page_size=None, filter_params=None):
-        self._page_handler = get_resource_page_handler
-        self._resource_creator = resource_creator
-        self._limit = limit
-        self._page_size = page_size
-        self._filter_params = filter_params
-        self._iterator = iter(self)
-
-    def __iter__(self):
-        for page in self.pages():
-            for item in page:
-                yield item
-
-    def __next__(self):
-        return next(self._iterator)
-
-    next = __next__  # For Python 2.x compatibility
-
-    def _clone(self):
-        return SubResourceCollection(
-            self._page_handler,
-            self._resource_creator,
-            limit=self._limit,
-            page_size=self._page_size,
-            filter_params=copy.deepcopy(self._filter_params),
-        )
-
-    def pages(self, **kwargs):
-
-        count = 0
-        page_num = 1
-
-        while True:
-
-            # prepare parameters
-            params = copy.deepcopy(self._filter_params)
-            if params is None:
-                params = {}
-            if kwargs:
-                params.update(kwargs)
-            params['PageNumber'] = page_num
-            if self._page_size:
-                params['PageSize'] = self._page_size
-            _params = _transfer_params(params)
-            total_count, page_size, page_num, items = self._page_handler(_params)
-
-            if self._limit is not None:
-                limit = min(total_count, self._limit)
-            else:
-                limit = total_count
-
-            resources = []
-            for item in items:
-                resource = self._resource_creator(item)
-                resources.append(resource)
-                count += 1
-
-                if count >= limit:
-                    break
-
-            yield resources
-            print()
-            if count >= limit:
-                break
-            page_num += 1
-
-    def all(self, **kwargs):
-        if kwargs:
-            return self.filter(**kwargs)
-        return self
-
-    def filter(self, **params):
-        clone = self._clone()
-        if clone._filter_params is None:
-            clone._filter_params = copy.deepcopy(params)
-        else:
-            clone._filter_params.update(params)
-        return clone
-
-    def _check_count(self, count):
-        if not isinstance(count, int) or count <= 0:
-            raise ClientException(msg="count must be a positive integer.")
-
-    def limit(self, count):
-        self._check_count(count)
-        clone = self._clone()
-        clone._limit = count
-        return clone
-
-    def page_size(self, count):
-        self._check_count(count)
-        clone = self._clone()
-        clone._page_size = count
-        return clone
-
-
-class FilterErrorResourceCollection(NoPageResourceCollection):
-    def pages(self, **kwargs):
-        # prepare parameters
-        params = copy.deepcopy(self._filter_params)
-        if params is None:
-            params = {}
-        if kwargs:
-            params.update(kwargs)
-        _params = _transfer_params(params)
-        items = self._page_handler(_params)
-
-        resources = []
-        for item in items:
-            resource = self._resource_creator(item)
-            resources.append(resource)
-        return resources
-
-    def __iter__(self):
-        for item in self.pages():
-            yield item
+    """
+    子资源collection, 有分页
+    """
 
 
 def _param_expand_to_json(params, rules, singular=True):
@@ -308,7 +197,13 @@ def _create_resource_collection(resource_class, client, request_class,
                                 singular_param_to_json=None,
                                 plural_param_to_json=None,
                                 param_aliases=None):
+    """
+    创建普通有分页的资源collection， 分页是正常的分页
+    """
     def page_handler(params):
+        """
+        处理分页, key_to_total_count, key_to_page_size, key_to_page_number, key_to_resource_items
+        """
         if singular_param_to_json:
             _param_expand_to_json(params, singular_param_to_json)
         if plural_param_to_json:
@@ -465,7 +360,6 @@ def _create_sub_resource_with_page_collection(resource_class, client, request_cl
         )
 
     def resource_creator(resource_data_item):
-        print(2222222222, resource_data_item)
         resource_id = _new_get_key_in_response(resource_data_item, key_to_resource_id)
         del resource_data_item[key_to_resource_id]
         resource = resource_class(resource_id, parent_identifier_value, _client=client)
@@ -478,6 +372,6 @@ def _create_sub_resource_with_page_collection(resource_class, client, request_cl
         return resource
 
     if key_to_resource_id is None:
-        return SubResourceCollection(page_handler, resource_creator2)
+        return ResourceCollection(page_handler, resource_creator2)
     else:
-        return SubResourceCollection(page_handler, resource_creator)
+        return ResourceCollection(page_handler, resource_creator)
