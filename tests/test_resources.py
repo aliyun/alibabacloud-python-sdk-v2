@@ -26,7 +26,6 @@ class EcsResourceTest(SDKTestBase):
         return self._get_resource(service, **kwargs)
 
     def test_cdn_resource(self):
-        # TODO 没有fc_triggers的接口
         cdn_resource = self.get_resource("cdn")
         try:
             for _ in cdn_resource.fc_triggers.all(): pass
@@ -38,16 +37,12 @@ class EcsResourceTest(SDKTestBase):
             self.assertTrue(e.error_message, "EventMetaName is mandatory for this action.")
 
     def test_ens_resource(self):
-        # ens, all
-        #  TODO  filter 为什么不是1
         ens_resource = self.get_resource("ens")
         self.assertTrue(len(list(ens_resource.images.all())) > 0)
         self.assertTrue(
             len(list(ens_resource.images.filter(image_id="m-2Q3022yr24iUy5yQipMTd8"))) >= 1)
 
     def test_ram_resource(self):
-        # ram, collection, create, method, refresh, username
-        # filter ,不能filter
         ram_resource = self.get_resource("ram")
         for user in ram_resource.users.all():
             if user.user_name.startswith("yan"):
@@ -74,7 +69,6 @@ class EcsResourceTest(SDKTestBase):
         self.assertEqual(len(list(rds_resource.db_instances.all())), 1)
 
         time.sleep(60)
-        # 子资源database
         self.assertEqual(len(list(rds_instance.dbs.all())), 0)
 
         rds_database = rds_instance.create_database(DBName="rds_mysql", CharacterSetName="gbk",
@@ -83,7 +77,6 @@ class EcsResourceTest(SDKTestBase):
         for data_base in rds_instance.dbs.all():
             data_base.delete()
 
-        # 子资源 account
         self.assertEqual(len(list(rds_instance.accounts.all())), 0)
         rds_account = rds_instance.create_account(AccountName="test1", AccountPassword="Test123456",
                                                   AccountDescription="aliyunsdk")
@@ -95,11 +88,10 @@ class EcsResourceTest(SDKTestBase):
         self.assertEqual(rds_account.account_description, "just a test")
         rds_account.delete()
 
-        # 子资源 backups
         self.assertEqual(len(list(rds_instance.backups.all())), 0)
         rds_backup = rds_instance.create_backup(BackupMethod="Physical", BackupStrategy="db",
                                                 DBName="rds_mysql")
-        # TODO bug, 待青塘解决
+        # TODO bug
 
         # rds_backup.refresh()
         # rds_backup.delete()

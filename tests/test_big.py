@@ -66,7 +66,6 @@ class EcsResourceTest(SDKTestBase):
         instances = self.ecs.instances.all()
         if instances:
             self._env_clean_up()
-        # 创建一台专有网络
         tags = [
             {
                 "Key": "python",
@@ -79,7 +78,6 @@ class EcsResourceTest(SDKTestBase):
         EcsResourceTest.proprietary_instance = \
             ecs.run_instances(launch_template_id=launch_template.launch_template_id,
                               list_of_tag=tags)[0]
-        # 创建一台经典网络
         instance_type = "ecs.n2.small"
         EcsResourceTest.classics_instance = self.ecs.create_instance(ImageId=self.image_id,
                                                                      InstanceType=instance_type,)
@@ -89,7 +87,6 @@ class EcsResourceTest(SDKTestBase):
     def test_private_ip_address_and_tags(self):
         instance = EcsResourceTest.proprietary_instance
         instance.refresh()
-        # 测试一台机器的私有IP地址,PrivateIpAddress以及ECS实例的tags属性的读取, 测试search
         private_ip_address = instance.vpc_attributes.search("PrivateIpAddress.IpAddress")[0]
         pattern = re.compile(
             r'((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}')
@@ -119,8 +116,6 @@ class EcsResourceTest(SDKTestBase):
         self.assertTrue('RequestId' in s)
 
     def test_modify(self):
-        # instance.modify_attributes(InstanceName='web1')的正确性
-        # 服务端确定，网页端确定
         ecs = self._get_ecs_resource()
 
         ecs_instance = list(ecs.instances.all())[0]
@@ -129,7 +124,6 @@ class EcsResourceTest(SDKTestBase):
         self.assertEqual(ecs_instance.instance_name, "web1")
 
     def test_filter_inner_ip_address(self):
-        # inner_ip_address 必须是经典网络下的ecs 才有此属性
         your_inner_ip_list = []
         for item in self.ecs.instances.all():
             item.refresh()
@@ -152,7 +146,6 @@ class EcsResourceTest(SDKTestBase):
 
     def test_retry_to_create_instance(self):
 
-        # 测试重试
         config = ClientConfig(region_id=self.region_id, connection_timeout=120, endpoint="nowhere")
         client = EcsClient(config, self.init_credentials_provider())
 
@@ -190,14 +183,11 @@ class VPCResourceTest(SDKTestBase):
         slb = self._get_resource("slb")
         load_balancer = list(slb.load_balancers.filter(load_balancer_status="active"))[0]
 
-        # 测试eip address等,需要缓解准备
         vpc = self.get_vpc_resource()
-        # 先全部解绑
         for eip in vpc.eip_addresses.filter(status="InUse"):
             eip.unassociate(instance_id=load_balancer.load_balancer_id, instance_type="SlbInstance")
             eip.refresh()
 
-        # allocation_id 是 eip_address 的identifer, instance_id 是绑定的实例的id
         eip_address = list(vpc.eip_addresses.filter(status="Available"))[0]
         self.assertEqual(eip_address.instance_id, "")
         self.assertEqual(eip_address.status, "Available")

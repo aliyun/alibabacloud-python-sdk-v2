@@ -111,6 +111,8 @@ class SDKTestBase(TestCase):
                 return json.loads(fp.read())
 
     def _read_key_from_env_or_config(self, key_name):
+        if key_name.upper() in os.environ:
+            return os.environ.get(key_name.upper())
         if key_name.lower() in self._sdk_config:
             return self._sdk_config[key_name.lower()]
 
