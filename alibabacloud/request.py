@@ -62,7 +62,7 @@ class HTTPRequest:
     def __init__(self, accept_format=None, method=None, scheme=None, proxy=None,
                  signature=None, port=None,
                  headers=None, url=None, endpoint=None, timeout=None,
-                 body="", retries=0, credentials=None):
+                 body="", retries=0, credentials=None, verify=None):
         self.accept_format = accept_format
         self.body = body
         self.method = method
@@ -76,6 +76,7 @@ class HTTPRequest:
         self.endpoint = endpoint
         self.retries = retries
         self.credentials = credentials
+        self.verify = verify
 
 
 class HTTPResponse:
