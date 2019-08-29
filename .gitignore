@@ -3,6 +3,7 @@ venv/
 .idea/
 *.egg-info/
 dist/
+build/
 .cache/
 .coverage
 .vscode
