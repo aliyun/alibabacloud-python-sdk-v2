@@ -80,5 +80,3 @@ class VerifyTest(SDKTestBase):
         shutil.rmtree(self.tempdir)
         os.environ.pop('ALIBABA_CLOUD_CONFIG_FILE')
         os.environ.pop('ALIBABA_CLOUD_CA_BUNDLE')
-
-

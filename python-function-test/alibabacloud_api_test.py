@@ -63,7 +63,8 @@ class APIRequestTest(SDKTestBase):
         delete_version = ["1.0.1", ]
 
         try:
-            context = ecs_client.delete_launch_template_version(list_of_delete_version=delete_version)
+            context = ecs_client.delete_launch_template_version(
+                list_of_delete_version=delete_version)
             assert False
         except ServerException as e:
             self.assertEqual(e.http_status, 400)

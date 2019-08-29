@@ -125,5 +125,5 @@ class GenTestBase(SDKTestBase):
             self.assertEqual(e.error_message, 'RuleId is mandatory for this action.')
 
         result = edas_client.delete_application(app_id="123")
-        self.assertEqual(result.get('Message'),'No permissions')
+        self.assertEqual(result.get('Message'), 'No permissions')
         self.assertEqual(result.get('Code'), 500)

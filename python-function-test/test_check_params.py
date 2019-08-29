@@ -1,6 +1,6 @@
 # from alibabacloud.clients.eci_20180808 import EciClient
 from alibabacloud.clients.ecs_20140526 import EcsClient
-from alibabacloud.exceptions import ServerException, ParamValidationException
+from alibabacloud.exceptions import ParamValidationException
 from alibabacloud.vendored import six
 from base import SDKTestBase
 
@@ -39,4 +39,3 @@ class GenTestCheckParams(SDKTestBase):
             else:
                 self.assertEqual(e.error_message,
                                  "Parameter validation failed: Invalid type for parameter Tag.0.Tag, value: hi, type: <class 'str'>, valid types: <class 'dict'>")
-
