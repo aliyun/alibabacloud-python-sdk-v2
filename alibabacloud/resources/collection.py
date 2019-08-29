@@ -119,6 +119,7 @@ class NoPageResourceCollection(ResourceCollection):
     """
     不分页的处理方法, collection
     """
+
     def pages(self, **kwargs):
         # prepare parameters
         params = copy.deepcopy(self._filter_params)
@@ -200,6 +201,7 @@ def _create_resource_collection(resource_class, client, request_class,
     """
     创建普通有分页的资源collection， 分页是正常的分页
     """
+
     def page_handler(params):
         """
         处理分页, key_to_total_count, key_to_page_size, key_to_page_number, key_to_resource_items

@@ -33,7 +33,7 @@ class HttpErrorException(AlibabaCloudException):
 
 
 class InvalidProductCodeException(AlibabaCloudException):
-    fmt = "No endpoint for product '{product_code}'.\n" +\
+    fmt = "No endpoint for product '{product_code}'.\n" + \
           "Please check the product code, " + \
           "or set an endpoint for your request explicitly.\n" + \
           "See " + SDK_ENDPOINT_MANAGEMENT_DOC_HTML + "\n"

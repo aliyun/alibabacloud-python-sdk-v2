@@ -75,7 +75,7 @@ def _get_resources_classes(path, sub):
                 try:
                     services[getattr(obj(""), "_service_name")] = obj, services_file
                 except TypeError:
-                    services[getattr(obj("",""), "_service_name")] = obj, services_file
+                    services[getattr(obj("", ""), "_service_name")] = obj, services_file
                 except AttributeError:
                     services[services_file.lstrip("_")] = obj, services_file
     return services
