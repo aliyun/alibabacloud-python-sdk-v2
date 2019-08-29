@@ -165,6 +165,8 @@ class APIProtocolHandler(RequestHandler):
         else:
             http_request.port = context.config.http_port
 
+        http_request.verify = context.config.verify
+
     def handle_response(self, context):
         if not context.exception:
             try:

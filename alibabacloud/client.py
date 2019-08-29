@@ -40,6 +40,7 @@ DEFAULT_CONFIG_VARIABLES = {
     'enable_https': True,
     'http_port': 80,
     'https_port': 443,
+    'verify': True
 }
 
 
@@ -94,7 +95,7 @@ class ClientConfig(object):
     def __init__(self, region_id=None, endpoint=None, max_retry_times=None, user_agent=None,
                  enable_https=None, http_port=None, https_port=None, enable_retry=None,
                  connection_timeout=None, read_timeout=None, enable_http_debug=None,
-                 http_proxy=None, https_proxy=None):
+                 http_proxy=None, https_proxy=None, verify=None):
 
         self.endpoint = endpoint
         self.region_id = region_id
@@ -126,6 +127,7 @@ class ClientConfig(object):
             'http': self.http_proxy,
             'https': self.https_proxy,
         }
+        self.verify = verify
         self._read_from_env()
         self._read_from_file()
         self._read_from_default()
@@ -144,6 +146,9 @@ class ClientConfig(object):
 
         if self.enable_http_debug is None:
             self.enable_http_debug = os.environ.get('DEBUG') in ('sdk', 'SDK')
+
+        if self.verify is None:
+            self.verify = os.environ.get("ALIBABA_CLOUD_CA_BUNDLE")
 
     def _read_from_file(self):
         profile = {}

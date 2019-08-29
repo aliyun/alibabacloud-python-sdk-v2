@@ -39,13 +39,10 @@ class HttpHandler(RequestHandler):
                           headers=http_request.headers)
             prepped = s.prepare_request(req)
 
-            # ignore the warning-InsecureRequestWarning
-            urllib3.disable_warnings()
-
             try:
                 response = s.send(prepped, proxies=http_request.proxy,
                                   timeout=http_request.timeout,
-                                  allow_redirects=False, verify=None, cert=None)
+                                  allow_redirects=False, verify=http_request.verify, cert=None)
 
             except IOError as e:
                 context.exception = HttpErrorException(http_error=str(e))

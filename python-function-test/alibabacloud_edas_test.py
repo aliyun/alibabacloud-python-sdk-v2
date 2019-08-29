@@ -54,7 +54,7 @@ class AlibabaCloudEdasTest(SDKTestBase):
         client = EdasClient(config, self.init_credentials_provider())
 
         response = client.disable_degrade_control(app_id='123', rule_id='456')
-        self.assertEqual(response.get("Message"), "No permissions" )
+        self.assertEqual(response.get("Message"), "No permissions")
         self.assertTrue(response.get("Code") == 401 or response.get("Code") == 500)
 
     def test_api_request_delete(self):
