@@ -2,7 +2,7 @@ echo "Run code style check ..."
 #sh -xe scripts/code-style-check.sh
 
 echo "get env ACCESS_KEY_ID for test"
-printenv ACCESS_KEY_ID
+printenv
 echo "get env ACCESS_KEY_ID for test over"
 
 echo "Run functional tests ..."
