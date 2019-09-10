@@ -28,7 +28,7 @@ class CredentialsTest(SDKTestBase):
     def setUp(self):
         super(CredentialsTest, self).setUp()
         self.tempdir = tempfile.mkdtemp()
-        self.credentials_file = os.path.join(self.tempdir, 'credentials')
+        self.credentials_file = os.path.join(self.tempdir, 'credentials.ini')
         os.environ['ALIBABA_CLOUD_CREDENTIALS_FILE'] = self.credentials_file
 
     def tearDown(self):

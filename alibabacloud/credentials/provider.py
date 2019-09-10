@@ -108,7 +108,7 @@ class ProfileCredentialsProvider(CredentialsProvider):
     文件配置 `Alibaba Cloud Python SDK` 凭证
     """
     ENV_NAME_FOR_CREDENTIALS_FILE = 'ALIBABA_CLOUD_CREDENTIALS_FILE'
-    DEFAULT_NAME_FOR_CREDENTIALS_FILE = '~/.alibabacloud/credentials'
+    DEFAULT_NAME_FOR_CREDENTIALS_FILE = '~/.alibabacloud/credentials.ini'
 
     def __init__(self, client_config, profile_name):
         self.environ = os.environ

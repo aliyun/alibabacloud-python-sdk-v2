@@ -90,7 +90,7 @@ class ClientConfig(object):
 
     """
     ENV_NAME_FOR_CONFIG_FILE = 'ALIBABA_CLOUD_CONFIG_FILE'
-    DEFAULT_NAME_FOR_CONFIG_FILE = '~/.alibabacloud/config'
+    DEFAULT_NAME_FOR_CONFIG_FILE = '~/.alibabacloud/config.ini'
 
     def __init__(self, region_id=None, endpoint=None, max_retry_times=None, user_agent=None,
                  enable_https=None, http_port=None, https_port=None, enable_retry=None,

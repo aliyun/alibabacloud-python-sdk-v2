@@ -30,7 +30,7 @@ class ConfigFileTest(SDKTestBase):
     def setUp(self):
         super(ConfigFileTest, self).setUp()
         self.tempdir = tempfile.mkdtemp()
-        self.credentials_file = os.path.join(self.tempdir, 'config')
+        self.credentials_file = os.path.join(self.tempdir, 'config.ini')
         os.environ['ALIBABA_CLOUD_CONFIG_FILE'] = self.credentials_file
 
     def tearDown(self):
