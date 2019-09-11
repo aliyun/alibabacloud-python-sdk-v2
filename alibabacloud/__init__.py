@@ -237,8 +237,8 @@ def get_resource(resource_name, resource_id=None, api_version=None, region_id=No
         "log_level": kwargs.get('file_log_level', logging.DEBUG),
         "path": kwargs.get('file_logger_path', None),
         "logger_name": kwargs.get('file_log_name', None),
-        "maxBytes": kwargs.get('file_maxBytes', 10485760),
-        "backupCount": kwargs.get('file_backupCount', 5),
+        "max_bytes": kwargs.get('file_max_bytes', 10485760),
+        "backup_count": kwargs.get('file_backup_count', 5),
         "format_string": kwargs.get('file_logger_format_string', None)
     }
 
