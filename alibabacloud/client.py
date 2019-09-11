@@ -290,10 +290,10 @@ class AlibabaCloudClient(object):
         return logger
 
     def add_rotating_file_log_handler(self, path, log_level=logging.DEBUG, logger_name=None,
-                                      maxBytes=10485760, backupCount=5, format_string=None):
+                                      max_bytes=10485760, backup_count=5, format_string=None):
         log = logging.getLogger(logger_name) if logger_name else self.logger
         log.setLevel(log_level)
-        fh = RotatingFileHandler(path, maxBytes=maxBytes, backupCount=backupCount)
+        fh = RotatingFileHandler(path, maxBytes=max_bytes, backupCount=backup_count)
         fh.setLevel(log_level)
         if format_string is None:
             format_string = self.LOG_FORMAT
