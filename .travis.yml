@@ -15,8 +15,7 @@ install:
   - pip install pycodestyle
   - pip install mock
   - pip install jmespath
-  - pip install aliyun-python-sdk-core
-  - pip install aliyun-python-sdk-ecs
+
 
 script:
   - sh -xe scripts/test.sh
