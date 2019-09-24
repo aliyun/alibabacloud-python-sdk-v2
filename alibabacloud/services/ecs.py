@@ -1,4 +1,4 @@
-# Copyright 2018 Alibaba Cloud Inc. All rights reserved.
+# Copyright 2019 Alibaba Cloud Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,176 +11,86 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import json
-import time
 
-from aliyunsdkcore.acs_exception.exceptions import ClientException
-
-from aliyunsdkecs.request.v20140526.CreateInstanceRequest import CreateInstanceRequest
-from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
-from aliyunsdkecs.request.v20140526.StartInstanceRequest import StartInstanceRequest
-from aliyunsdkecs.request.v20140526.StopInstanceRequest import StopInstanceRequest
-from aliyunsdkecs.request.v20140526.DeleteInstanceRequest import DeleteInstanceRequest
-from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesRequest
-from aliyunsdkecs.request.v20140526.RebootInstanceRequest import RebootInstanceRequest
-from aliyunsdkecs.request.v20140526.ModifyInstanceAttributeRequest \
-    import ModifyInstanceAttributeRequest
-from aliyunsdkecs.request.v20140526.DescribeInstanceHistoryEventsRequest \
-    import DescribeInstanceHistoryEventsRequest
-from aliyunsdkecs.request.v20140526.CreateSimulatedSystemEventsRequest \
-    import CreateSimulatedSystemEventsRequest
-from aliyunsdkecs.request.v20140526.CancelSimulatedSystemEventsRequest \
-    import CancelSimulatedSystemEventsRequest
-from aliyunsdkecs.request.v20140526.DescribeInstancesFullStatusRequest \
-    import DescribeInstancesFullStatusRequest
-from aliyunsdkecs.request.v20140526.RedeployInstanceRequest import RedeployInstanceRequest
-from aliyunsdkecs.request.v20140526.ModifyInstanceVncPasswdRequest \
-    import ModifyInstanceVncPasswdRequest
-
-from aliyunsdkecs.request.v20140526.DescribeDisksRequest import DescribeDisksRequest
-from aliyunsdkecs.request.v20140526.DeleteDiskRequest import DeleteDiskRequest
-from aliyunsdkecs.request.v20140526.AttachDiskRequest import AttachDiskRequest
-from aliyunsdkecs.request.v20140526.DetachDiskRequest import DetachDiskRequest
-from aliyunsdkecs.request.v20140526.ReInitDiskRequest import ReInitDiskRequest
-from aliyunsdkecs.request.v20140526.ResizeDiskRequest import ResizeDiskRequest
-from aliyunsdkecs.request.v20140526.ResetDiskRequest import ResetDiskRequest
-from aliyunsdkecs.request.v20140526.ModifyDiskAttributeRequest import ModifyDiskAttributeRequest
-from aliyunsdkecs.request.v20140526.ReplaceSystemDiskRequest import ReplaceSystemDiskRequest
-from aliyunsdkecs.request.v20140526.CreateDiskRequest import CreateDiskRequest
-
-from aliyunsdkecs.request.v20140526.DescribeTagsRequest import DescribeTagsRequest
-from aliyunsdkecs.request.v20140526.AddTagsRequest import AddTagsRequest
-from aliyunsdkecs.request.v20140526.RemoveTagsRequest import RemoveTagsRequest
-
-from aliyunsdkecs.request.v20140526.CreateImageRequest import CreateImageRequest
-from aliyunsdkecs.request.v20140526.DeleteImageRequest import DeleteImageRequest
-from aliyunsdkecs.request.v20140526.DescribeImagesRequest import DescribeImagesRequest
-from aliyunsdkecs.request.v20140526.ModifyImageAttributeRequest import ModifyImageAttributeRequest
-
-from aliyunsdkecs.request.v20140526.DescribeDemandsRequest import DescribeDemandsRequest
-
+from alibabacloud import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.utils.utils import _do_request, _get_response, _assert_is_not_none
-import alibabacloud.errors as errors
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_default_resource_collection
+from alibabacloud.services._ecs import _ECSDiskResource
+from alibabacloud.services._ecs import _ECSInstanceResource
+from alibabacloud.services._ecs import _ECSResource
+from alibabacloud.services._ecs import _ECSSystemEventResource
+from alibabacloud.utils.utils import _transfer_params, _new_get_key_in_response, \
+    _assert_is_not_none, transfer
 
 
-class ECSInstanceResource(ServiceResource):
-
-    STATUS_RUNNING = "Running"
-    STATUS_STARTING = "Starting"
-    STATUS_STOPPING = "Stopping"
-    STATUS_STOPPED = "Stopped"
+class ECSInstanceResource(_ECSInstanceResource):
+    STATUS_RUNNING = 'Running'
+    STATUS_STOPPING = 'Stopping'
+    STATUS_PENDING = 'Pending'
+    STATUS_STARTING = 'Starting'
+    STATUS_RESETTING = 'Resetting'
+    STATUS_TRANSFERRING = 'Transferring'
+    STATUS_STOPPED = 'Stopped'
+    STATUS_DELETED = 'Deleted'
 
     def __init__(self, instance_id, _client=None):
-        ServiceResource.__init__(self, 'ecs.instance', _client=_client)
-        self.instance_id = instance_id
-        _assert_is_not_none(instance_id, "instance_id")
-        self.region_id = None
-        self.inner_ip_address = None
-        self.creation_time = None
-        self.expired_time = None
-        self.io_optimized = None
-        self.public_ip_address = None
-        self.internet_charge_type = None
-        self.vpc_attributes = None
-        self.status = None
-        self.host_name = None
-        self.image_id = None
-        self.instance_charge_type = None
-        self.instance_network_type = None
-        self.instance_type = None
-        self.eip_address = None
-        self.serial_number = None
-        self.operation_locks = None
-        self.security_group_ids = None
-        self.internet_max_bandwidth_out = None
-        self.zone_id = None
-        self.instance_name = None
-        self.internet_max_bandwidth_in = None
-        self.device_available = None
-
-    def refresh(self):
-        request = DescribeInstancesRequest()
-        request.set_InstanceIds(json.dumps([self.instance_id]))
-        items = _get_response(self._client, request, {}, 'Instances.Instance')
-        if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
-                                  "Failed to find instance data from DescribeInstances response. "
-                                  "InstanceId = {0}".format(self.instance_id))
-        self._assign_attributes(items[0])
-
-    def wait_until(self, target_status, timeout=120):
-        start_time = time.time()
-        while True:
-            end_time = time.time()
-            if end_time - start_time >= timeout:
-                raise Exception("Timed out: no {0} status after {1} seconds.".format(
-                    target_status, timeout))
-
-            self.refresh()
-            if self.status == target_status:
-                return
-            time.sleep(1)
+        _ECSInstanceResource.__init__(self, instance_id, _client=_client)
 
     def wait_until_running(self):
         self.wait_until(self.STATUS_RUNNING)
 
+    def wait_until_stopping(self):
+        self.wait_until(self.STATUS_STOPPING)
+
+    def wait_until_pending(self):
+        self.wait_until(self.STATUS_PENDING)
+
     def wait_until_starting(self):
         self.wait_until(self.STATUS_STARTING)
 
-    def wait_until_stopping(self):
-        self.wait_until(self.STATUS_STOPPING)
+    def wait_until_resetting(self):
+        self.wait_until(self.STATUS_RESETTING)
+
+    def wait_until_transferring(self):
+        self.wait_until(self.STATUS_TRANSFERRING)
 
     def wait_until_stopped(self):
         self.wait_until(self.STATUS_STOPPED)
 
-    def start(self):
-        request = StartInstanceRequest()
-        request.set_InstanceId(self.instance_id)
-        _do_request(self._client, request, {})
-
-    def stop(self):
-        request = StopInstanceRequest()
-        request.set_InstanceId(self.instance_id)
-        _do_request(self._client, request, {})
-
-    def reboot(self):
-        request = RebootInstanceRequest()
-        request.set_InstanceId(self.instance_id)
-        _do_request(self._client, request, {})
-
-    def delete(self):
-        request = DeleteInstanceRequest()
-        request.set_InstanceId(self.instance_id)
-        _do_request(self._client, request, {})
-
-    def redeploy(self, **params):
-        request = RedeployInstanceRequest()
-        request.set_InstanceId(self.instance_id)
-        _do_request(self._client, request, params)
+    def wait_until_deleted(self):
+        self.wait_until(self.STATUS_DELETED)
 
     def modify_attributes(self, **params):
-        request = ModifyInstanceAttributeRequest()
-        request.set_InstanceId(self.instance_id)
-        _do_request(self._client, request, params)
-        self.refresh()
+        self.modify_attribute(**params)
 
-    def replace_system_disk(self, **params):
-        request = ReplaceSystemDiskRequest()
-        request.set_InstanceId(self.instance_id)
-        response = _do_request(self._client, request, params)
-        return response['DiskId']
+    def delete(self, **params):
+        _params = _transfer_params(params)
+        self._client.delete_instance(instance_id=self.instance_id, **_params)
 
-    def modify_vnc_password(self, **params):
-        request = ModifyInstanceVncPasswdRequest()
-        request.set_InstanceId(self.instance_id)
-        _do_request(self._client, request, params)
+    @transfer({"Tags": "list_of_tag", })
+    def refresh(self):
+        result = self._client.describe_instances(instance_ids=json.dumps([self.instance_id, ]))
+        items = _new_get_key_in_response(result, 'Instances.Instance')
+        if not items:
+            raise ClientException(
+                msg="Failed to find instance data from DescribeInstances response. "
+                    "InstanceId = {0}".format(self.instance_id))
+        self._assign_attributes(items[0])
 
 
-class ECSSystemEventResource(ServiceResource):
+class ECSSystemEventResource(_ECSSystemEventResource):
+    """
+    ECS 系统事件资源类
+
+    :param event_id: 事件id
+    :type event_id: str
+
+    :param _client:  Alibaba Cloud Client
+    :type _client: alibaba.client.AlibabaCloudClient
+
+    """
 
     class EventCycleStatus:
         """
@@ -222,18 +132,18 @@ class ECSSystemEventResource(ServiceResource):
         self.event_id = event_id
         self.event_finish_time = None
         _assert_is_not_none(event_id, "event_id")
-        ServiceResource.__init__(self, "ecs.event", _client=_client)
+        _ECSSystemEventResource.__init__(self, event_id, _client=_client)
 
+    @transfer({"EventIds": "list_of_event_id",
+               "InstanceEventCycleStatuss": "list_of_instance_event_cycle_status",
+               "InstanceEventTypes": "list_of_instance_event_type", })
     def refresh(self):
-        request = DescribeInstanceHistoryEventsRequest()
-        request.set_EventIds([self.event_id])
-        items = _get_response(self._client, request, {},
-                              'InstanceSystemEventSet.InstanceSystemEventType')
+        response = self._client.describe_instance_history_events(list_of_event_id=[self.event_id, ])
+        items = _new_get_key_in_response(response, 'InstanceSystemEventSet.InstanceSystemEventType')
         if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
-                                  "Failed to find event data from "
-                                  "DescribeInstanceHistoryEventsRequest response. "
-                                  "EventId = {0}".format(self.event_id))
+            raise ClientException(msg="Failed to find event data from "
+                                      "DescribeInstanceHistoryEventsRequest response. "
+                                      "EventId = {0}".format(self.event_id))
         self._assign_attributes(items[0])
 
     def get_event_type(self):
@@ -247,7 +157,16 @@ class ECSSystemEventResource(ServiceResource):
         return self.event_cycle_status.search("Name")
 
 
+class ECSTagResource(ServiceResource):
+    pass
+
+
+class ECSDemand(ServiceResource):
+    pass
+
+
 class ECSInstanceFullStatus(ServiceResource):
+    """ECS 实例状态资源类"""
 
     def _assign_attributes(self, attrs):
         ServiceResource._assign_attributes(self, attrs)
@@ -260,105 +179,28 @@ class ECSInstanceFullStatus(ServiceResource):
             self.system_events.append(event)
 
 
-class ECSDiskResource(ServiceResource):
+class ECSDiskResource(_ECSDiskResource):
 
     def __init__(self, disk_id, _client=None):
+        _ECSDiskResource.__init__(self, disk_id, _client=_client)
         self.disk_id = disk_id
-        _assert_is_not_none(disk_id, "disk_id")
-        ServiceResource.__init__(self, "ecs.disk", _client=_client)
 
-    def delete(self, **params):
-        request = DeleteDiskRequest()
-        request.set_DiskId(self.disk_id)
-        _do_request(self._client, request, params)
-
-    def attach(self, **params):
-        request = AttachDiskRequest()
-        request.set_DiskId(self.disk_id)
-        _do_request(self._client, request, params)
-
-    def detach(self, **params):
-        request = DetachDiskRequest()
-        request.set_DiskId(self.disk_id)
-        _do_request(self._client, request, params)
-
-    def modify_attributes(self, **params):
-        request = ModifyDiskAttributeRequest()
-        request.set_InstanceId(self.disk_id)
-        _do_request(self._client, request, params)
-        self.refresh()
-
+    @transfer({"Tags": "list_of_tag", "AdditionalAttributess": "list_of_additional_attributes", })
     def refresh(self):
-        request = DescribeDisksRequest()
-        request.set_DiskIds(json.dumps([self.disk_id]))
-        items = _get_response(self._client, request, {}, 'Disks.Disk')
+        result = self._client.describe_disks(disk_ids=json.dumps([self.disk_id, ]))
+        items = _new_get_key_in_response(result, 'Disks.Disk')
         if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
-                                  "Failed to find disk data from DescribeDiks "
-                                  "response. "
-                                  "DiskId = {0}".format(self.disk_id))
-        self._assign_attributes(items[0])
-
-    def reinit(self, **params):
-        request = ReInitDiskRequest()
-        request.set_DiskId(self.disk_id)
-        _do_request(self._client, request, params)
-
-    def resize(self, **params):
-        request = ResizeDiskRequest()
-        request.set_DiskId(self.disk_id)
-        _do_request(self._client, request, params)
-
-    def reset(self, **params):
-        request = ResetDiskRequest()
-        request.set_DiskId(self.disk_id)
-        _do_request(self._client, request, params)
-
-
-class ECSImageResource(ServiceResource):
-
-    def __init__(self, image_id, _client=None):
-        self.image_id = image_id
-        _assert_is_not_none(image_id, "image_id")
-        ServiceResource.__init__(self, "ecs.image", _client=_client)
-
-    def delete(self, **params):
-        request = DeleteImageRequest()
-        request.set_ImageId(self.image_id)
-        _do_request(self._client, request, params)
-
-    def modify_attributes(self, **params):
-        request = ModifyImageAttributeRequest()
-        request.set_ImageId(self.image_id)
-        _do_request(self._client, request, params)
-        self.refresh()
-
-    def refresh(self):
-        request = DescribeImagesRequest()
-        request.set_ImageId(self.image_id)
-        items = _get_response(self._client, request, {}, 'Images.Image')
-        if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
-                                  "Failed to find image data from DescribeImages "
-                                  "response. "
-                                  "ImageId = {0}".format(self.image_id))
+            raise ClientException(msg="Failed to find disk data from DescribeDisks response. "
+                                      "DiskId = {0}".format(self.disk_id))
         self._assign_attributes(items[0])
 
 
-class ECSTagResource(ServiceResource):
-    pass
-
-
-class ECSDemand(ServiceResource):
-    pass
-
-
-class ECSResource(ServiceResource):
-
+class ECSResource(_ECSResource):
     def __init__(self, _client=None):
-        ServiceResource.__init__(self, 'ecs', _client=_client)
+        _ECSResource.__init__(self, _client=_client)
+
         self.instances = _create_resource_collection(
-            ECSInstanceResource, _client, DescribeInstancesRequest,
+            ECSInstanceResource, _client, _client.describe_instances,
             'Instances.Instance', 'InstanceId',
             singular_param_to_json={'instance_id': 'InstanceIds'},
             plural_param_to_json={
@@ -368,88 +210,89 @@ class ECSResource(ServiceResource):
                 'list_of_inner_ip_address': 'InnerIpAddresses',
                 'list_of_public_ip_address': 'PublicIpAddresses',
                 'list_of_eip_address': 'EipAddresses',
-            }
-        )
-        self.system_events = _create_resource_collection(
-            ECSSystemEventResource, _client, DescribeInstanceHistoryEventsRequest,
-            'InstanceSystemEventSet.InstanceSystemEventType', 'EventId',
-            param_aliases={
-                'list_of_event_id': 'EventIds',
-                'list_of_event_cycle_status': 'InstanceEventCycleStatuss',
-                'list_of_event_type': 'InstanceEventTypes'
+                "Tags": "list_of_tag",
             }
         )
 
         self.instance_full_statuses = _create_default_resource_collection(
-            ECSInstanceFullStatus, _client, DescribeInstancesFullStatusRequest,
+            ECSInstanceFullStatus, _client, _client.describe_instances_full_status,
             'InstanceFullStatusSet.InstanceFullStatusType',
-        )
-
-        self.disks = _create_resource_collection(
-            ECSDiskResource, _client, DescribeDisksRequest,
-            'Disks.Disk', 'DiskId',
-            plural_param_to_json={
-                'list_of_disk_id': 'DiskIds',
+            param_aliases={
+                "InstanceEventTypes": "list_of_instance_event_type",
+                "EventIds": "event_ids",
+                "InstanceIds": "instance_ids",
+                "instance_ids": "list_of_instance_id",
+                "event_ids": "list_of_event_id"
             }
         )
 
-        self.images = _create_resource_collection(
-            ECSImageResource, _client, DescribeImagesRequest,
-            'Images.Image', 'ImageId',
+        self.disks = _create_resource_collection(
+            ECSDiskResource, _client, _client.describe_disks,
+            'Disks.Disk', 'DiskId',
+            plural_param_to_json={
+                'list_of_disk_id': 'DiskId',
+                "Tags": "list_of_tag",
+                "AdditionalAttributess": "list_of_additional_attributes",
+            }
         )
 
         self.tags = _create_default_resource_collection(
-            ECSTagResource, _client, DescribeTagsRequest,
+            ECSTagResource, _client, _client.describe_tags,
             'Tags.Tag',
+            param_aliases={
+                "Tags": "list_of_tag",
+            }
         )
 
         self.demands = _create_default_resource_collection(
-            ECSDemand, _client, DescribeDemandsRequest,
+            ECSDemand, _client, _client.describe_demands,
             'Demands.Demand',
+            param_aliases={
+                "Tags": "list_of_tag",
+                "DemandStatuss": "list_of_demand_status",
+            }
         )
 
+        self.system_events = _create_resource_collection(
+            ECSSystemEventResource, _client, _client.describe_instance_history_events,
+            'InstanceSystemEventSet.InstanceSystemEventType', 'EventId',
+            param_aliases={
+                'list_of_event_id': 'EventIds',
+                'list_of_event_type': 'InstanceEventType',
+                'list_of_event_cycle_status': 'InstanceEventCycleStatus',
+                'EventIds': 'list_of_event_id',
+                'InstanceEventCycleStatus': 'list_of_instance_event_cycle_status',
+                'InstanceEventType': 'list_of_instance_event_type',
+            }
+        )
+
+    @transfer({"Tags": "list_of_tag", "Arns": "list_of_arn", "DataDisks": "list_of_data_disk", })
     def create_instance(self, **params):
-        request = CreateInstanceRequest()
-        instance_id = _get_response(self._client, request, params, key='InstanceId')
+        _params = _transfer_params(params)
+        response = self._client.create_instance(**_params)
+        instance_id = _new_get_key_in_response(response, 'InstanceId')
         return ECSInstanceResource(instance_id, _client=self._client)
 
+    @transfer({"Tags": "list_of_tag", "Ipv6Addresss": "list_of_ipv6_address",
+               "NetworkInterfaces": "list_of_network_interface",
+               "SecurityGroupIdss": "list_of_security_group_ids", "DataDisks": "list_of_data_disk"})
     def run_instances(self, **params):
-        request = RunInstancesRequest()
-        instance_ids = _get_response(self._client, request, params, 'InstanceIdSets.InstanceIdSet')
-
+        _params = _transfer_params(params)
+        response = self._client.run_instances(**_params)
+        instance_ids = _new_get_key_in_response(response, 'InstanceIdSets.InstanceIdSet')
         instances = []
         for instance_id in instance_ids:
             instance = ECSInstanceResource(instance_id, _client=self._client)
             instances.append(instance)
         return instances
 
+    @transfer({"InstanceIds": "list_of_instance_id"})
     def create_simulated_system_events(self, **params):
-        request = CreateSimulatedSystemEventsRequest()
-        event_ids = _get_response(self._client, request, params, "EventIdSet.EventId")
+        _params = _transfer_params(params)
+        response = self._client.create_simulated_system_events(**_params)
+        event_ids = _new_get_key_in_response(response, 'EventIdSet.EventId')
         events = []
         for event_id in event_ids:
             event = ECSSystemEventResource(event_id, _client=self._client)
             events.append(event)
         return events
-
-    def cancel_simulated_system_events(self, **params):
-        request = CancelSimulatedSystemEventsRequest()
-        _do_request(self._client, request, params)
-
-    def create_disk(self, **params):
-        request = CreateDiskRequest()
-        disk_id = _get_response(self._client, request, params, key='DiskId')
-        return ECSDiskResource(disk_id, _client=self._client)
-
-    def create_image(self, **params):
-        request = CreateImageRequest()
-        image_id = _get_response(self._client, request, params, key='ImageId')
-        return ECSImageResource(image_id, _client=self._client)
-
-    def add_tags(self, **params):
-        request = AddTagsRequest()
-        _do_request(self._client, request, params)
-
-    def remove_tags(self, **params):
-        request = RemoveTagsRequest()
-        _do_request(self._client, request, params)

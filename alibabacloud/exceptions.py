@@ -32,8 +32,8 @@ class HttpErrorException(AlibabaCloudException):
     fmt = '{http_error}'
 
 
-class InvalidProductCode(AlibabaCloudException):
-    fmt = "No endpoint for product '{product_code}'.\n" +\
+class InvalidProductCodeException(AlibabaCloudException):
+    fmt = "No endpoint for product '{product_code}'.\n" + \
           "Please check the product code, " + \
           "or set an endpoint for your request explicitly.\n" + \
           "See " + SDK_ENDPOINT_MANAGEMENT_DOC_HTML + "\n"
@@ -41,6 +41,11 @@ class InvalidProductCode(AlibabaCloudException):
 
 class InvalidRegionIDException(AlibabaCloudException):
     fmt = "No such region '{region_id}'. Please check your region ID."
+
+
+class ConnectionUsingEcsRamRoleException(AlibabaCloudException):
+    fmt = "Max number of attempts exceeded when attempting to retrieve data from metadata service." \
+          "May you need to check your ecs instance"
 
 
 class NoSuchEndpointException(AlibabaCloudException):
@@ -74,7 +79,8 @@ class NoRegionException(AlibabaCloudException):
 
 
 class PartialCredentialsException(AlibabaCloudException):
-    fmt = 'Partial credentials found in {provider}, missing: {cred_var}'
+    # fmt = 'Partial credentials found in {provider}, missing: {cred_var}'
+    fmt = 'Partial credentials found in {provider}, {cred_var} is empty'
 
 
 class NoModuleException(AlibabaCloudException):
@@ -98,7 +104,7 @@ class MaximumRecursionException(AlibabaCloudException):
 class ServerException(Exception):
 
     def __init__(self, error_code, error_message, endpoint=None, service_name=None,
-                 http_status=None, request_id=None, version=None):
+                 http_status=None, request_id=None, api_version=None):
         self.error_code = error_code
         self.error_message = error_message
         self.endpoint = endpoint
@@ -106,7 +112,7 @@ class ServerException(Exception):
         self.service_name = service_name
         self.http_status = http_status
         self.request_id = request_id
-        self.version = version
+        self.api_version = api_version
 
     def __str__(self):
         return "HTTP Status: %s Product:%s Endpoint:%s Error:%s %s RequestID: %s Version:%s" % (
@@ -116,5 +122,5 @@ class ServerException(Exception):
             self.error_code,
             self.error_message,
             self.request_id,
-            self.version
+            self.api_version
         )

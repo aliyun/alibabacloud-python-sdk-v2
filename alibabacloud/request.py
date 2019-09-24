@@ -11,9 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# -*- coding: utf-8 -*-
 
 
 class APIRequest:
+    """
+    `Alibaba Cloud Python` SDK 的请求基类
+    """
 
     def __init__(self, action_name, method, scheme, style, param_position="query"):
         self.action_name = action_name
@@ -58,7 +62,7 @@ class HTTPRequest:
     def __init__(self, accept_format=None, method=None, scheme=None, proxy=None,
                  signature=None, port=None,
                  headers=None, url=None, endpoint=None, timeout=None,
-                 body="", retries=0, credentials=None):
+                 body="", retries=0, credentials=None, verify=None):
         self.accept_format = accept_format
         self.body = body
         self.method = method
@@ -72,6 +76,7 @@ class HTTPRequest:
         self.endpoint = endpoint
         self.retries = retries
         self.credentials = credentials
+        self.verify = verify
 
 
 class HTTPResponse:
@@ -87,7 +92,7 @@ class HTTPResponse:
     @property
     def content(self):
         if self._content is None:
-            self._content = bytes().join(self.raw.stream()) or bytes()
+            self._content = bytes(self.raw, encoding='utf-8') if self.raw else bytes()
         return self._content
 
     @property

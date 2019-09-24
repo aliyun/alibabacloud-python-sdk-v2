@@ -1,5 +1,5 @@
-from base import SDKTestBase, MyServer
 from alibabacloud.clients.ecs_20140526 import EcsClient
+from base import SDKTestBase, MyServer
 
 
 class UserAgentTest(SDKTestBase):
@@ -27,7 +27,7 @@ class UserAgentTest(SDKTestBase):
 
     def test_default_user_agent(self):
         client_config = self.init_temp_client_config()
-        client = EcsClient(client_config)
+        client = EcsClient(client_config, self.init_credentials_provider())
         with MyServer() as s:
             client.describe_instances()
             user_agent = s.headers.get('User-Agent')
@@ -36,7 +36,7 @@ class UserAgentTest(SDKTestBase):
     def test_append_user_agent(self):
         client_config = self.init_temp_client_config()
         client_config.user_agent = 'alibabacloudpythonsdk'
-        client = EcsClient(client_config)
+        client = EcsClient(client_config, self.init_credentials_provider())
         with MyServer() as s:
             client.describe_instances()
             user_agent = s.headers.get('User-Agent')

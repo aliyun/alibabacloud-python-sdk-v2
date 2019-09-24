@@ -19,12 +19,52 @@ from alibabacloud.utils.parameter_validation import verify_params
 
 class CdnClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider)
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config,
+                                    credentials_provider=credentials_provider,
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'Cdn'
         self.api_version = '2018-05-10'
-        self.location_service_code = 'None'
+        self.location_service_code = 'cdn'
         self.location_endpoint_type = 'openAPI'
+
+    def describe_domain_qps_data_by_layer(
+            self,
+            location_name_en=None,
+            start_time=None,
+            isp_name_en=None,
+            layer=None,
+            domain_name=None,
+            end_time=None,
+            owner_id=None,
+            interval=None):
+        api_request = APIRequest('DescribeDomainQpsDataByLayer', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "LocationNameEn": location_name_en,
+            "StartTime": start_time,
+            "IspNameEn": isp_name_en,
+            "Layer": layer,
+            "DomainName": domain_name,
+            "EndTime": end_time,
+            "OwnerId": owner_id,
+            "Interval": interval}
+        return self._handle_request(api_request).result
+
+    def delete_specific_staging_config(
+            self,
+            security_token=None,
+            config_id=None,
+            domain_name=None,
+            owner_id=None):
+        api_request = APIRequest('DeleteSpecificStagingConfig', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "SecurityToken": security_token,
+            "ConfigId": config_id,
+            "DomainName": domain_name,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
 
     def modify_cdn_domain_schdm_by_property(self, domain_name=None, owner_id=None, property_=None):
         api_request = APIRequest('ModifyCdnDomainSchdmByProperty', 'GET', 'http', 'RPC', 'query')
@@ -34,9 +74,18 @@ class CdnClient(AlibabaCloudClient):
             "Property": property_}
         return self._handle_request(api_request).result
 
-    def describe_cdn_https_domain_list(self, owner_id=None):
+    def describe_cdn_https_domain_list(
+            self,
+            page_number=None,
+            page_size=None,
+            keyword=None,
+            owner_id=None):
         api_request = APIRequest('DescribeCdnHttpsDomainList', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {"OwnerId": owner_id}
+        api_request._params = {
+            "PageNumber": page_number,
+            "PageSize": page_size,
+            "Keyword": keyword,
+            "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
     def describe_cdn_domain_by_certificate(self, owner_id=None, ssl_pub=None):
@@ -44,9 +93,75 @@ class CdnClient(AlibabaCloudClient):
         api_request._params = {"OwnerId": owner_id, "SSLPub": ssl_pub}
         return self._handle_request(api_request).result
 
-    def describe_user_cdn_status(self, security_token=None, owner_id=None):
-        api_request = APIRequest('DescribeUserCdnStatus', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {"SecurityToken": security_token, "OwnerId": owner_id}
+    def tag_resources(
+            self,
+            region_id=None,
+            list_of_tag=None,
+            list_of_resource_id=None,
+            owner_id=None,
+            resource_type=None):
+        api_request = APIRequest('TagResources', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "RegionId": region_id,
+            "Tag": list_of_tag,
+            "ResourceId": list_of_resource_id,
+            "OwnerId": owner_id,
+            "ResourceType": resource_type}
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "ResourceId": ('ResourceId', 'list', 'str', None),
+                       }
+        verify_params(api_request._params, repeat_info)
+        return self._handle_request(api_request).result
+
+    def describe_user_tags(self, owner_id=None):
+        api_request = APIRequest('DescribeUserTags', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {"OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def describe_tag_resources(
+            self,
+            region_id=None,
+            scope=None,
+            list_of_tag=None,
+            list_of_resource_id=None,
+            owner_id=None,
+            resource_type=None):
+        api_request = APIRequest('DescribeTagResources', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "RegionId": region_id,
+            "Scope": scope,
+            "Tag": list_of_tag,
+            "ResourceId": list_of_resource_id,
+            "OwnerId": owner_id,
+            "ResourceType": resource_type}
+        repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
+                                                       ('Value', 'str', None, None),
+                                                       ]),
+                       "ResourceId": ('ResourceId', 'list', 'str', None),
+                       }
+        verify_params(api_request._params, repeat_info)
+        return self._handle_request(api_request).result
+
+    def untag_resources(
+            self,
+            region_id=None,
+            list_of_resource_id=None,
+            owner_id=None,
+            resource_type=None,
+            list_of_tag_key=None):
+        api_request = APIRequest('UntagResources', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "RegionId": region_id,
+            "ResourceId": list_of_resource_id,
+            "OwnerId": owner_id,
+            "ResourceType": resource_type,
+            "TagKey": list_of_tag_key}
+        repeat_info = {"ResourceId": ('ResourceId', 'list', 'str', None),
+                       "TagKey": ('TagKey', 'list', 'str', None),
+                       }
+        verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
     def batch_set_cdn_domain_server_certificate(
@@ -148,14 +263,16 @@ class CdnClient(AlibabaCloudClient):
             trigger_arn=None,
             source_arn=None,
             owner_id=None,
-            role_arn=None):
+            role_arn=None,
+            function_arn=None):
         api_request = APIRequest('UpdateFCTrigger', 'GET', 'http', 'RPC', 'body')
         api_request._params = {
             "Notes": notes,
             "TriggerARN": trigger_arn,
             "SourceARN": source_arn,
             "OwnerId": owner_id,
-            "RoleARN": role_arn}
+            "RoleARN": role_arn,
+            "FunctionARN": function_arn}
         return self._handle_request(api_request).result
 
     def set_waiting_room_config(
@@ -812,7 +929,8 @@ class CdnClient(AlibabaCloudClient):
             source_arn=None,
             owner_id=None,
             role_arn=None,
-            event_meta_name=None):
+            event_meta_name=None,
+            function_arn=None):
         api_request = APIRequest('AddFCTrigger', 'GET', 'http', 'RPC', 'body')
         api_request._params = {
             "Notes": notes,
@@ -821,7 +939,8 @@ class CdnClient(AlibabaCloudClient):
             "SourceARN": source_arn,
             "OwnerId": owner_id,
             "RoleARN": role_arn,
-            "EventMetaName": event_meta_name}
+            "EventMetaName": event_meta_name,
+            "FunctionARN": function_arn}
         return self._handle_request(api_request).result
 
     def start_cdn_domain(self, security_token=None, domain_name=None, owner_id=None):
@@ -901,6 +1020,14 @@ class CdnClient(AlibabaCloudClient):
             "EndTime": end_time,
             "OwnerId": owner_id,
             "Interval": interval}
+        return self._handle_request(api_request).result
+
+    def batch_start_cdn_domain(self, security_token=None, domain_names=None, owner_id=None):
+        api_request = APIRequest('BatchStartCdnDomain', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "SecurityToken": security_token,
+            "DomainNames": domain_names,
+            "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
     def modify_file_cache_expired_config(
@@ -1189,6 +1316,14 @@ class CdnClient(AlibabaCloudClient):
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
+    def batch_stop_cdn_domain(self, security_token=None, domain_names=None, owner_id=None):
+        api_request = APIRequest('BatchStopCdnDomain', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "SecurityToken": security_token,
+            "DomainNames": domain_names,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
     def modify_cdn_service(self, security_token=None, internet_charge_type=None, owner_id=None):
         api_request = APIRequest('ModifyCdnService', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -1286,7 +1421,7 @@ class CdnClient(AlibabaCloudClient):
             security_token=None,
             cdn_type=None,
             page_size=None,
-            tag=None):
+            list_of_tag=None):
         api_request = APIRequest('DescribeUserDomains', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "FuncFilter": func_filter,
@@ -1301,7 +1436,7 @@ class CdnClient(AlibabaCloudClient):
             "SecurityToken": security_token,
             "CdnType": cdn_type,
             "PageSize": page_size,
-            "Tag": tag}
+            "Tag": list_of_tag}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
                                                        ]),

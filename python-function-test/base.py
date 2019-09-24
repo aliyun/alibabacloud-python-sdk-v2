@@ -19,10 +19,10 @@ import sys
 import threading
 import time
 
-from alibabacloud import ClientConfig
-from alibabacloud.vendored.six import iteritems
-from alibabacloud.exceptions import ServerException
+from alibabacloud.client import ClientConfig
 from alibabacloud.clients.ram_20150501 import RamClient
+from alibabacloud.exceptions import ServerException
+from alibabacloud.vendored.six import iteritems
 
 # The unittest module got a significant overhaul
 # in 2.7, so if we're in 2.6 we can use the backported
@@ -39,6 +39,8 @@ if sys.version_info[0] == 3:
 else:
     from SimpleHTTPServer import SimpleHTTPRequestHandler
     from BaseHTTPServer import HTTPServer
+
+from alibabacloud.credentials import AccessKeyCredentials
 
 
 def request_helper(client, request, **params):
@@ -126,10 +128,17 @@ class SDKTestBase(TestCase):
     def init_client_config(self, region_id=None):
         if not region_id:
             region_id = self.region_id
-        client_config = ClientConfig(access_key_id=self.access_key_id,
-                                     access_key_secret=self.access_key_secret,
-                                     region_id=region_id, connection_timeout=120)
+        client_config = ClientConfig(region_id=region_id, connection_timeout=120)
         return client_config
+
+    def init_credentials_provider(self):
+        from alibabacloud.credentials import AccessKeyCredentials
+
+        credentials = AccessKeyCredentials(self.access_key_id,
+                                           self.access_key_secret)
+        from alibabacloud.credentials.provider import StaticCredentialsProvider
+        credentials_provider = StaticCredentialsProvider(credentials)
+        return credentials_provider
 
     @staticmethod
     def get_dict_response(string):
@@ -138,7 +147,8 @@ class SDKTestBase(TestCase):
     def _create_default_ram_user(self):
         if self.ram_user_id:
             return
-        ram_client = RamClient(self.client_config)
+        ram_client = RamClient(client_config=self.client_config,
+                               credentials_provider=self.init_credentials_provider())
         response = ram_client.list_users()
         user_list = find_in_response(response, keys=['Users', 'User'])
         for user in user_list:
@@ -152,7 +162,8 @@ class SDKTestBase(TestCase):
     def _attach_default_policy(self):
         if self.ram_policy_attched:
             return
-        ram_client = RamClient(self.client_config)
+        ram_client = RamClient(client_config=self.client_config,
+                               credentials_provider=self.init_credentials_provider())
 
         try:
             ram_client.attach_policy_to_user(policy_type='System',
@@ -170,12 +181,15 @@ class SDKTestBase(TestCase):
     def _create_access_key(self):
         if self.ram_user_access_key_id and self.ram_user_access_key_secret:
             return
-        ram_client = RamClient(self.client_config)
+        ram_client = RamClient(client_config=self.client_config,
+                               credentials_provider=self.init_credentials_provider())
+
         response = ram_client.list_access_keys(user_name=self.default_ram_user_name)
 
         for access_key in find_in_response(response, keys=['AccessKeys', 'AccessKey']):
             access_key_id = access_key['AccessKeyId']
-            ram_client.delete_access_key(user_access_key_id=access_key_id, user_name=self.default_ram_user_name)
+            ram_client.delete_access_key(user_access_key_id=access_key_id,
+                                         user_name=self.default_ram_user_name)
 
         response = ram_client.create_access_key(user_name=self.default_ram_user_name)
         self.ram_user_access_key_id = find_in_response(response, keys=['AccessKey', 'AccessKeyId'])
@@ -184,7 +198,9 @@ class SDKTestBase(TestCase):
             keys=['AccessKey', 'AccessKeySecret'])
 
     def _delete_access_key(self):
-        ram_client = RamClient(self.client_config)
+        ram_client = RamClient(client_config=self.client_config,
+                               credentials_provider=self.init_credentials_provider())
+
         ram_client.delete_access_key(user_name=self.default_ram_user_name,
                                      user_access_key_id=self.ram_user_access_key_id)
 
@@ -192,16 +208,21 @@ class SDKTestBase(TestCase):
         self._create_default_ram_user()
         # self._attach_default_policy()
         self._create_access_key()
-        sub_client_config = ClientConfig(access_key_id=self.ram_user_access_key_id,
-                                         access_key_secret=self.ram_user_access_key_secret,
-                                         region_id=self.region_id,
+        sub_client_config = ClientConfig(region_id=self.region_id,
                                          connection_timeout=120)
-        return sub_client_config
+
+        credentials = AccessKeyCredentials(self.ram_user_access_key_id,
+                                           self.ram_user_access_key_secret, )
+        from alibabacloud.credentials.provider import StaticCredentialsProvider
+        sub_credentials_provider = StaticCredentialsProvider(credentials)
+
+        return sub_client_config, sub_credentials_provider
 
     def _create_default_ram_role(self):
         if self.ram_role_arn:
             return
-        ram_client = RamClient(self.client_config)
+        ram_client = RamClient(client_config=self.client_config,
+                               credentials_provider=self.init_credentials_provider())
         response = ram_client.list_roles()
         for role in find_in_response(response, keys=['Roles', 'Role']):
             role_name = role['RoleName']

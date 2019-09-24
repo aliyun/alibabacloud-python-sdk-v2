@@ -12,11 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+import os
 import re
 import sys
-import os
-import json
-from aliyunsdkcore.client import AcsClient
 import alibabacloud
 import alibabacloud.utils
 
@@ -42,11 +41,7 @@ class SDKTestBase(TestCase):
         self.access_key_id = self._read_key_from_env_or_config("ACCESS_KEY_ID")
         self.access_key_secret = self._read_key_from_env_or_config("ACCESS_KEY_SECRET")
         self.region_id = self._read_key_from_env_or_config("REGION_ID")
-        self.client = self._init_client()
         self.ecs = self._get_ecs_resource()
-
-    def _init_client(self):
-        return AcsClient(self.access_key_id, self.access_key_secret, self.region_id)
 
     def _convert_camel_to_snake(self, name):
         # covert name from camel case to snake case
@@ -68,13 +63,14 @@ class SDKTestBase(TestCase):
 
         raise Exception("Failed to find sdk config: " + key_name)
 
-    def _get_resource(self, *args):
-        return alibabacloud.get_resource(*args, access_key_id=self.access_key_id,
-                                         access_key_secret=self.access_key_secret,
-                                         region_id=self.region_id)
+    def _get_resource(self, *args, **kwargs):
+        ecs_resource = alibabacloud.get_resource(*args, access_key_id=self.access_key_id,
+                                                 access_key_secret=self.access_key_secret,
+                                                 region_id=self.region_id, **kwargs)
+        return ecs_resource
 
-    def _get_ecs_resource(self):
-        return self._get_resource("ecs")
+    def _get_ecs_resource(self, **kwargs):
+        return self._get_resource("ecs", **kwargs)
 
     def create_simple_instance(self):
         instance = self.ecs.create_instance(

@@ -16,13 +16,9 @@
 from setuptools import setup, find_packages
 
 PACKAGE = "alibaba-cloud-python-sdk-v2"
-VERSION = "0.4.2"
+VERSION = __import__("alibabacloud").__version__
 
 requires = [
-    'aliyun-python-sdk-core>=2.11.4',
-    'aliyun-python-sdk-ecs>=4.16.3',
-    'aliyun-python-sdk-vpc',
-    'aliyun-python-sdk-slb',
     'jmespath>=0.9.3,<1.0.0',
     'mock>=2.0.0',
 ]
@@ -35,7 +31,8 @@ setup(
     author_email='alibaba-cloud-sdk-dev-team@list.alibaba-inc.com',
     url='https://github.com/aliyun/alibabacloud-python-sdk-v2',
     packages=find_packages(exclude=['tests*']),
-    include_package_data=True,
+    package_data={'alibabacloud': ['data/*.json'],
+                  'alibabacloud.vendored.requests.packages.certifi': ['cacert.pem']},
     install_requires=requires,
     license="Apache License 2.0",
     classifiers=[
@@ -44,7 +41,6 @@ setup(
         'Natural Language :: English',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',

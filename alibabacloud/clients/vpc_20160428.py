@@ -19,17 +19,94 @@ from alibabacloud.utils.parameter_validation import verify_params
 
 class VpcClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider)
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config,
+                                    credentials_provider=credentials_provider,
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'Vpc'
         self.api_version = '2016-04-28'
         self.location_service_code = 'vpc'
         self.location_endpoint_type = 'openAPI'
 
+    def describe_eip_gateway_info(
+            self,
+            resource_owner_id=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            instance_id=None,
+            region_id=None):
+        api_request = APIRequest('DescribeEipGatewayInfo', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "InstanceId": instance_id,
+            "RegionId": region_id}
+        return self._handle_request(api_request).result
+
+    def modify_bgp_peer_attribute(
+            self,
+            resource_owner_id=None,
+            enable_bfd=None,
+            region_id=None,
+            resource_owner_account=None,
+            client_token=None,
+            owner_account=None,
+            bgp_group_id=None,
+            bgp_peer_id=None,
+            owner_id=None,
+            peer_ip_address=None):
+        api_request = APIRequest('ModifyBgpPeerAttribute', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "EnableBfd": enable_bfd,
+            "RegionId": region_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "ClientToken": client_token,
+            "OwnerAccount": owner_account,
+            "BgpGroupId": bgp_group_id,
+            "BgpPeerId": bgp_peer_id,
+            "OwnerId": owner_id,
+            "PeerIpAddress": peer_ip_address}
+        return self._handle_request(api_request).result
+
+    def describe_vpn_ssl_server_logs(
+            self,
+            resource_owner_id=None,
+            minute_period=None,
+            resource_owner_account=None,
+            region_id=None,
+            owner_account=None,
+            page_size=None,
+            vpn_ssl_server_id=None,
+            from_=None,
+            to=None,
+            owner_id=None,
+            page_number=None):
+        api_request = APIRequest('DescribeVpnSslServerLogs', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "MinutePeriod": minute_period,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "OwnerAccount": owner_account,
+            "PageSize": page_size,
+            "VpnSslServerId": vpn_ssl_server_id,
+            "From": from_,
+            "To": to,
+            "OwnerId": owner_id,
+            "PageNumber": page_number}
+        return self._handle_request(api_request).result
+
     def modify_express_cloud_connection_bandwidth(
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             bandwidth=None,
             owner_account=None,
             owner_id=None,
@@ -39,6 +116,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -49,6 +127,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             name=None,
             description=None,
@@ -59,6 +138,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "Description": description,
@@ -68,18 +148,20 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_express_cloud_connections(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
             page_number=None):
         api_request = APIRequest('DescribeExpressCloudConnections', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -107,6 +189,7 @@ class VpcClient(AlibabaCloudClient):
             contact_mail=None,
             contact_tel=None,
             idc_sp=None,
+            region_id=None,
             name=None):
         api_request = APIRequest('CreateExpressCloudConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -124,31 +207,34 @@ class VpcClient(AlibabaCloudClient):
             "ContactMail": contact_mail,
             "ContactTel": contact_tel,
             "IdcSP": idc_sp,
+            "RegionId": region_id,
             "Name": name}
         return self._handle_request(api_request).result
 
     def update_network_acl_entries(
             self,
             resource_owner_id=None,
-            egress_acl_entries=None,
+            list_of_egress_acl_entries=None,
             client_token=None,
+            region_id=None,
             network_acl_id=None,
             update_ingress_acl_entries=None,
             resource_owner_account=None,
             update_egress_acl_entries=None,
             owner_id=None,
-            ingress_acl_entries=None):
+            list_of_ingress_acl_entries=None):
         api_request = APIRequest('UpdateNetworkAclEntries', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "EgressAclEntries": egress_acl_entries,
+            "EgressAclEntries": list_of_egress_acl_entries,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "NetworkAclId": network_acl_id,
             "UpdateIngressAclEntries": update_ingress_acl_entries,
             "ResourceOwnerAccount": resource_owner_account,
             "UpdateEgressAclEntries": update_egress_acl_entries,
             "OwnerId": owner_id,
-            "IngressAclEntries": ingress_acl_entries}
+            "IngressAclEntries": list_of_ingress_acl_entries}
         repeat_info = {"EgressAclEntries": ('EgressAclEntries',
                                             'list',
                                             'dict',
@@ -229,16 +315,18 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             network_acl_id=None,
-            resource=None,
+            list_of_resource=None,
             resource_owner_account=None,
             owner_id=None):
         api_request = APIRequest('UnassociateNetworkAcl', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "NetworkAclId": network_acl_id,
-            "Resource": resource,
+            "Resource": list_of_resource,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id}
         repeat_info = {
@@ -253,6 +341,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             client_token=None,
             description=None,
+            region_id=None,
             network_acl_id=None,
             resource_owner_account=None,
             network_acl_name=None,
@@ -262,6 +351,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
             "Description": description,
+            "RegionId": region_id,
             "NetworkAclId": network_acl_id,
             "ResourceOwnerAccount": resource_owner_account,
             "NetworkAclName": network_acl_name,
@@ -273,6 +363,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             client_token=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             network_acl_id=None,
             resource_id=None,
@@ -286,6 +377,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "NetworkAclId": network_acl_id,
             "ResourceId": resource_id,
@@ -300,6 +392,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             network_acl_id=None,
             resource_owner_account=None,
             owner_id=None):
@@ -307,6 +400,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "NetworkAclId": network_acl_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id}
@@ -316,6 +410,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             network_acl_id=None,
             resource_owner_account=None,
             owner_id=None):
@@ -323,6 +418,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "NetworkAclId": network_acl_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id}
@@ -333,6 +429,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             client_token=None,
             description=None,
+            region_id=None,
             resource_owner_account=None,
             network_acl_name=None,
             owner_id=None,
@@ -342,6 +439,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
             "Description": description,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "NetworkAclName": network_acl_name,
             "OwnerId": owner_id,
@@ -352,6 +450,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             network_acl_id=None,
             source_network_acl_id=None,
             resource_owner_account=None,
@@ -360,6 +459,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "NetworkAclId": network_acl_id,
             "SourceNetworkAclId": source_network_acl_id,
             "ResourceOwnerAccount": resource_owner_account,
@@ -370,16 +470,18 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             network_acl_id=None,
-            resource=None,
+            list_of_resource=None,
             resource_owner_account=None,
             owner_id=None):
         api_request = APIRequest('AssociateNetworkAcl', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "NetworkAclId": network_acl_id,
-            "Resource": resource,
+            "Resource": list_of_resource,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id}
         repeat_info = {
@@ -394,6 +496,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             bandwidth=None,
             owner_account=None,
             eip_id=None,
@@ -408,6 +511,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "OwnerAccount": owner_account,
             "EipId": eip_id,
@@ -419,6 +523,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             eip_id=None,
             owner_id=None):
@@ -432,6 +537,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "EipId": eip_id,
             "OwnerId": owner_id}
@@ -450,7 +556,9 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             route_dest=None,
             next_hop=None,
-            publish_vpc=None):
+            publish_vpc=None,
+            region_id=None,
+            overlay_mode=None):
         api_request = APIRequest('CreateVpnPbrRouteEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "RouteSource": route_source,
@@ -464,7 +572,9 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "RouteDest": route_dest,
             "NextHop": next_hop,
-            "PublishVpc": publish_vpc}
+            "PublishVpc": publish_vpc,
+            "RegionId": region_id,
+            "OverlayMode": overlay_mode}
         return self._handle_request(api_request).result
 
     def create_vpn_route_entry(
@@ -479,7 +589,9 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             route_dest=None,
             next_hop=None,
-            publish_vpc=None):
+            publish_vpc=None,
+            region_id=None,
+            overlay_mode=None):
         api_request = APIRequest('CreateVpnRouteEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
@@ -492,7 +604,9 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "RouteDest": route_dest,
             "NextHop": next_hop,
-            "PublishVpc": publish_vpc}
+            "PublishVpc": publish_vpc,
+            "RegionId": region_id,
+            "OverlayMode": overlay_mode}
         return self._handle_request(api_request).result
 
     def delete_vpn_pbr_route_entry(
@@ -506,7 +620,9 @@ class VpcClient(AlibabaCloudClient):
             vpn_gateway_id=None,
             owner_id=None,
             route_dest=None,
-            next_hop=None):
+            next_hop=None,
+            region_id=None,
+            overlay_mode=None):
         api_request = APIRequest('DeleteVpnPbrRouteEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "RouteSource": route_source,
@@ -518,37 +634,44 @@ class VpcClient(AlibabaCloudClient):
             "VpnGatewayId": vpn_gateway_id,
             "OwnerId": owner_id,
             "RouteDest": route_dest,
-            "NextHop": next_hop}
+            "NextHop": next_hop,
+            "RegionId": region_id,
+            "OverlayMode": overlay_mode}
         return self._handle_request(api_request).result
 
     def delete_vpn_route_entry(
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             weight=None,
             vpn_gateway_id=None,
             owner_id=None,
             route_dest=None,
-            next_hop=None):
+            next_hop=None,
+            overlay_mode=None):
         api_request = APIRequest('DeleteVpnRouteEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "Weight": weight,
             "VpnGatewayId": vpn_gateway_id,
             "OwnerId": owner_id,
             "RouteDest": route_dest,
-            "NextHop": next_hop}
+            "NextHop": next_hop,
+            "OverlayMode": overlay_mode}
         return self._handle_request(api_request).result
 
     def describe_vpn_route_entries(
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             vpn_gateway_id=None,
@@ -558,6 +681,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "VpnGatewayId": vpn_gateway_id,
@@ -569,6 +693,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             vpn_gateway_id=None,
@@ -578,6 +703,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "VpnGatewayId": vpn_gateway_id,
@@ -590,6 +716,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             publish_vpc=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             vpn_gateway_id=None,
@@ -602,6 +729,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "PublishVpc": publish_vpc,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "VpnGatewayId": vpn_gateway_id,
@@ -622,7 +750,9 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             new_weight=None,
             route_dest=None,
-            next_hop=None):
+            next_hop=None,
+            region_id=None,
+            overlay_mode=None):
         api_request = APIRequest('ModifyVpnRouteEntryWeight', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
@@ -634,7 +764,9 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "NewWeight": new_weight,
             "RouteDest": route_dest,
-            "NextHop": next_hop}
+            "NextHop": next_hop,
+            "RegionId": region_id,
+            "OverlayMode": overlay_mode}
         return self._handle_request(api_request).result
 
     def modify_vpn_pbr_route_entry_weight(
@@ -649,7 +781,9 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             new_weight=None,
             route_dest=None,
-            next_hop=None):
+            next_hop=None,
+            region_id=None,
+            overlay_mode=None):
         api_request = APIRequest('ModifyVpnPbrRouteEntryWeight', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "RouteSource": route_source,
@@ -662,13 +796,16 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "NewWeight": new_weight,
             "RouteDest": route_dest,
-            "NextHop": next_hop}
+            "NextHop": next_hop,
+            "RegionId": region_id,
+            "OverlayMode": overlay_mode}
         return self._handle_request(api_request).result
 
     def describe_physical_connection_loa(
             self,
             resource_owner_id=None,
             instance_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -677,6 +814,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -690,6 +828,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             port_type=None,
             auto_pay=None,
+            region_id=None,
             client_token=None,
             resource_owner_account=None,
             owner_account=None,
@@ -703,6 +842,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "PortType": port_type,
             "AutoPay": auto_pay,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -715,6 +855,7 @@ class VpcClient(AlibabaCloudClient):
             period=None,
             resource_owner_id=None,
             auto_pay=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -728,6 +869,7 @@ class VpcClient(AlibabaCloudClient):
             "Period": period,
             "ResourceOwnerId": resource_owner_id,
             "AutoPay": auto_pay,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
@@ -745,6 +887,7 @@ class VpcClient(AlibabaCloudClient):
             instance_id=None,
             client_token=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('CompletePhysicalConnectionLOA', 'GET', 'http', 'RPC', 'query')
@@ -755,6 +898,7 @@ class VpcClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "ClientToken": client_token,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -771,9 +915,10 @@ class VpcClient(AlibabaCloudClient):
             construction_time=None,
             owner_id=None,
             instance_id=None,
+            region_id=None,
             company_name=None,
             si=None,
-            pm_info=None):
+            list_of_pm_info=None):
         api_request = APIRequest('ApplyPhysicalConnectionLOA', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
@@ -786,9 +931,10 @@ class VpcClient(AlibabaCloudClient):
             "ConstructionTime": construction_time,
             "OwnerId": owner_id,
             "InstanceId": instance_id,
+            "RegionId": region_id,
             "CompanyName": company_name,
             "Si": si,
-            "PMInfo": pm_info}
+            "PMInfo": list_of_pm_info}
         repeat_info = {"PMInfo": ('PMInfo',
                                   'list',
                                   'dict',
@@ -821,6 +967,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
             owner_id=None):
@@ -828,6 +975,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id}
@@ -836,6 +984,7 @@ class VpcClient(AlibabaCloudClient):
     def modify_route_entry(
             self,
             route_entry_name=None,
+            region_id=None,
             route_entry_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -843,17 +992,55 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('ModifyRouteEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "RouteEntryName": route_entry_name,
+            "RegionId": region_id,
             "RouteEntryId": route_entry_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def create_i_pv6_translator_acl_list(
+    def describe_route_entry_list(
+            self,
+            resource_owner_id=None,
+            route_entry_name=None,
+            region_id=None,
+            next_token=None,
+            route_entry_type=None,
+            ip_version=None,
+            next_hop_id=None,
+            next_hop_type=None,
+            route_table_id=None,
+            resource_owner_account=None,
+            destination_cidr_block=None,
+            owner_account=None,
+            owner_id=None,
+            max_result=None,
+            route_entry_id=None):
+        api_request = APIRequest('DescribeRouteEntryList', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "RouteEntryName": route_entry_name,
+            "RegionId": region_id,
+            "NextToken": next_token,
+            "RouteEntryType": route_entry_type,
+            "IpVersion": ip_version,
+            "NextHopId": next_hop_id,
+            "NextHopType": next_hop_type,
+            "RouteTableId": route_table_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "DestinationCidrBlock": destination_cidr_block,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "MaxResult": max_result,
+            "RouteEntryId": route_entry_id}
+        return self._handle_request(api_request).result
+
+    def create_ipv6_translator_acl_list(
             self,
             resource_owner_id=None,
             acl_name=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             owner_id=None):
@@ -862,17 +1049,19 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "AclName": acl_name,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def delete_i_pv6_translator_acl_list(
+    def delete_ipv6_translator_acl_list(
             self,
             acl_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DeleteIPv6TranslatorAclList', 'GET', 'http', 'RPC', 'query')
@@ -881,16 +1070,18 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def add_i_pv6_translator_acl_list_entry(
+    def add_ipv6_translator_acl_list_entry(
             self,
             acl_id=None,
             resource_owner_id=None,
             acl_entry_ip=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             acl_entry_comment=None,
             owner_id=None):
@@ -900,17 +1091,19 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "AclEntryIp": acl_entry_ip,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AclEntryComment": acl_entry_comment,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def describe_i_pv6_translator_acl_lists(
+    def describe_ipv6_translator_acl_lists(
             self,
             acl_id=None,
             resource_owner_id=None,
             acl_name=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
@@ -921,18 +1114,20 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "AclName": acl_name,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
         return self._handle_request(api_request).result
 
-    def modify_i_pv6_translator_acl_attribute(
+    def modify_ipv6_translator_acl_attribute(
             self,
             acl_id=None,
             resource_owner_id=None,
             acl_name=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             owner_id=None):
@@ -942,17 +1137,19 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "AclName": acl_name,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def remove_i_pv6_translator_acl_list_entry(
+    def remove_ipv6_translator_acl_list_entry(
             self,
             acl_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             acl_entry_id=None):
@@ -962,16 +1159,18 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "AclEntryId": acl_entry_id}
         return self._handle_request(api_request).result
 
-    def describe_i_pv6_translator_acl_list_attributes(
+    def describe_ipv6_translator_acl_list_attributes(
             self,
             acl_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
@@ -986,17 +1185,19 @@ class VpcClient(AlibabaCloudClient):
             "AclId": acl_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
         return self._handle_request(api_request).result
 
-    def modify_i_pv6_translator_acl_list_entry(
+    def modify_ipv6_translator_acl_list_entry(
             self,
             acl_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             acl_entry_comment=None,
             owner_id=None,
@@ -1006,10 +1207,71 @@ class VpcClient(AlibabaCloudClient):
             "AclId": acl_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AclEntryComment": acl_entry_comment,
             "OwnerId": owner_id,
             "AclEntryId": acl_entry_id}
+        return self._handle_request(api_request).result
+
+    def un_tag_resources(
+            self,
+            list_of_resource_id=None,
+            region_id=None,
+            list_of_tag_key=None,
+            resource_type=None):
+        api_request = APIRequest('UnTagResources', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceId": list_of_resource_id,
+            "RegionId": region_id,
+            "TagKey": list_of_tag_key,
+            "ResourceType": resource_type}
+        repeat_info = {"ResourceId": ('ResourceId', 'list', 'str', None),
+                       "TagKey": ('TagKey', 'list', 'str', None),
+                       }
+        verify_params(api_request._params, repeat_info)
+        return self._handle_request(api_request).result
+
+    def tag_resources(
+            self,
+            list_of_resource_id=None,
+            region_id=None,
+            list_of_tag=None,
+            resource_type=None):
+        api_request = APIRequest('TagResources', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceId": list_of_resource_id,
+            "RegionId": region_id,
+            "Tag": list_of_tag,
+            "ResourceType": resource_type}
+        repeat_info = {"ResourceId": ('ResourceId', 'list', 'str', None),
+                       "Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
+                       }
+        verify_params(api_request._params, repeat_info)
+        return self._handle_request(api_request).result
+
+    def list_tag_resources(
+            self,
+            list_of_resource_id=None,
+            region_id=None,
+            next_token=None,
+            list_of_tag=None,
+            resource_type=None):
+        api_request = APIRequest('ListTagResources', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceId": list_of_resource_id,
+            "RegionId": region_id,
+            "NextToken": next_token,
+            "Tag": list_of_tag,
+            "ResourceType": resource_type}
+        repeat_info = {"ResourceId": ('ResourceId', 'list', 'str', None),
+                       "Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
+                                                       ('Key', 'str', None, None),
+                                                       ]),
+                       }
+        verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
     def modify_ipv6_internet_bandwidth(
@@ -1017,6 +1279,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             client_token=None,
             ipv6_internet_bandwidth_id=None,
+            region_id=None,
             bandwidth=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1027,6 +1290,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
             "Ipv6InternetBandwidthId": ipv6_internet_bandwidth_id,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1039,6 +1303,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             client_token=None,
             spec=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1048,6 +1313,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
             "Spec": spec,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1058,6 +1324,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             description=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1067,6 +1334,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "Description": description,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1078,6 +1346,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             description=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1087,6 +1356,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "Description": description,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1098,6 +1368,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1109,6 +1380,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1121,6 +1393,7 @@ class VpcClient(AlibabaCloudClient):
     def describe_ipv6_gateway_attribute(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1128,6 +1401,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('DescribeIpv6GatewayAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1139,6 +1413,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             page_number=None,
             ipv6_egress_only_rule_id=None,
+            region_id=None,
             page_size=None,
             instance_type=None,
             resource_owner_account=None,
@@ -1152,6 +1427,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
             "Ipv6EgressOnlyRuleId": ipv6_egress_only_rule_id,
+            "RegionId": region_id,
             "PageSize": page_size,
             "InstanceType": instance_type,
             "ResourceOwnerAccount": resource_owner_account,
@@ -1168,12 +1444,13 @@ class VpcClient(AlibabaCloudClient):
             ipv6_internet_bandwidth_id=None,
             network_type=None,
             page_number=None,
+            region_id=None,
             associated_instance_type=None,
             page_size=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            v_switch_id=None,
+            vswitch_id=None,
             ipv6_address_id=None,
             vpc_id=None,
             name=None,
@@ -1185,12 +1462,13 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6InternetBandwidthId": ipv6_internet_bandwidth_id,
             "NetworkType": network_type,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "AssociatedInstanceType": associated_instance_type,
             "PageSize": page_size,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "Ipv6AddressId": ipv6_address_id,
             "VpcId": vpc_id,
             "Name": name,
@@ -1202,6 +1480,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             ipv6_internet_bandwidth_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1210,6 +1489,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "Ipv6InternetBandwidthId": ipv6_internet_bandwidth_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1219,6 +1499,7 @@ class VpcClient(AlibabaCloudClient):
     def delete_ipv6_gateway(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1226,6 +1507,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteIpv6Gateway', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1237,6 +1519,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             client_token=None,
             ipv6_egress_only_rule_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None):
@@ -1245,6 +1528,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
             "Ipv6EgressOnlyRuleId": ipv6_egress_only_rule_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -1256,6 +1540,7 @@ class VpcClient(AlibabaCloudClient):
             client_token=None,
             description=None,
             spec=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1267,6 +1552,7 @@ class VpcClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "Description": description,
             "Spec": spec,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1279,6 +1565,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             client_token=None,
             description=None,
+            region_id=None,
             instance_type=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1291,6 +1578,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
             "Description": description,
+            "RegionId": region_id,
             "InstanceType": instance_type,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1304,6 +1592,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             bandwidth=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1315,6 +1604,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1324,27 +1614,10 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6GatewayId": ipv6_gateway_id}
         return self._handle_request(api_request).result
 
-    def describe_physical_connection_order(
-            self,
-            resource_owner_id=None,
-            resource_owner_account=None,
-            client_token=None,
-            physical_connection_id=None,
-            owner_account=None,
-            owner_id=None):
-        api_request = APIRequest('DescribePhysicalConnectionOrder', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {
-            "ResourceOwnerId": resource_owner_id,
-            "ResourceOwnerAccount": resource_owner_account,
-            "ClientToken": client_token,
-            "PhysicalConnectionId": physical_connection_id,
-            "OwnerAccount": owner_account,
-            "OwnerId": owner_id}
-        return self._handle_request(api_request).result
-
     def delete_express_connect(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -1354,6 +1627,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteExpressConnect', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -1362,7 +1636,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def create_i_pv6_translator(
+    def create_ipv6_translator(
             self,
             resource_owner_id=None,
             auto_pay=None,
@@ -1373,6 +1647,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             spec=None,
             duration=None,
+            region_id=None,
             name=None,
             pay_type=None,
             pricing_cycle=None):
@@ -1387,12 +1662,13 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Spec": spec,
             "Duration": duration,
+            "RegionId": region_id,
             "Name": name,
             "PayType": pay_type,
             "PricingCycle": pricing_cycle}
         return self._handle_request(api_request).result
 
-    def describe_i_pv6_translators(
+    def describe_ipv6_translators(
             self,
             business_status=None,
             resource_owner_id=None,
@@ -1403,6 +1679,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             spec=None,
             page_number=None,
+            region_id=None,
             name=None,
             page_size=None,
             ipv6_translator_id=None,
@@ -1419,6 +1696,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Spec": spec,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "Name": name,
             "PageSize": page_size,
             "Ipv6TranslatorId": ipv6_translator_id,
@@ -1426,10 +1704,11 @@ class VpcClient(AlibabaCloudClient):
             "Status": status}
         return self._handle_request(api_request).result
 
-    def modify_i_pv6_translator_attribute(
+    def modify_ipv6_translator_attribute(
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             name=None,
@@ -1440,6 +1719,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "Name": name,
@@ -1448,11 +1728,12 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def modify_i_pv6_translator_bandwidth(
+    def modify_ipv6_translator_bandwidth(
             self,
             resource_owner_id=None,
             auto_pay=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             bandwidth=None,
             owner_account=None,
@@ -1463,6 +1744,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "AutoPay": auto_pay,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "Bandwidth": bandwidth,
             "OwnerAccount": owner_account,
@@ -1470,7 +1752,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def create_i_pv6_translator_entry(
+    def create_ipv6_translator_entry(
             self,
             backend_ipv4_port=None,
             acl_id=None,
@@ -1484,6 +1766,7 @@ class VpcClient(AlibabaCloudClient):
             acl_type=None,
             allocate_ipv6_port=None,
             entry_description=None,
+            region_id=None,
             backend_ipv4_addr=None,
             trans_protocol=None,
             ipv6_translator_id=None):
@@ -1501,17 +1784,19 @@ class VpcClient(AlibabaCloudClient):
             "AclType": acl_type,
             "AllocateIpv6Port": allocate_ipv6_port,
             "EntryDescription": entry_description,
+            "RegionId": region_id,
             "BackendIpv4Addr": backend_ipv4_addr,
             "TransProtocol": trans_protocol,
             "Ipv6TranslatorId": ipv6_translator_id}
         return self._handle_request(api_request).result
 
-    def delete_i_pv6_translator_entry(
+    def delete_ipv6_translator_entry(
             self,
             resource_owner_id=None,
             ipv6_translator_entry_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             ipv6_translator_id=None,
             owner_id=None):
@@ -1521,12 +1806,13 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6TranslatorEntryId": ipv6_translator_entry_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Ipv6TranslatorId": ipv6_translator_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def modify_i_pv6_translator_entry(
+    def modify_ipv6_translator_entry(
             self,
             backend_ipv4_port=None,
             acl_id=None,
@@ -1541,6 +1827,7 @@ class VpcClient(AlibabaCloudClient):
             acl_type=None,
             allocate_ipv6_port=None,
             entry_description=None,
+            region_id=None,
             backend_ipv4_addr=None,
             trans_protocol=None):
         api_request = APIRequest('ModifyIPv6TranslatorEntry', 'GET', 'http', 'RPC', 'query')
@@ -1558,11 +1845,12 @@ class VpcClient(AlibabaCloudClient):
             "AclType": acl_type,
             "AllocateIpv6Port": allocate_ipv6_port,
             "EntryDescription": entry_description,
+            "RegionId": region_id,
             "BackendIpv4Addr": backend_ipv4_addr,
             "TransProtocol": trans_protocol}
         return self._handle_request(api_request).result
 
-    def describe_i_pv6_translator_entries(
+    def describe_ipv6_translator_entries(
             self,
             backend_ipv4_port=None,
             acl_id=None,
@@ -1578,6 +1866,7 @@ class VpcClient(AlibabaCloudClient):
             page_number=None,
             acl_type=None,
             allocate_ipv6_port=None,
+            region_id=None,
             page_size=None,
             backend_ipv4_addr=None,
             trans_protocol=None,
@@ -1598,17 +1887,19 @@ class VpcClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "AclType": acl_type,
             "AllocateIpv6Port": allocate_ipv6_port,
+            "RegionId": region_id,
             "PageSize": page_size,
             "BackendIpv4Addr": backend_ipv4_addr,
             "TransProtocol": trans_protocol,
             "Ipv6TranslatorId": ipv6_translator_id}
         return self._handle_request(api_request).result
 
-    def delete_i_pv6_translator(
+    def delete_ipv6_translator(
             self,
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             ipv6_translator_id=None,
             owner_id=None):
@@ -1617,6 +1908,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Ipv6TranslatorId": ipv6_translator_id,
             "OwnerId": owner_id}
@@ -1626,6 +1918,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             description=None,
             owner_id=None,
@@ -1635,6 +1928,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id,
@@ -1654,6 +1948,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             resource_type=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             traffic_type=None,
             flow_log_id=None,
@@ -1671,6 +1966,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "ResourceType": resource_type,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "TrafficType": traffic_type,
             "FlowLogId": flow_log_id,
@@ -1682,6 +1978,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             flow_log_id=None):
@@ -1689,6 +1986,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "FlowLogId": flow_log_id}
@@ -1698,6 +1996,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             flow_log_id=None):
@@ -1705,6 +2004,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "FlowLogId": flow_log_id}
@@ -1721,6 +2021,7 @@ class VpcClient(AlibabaCloudClient):
             description=None,
             owner_id=None,
             resource_type=None,
+            region_id=None,
             traffic_type=None,
             flow_log_name=None):
         api_request = APIRequest('CreateFlowLog', 'GET', 'http', 'RPC', 'query')
@@ -1734,6 +2035,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
             "ResourceType": resource_type,
+            "RegionId": region_id,
             "TrafficType": traffic_type,
             "FlowLogName": flow_log_name}
         return self._handle_request(api_request).result
@@ -1742,6 +2044,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             flow_log_id=None):
@@ -1749,6 +2052,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "FlowLogId": flow_log_id}
@@ -1758,25 +2062,28 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             route_table_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            v_switch_id=None):
+            vswitch_id=None):
         api_request = APIRequest('UnassociateRouteTable', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "RouteTableId": route_table_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id}
+            "VSwitchId": vswitch_id}
         return self._handle_request(api_request).result
 
     def delete_route_table(
             self,
             resource_owner_id=None,
+            region_id=None,
             route_table_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1784,6 +2091,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteRouteTable', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "RouteTableId": route_table_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1796,6 +2104,7 @@ class VpcClient(AlibabaCloudClient):
             client_token=None,
             description=None,
             route_table_name=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1806,6 +2115,7 @@ class VpcClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "Description": description,
             "RouteTableName": route_table_name,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1816,20 +2126,22 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             route_table_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            v_switch_id=None):
+            vswitch_id=None):
         api_request = APIRequest('AssociateRouteTable', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "RouteTableId": route_table_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id}
+            "VSwitchId": vswitch_id}
         return self._handle_request(api_request).result
 
     def create_vpn_gateway(
@@ -1844,6 +2156,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             enable_ssl=None,
             ssl_connections=None,
+            region_id=None,
             vpc_id=None,
             name=None,
             instance_charge_type=None):
@@ -1859,9 +2172,32 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "EnableSsl": enable_ssl,
             "SslConnections": ssl_connections,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "Name": name,
             "InstanceChargeType": instance_charge_type}
+        return self._handle_request(api_request).result
+
+    def move_resource_group(
+            self,
+            resource_owner_id=None,
+            resource_id=None,
+            new_resource_group_id=None,
+            resource_owner_account=None,
+            region_id=None,
+            owner_account=None,
+            owner_id=None,
+            resource_type=None):
+        api_request = APIRequest('MoveResourceGroup', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ResourceId": resource_id,
+            "NewResourceGroupId": new_resource_group_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "ResourceType": resource_type}
         return self._handle_request(api_request).result
 
     def revoke_instance_from_cen(
@@ -1869,6 +2205,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             cen_id=None,
             client_token=None,
             owner_account=None,
@@ -1880,6 +2217,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "CenId": cen_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -1893,6 +2231,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             cen_id=None,
             client_token=None,
             owner_account=None,
@@ -1904,6 +2243,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "CenId": cen_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -1918,6 +2258,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             instance_type=None,
@@ -1928,6 +2269,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "InstanceType": instance_type,
@@ -1946,6 +2288,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             ssl_vpn_server_id=None,
             local_subnet=None,
+            region_id=None,
             port=None,
             proto=None,
             name=None):
@@ -1961,6 +2304,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "SslVpnServerId": ssl_vpn_server_id,
             "LocalSubnet": local_subnet,
+            "RegionId": region_id,
             "Port": port,
             "Proto": proto,
             "Name": name}
@@ -1971,6 +2315,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             name=None,
             owner_id=None,
@@ -1980,6 +2325,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "OwnerId": owner_id,
@@ -1991,6 +2337,7 @@ class VpcClient(AlibabaCloudClient):
             ssl_vpn_server_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             name=None,
             page_size=None,
@@ -2002,6 +2349,7 @@ class VpcClient(AlibabaCloudClient):
             "SslVpnServerId": ssl_vpn_server_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "PageSize": page_size,
@@ -2015,6 +2363,7 @@ class VpcClient(AlibabaCloudClient):
             ssl_vpn_server_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             name=None,
             page_size=None,
@@ -2026,6 +2375,7 @@ class VpcClient(AlibabaCloudClient):
             "SslVpnServerId": ssl_vpn_server_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "PageSize": page_size,
@@ -2038,6 +2388,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             ssl_vpn_client_cert_id=None):
@@ -2045,6 +2396,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "SslVpnClientCertId": ssl_vpn_client_cert_id}
@@ -2055,6 +2407,7 @@ class VpcClient(AlibabaCloudClient):
             ssl_vpn_server_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             owner_id=None):
@@ -2063,6 +2416,7 @@ class VpcClient(AlibabaCloudClient):
             "SslVpnServerId": ssl_vpn_server_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -2072,6 +2426,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             owner_id=None,
@@ -2080,6 +2435,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2098,6 +2454,7 @@ class VpcClient(AlibabaCloudClient):
             vpn_gateway_id=None,
             owner_id=None,
             local_subnet=None,
+            region_id=None,
             port=None,
             proto=None,
             name=None):
@@ -2113,6 +2470,7 @@ class VpcClient(AlibabaCloudClient):
             "VpnGatewayId": vpn_gateway_id,
             "OwnerId": owner_id,
             "LocalSubnet": local_subnet,
+            "RegionId": region_id,
             "Port": port,
             "Proto": proto,
             "Name": name}
@@ -2124,6 +2482,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             name=None,
             owner_id=None):
@@ -2133,6 +2492,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "OwnerId": owner_id}
@@ -2142,6 +2502,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             ip_instance_id=None,
             owner_id=None,
@@ -2151,6 +2512,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "IpInstanceId": ip_instance_id,
             "OwnerId": owner_id,
@@ -2161,6 +2523,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             ip_instance_id=None,
             owner_id=None,
@@ -2169,6 +2532,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "IpInstanceId": ip_instance_id,
             "OwnerId": owner_id,
@@ -2185,10 +2549,11 @@ class VpcClient(AlibabaCloudClient):
             router_type=None,
             resource_group_id=None,
             route_table_name=None,
+            region_id=None,
             router_id=None,
             vpc_id=None,
             page_size=None,
-            tag=None,
+            list_of_tag=None,
             route_table_id=None):
         api_request = APIRequest('DescribeRouteTableList', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -2200,10 +2565,11 @@ class VpcClient(AlibabaCloudClient):
             "RouterType": router_type,
             "ResourceGroupId": resource_group_id,
             "RouteTableName": route_table_name,
+            "RegionId": region_id,
             "RouterId": router_id,
             "VpcId": vpc_id,
             "PageSize": page_size,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "RouteTableId": route_table_id}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
@@ -2222,6 +2588,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             kbps_bandwidth=None,
             route_table_name=None,
+            region_id=None,
             resource_uid=None,
             resource_bid=None,
             route_table_id=None):
@@ -2235,6 +2602,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "KbpsBandwidth": kbps_bandwidth,
             "RouteTableName": route_table_name,
+            "RegionId": region_id,
             "ResourceUid": resource_uid,
             "ResourceBid": resource_bid,
             "RouteTableId": route_table_id}
@@ -2244,6 +2612,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             router_id=None,
             owner_account=None,
             page_size=None,
@@ -2253,6 +2622,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "RouterId": router_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
@@ -2271,6 +2641,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             duration=None,
             kbps_bandwidth=None,
+            region_id=None,
             resource_uid=None,
             resource_bid=None,
             pay_type=None,
@@ -2287,6 +2658,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Duration": duration,
             "KbpsBandwidth": kbps_bandwidth,
+            "RegionId": region_id,
             "ResourceUid": resource_uid,
             "ResourceBid": resource_bid,
             "PayType": pay_type,
@@ -2297,6 +2669,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             instance_type=None,
             owner_id=None,
@@ -2306,6 +2679,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "InstanceType": instance_type,
             "OwnerId": owner_id,
@@ -2316,6 +2690,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             bandwidth=None,
             owner_account=None,
             owner_id=None,
@@ -2325,6 +2700,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2335,6 +2711,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             name=None,
             description=None,
@@ -2349,6 +2726,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "Description": description,
@@ -2361,6 +2739,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             server_type=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             server_id=None):
@@ -2374,6 +2753,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ServerType": server_type,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ServerId": server_id}
@@ -2392,6 +2772,7 @@ class VpcClient(AlibabaCloudClient):
             global_acceleration_instance_id=None,
             server_id=None,
             page_number=None,
+            region_id=None,
             name=None,
             page_size=None,
             status=None):
@@ -2409,6 +2790,7 @@ class VpcClient(AlibabaCloudClient):
             "GlobalAccelerationInstanceId": global_acceleration_instance_id,
             "ServerId": server_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "Name": name,
             "PageSize": page_size,
             "Status": status}
@@ -2418,6 +2800,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             global_acceleration_instance_id=None):
@@ -2425,6 +2808,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "GlobalAccelerationInstanceId": global_acceleration_instance_id}
@@ -2441,6 +2825,7 @@ class VpcClient(AlibabaCloudClient):
             owner_account=None,
             description=None,
             owner_id=None,
+            region_id=None,
             internet_charge_type=None,
             name=None):
         api_request = APIRequest('CreateGlobalAccelerationInstance', 'GET', 'http', 'RPC', 'query')
@@ -2454,6 +2839,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id,
+            "RegionId": region_id,
             "InternetChargeType": internet_charge_type,
             "Name": name}
         return self._handle_request(api_request).result
@@ -2462,6 +2848,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             backend_server_id=None,
             owner_id=None,
@@ -2473,6 +2860,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "BackendServerId": backend_server_id,
             "OwnerId": owner_id,
@@ -2481,18 +2869,22 @@ class VpcClient(AlibabaCloudClient):
             "BackendServerType": backend_server_type}
         return self._handle_request(api_request).result
 
-    def describe_v_switch_attributes(
+    def describe_vswitch_attributes(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             resource_owner_id=None,
+            dry_run=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DescribeVSwitchAttributes', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "ResourceOwnerId": resource_owner_id,
+            "DryRun": dry_run,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -2502,6 +2894,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             ip_instance_id=None,
             owner_id=None):
@@ -2510,6 +2903,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "IpInstanceId": ip_instance_id,
             "OwnerId": owner_id}
@@ -2520,6 +2914,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             bandwidth=None,
             owner_account=None,
             owner_id=None):
@@ -2528,6 +2923,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -2538,6 +2934,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             name=None,
             description=None,
@@ -2548,6 +2945,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "Description": description,
@@ -2560,6 +2958,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             name=None,
             page_size=None,
@@ -2572,6 +2971,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "PageSize": page_size,
@@ -2585,6 +2985,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             force=None,
             owner_id=None):
@@ -2593,6 +2994,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Force": force,
             "OwnerId": owner_id}
@@ -2609,6 +3011,7 @@ class VpcClient(AlibabaCloudClient):
             description=None,
             owner_id=None,
             resource_group_id=None,
+            region_id=None,
             zone=None,
             internet_charge_type=None,
             name=None,
@@ -2624,6 +3027,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "Zone": zone,
             "InternetChargeType": internet_charge_type,
             "Name": name,
@@ -2635,6 +3039,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             ip_instance_id=None,
             owner_id=None):
@@ -2643,6 +3048,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "IpInstanceId": ip_instance_id,
             "OwnerId": owner_id}
@@ -2652,6 +3058,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             name=None,
@@ -2662,6 +3069,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "Name": name,
@@ -2684,6 +3092,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             health_check_config=None,
             local_subnet=None,
+            region_id=None,
             vpn_connection_id=None,
             name=None):
         api_request = APIRequest('ModifyVpnConnectionAttribute', 'GET', 'http', 'RPC', 'query')
@@ -2700,6 +3109,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "HealthCheckConfig": health_check_config,
             "LocalSubnet": local_subnet,
+            "RegionId": region_id,
             "VpnConnectionId": vpn_connection_id,
             "Name": name}
         return self._handle_request(api_request).result
@@ -2708,6 +3118,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             name=None,
@@ -2718,6 +3129,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "Name": name,
@@ -2730,6 +3142,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpn_connection_id=None,
             owner_account=None,
             owner_id=None):
@@ -2737,6 +3150,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpnConnectionId": vpn_connection_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -2747,6 +3161,7 @@ class VpcClient(AlibabaCloudClient):
             business_status=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             vpc_id=None,
             page_size=None,
@@ -2759,6 +3174,7 @@ class VpcClient(AlibabaCloudClient):
             "BusinessStatus": business_status,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "VpcId": vpc_id,
             "PageSize": page_size,
@@ -2772,6 +3188,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             vpn_gateway_id=None,
             owner_id=None):
@@ -2779,6 +3196,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "VpnGatewayId": vpn_gateway_id,
             "OwnerId": owner_id}
@@ -2788,6 +3206,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpn_connection_id=None,
             owner_account=None,
             page_size=None,
@@ -2799,6 +3218,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpnConnectionId": vpn_connection_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
@@ -2812,6 +3232,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpn_connection_id=None,
             owner_account=None,
             owner_id=None):
@@ -2819,6 +3240,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpnConnectionId": vpn_connection_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -2828,6 +3250,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
@@ -2837,6 +3260,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -2848,6 +3272,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             customer_gateway_id=None):
@@ -2855,6 +3280,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "CustomerGatewayId": customer_gateway_id}
@@ -2864,6 +3290,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             vpn_gateway_id=None,
@@ -2872,6 +3299,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "VpnGatewayId": vpn_gateway_id,
@@ -2882,6 +3310,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             vpn_connection_id=None,
             owner_account=None,
@@ -2890,6 +3319,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "VpnConnectionId": vpn_connection_id,
             "OwnerAccount": owner_account,
@@ -2900,6 +3330,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             owner_id=None,
@@ -2908,6 +3339,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2930,6 +3362,7 @@ class VpcClient(AlibabaCloudClient):
             health_check_config=None,
             customer_gateway_id=None,
             local_subnet=None,
+            region_id=None,
             name=None):
         api_request = APIRequest('CreateVpnConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -2947,6 +3380,7 @@ class VpcClient(AlibabaCloudClient):
             "HealthCheckConfig": health_check_config,
             "CustomerGatewayId": customer_gateway_id,
             "LocalSubnet": local_subnet,
+            "RegionId": region_id,
             "Name": name}
         return self._handle_request(api_request).result
 
@@ -2955,6 +3389,7 @@ class VpcClient(AlibabaCloudClient):
             ip_address=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             name=None,
@@ -2965,30 +3400,11 @@ class VpcClient(AlibabaCloudClient):
             "IpAddress": ip_address,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "Name": name,
             "Description": description,
-            "OwnerId": owner_id}
-        return self._handle_request(api_request).result
-
-    def modify_nqa(
-            self,
-            destination_ip=None,
-            resource_owner_id=None,
-            resource_owner_account=None,
-            client_token=None,
-            owner_account=None,
-            nqa_id=None,
-            owner_id=None):
-        api_request = APIRequest('ModifyNqa', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {
-            "DestinationIp": destination_ip,
-            "ResourceOwnerId": resource_owner_id,
-            "ResourceOwnerAccount": resource_owner_account,
-            "ClientToken": client_token,
-            "OwnerAccount": owner_account,
-            "NqaId": nqa_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
@@ -3004,6 +3420,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             peer_asn=None,
             is_fake_asn=None,
+            region_id=None,
             name=None):
         api_request = APIRequest('ModifyBgpGroupAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -3017,37 +3434,15 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PeerAsn": peer_asn,
             "IsFakeAsn": is_fake_asn,
+            "RegionId": region_id,
             "Name": name}
-        return self._handle_request(api_request).result
-
-    def describe_nqas(
-            self,
-            resource_owner_id=None,
-            resource_owner_account=None,
-            router_id=None,
-            owner_account=None,
-            page_size=None,
-            nqa_id=None,
-            is_default=None,
-            owner_id=None,
-            page_number=None):
-        api_request = APIRequest('DescribeNqas', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {
-            "ResourceOwnerId": resource_owner_id,
-            "ResourceOwnerAccount": resource_owner_account,
-            "RouterId": router_id,
-            "OwnerAccount": owner_account,
-            "PageSize": page_size,
-            "NqaId": nqa_id,
-            "IsDefault": is_default,
-            "OwnerId": owner_id,
-            "PageNumber": page_number}
         return self._handle_request(api_request).result
 
     def describe_bgp_peers(
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             router_id=None,
             owner_account=None,
             page_size=None,
@@ -3060,6 +3455,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "RouterId": router_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
@@ -3074,6 +3470,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             router_id=None,
             owner_account=None,
             page_size=None,
@@ -3085,6 +3482,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "RouterId": router_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
@@ -3094,28 +3492,11 @@ class VpcClient(AlibabaCloudClient):
             "PageNumber": page_number}
         return self._handle_request(api_request).result
 
-    def delete_nqa(
-            self,
-            resource_owner_id=None,
-            resource_owner_account=None,
-            client_token=None,
-            owner_account=None,
-            nqa_id=None,
-            owner_id=None):
-        api_request = APIRequest('DeleteNqa', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {
-            "ResourceOwnerId": resource_owner_id,
-            "ResourceOwnerAccount": resource_owner_account,
-            "ClientToken": client_token,
-            "OwnerAccount": owner_account,
-            "NqaId": nqa_id,
-            "OwnerId": owner_id}
-        return self._handle_request(api_request).result
-
     def delete_bgp_peer(
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             bgp_peer_id=None,
@@ -3124,6 +3505,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "BgpPeerId": bgp_peer_id,
@@ -3134,6 +3516,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             router_id=None,
             owner_account=None,
@@ -3143,6 +3526,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "RouterId": router_id,
             "OwnerAccount": owner_account,
@@ -3154,6 +3538,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             bgp_group_id=None,
@@ -3162,36 +3547,19 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "BgpGroupId": bgp_group_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def create_nqa(
-            self,
-            destination_ip=None,
-            resource_owner_id=None,
-            resource_owner_account=None,
-            client_token=None,
-            router_id=None,
-            owner_account=None,
-            owner_id=None):
-        api_request = APIRequest('CreateNqa', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {
-            "DestinationIp": destination_ip,
-            "ResourceOwnerId": resource_owner_id,
-            "ResourceOwnerAccount": resource_owner_account,
-            "ClientToken": client_token,
-            "RouterId": router_id,
-            "OwnerAccount": owner_account,
-            "OwnerId": owner_id}
-        return self._handle_request(api_request).result
-
     def create_bgp_peer(
             self,
             resource_owner_id=None,
+            enable_bfd=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             bgp_group_id=None,
@@ -3200,7 +3568,9 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('CreateBgpPeer', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "EnableBfd": enable_bfd,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "BgpGroupId": bgp_group_id,
@@ -3219,6 +3589,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             peer_asn=None,
             is_fake_asn=None,
+            region_id=None,
             router_id=None,
             name=None):
         api_request = APIRequest('CreateBgpGroup', 'GET', 'http', 'RPC', 'query')
@@ -3232,6 +3603,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PeerAsn": peer_asn,
             "IsFakeAsn": is_fake_asn,
+            "RegionId": region_id,
             "RouterId": router_id,
             "Name": name}
         return self._handle_request(api_request).result
@@ -3240,6 +3612,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             router_id=None,
             vpc_id=None,
@@ -3250,6 +3623,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "RouterId": router_id,
             "VpcId": vpc_id,
@@ -3262,6 +3636,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             vpc_id=None,
             owner_account=None,
@@ -3270,6 +3645,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
@@ -3280,6 +3656,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             vpc_id=None,
             owner_account=None,
@@ -3288,6 +3665,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
@@ -3297,7 +3675,9 @@ class VpcClient(AlibabaCloudClient):
     def describe_vpc_attribute(
             self,
             resource_owner_id=None,
+            dry_run=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             owner_account=None,
             is_default=None,
@@ -3305,7 +3685,9 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('DescribeVpcAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "DryRun": dry_run,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
             "IsDefault": is_default,
@@ -3315,6 +3697,7 @@ class VpcClient(AlibabaCloudClient):
     def unassociate_physical_connection_from_virtual_border_router(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -3329,52 +3712,13 @@ class VpcClient(AlibabaCloudClient):
             'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
             "OwnerAccount": owner_account,
             "VbrId": vbr_id,
             "OwnerId": owner_id}
-        return self._handle_request(api_request).result
-
-    def create_physical_connection_new(
-            self,
-            access_point_id=None,
-            redundant_physical_connection_id=None,
-            peer_location=None,
-            resource_owner_id=None,
-            port_type=None,
-            circuit_code=None,
-            bandwidth=None,
-            client_token=None,
-            resource_owner_account=None,
-            owner_account=None,
-            description=None,
-            interface_name=None,
-            type_=None,
-            owner_id=None,
-            line_operator=None,
-            name=None,
-            device_name=None):
-        api_request = APIRequest('CreatePhysicalConnectionNew', 'GET', 'http', 'RPC', 'query')
-        api_request._params = {
-            "AccessPointId": access_point_id,
-            "RedundantPhysicalConnectionId": redundant_physical_connection_id,
-            "PeerLocation": peer_location,
-            "ResourceOwnerId": resource_owner_id,
-            "PortType": port_type,
-            "CircuitCode": circuit_code,
-            "bandwidth": bandwidth,
-            "ClientToken": client_token,
-            "ResourceOwnerAccount": resource_owner_account,
-            "OwnerAccount": owner_account,
-            "Description": description,
-            "InterfaceName": interface_name,
-            "Type": type_,
-            "OwnerId": owner_id,
-            "LineOperator": line_operator,
-            "Name": name,
-            "DeviceName": device_name}
         return self._handle_request(api_request).result
 
     def associate_physical_connection_to_virtual_border_router(
@@ -3389,6 +3733,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             peer_gateway_ip=None,
             peering_subnet_mask=None,
+            region_id=None,
             physical_connection_id=None,
             local_gateway_ip=None):
         api_request = APIRequest(
@@ -3408,6 +3753,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PeerGatewayIp": peer_gateway_ip,
             "PeeringSubnetMask": peering_subnet_mask,
+            "RegionId": region_id,
             "PhysicalConnectionId": physical_connection_id,
             "LocalGatewayIp": local_gateway_ip}
         return self._handle_request(api_request).result
@@ -3416,6 +3762,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             snat_entry_name=None,
             snat_table_id=None,
@@ -3426,6 +3773,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "SnatEntryName": snat_entry_name,
             "SnatTableId": snat_table_id,
@@ -3439,6 +3787,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             auto_pay=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             nat_gateway_id=None,
@@ -3449,6 +3798,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "AutoPay": auto_pay,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "NatGatewayId": nat_gateway_id,
@@ -3460,6 +3810,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             name=None,
             description=None,
@@ -3469,6 +3820,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "Description": description,
@@ -3481,6 +3833,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             name=None,
             description=None,
@@ -3490,6 +3843,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "Description": description,
@@ -3506,7 +3860,8 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             snat_ip=None,
             page_number=None,
-            source_v_switch_id=None,
+            source_vswitch_id=None,
+            region_id=None,
             snat_entry_name=None,
             page_size=None,
             snat_entry_id=None):
@@ -3520,7 +3875,8 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "SnatIp": snat_ip,
             "PageNumber": page_number,
-            "SourceVSwitchId": source_v_switch_id,
+            "SourceVSwitchId": source_vswitch_id,
+            "RegionId": region_id,
             "SnatEntryName": snat_entry_name,
             "PageSize": page_size,
             "SnatEntryId": snat_entry_id}
@@ -3530,6 +3886,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             snat_table_id=None,
             snat_entry_id=None,
@@ -3538,6 +3895,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "SnatTableId": snat_table_id,
             "SnatEntryId": snat_entry_id,
@@ -3547,8 +3905,9 @@ class VpcClient(AlibabaCloudClient):
     def create_snat_entry(
             self,
             resource_owner_id=None,
-            source_v_switch_id=None,
+            source_vswitch_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             snat_entry_name=None,
             source_cidr=None,
@@ -3558,8 +3917,9 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('CreateSnatEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "SourceVSwitchId": source_v_switch_id,
+            "SourceVSwitchId": source_vswitch_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "SnatEntryName": snat_entry_name,
             "SourceCIDR": source_cidr,
@@ -3578,6 +3938,7 @@ class VpcClient(AlibabaCloudClient):
             isp=None,
             description=None,
             owner_id=None,
+            region_id=None,
             zone=None,
             internet_charge_type=None,
             name=None,
@@ -3593,6 +3954,7 @@ class VpcClient(AlibabaCloudClient):
             "ISP": isp,
             "Description": description,
             "OwnerId": owner_id,
+            "RegionId": region_id,
             "Zone": zone,
             "InternetChargeType": internet_charge_type,
             "Name": name,
@@ -3607,6 +3969,7 @@ class VpcClient(AlibabaCloudClient):
             instance_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             force=None,
             owner_id=None):
@@ -3617,6 +3980,7 @@ class VpcClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Force": force,
             "OwnerId": owner_id}
@@ -3628,6 +3992,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             instance_type=None,
             force=None,
@@ -3639,6 +4004,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "InstanceType": instance_type,
             "Force": force,
@@ -3649,6 +4015,7 @@ class VpcClient(AlibabaCloudClient):
     def terminate_virtual_border_router(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -3657,6 +4024,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('TerminateVirtualBorderRouter', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -3667,6 +4035,7 @@ class VpcClient(AlibabaCloudClient):
     def terminate_physical_connection(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -3675,6 +4044,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('TerminatePhysicalConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
@@ -3684,19 +4054,21 @@ class VpcClient(AlibabaCloudClient):
 
     def remove_bandwidth_package_ips(
             self,
-            removed_ip_addresses=None,
+            list_of_removed_ip_addresses=None,
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('RemoveBandwidthPackageIps', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "RemovedIpAddresses": removed_ip_addresses,
+            "RemovedIpAddresses": list_of_removed_ip_addresses,
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -3709,6 +4081,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             allocation_id=None,
             owner_id=None):
@@ -3716,6 +4089,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AllocationId": allocation_id,
             "OwnerId": owner_id}
@@ -3724,6 +4098,7 @@ class VpcClient(AlibabaCloudClient):
     def recover_virtual_border_router(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -3732,6 +4107,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('RecoverVirtualBorderRouter', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -3739,43 +4115,47 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def modify_v_switch_attribute(
+    def modify_vswitch_attribute(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
-            v_switch_name=None,
+            region_id=None,
+            vswitch_name=None,
             owner_account=None,
             description=None,
             owner_id=None,
             ipv6_cidr_block=None):
         api_request = APIRequest('ModifyVSwitchAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
-            "VSwitchName": v_switch_name,
+            "RegionId": region_id,
+            "VSwitchName": vswitch_name,
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id,
             "Ipv6CidrBlock": ipv6_cidr_block}
         return self._handle_request(api_request).result
 
-    def modify_v_router_attribute(
+    def modify_vrouter_attribute(
             self,
-            v_router_name=None,
+            vrouter_name=None,
             resource_owner_id=None,
-            v_router_id=None,
+            vrouter_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             description=None,
             owner_id=None):
         api_request = APIRequest('ModifyVRouterAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VRouterName": v_router_name,
+            "VRouterName": vrouter_name,
             "ResourceOwnerId": resource_owner_id,
-            "VRouterId": v_router_id,
+            "VRouterId": vrouter_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
@@ -3786,10 +4166,11 @@ class VpcClient(AlibabaCloudClient):
             vpc_name=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             owner_account=None,
             cidr_block=None,
-            enable_i_pv6=None,
+            enable_ipv6=None,
             description=None,
             owner_id=None):
         api_request = APIRequest('ModifyVpcAttribute', 'GET', 'http', 'RPC', 'query')
@@ -3797,10 +4178,11 @@ class VpcClient(AlibabaCloudClient):
             "VpcName": vpc_name,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
             "CidrBlock": cidr_block,
-            "EnableIPv6": enable_i_pv6,
+            "EnableIPv6": enable_ipv6,
             "Description": description,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -3817,10 +4199,14 @@ class VpcClient(AlibabaCloudClient):
             description=None,
             vbr_id=None,
             owner_id=None,
+            min_rx_interval=None,
             peer_gateway_ip=None,
+            detect_multiplier=None,
             peering_subnet_mask=None,
+            region_id=None,
             name=None,
-            local_gateway_ip=None):
+            local_gateway_ip=None,
+            min_tx_interval=None):
         api_request = APIRequest('ModifyVirtualBorderRouterAttribute',
                                  'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -3834,15 +4220,20 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "VbrId": vbr_id,
             "OwnerId": owner_id,
+            "MinRxInterval": min_rx_interval,
             "PeerGatewayIp": peer_gateway_ip,
+            "DetectMultiplier": detect_multiplier,
             "PeeringSubnetMask": peering_subnet_mask,
+            "RegionId": region_id,
             "Name": name,
-            "LocalGatewayIp": local_gateway_ip}
+            "LocalGatewayIp": local_gateway_ip,
+            "MinTxInterval": min_tx_interval}
         return self._handle_request(api_request).result
 
     def modify_router_interface_spec(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -3852,6 +4243,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('ModifyRouterInterfaceSpec', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -3871,6 +4263,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             router_interface_id=None,
             opposite_interface_owner_id=None,
+            region_id=None,
             health_check_source_ip=None,
             name=None,
             opposite_router_type=None,
@@ -3886,6 +4279,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id,
             "OppositeInterfaceOwnerId": opposite_interface_owner_id,
+            "RegionId": region_id,
             "HealthCheckSourceIp": health_check_source_ip,
             "Name": name,
             "OppositeRouterType": opposite_router_type,
@@ -3906,6 +4300,7 @@ class VpcClient(AlibabaCloudClient):
             description=None,
             owner_id=None,
             line_operator=None,
+            region_id=None,
             physical_connection_id=None,
             name=None):
         api_request = APIRequest('ModifyPhysicalConnectionAttribute', 'GET', 'http', 'RPC', 'query')
@@ -3922,6 +4317,7 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
+            "RegionId": region_id,
             "PhysicalConnectionId": physical_connection_id,
             "Name": name}
         return self._handle_request(api_request).result
@@ -3932,7 +4328,9 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
+            name=None,
             description=None,
             owner_id=None):
         api_request = APIRequest('ModifyHaVipAttribute', 'GET', 'http', 'RPC', 'query')
@@ -3941,7 +4339,9 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
+            "Name": name,
             "Description": description,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -3956,6 +4356,7 @@ class VpcClient(AlibabaCloudClient):
             forward_table_id=None,
             owner_id=None,
             internal_ip=None,
+            region_id=None,
             forward_entry_id=None,
             internal_port=None,
             external_ip=None,
@@ -3970,6 +4371,7 @@ class VpcClient(AlibabaCloudClient):
             "ForwardTableId": forward_table_id,
             "OwnerId": owner_id,
             "InternalIp": internal_ip,
+            "RegionId": region_id,
             "ForwardEntryId": forward_entry_id,
             "InternalPort": internal_port,
             "ExternalIp": external_ip,
@@ -3981,6 +4383,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             bandwidth=None,
+            region_id=None,
             owner_account=None,
             name=None,
             description=None,
@@ -3991,6 +4394,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "Bandwidth": bandwidth,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Name": name,
             "Description": description,
@@ -4003,6 +4407,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             bandwidth=None,
             owner_account=None,
             owner_id=None):
@@ -4011,6 +4416,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -4019,6 +4425,7 @@ class VpcClient(AlibabaCloudClient):
     def enable_physical_connection(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -4027,6 +4434,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('EnablePhysicalConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
@@ -4038,46 +4446,52 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DescribeZones', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def describe_v_switches(
+    def describe_vswitches(
             self,
             resource_owner_id=None,
+            dry_run=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
             page_number=None,
-            v_switch_id=None,
+            vswitch_id=None,
             resource_group_id=None,
+            region_id=None,
             vpc_id=None,
-            v_switch_name=None,
+            vswitch_name=None,
             page_size=None,
             zone_id=None,
-            tag=None,
+            list_of_tag=None,
             is_default=None,
             route_table_id=None):
         api_request = APIRequest('DescribeVSwitches', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "DryRun": dry_run,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "PageNumber": page_number,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "VpcId": vpc_id,
-            "VSwitchName": v_switch_name,
+            "VSwitchName": vswitch_name,
             "PageSize": page_size,
             "ZoneId": zone_id,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "IsDefault": is_default,
             "RouteTableId": route_table_id}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
@@ -4087,11 +4501,12 @@ class VpcClient(AlibabaCloudClient):
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
-    def describe_v_routers(
+    def describe_vrouters(
             self,
             resource_owner_id=None,
-            v_router_id=None,
+            vrouter_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
@@ -4099,8 +4514,9 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('DescribeVRouters', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "VRouterId": v_router_id,
+            "VRouterId": vrouter_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -4110,28 +4526,32 @@ class VpcClient(AlibabaCloudClient):
     def describe_vpcs(
             self,
             resource_owner_id=None,
+            dry_run=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
             page_number=None,
             vpc_name=None,
             resource_group_id=None,
+            region_id=None,
             vpc_id=None,
             page_size=None,
-            tag=None,
+            list_of_tag=None,
             is_default=None):
         api_request = APIRequest('DescribeVpcs', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "DryRun": dry_run,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "PageNumber": page_number,
             "VpcName": vpc_name,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "PageSize": page_size,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "IsDefault": is_default}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
@@ -4142,9 +4562,10 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_virtual_border_routers_for_physical_connection(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             physical_connection_id=None,
             page_size=None,
             owner_id=None,
@@ -4156,9 +4577,10 @@ class VpcClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PhysicalConnectionId": physical_connection_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -4172,17 +4594,19 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_virtual_border_routers(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             page_size=None,
             owner_id=None,
             page_number=None):
         api_request = APIRequest('DescribeVirtualBorderRouters', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
@@ -4196,7 +4620,7 @@ class VpcClient(AlibabaCloudClient):
     def describe_route_tables(
             self,
             resource_owner_id=None,
-            v_router_id=None,
+            vrouter_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -4205,13 +4629,14 @@ class VpcClient(AlibabaCloudClient):
             router_type=None,
             resource_group_id=None,
             route_table_name=None,
+            region_id=None,
             router_id=None,
             page_size=None,
             route_table_id=None):
         api_request = APIRequest('DescribeRouteTables', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "VRouterId": v_router_id,
+            "VRouterId": vrouter_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -4220,6 +4645,7 @@ class VpcClient(AlibabaCloudClient):
             "RouterType": router_type,
             "ResourceGroupId": resource_group_id,
             "RouteTableName": route_table_name,
+            "RegionId": region_id,
             "RouterId": router_id,
             "PageSize": page_size,
             "RouteTableId": route_table_id}
@@ -4227,18 +4653,20 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_router_interfaces(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             page_size=None,
             owner_id=None,
             include_reservation_data=None,
             page_number=None):
         api_request = APIRequest('DescribeRouterInterfaces', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "IncludeReservationData": include_reservation_data,
@@ -4270,8 +4698,9 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_physical_connections(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -4281,8 +4710,9 @@ class VpcClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribePhysicalConnections', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -4305,6 +4735,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             spec=None,
             page_number=None,
+            region_id=None,
             vpc_id=None,
             name=None,
             page_size=None,
@@ -4318,6 +4749,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Spec": spec,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "Name": name,
             "PageSize": page_size,
@@ -4327,18 +4759,20 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_ha_vips(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
             page_number=None):
         api_request = APIRequest('DescribeHaVips', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -4361,6 +4795,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             internal_ip=None,
             page_number=None,
+            region_id=None,
             forward_entry_id=None,
             internal_port=None,
             page_size=None,
@@ -4377,6 +4812,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InternalIp": internal_ip,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "ForwardEntryId": forward_entry_id,
             "InternalPort": internal_port,
             "PageSize": page_size,
@@ -4389,6 +4825,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             period=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             end_time=None,
             allocation_id=None,
@@ -4399,6 +4836,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "Period": period,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "EndTime": end_time,
             "AllocationId": allocation_id,
@@ -4423,9 +4861,10 @@ class VpcClient(AlibabaCloudClient):
             resource_group_id=None,
             lock_reason=None,
             filter1_key=None,
+            region_id=None,
             associated_instance_type=None,
             page_size=None,
-            tag=None,
+            list_of_tag=None,
             charge_type=None,
             associated_instance_id=None,
             status=None):
@@ -4446,9 +4885,10 @@ class VpcClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "LockReason": lock_reason,
             "Filter.1.Key": filter1_key,
+            "RegionId": region_id,
             "AssociatedInstanceType": associated_instance_type,
             "PageSize": page_size,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "ChargeType": charge_type,
             "AssociatedInstanceId": associated_instance_id,
             "Status": status}
@@ -4464,6 +4904,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             nat_gateway_id=None,
@@ -4474,6 +4915,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "NatGatewayId": nat_gateway_id,
@@ -4483,10 +4925,11 @@ class VpcClient(AlibabaCloudClient):
 
     def describe_access_points(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             host_operator=None,
             resource_owner_account=None,
+            region_id=None,
             name=None,
             page_size=None,
             owner_id=None,
@@ -4494,10 +4937,11 @@ class VpcClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribeAccessPoints', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "HostOperator": host_operator,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "Name": name,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -4510,18 +4954,20 @@ class VpcClient(AlibabaCloudClient):
         verify_params(api_request._params, repeat_info)
         return self._handle_request(api_request).result
 
-    def delete_v_switch(
+    def delete_vswitch(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DeleteVSwitch', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -4530,6 +4976,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             owner_account=None,
             owner_id=None):
@@ -4537,6 +4984,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -4545,6 +4993,7 @@ class VpcClient(AlibabaCloudClient):
     def delete_virtual_border_router(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -4553,6 +5002,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteVirtualBorderRouter', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -4563,6 +5013,7 @@ class VpcClient(AlibabaCloudClient):
     def delete_router_interface(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -4571,6 +5022,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteRouterInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -4582,23 +5034,25 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             route_entry_id=None,
             destination_cidr_block=None,
             owner_account=None,
             next_hop_id=None,
             owner_id=None,
-            next_hop_list=None,
+            list_of_next_hop_list=None,
             route_table_id=None):
         api_request = APIRequest('DeleteRouteEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "RouteEntryId": route_entry_id,
             "DestinationCidrBlock": destination_cidr_block,
             "OwnerAccount": owner_account,
             "NextHopId": next_hop_id,
             "OwnerId": owner_id,
-            "NextHopList": next_hop_list,
+            "NextHopList": list_of_next_hop_list,
             "RouteTableId": route_table_id}
         repeat_info = {
             "NextHopList": (
@@ -4610,6 +5064,7 @@ class VpcClient(AlibabaCloudClient):
     def delete_physical_connection(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -4619,6 +5074,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('DeletePhysicalConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
@@ -4631,6 +5087,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             force=None,
             nat_gateway_id=None,
@@ -4639,6 +5096,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Force": force,
             "NatGatewayId": nat_gateway_id,
@@ -4651,6 +5109,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DeleteHaVip', 'GET', 'http', 'RPC', 'query')
@@ -4659,6 +5118,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -4667,6 +5127,7 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             forward_entry_id=None,
             owner_account=None,
             forward_table_id=None,
@@ -4675,6 +5136,7 @@ class VpcClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ForwardEntryId": forward_entry_id,
             "OwnerAccount": owner_account,
             "ForwardTableId": forward_table_id,
@@ -4686,6 +5148,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             force=None,
             owner_id=None):
@@ -4694,6 +5157,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Force": force,
             "OwnerId": owner_id}
@@ -4703,17 +5167,19 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None,
             router_interface_id=None):
         api_request = APIRequest('DeactivateRouterInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id}
         return self._handle_request(api_request).result
 
-    def create_v_switch(
+    def create_vswitch(
             self,
             resource_owner_id=None,
             resource_owner_account=None,
@@ -4722,8 +5188,9 @@ class VpcClient(AlibabaCloudClient):
             description=None,
             owner_id=None,
             ipv6_cidr_block=None,
+            region_id=None,
             vpc_id=None,
-            v_switch_name=None,
+            vswitch_name=None,
             cidr_block=None,
             zone_id=None):
         api_request = APIRequest('CreateVSwitch', 'GET', 'http', 'RPC', 'query')
@@ -4735,8 +5202,9 @@ class VpcClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
             "Ipv6CidrBlock": ipv6_cidr_block,
+            "RegionId": region_id,
             "VpcId": vpc_id,
-            "VSwitchName": v_switch_name,
+            "VSwitchName": vswitch_name,
             "CidrBlock": cidr_block,
             "ZoneId": zone_id}
         return self._handle_request(api_request).result
@@ -4744,6 +5212,7 @@ class VpcClient(AlibabaCloudClient):
     def create_vpc(
             self,
             resource_owner_id=None,
+            dry_run=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -4753,11 +5222,13 @@ class VpcClient(AlibabaCloudClient):
             ipv6_cidr_block=None,
             vpc_name=None,
             resource_group_id=None,
+            region_id=None,
             cidr_block=None,
             user_cidr=None):
         api_request = APIRequest('CreateVpc', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "DryRun": dry_run,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -4767,6 +5238,7 @@ class VpcClient(AlibabaCloudClient):
             "Ipv6CidrBlock": ipv6_cidr_block,
             "VpcName": vpc_name,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "CidrBlock": cidr_block,
             "UserCidr": user_cidr}
         return self._handle_request(api_request).result
@@ -4783,6 +5255,7 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             peer_gateway_ip=None,
             peering_subnet_mask=None,
+            region_id=None,
             physical_connection_id=None,
             name=None,
             local_gateway_ip=None,
@@ -4799,6 +5272,7 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PeerGatewayIp": peer_gateway_ip,
             "PeeringSubnetMask": peering_subnet_mask,
+            "RegionId": region_id,
             "PhysicalConnectionId": physical_connection_id,
             "Name": name,
             "LocalGatewayIp": local_gateway_ip,
@@ -4816,6 +5290,7 @@ class VpcClient(AlibabaCloudClient):
             health_check_target_ip=None,
             description=None,
             spec=None,
+            region_id=None,
             opposite_interface_id=None,
             instance_charge_type=None,
             period=None,
@@ -4842,6 +5317,7 @@ class VpcClient(AlibabaCloudClient):
             "HealthCheckTargetIp": health_check_target_ip,
             "Description": description,
             "Spec": spec,
+            "RegionId": region_id,
             "OppositeInterfaceId": opposite_interface_id,
             "InstanceChargeType": instance_charge_type,
             "Period": period,
@@ -4869,9 +5345,10 @@ class VpcClient(AlibabaCloudClient):
             owner_account=None,
             owner_id=None,
             private_ip_address=None,
+            region_id=None,
             next_hop_id=None,
             next_hop_type=None,
-            next_hop_list=None,
+            list_of_next_hop_list=None,
             route_table_id=None):
         api_request = APIRequest('CreateRouteEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -4883,9 +5360,10 @@ class VpcClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "PrivateIpAddress": private_ip_address,
+            "RegionId": region_id,
             "NextHopId": next_hop_id,
             "NextHopType": next_hop_type,
-            "NextHopList": next_hop_list,
+            "NextHopList": list_of_next_hop_list,
             "RouteTableId": route_table_id}
         repeat_info = {"NextHopList": ('NextHopList', 'list', 'dict', [('Weight', 'str', None, None),
                                                                        ('NextHopId', 'str', None, None),
@@ -4911,6 +5389,7 @@ class VpcClient(AlibabaCloudClient):
             type_=None,
             owner_id=None,
             line_operator=None,
+            region_id=None,
             name=None):
         api_request = APIRequest('CreatePhysicalConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -4928,6 +5407,7 @@ class VpcClient(AlibabaCloudClient):
             "Type": type_,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
+            "RegionId": region_id,
             "Name": name}
         return self._handle_request(api_request).result
 
@@ -4942,9 +5422,10 @@ class VpcClient(AlibabaCloudClient):
             owner_id=None,
             spec=None,
             duration=None,
+            region_id=None,
             vpc_id=None,
             name=None,
-            bandwidth_package=None,
+            list_of_bandwidth_package=None,
             instance_charge_type=None,
             pricing_cycle=None):
         api_request = APIRequest('CreateNatGateway', 'GET', 'http', 'RPC', 'query')
@@ -4958,9 +5439,10 @@ class VpcClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Spec": spec,
             "Duration": duration,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "Name": name,
-            "BandwidthPackage": bandwidth_package,
+            "BandwidthPackage": list_of_bandwidth_package,
             "InstanceChargeType": instance_charge_type,
             "PricingCycle": pricing_cycle}
         repeat_info = {"BandwidthPackage": ('BandwidthPackage',
@@ -4993,22 +5475,26 @@ class VpcClient(AlibabaCloudClient):
 
     def create_ha_vip(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             ip_address=None,
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
+            name=None,
             description=None,
             owner_id=None):
         api_request = APIRequest('CreateHaVip', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "IpAddress": ip_address,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
+            "Name": name,
             "Description": description,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -5023,6 +5509,7 @@ class VpcClient(AlibabaCloudClient):
             forward_table_id=None,
             owner_id=None,
             internal_ip=None,
+            region_id=None,
             internal_port=None,
             external_ip=None,
             external_port=None):
@@ -5036,6 +5523,7 @@ class VpcClient(AlibabaCloudClient):
             "ForwardTableId": forward_table_id,
             "OwnerId": owner_id,
             "InternalIp": internal_ip,
+            "RegionId": region_id,
             "InternalPort": internal_port,
             "ExternalIp": external_ip,
             "ExternalPort": external_port}
@@ -5045,12 +5533,14 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None,
             router_interface_id=None):
         api_request = APIRequest('ConnectRouterInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id}
         return self._handle_request(api_request).result
@@ -5058,6 +5548,7 @@ class VpcClient(AlibabaCloudClient):
     def cancel_physical_connection(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -5066,6 +5557,7 @@ class VpcClient(AlibabaCloudClient):
         api_request = APIRequest('CancelPhysicalConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
@@ -5080,6 +5572,7 @@ class VpcClient(AlibabaCloudClient):
             instance_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('AssociateHaVip', 'GET', 'http', 'RPC', 'query')
@@ -5089,6 +5582,7 @@ class VpcClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -5100,6 +5594,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             instance_region_id=None,
             owner_account=None,
             instance_type=None,
@@ -5112,6 +5607,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "InstanceRegionId": instance_region_id,
             "OwnerAccount": owner_account,
             "InstanceType": instance_type,
@@ -5130,7 +5626,9 @@ class VpcClient(AlibabaCloudClient):
             isp=None,
             owner_account=None,
             owner_id=None,
+            activity_id=None,
             resource_group_id=None,
+            region_id=None,
             internet_charge_type=None,
             netmode=None,
             pricing_cycle=None,
@@ -5146,7 +5644,9 @@ class VpcClient(AlibabaCloudClient):
             "ISP": isp,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
+            "ActivityId": activity_id,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "InternetChargeType": internet_charge_type,
             "Netmode": netmode,
             "PricingCycle": pricing_cycle,
@@ -5158,6 +5658,7 @@ class VpcClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             owner_id=None,
@@ -5167,6 +5668,7 @@ class VpcClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -5177,12 +5679,14 @@ class VpcClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None,
             router_interface_id=None):
         api_request = APIRequest('ActivateRouterInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id}
         return self._handle_request(api_request).result

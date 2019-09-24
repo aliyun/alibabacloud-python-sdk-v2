@@ -11,72 +11,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from alibabacloud.resources.base import ServiceResource
+from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.utils.utils import _do_request, _get_response, _assert_is_not_none
-import alibabacloud.errors as errors
-from aliyunsdkcore.acs_exception.exceptions import ClientException
+from alibabacloud.services._vpc import _VPCResource
+from alibabacloud.services._vpc import _VPCEipAddressResource
+from alibabacloud.utils.utils import transfer, _new_get_key_in_response
 
 
-from aliyunsdkvpc.request.v20160428.DescribeEipAddressesRequest import DescribeEipAddressesRequest
-from aliyunsdkvpc.request.v20160428.AllocateEipAddressRequest import AllocateEipAddressRequest
-from aliyunsdkvpc.request.v20160428.ReleaseEipAddressRequest import ReleaseEipAddressRequest
-from aliyunsdkvpc.request.v20160428.AssociateEipAddressRequest import AssociateEipAddressRequest
-from aliyunsdkvpc.request.v20160428.UnassociateEipAddressRequest import UnassociateEipAddressRequest
-from aliyunsdkvpc.request.v20160428.ModifyEipAddressAttributeRequest \
-    import ModifyEipAddressAttributeRequest
-
-
-class VPCEipAddressResource(ServiceResource):
+class VPCEipAddressResource(_VPCEipAddressResource):
 
     def __init__(self, allocation_id, _client=None):
-        ServiceResource.__init__(self, 'vpc.eip_address', _client=_client)
+        _VPCEipAddressResource.__init__(self, allocation_id, _client=_client)
         self.allocation_id = allocation_id
 
-    def release(self):
-        request = ReleaseEipAddressRequest()
-        request.set_AllocationId(self.allocation_id)
-        _do_request(self._client, request, {})
-
-    def associate(self, **params):
-        request = AssociateEipAddressRequest()
-        request.set_AllocationId(self.allocation_id)
-        _do_request(self._client, request, params)
-
-    def unassociate(self, **params):
-        request = UnassociateEipAddressRequest()
-        request.set_AllocationId(self.allocation_id)
-        _do_request(self._client, request, params)
-
-    def modify_attributes(self, **params):
-        request = ModifyEipAddressAttributeRequest()
-        request.set_AllocationId(self.allocation_id)
-        _do_request(self._client, request, params)
-        self.refresh()
-
+    @transfer({"Tags": "list_of_tags"})
     def refresh(self):
-        request = DescribeEipAddressesRequest()
-        request.set_AllocationId(self.allocation_id)
-        items = _get_response(self._client, request, {}, 'EipAddresses.EipAddress')
+        response = self._client.describe_eip_addresses(allocation_id=self.allocation_id)
+        items = _new_get_key_in_response(response, 'EipAddresses.EipAddress')
         if not items:
-            raise ClientException(errors.ERROR_INVALID_SERVER_RESPONSE,
-                                  "Failed to find EIP Address data from DescribeEipAddresses "
+            raise ClientException(msg="Failed to find EIP Address data from DescribeEipAddresses "
                                   "response. "
                                   "AllocationId = {0}".format(self.allocation_id))
         self._assign_attributes(items[0])
 
 
-class VPCResource(ServiceResource):
+class VPCResource(_VPCResource):
 
     def __init__(self, _client=None):
-        ServiceResource.__init__(self, 'vpc', _client=_client)
+        _VPCResource.__init__(self, _client=_client)
         self.eip_addresses = _create_resource_collection(
-            VPCEipAddressResource, _client, DescribeEipAddressesRequest,
-            'EipAddresses.EipAddress', 'AllocationId'
+            VPCEipAddressResource, _client, _client.describe_eip_addresses,
+            'EipAddresses.EipAddress', 'AllocationId',
+            param_aliases={"Tags": "list_of_tags"}
         )
-
-    def allocate_eip_address(self, **params):
-        request = AllocateEipAddressRequest()
-        allocate_id = _get_response(self._client, request, params, key='AllocationId')
-        return VPCEipAddressResource(allocate_id, _client=self._client)

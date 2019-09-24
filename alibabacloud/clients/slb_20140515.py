@@ -19,18 +19,47 @@ from alibabacloud.utils.parameter_validation import verify_params
 
 class SlbClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider)
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config,
+                                    credentials_provider=credentials_provider,
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'Slb'
         self.api_version = '2014-05-15'
         self.location_service_code = 'slb'
         self.location_endpoint_type = 'openAPI'
+
+    def set_load_balancer_delete_protection(
+            self,
+            access_key_id=None,
+            resource_owner_id=None,
+            load_balancer_id=None,
+            region_id=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            delete_protection=None,
+            tags=None):
+        api_request = APIRequest('SetLoadBalancerDeleteProtection', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "access_key_id": access_key_id,
+            "ResourceOwnerId": resource_owner_id,
+            "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "DeleteProtection": delete_protection,
+            "Tags": tags}
+        return self._handle_request(api_request).result
 
     def describe_available_resource(
             self,
             access_key_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             address_type=None,
             owner_id=None,
@@ -40,6 +69,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AddressType": address_type,
             "OwnerId": owner_id,
@@ -51,6 +81,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             server_certificate_id=None,
@@ -61,6 +92,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ServerCertificateId": server_certificate_id,
@@ -75,6 +107,7 @@ class SlbClient(AlibabaCloudClient):
             listener_port=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None,
@@ -86,6 +119,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags,
@@ -97,6 +131,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None,
@@ -106,6 +141,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags,
@@ -119,6 +155,7 @@ class SlbClient(AlibabaCloudClient):
             listener_port=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             domain=None,
             owner_id=None,
@@ -131,6 +168,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Domain": domain,
             "OwnerId": owner_id,
@@ -145,6 +183,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             acl_name=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -155,6 +194,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "AclName": acl_name,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
@@ -166,6 +206,7 @@ class SlbClient(AlibabaCloudClient):
             acl_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             acl_entrys=None,
             owner_id=None,
@@ -176,6 +217,7 @@ class SlbClient(AlibabaCloudClient):
             "AclId": acl_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AclEntrys": acl_entrys,
             "OwnerId": owner_id,
@@ -194,8 +236,9 @@ class SlbClient(AlibabaCloudClient):
             page_number=None,
             tags=None,
             resource_group_id=None,
+            region_id=None,
             page_size=None,
-            tag=None):
+            list_of_tag=None):
         api_request = APIRequest('DescribeAccessControlLists', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
@@ -208,8 +251,9 @@ class SlbClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "Tags": tags,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "PageSize": page_size,
-            "Tag": tag}
+            "Tag": list_of_tag}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
                                                        ]),
@@ -223,6 +267,7 @@ class SlbClient(AlibabaCloudClient):
             acl_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             acl_entry_comment=None,
             owner_id=None,
@@ -234,6 +279,7 @@ class SlbClient(AlibabaCloudClient):
             "AclId": acl_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AclEntryComment": acl_entry_comment,
             "OwnerId": owner_id,
@@ -246,6 +292,7 @@ class SlbClient(AlibabaCloudClient):
             acl_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -255,6 +302,7 @@ class SlbClient(AlibabaCloudClient):
             "AclId": acl_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
@@ -266,6 +314,7 @@ class SlbClient(AlibabaCloudClient):
             acl_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             acl_entrys=None,
             owner_id=None,
@@ -276,6 +325,7 @@ class SlbClient(AlibabaCloudClient):
             "AclId": acl_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AclEntrys": acl_entrys,
             "OwnerId": owner_id,
@@ -289,6 +339,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             acl_name=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             address_ip_version=None,
@@ -300,6 +351,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "AclName": acl_name,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "AddressIPVersion": address_ip_version,
@@ -317,6 +369,7 @@ class SlbClient(AlibabaCloudClient):
             tags=None,
             duration=None,
             load_balancer_id=None,
+            region_id=None,
             pay_type=None,
             pricing_cycle=None):
         api_request = APIRequest('ModifyLoadBalancerPayType', 'GET', 'http', 'RPC', 'query')
@@ -330,6 +383,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "Duration": duration,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "PayType": pay_type,
             "PricingCycle": pricing_cycle}
         return self._handle_request(api_request).result
@@ -341,6 +395,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             load_balancer_id=None,
             auto_pay=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -352,6 +407,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
             "AutoPay": auto_pay,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -364,6 +420,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             include_listener=None,
             owner_account=None,
             owner_id=None,
@@ -374,6 +431,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "IncludeListener": include_listener,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -386,6 +444,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             master_slave_server_group_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -400,6 +459,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "MasterSlaveServerGroupId": master_slave_server_group_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
@@ -411,6 +471,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             master_slave_server_group_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -420,6 +481,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "MasterSlaveServerGroupId": master_slave_server_group_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
@@ -432,6 +494,7 @@ class SlbClient(AlibabaCloudClient):
             master_slave_backend_servers=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             master_slave_server_group_name=None,
             owner_id=None,
@@ -443,18 +506,20 @@ class SlbClient(AlibabaCloudClient):
             "MasterSlaveBackendServers": master_slave_backend_servers,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "MasterSlaveServerGroupName": master_slave_server_group_name,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def describe_master_slave_v_server_groups(
+    def describe_master_slave_vserver_groups(
             self,
             access_key_id=None,
             resource_owner_id=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -464,17 +529,19 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def describe_master_slave_v_server_group_attribute(
+    def describe_master_slave_vserver_group_attribute(
             self,
             access_key_id=None,
             resource_owner_id=None,
-            master_slave_v_server_group_id=None,
+            master_slave_vserver_group_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -487,19 +554,21 @@ class SlbClient(AlibabaCloudClient):
         api_request._params = {
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
-            "MasterSlaveVServerGroupId": master_slave_v_server_group_id,
+            "MasterSlaveVServerGroupId": master_slave_vserver_group_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def delete_master_slave_v_server_group(
+    def delete_master_slave_vserver_group(
             self,
             access_key_id=None,
             resource_owner_id=None,
-            master_slave_v_server_group_id=None,
+            master_slave_vserver_group_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -507,22 +576,24 @@ class SlbClient(AlibabaCloudClient):
         api_request._params = {
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
-            "MasterSlaveVServerGroupId": master_slave_v_server_group_id,
+            "MasterSlaveVServerGroupId": master_slave_vserver_group_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def create_master_slave_v_server_group(
+    def create_master_slave_vserver_group(
             self,
             access_key_id=None,
             resource_owner_id=None,
             master_slave_backend_servers=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
-            master_slave_v_server_group_name=None,
+            master_slave_vserver_group_name=None,
             owner_id=None,
             tags=None):
         api_request = APIRequest('CreateMasterSlaveVServerGroup', 'GET', 'http', 'RPC', 'query')
@@ -532,8 +603,9 @@ class SlbClient(AlibabaCloudClient):
             "MasterSlaveBackendServers": master_slave_backend_servers,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
-            "MasterSlaveVServerGroupName": master_slave_v_server_group_name,
+            "MasterSlaveVServerGroupName": master_slave_vserver_group_name,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
@@ -546,6 +618,7 @@ class SlbClient(AlibabaCloudClient):
             ca_certificate=None,
             ca_certificate_name=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('UploadCACertificate', 'GET', 'http', 'RPC', 'query')
@@ -556,6 +629,7 @@ class SlbClient(AlibabaCloudClient):
             "CACertificate": ca_certificate,
             "CACertificateName": ca_certificate_name,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -566,6 +640,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             ca_certificate_name=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             ca_certificate_id=None):
@@ -575,6 +650,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "CACertificateName": ca_certificate_name,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "CACertificateId": ca_certificate_id}
@@ -586,8 +662,9 @@ class SlbClient(AlibabaCloudClient):
             resource_group_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
-            tag=None,
+            list_of_tag=None,
             owner_id=None,
             ca_certificate_id=None):
         api_request = APIRequest('DescribeCACertificates', 'GET', 'http', 'RPC', 'query')
@@ -596,8 +673,9 @@ class SlbClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "OwnerId": owner_id,
             "CACertificateId": ca_certificate_id}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
@@ -612,6 +690,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             ca_certificate_id=None):
@@ -620,6 +699,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "CACertificateId": ca_certificate_id}
@@ -631,6 +711,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -640,6 +721,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
@@ -651,6 +733,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             distinct_key=None,
@@ -663,6 +746,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "DistinctKey": distinct_key,
@@ -677,6 +761,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -686,33 +771,36 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def set_v_server_group_attribute(
+    def set_vserver_group_attribute(
             self,
             access_key_id=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             backend_servers=None,
             tags=None,
-            v_server_group_name=None):
+            vserver_group_name=None):
         api_request = APIRequest('SetVServerGroupAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "BackendServers": backend_servers,
             "Tags": tags,
-            "VServerGroupName": v_server_group_name}
+            "VServerGroupName": vserver_group_name}
         return self._handle_request(api_request).result
 
     def set_rule(
@@ -726,10 +814,11 @@ class SlbClient(AlibabaCloudClient):
             healthy_threshold=None,
             scheduler=None,
             health_check=None,
+            region_id=None,
             listener_sync=None,
             cookie_timeout=None,
             sticky_session_type=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             cookie=None,
             resource_owner_account=None,
             sticky_session=None,
@@ -752,10 +841,11 @@ class SlbClient(AlibabaCloudClient):
             "HealthyThreshold": healthy_threshold,
             "Scheduler": scheduler,
             "HealthCheck": health_check,
+            "RegionId": region_id,
             "ListenerSync": listener_sync,
             "CookieTimeout": cookie_timeout,
             "StickySessionType": sticky_session_type,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "Cookie": cookie,
             "ResourceOwnerAccount": resource_owner_account,
             "StickySession": sticky_session,
@@ -769,12 +859,13 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckHttpCode": health_check_http_code}
         return self._handle_request(api_request).result
 
-    def remove_v_server_group_backend_servers(
+    def remove_vserver_group_backend_servers(
             self,
             access_key_id=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             backend_servers=None,
@@ -782,22 +873,24 @@ class SlbClient(AlibabaCloudClient):
         api_request = APIRequest('RemoveVServerGroupBackendServers', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "BackendServers": backend_servers,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def modify_v_server_group_backend_servers(
+    def modify_vserver_group_backend_servers(
             self,
             access_key_id=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             resource_owner_id=None,
             old_backend_servers=None,
             resource_owner_account=None,
+            region_id=None,
             new_backend_servers=None,
             owner_account=None,
             owner_id=None,
@@ -805,23 +898,25 @@ class SlbClient(AlibabaCloudClient):
         api_request = APIRequest('ModifyVServerGroupBackendServers', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "ResourceOwnerId": resource_owner_id,
             "OldBackendServers": old_backend_servers,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "NewBackendServers": new_backend_servers,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def describe_v_server_groups(
+    def describe_vserver_groups(
             self,
             access_key_id=None,
             include_rule=None,
             resource_owner_id=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             include_listener=None,
             owner_account=None,
             owner_id=None,
@@ -833,27 +928,30 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "IncludeListener": include_listener,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def describe_v_server_group_attribute(
+    def describe_vserver_group_attribute(
             self,
             access_key_id=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
         api_request = APIRequest('DescribeVServerGroupAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
@@ -866,6 +964,7 @@ class SlbClient(AlibabaCloudClient):
             listener_port=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             listener_protocol=None,
@@ -877,6 +976,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ListenerProtocol": listener_protocol,
@@ -888,6 +988,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             rule_id=None,
@@ -897,27 +998,30 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "RuleId": rule_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def delete_v_server_group(
+    def delete_vserver_group(
             self,
             access_key_id=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
         api_request = APIRequest('DeleteVServerGroup', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
@@ -929,6 +1033,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             rule_ids=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -938,33 +1043,36 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "RuleIds": rule_ids,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def create_v_server_group(
+    def create_vserver_group(
             self,
             access_key_id=None,
             resource_owner_id=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             backend_servers=None,
             tags=None,
-            v_server_group_name=None):
+            vserver_group_name=None):
         api_request = APIRequest('CreateVServerGroup', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "BackendServers": backend_servers,
             "Tags": tags,
-            "VServerGroupName": v_server_group_name}
+            "VServerGroupName": vserver_group_name}
         return self._handle_request(api_request).result
 
     def create_rules(
@@ -974,6 +1082,7 @@ class SlbClient(AlibabaCloudClient):
             listener_port=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             rule_list=None,
             owner_account=None,
             owner_id=None,
@@ -986,6 +1095,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "RuleList": rule_list,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -993,12 +1103,13 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags}
         return self._handle_request(api_request).result
 
-    def add_v_server_group_backend_servers(
+    def add_vserver_group_backend_servers(
             self,
             access_key_id=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             backend_servers=None,
@@ -1006,9 +1117,10 @@ class SlbClient(AlibabaCloudClient):
         api_request = APIRequest('AddVServerGroupBackendServers', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "BackendServers": backend_servers,
@@ -1020,6 +1132,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             tags=None):
@@ -1028,6 +1141,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags}
@@ -1046,9 +1160,10 @@ class SlbClient(AlibabaCloudClient):
             acl_type=None,
             master_slave_server_group=None,
             max_connection=None,
+            region_id=None,
             persistence_timeout=None,
             vpc_ids=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             acl_id=None,
             listener_port=None,
             resource_owner_account=None,
@@ -1062,7 +1177,7 @@ class SlbClient(AlibabaCloudClient):
             health_check_interval=None,
             health_check_exp=None,
             health_check_connect_port=None,
-            v_server_group=None):
+            vserver_group=None):
         api_request = APIRequest('SetLoadBalancerUDPListenerAttribute',
                                  'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -1077,9 +1192,10 @@ class SlbClient(AlibabaCloudClient):
             "AclType": acl_type,
             "MasterSlaveServerGroup": master_slave_server_group,
             "MaxConnection": max_connection,
+            "RegionId": region_id,
             "PersistenceTimeout": persistence_timeout,
             "VpcIds": vpc_ids,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "AclId": acl_id,
             "ListenerPort": listener_port,
             "ResourceOwnerAccount": resource_owner_account,
@@ -1093,7 +1209,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckInterval": health_check_interval,
             "healthCheckExp": health_check_exp,
             "HealthCheckConnectPort": health_check_connect_port,
-            "VServerGroup": v_server_group}
+            "VServerGroup": vserver_group}
         return self._handle_request(api_request).result
 
     def describe_load_balancer_udp_listener_attribute(
@@ -1102,6 +1218,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             listener_port=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1117,6 +1234,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1135,9 +1253,10 @@ class SlbClient(AlibabaCloudClient):
             scheduler=None,
             acl_type=None,
             max_connection=None,
+            region_id=None,
             persistence_timeout=None,
             vpc_ids=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             acl_id=None,
             listener_port=None,
             resource_owner_account=None,
@@ -1164,9 +1283,10 @@ class SlbClient(AlibabaCloudClient):
             "Scheduler": scheduler,
             "AclType": acl_type,
             "MaxConnection": max_connection,
+            "RegionId": region_id,
             "PersistenceTimeout": persistence_timeout,
             "VpcIds": vpc_ids,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "AclId": acl_id,
             "ListenerPort": listener_port,
             "ResourceOwnerAccount": resource_owner_account,
@@ -1196,6 +1316,7 @@ class SlbClient(AlibabaCloudClient):
             tags=None,
             private_key=None,
             resource_group_id=None,
+            region_id=None,
             server_certificate_name=None):
         api_request = APIRequest('UploadServerCertificate', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -1210,6 +1331,7 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "PrivateKey": private_key,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "ServerCertificateName": server_certificate_name}
         return self._handle_request(api_request).result
 
@@ -1219,6 +1341,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             listener_port=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1230,6 +1353,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1243,6 +1367,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             listener_port=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1254,6 +1379,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1266,6 +1392,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             server_certificate_id=None,
@@ -1276,6 +1403,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ServerCertificateId": server_certificate_id,
@@ -1298,14 +1426,16 @@ class SlbClient(AlibabaCloudClient):
             master_slave_server_group=None,
             established_timeout=None,
             max_connection=None,
+            region_id=None,
             persistence_timeout=None,
             vpc_ids=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             acl_id=None,
             listener_port=None,
             health_check_type=None,
             resource_owner_account=None,
             bandwidth=None,
+            health_check_method=None,
             health_check_domain=None,
             owner_account=None,
             syn_proxy=None,
@@ -1316,7 +1446,7 @@ class SlbClient(AlibabaCloudClient):
             health_check_interval=None,
             health_check_connect_port=None,
             health_check_http_code=None,
-            v_server_group=None):
+            vserver_group=None):
         api_request = APIRequest('SetLoadBalancerTCPListenerAttribute',
                                  'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -1333,14 +1463,16 @@ class SlbClient(AlibabaCloudClient):
             "MasterSlaveServerGroup": master_slave_server_group,
             "EstablishedTimeout": established_timeout,
             "MaxConnection": max_connection,
+            "RegionId": region_id,
             "PersistenceTimeout": persistence_timeout,
             "VpcIds": vpc_ids,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "AclId": acl_id,
             "ListenerPort": listener_port,
             "HealthCheckType": health_check_type,
             "ResourceOwnerAccount": resource_owner_account,
             "Bandwidth": bandwidth,
+            "HealthCheckMethod": health_check_method,
             "HealthCheckDomain": health_check_domain,
             "OwnerAccount": owner_account,
             "SynProxy": syn_proxy,
@@ -1351,7 +1483,7 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheckInterval": health_check_interval,
             "HealthCheckConnectPort": health_check_connect_port,
             "HealthCheckHttpCode": health_check_http_code,
-            "VServerGroup": v_server_group}
+            "VServerGroup": vserver_group}
         return self._handle_request(api_request).result
 
     def set_load_balancer_status(
@@ -1359,6 +1491,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1369,6 +1502,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1382,6 +1516,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             load_balancer_name=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1392,6 +1527,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerName": load_balancer_name,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1403,7 +1539,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             health_check_timeout=None,
-            x_forwarded_for=None,
+            xforwarded_for=None,
             health_check_uri=None,
             description=None,
             unhealthy_threshold=None,
@@ -1414,10 +1550,11 @@ class SlbClient(AlibabaCloudClient):
             health_check=None,
             max_connection=None,
             enable_http2=None,
+            region_id=None,
             cookie_timeout=None,
             sticky_session_type=None,
             vpc_ids=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             acl_id=None,
             listener_port=None,
             cookie=None,
@@ -1438,20 +1575,20 @@ class SlbClient(AlibabaCloudClient):
             tags=None,
             idle_timeout=None,
             load_balancer_id=None,
-            x_forwarded_for__slbip=None,
+            xforwarded_for__slbip=None,
             health_check_interval=None,
-            x_forwarded_for_proto=None,
-            x_forwarded_for__slbid=None,
+            xforwarded_for_proto=None,
+            xforwarded_for__slbid=None,
             health_check_connect_port=None,
             health_check_http_code=None,
-            v_server_group=None):
+            vserver_group=None):
         api_request = APIRequest('SetLoadBalancerHTTPSListenerAttribute',
                                  'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "HealthCheckTimeout": health_check_timeout,
-            "XForwardedFor": x_forwarded_for,
+            "XForwardedFor": xforwarded_for,
             "HealthCheckURI": health_check_uri,
             "Description": description,
             "UnhealthyThreshold": unhealthy_threshold,
@@ -1462,10 +1599,11 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheck": health_check,
             "MaxConnection": max_connection,
             "EnableHttp2": enable_http2,
+            "RegionId": region_id,
             "CookieTimeout": cookie_timeout,
             "StickySessionType": sticky_session_type,
             "VpcIds": vpc_ids,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "AclId": acl_id,
             "ListenerPort": listener_port,
             "Cookie": cookie,
@@ -1486,13 +1624,13 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "IdleTimeout": idle_timeout,
             "LoadBalancerId": load_balancer_id,
-            "XForwardedFor_SLBIP": x_forwarded_for__slbip,
+            "XForwardedFor_SLBIP": xforwarded_for__slbip,
             "HealthCheckInterval": health_check_interval,
-            "XForwardedFor_proto": x_forwarded_for_proto,
-            "XForwardedFor_SLBID": x_forwarded_for__slbid,
+            "XForwardedFor_proto": xforwarded_for_proto,
+            "XForwardedFor_SLBID": xforwarded_for__slbid,
             "HealthCheckConnectPort": health_check_connect_port,
             "HealthCheckHttpCode": health_check_http_code,
-            "VServerGroup": v_server_group}
+            "VServerGroup": vserver_group}
         return self._handle_request(api_request).result
 
     def set_load_balancer_http_listener_attribute(
@@ -1500,7 +1638,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             health_check_timeout=None,
-            x_forwarded_for=None,
+            xforwarded_for=None,
             health_check_uri=None,
             description=None,
             unhealthy_threshold=None,
@@ -1510,10 +1648,11 @@ class SlbClient(AlibabaCloudClient):
             acl_type=None,
             health_check=None,
             max_connection=None,
+            region_id=None,
             cookie_timeout=None,
             sticky_session_type=None,
             vpc_ids=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             acl_id=None,
             listener_port=None,
             cookie=None,
@@ -1530,20 +1669,20 @@ class SlbClient(AlibabaCloudClient):
             tags=None,
             idle_timeout=None,
             load_balancer_id=None,
-            x_forwarded_for__slbip=None,
+            xforwarded_for__slbip=None,
             health_check_interval=None,
-            x_forwarded_for_proto=None,
-            x_forwarded_for__slbid=None,
+            xforwarded_for_proto=None,
+            xforwarded_for__slbid=None,
             health_check_connect_port=None,
             health_check_http_code=None,
-            v_server_group=None):
+            vserver_group=None):
         api_request = APIRequest('SetLoadBalancerHTTPListenerAttribute',
                                  'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "HealthCheckTimeout": health_check_timeout,
-            "XForwardedFor": x_forwarded_for,
+            "XForwardedFor": xforwarded_for,
             "HealthCheckURI": health_check_uri,
             "Description": description,
             "UnhealthyThreshold": unhealthy_threshold,
@@ -1553,10 +1692,11 @@ class SlbClient(AlibabaCloudClient):
             "AclType": acl_type,
             "HealthCheck": health_check,
             "MaxConnection": max_connection,
+            "RegionId": region_id,
             "CookieTimeout": cookie_timeout,
             "StickySessionType": sticky_session_type,
             "VpcIds": vpc_ids,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "AclId": acl_id,
             "ListenerPort": listener_port,
             "Cookie": cookie,
@@ -1573,13 +1713,13 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "IdleTimeout": idle_timeout,
             "LoadBalancerId": load_balancer_id,
-            "XForwardedFor_SLBIP": x_forwarded_for__slbip,
+            "XForwardedFor_SLBIP": xforwarded_for__slbip,
             "HealthCheckInterval": health_check_interval,
-            "XForwardedFor_proto": x_forwarded_for_proto,
-            "XForwardedFor_SLBID": x_forwarded_for__slbid,
+            "XForwardedFor_proto": xforwarded_for_proto,
+            "XForwardedFor_SLBID": xforwarded_for__slbid,
             "HealthCheckConnectPort": health_check_connect_port,
             "HealthCheckHttpCode": health_check_http_code,
-            "VServerGroup": v_server_group}
+            "VServerGroup": vserver_group}
         return self._handle_request(api_request).result
 
     def set_listener_access_control_status(
@@ -1588,6 +1728,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             listener_port=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             access_control_status=None,
@@ -1600,6 +1741,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "AccessControlStatus": access_control_status,
@@ -1613,6 +1755,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1623,6 +1766,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1637,6 +1781,7 @@ class SlbClient(AlibabaCloudClient):
             listener_port=None,
             load_balancer_id=None,
             source_items=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1649,6 +1794,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
             "SourceItems": source_items,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1661,6 +1807,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1671,6 +1818,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1689,6 +1837,7 @@ class SlbClient(AlibabaCloudClient):
             owner_id=None,
             tags=None,
             load_balancer_id=None,
+            region_id=None,
             internet_charge_type=None,
             ratio=None):
         api_request = APIRequest('ModifyLoadBalancerInternetSpec', 'GET', 'http', 'RPC', 'query')
@@ -1702,6 +1851,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "Tags": tags,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "InternetChargeType": internet_charge_type,
             "Ratio": ratio}
         return self._handle_request(api_request).result
@@ -1712,8 +1862,9 @@ class SlbClient(AlibabaCloudClient):
             resource_group_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
-            tag=None,
+            list_of_tag=None,
             owner_id=None,
             server_certificate_id=None,
             tags=None):
@@ -1723,8 +1874,9 @@ class SlbClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "OwnerId": owner_id,
             "ServerCertificateId": server_certificate_id,
             "Tags": tags}
@@ -1739,6 +1891,7 @@ class SlbClient(AlibabaCloudClient):
             self,
             access_key_id=None,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             accept_language=None,
@@ -1748,6 +1901,7 @@ class SlbClient(AlibabaCloudClient):
         api_request._params = {
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "AcceptLanguage": accept_language,
@@ -1761,6 +1915,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             listener_port=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1776,6 +1931,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1792,10 +1948,11 @@ class SlbClient(AlibabaCloudClient):
             page_number=None,
             resource_group_id=None,
             load_balancer_name=None,
+            region_id=None,
             page_size=None,
             address_type=None,
             slave_zone_id=None,
-            tag=None,
+            list_of_tag=None,
             fuzzy=None,
             address=None,
             resource_owner_account=None,
@@ -1805,7 +1962,7 @@ class SlbClient(AlibabaCloudClient):
             load_balancer_status=None,
             tags=None,
             server_intranet_address=None,
-            v_switch_id=None,
+            vswitch_id=None,
             load_balancer_id=None,
             internet_charge_type=None,
             vpc_id=None,
@@ -1820,10 +1977,11 @@ class SlbClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "ResourceGroupId": resource_group_id,
             "LoadBalancerName": load_balancer_name,
+            "RegionId": region_id,
             "PageSize": page_size,
             "AddressType": address_type,
             "SlaveZoneId": slave_zone_id,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "Fuzzy": fuzzy,
             "Address": address,
             "ResourceOwnerAccount": resource_owner_account,
@@ -1833,7 +1991,7 @@ class SlbClient(AlibabaCloudClient):
             "LoadBalancerStatus": load_balancer_status,
             "Tags": tags,
             "ServerIntranetAddress": server_intranet_address,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "LoadBalancerId": load_balancer_id,
             "InternetChargeType": internet_charge_type,
             "VpcId": vpc_id,
@@ -1851,6 +2009,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             listener_port=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1866,6 +2025,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1878,6 +2038,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             listener_port=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1893,6 +2054,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1905,6 +2067,7 @@ class SlbClient(AlibabaCloudClient):
             include_reserved_data=None,
             resource_owner_id=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1915,6 +2078,7 @@ class SlbClient(AlibabaCloudClient):
             "IncludeReservedData": include_reserved_data,
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1927,6 +2091,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             listener_port=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1939,6 +2104,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1953,6 +2119,7 @@ class SlbClient(AlibabaCloudClient):
             listener_port=None,
             load_balancer_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             listener_protocol=None,
@@ -1964,6 +2131,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ListenerProtocol": listener_protocol,
@@ -1975,6 +2143,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             server_certificate_id=None,
@@ -1984,6 +2153,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ServerCertificateId": server_certificate_id,
@@ -1996,6 +2166,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             listener_port=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2007,6 +2178,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2019,6 +2191,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2028,6 +2201,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2048,14 +2222,16 @@ class SlbClient(AlibabaCloudClient):
             acl_type=None,
             established_timeout=None,
             max_connection=None,
+            region_id=None,
             persistence_timeout=None,
             vpc_ids=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             acl_id=None,
             listener_port=None,
             health_check_type=None,
             resource_owner_account=None,
             bandwidth=None,
+            health_check_method=None,
             health_check_domain=None,
             owner_account=None,
             owner_id=None,
@@ -2080,14 +2256,16 @@ class SlbClient(AlibabaCloudClient):
             "AclType": acl_type,
             "EstablishedTimeout": established_timeout,
             "MaxConnection": max_connection,
+            "RegionId": region_id,
             "PersistenceTimeout": persistence_timeout,
             "VpcIds": vpc_ids,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "AclId": acl_id,
             "ListenerPort": listener_port,
             "HealthCheckType": health_check_type,
             "ResourceOwnerAccount": resource_owner_account,
             "Bandwidth": bandwidth,
+            "HealthCheckMethod": health_check_method,
             "HealthCheckDomain": health_check_domain,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2105,7 +2283,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             health_check_timeout=None,
-            x_forwarded_for=None,
+            xforwarded_for=None,
             health_check_uri=None,
             description=None,
             unhealthy_threshold=None,
@@ -2116,10 +2294,11 @@ class SlbClient(AlibabaCloudClient):
             health_check=None,
             max_connection=None,
             enable_http2=None,
+            region_id=None,
             cookie_timeout=None,
             sticky_session_type=None,
             vpc_ids=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             acl_id=None,
             listener_port=None,
             cookie=None,
@@ -2140,11 +2319,11 @@ class SlbClient(AlibabaCloudClient):
             tags=None,
             idle_timeout=None,
             load_balancer_id=None,
-            x_forwarded_for__slbip=None,
+            xforwarded_for__slbip=None,
             backend_server_port=None,
             health_check_interval=None,
-            x_forwarded_for_proto=None,
-            x_forwarded_for__slbid=None,
+            xforwarded_for_proto=None,
+            xforwarded_for__slbid=None,
             health_check_connect_port=None,
             health_check_http_code=None):
         api_request = APIRequest('CreateLoadBalancerHTTPSListener', 'GET', 'http', 'RPC', 'query')
@@ -2152,7 +2331,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "HealthCheckTimeout": health_check_timeout,
-            "XForwardedFor": x_forwarded_for,
+            "XForwardedFor": xforwarded_for,
             "HealthCheckURI": health_check_uri,
             "Description": description,
             "UnhealthyThreshold": unhealthy_threshold,
@@ -2163,10 +2342,11 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheck": health_check,
             "MaxConnection": max_connection,
             "EnableHttp2": enable_http2,
+            "RegionId": region_id,
             "CookieTimeout": cookie_timeout,
             "StickySessionType": sticky_session_type,
             "VpcIds": vpc_ids,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "AclId": acl_id,
             "ListenerPort": listener_port,
             "Cookie": cookie,
@@ -2187,11 +2367,11 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "IdleTimeout": idle_timeout,
             "LoadBalancerId": load_balancer_id,
-            "XForwardedFor_SLBIP": x_forwarded_for__slbip,
+            "XForwardedFor_SLBIP": xforwarded_for__slbip,
             "BackendServerPort": backend_server_port,
             "HealthCheckInterval": health_check_interval,
-            "XForwardedFor_proto": x_forwarded_for_proto,
-            "XForwardedFor_SLBID": x_forwarded_for__slbid,
+            "XForwardedFor_proto": xforwarded_for_proto,
+            "XForwardedFor_SLBID": xforwarded_for__slbid,
             "HealthCheckConnectPort": health_check_connect_port,
             "HealthCheckHttpCode": health_check_http_code}
         return self._handle_request(api_request).result
@@ -2202,7 +2382,7 @@ class SlbClient(AlibabaCloudClient):
             resource_owner_id=None,
             health_check_timeout=None,
             listener_forward=None,
-            x_forwarded_for=None,
+            xforwarded_for=None,
             health_check_uri=None,
             description=None,
             unhealthy_threshold=None,
@@ -2213,10 +2393,11 @@ class SlbClient(AlibabaCloudClient):
             health_check=None,
             forward_port=None,
             max_connection=None,
+            region_id=None,
             cookie_timeout=None,
             sticky_session_type=None,
             vpc_ids=None,
-            v_server_group_id=None,
+            vserver_group_id=None,
             acl_id=None,
             listener_port=None,
             cookie=None,
@@ -2233,11 +2414,11 @@ class SlbClient(AlibabaCloudClient):
             tags=None,
             idle_timeout=None,
             load_balancer_id=None,
-            x_forwarded_for__slbip=None,
+            xforwarded_for__slbip=None,
             backend_server_port=None,
             health_check_interval=None,
-            x_forwarded_for_proto=None,
-            x_forwarded_for__slbid=None,
+            xforwarded_for_proto=None,
+            xforwarded_for__slbid=None,
             health_check_connect_port=None,
             health_check_http_code=None):
         api_request = APIRequest('CreateLoadBalancerHTTPListener', 'GET', 'http', 'RPC', 'query')
@@ -2246,7 +2427,7 @@ class SlbClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "HealthCheckTimeout": health_check_timeout,
             "ListenerForward": listener_forward,
-            "XForwardedFor": x_forwarded_for,
+            "XForwardedFor": xforwarded_for,
             "HealthCheckURI": health_check_uri,
             "Description": description,
             "UnhealthyThreshold": unhealthy_threshold,
@@ -2257,10 +2438,11 @@ class SlbClient(AlibabaCloudClient):
             "HealthCheck": health_check,
             "ForwardPort": forward_port,
             "MaxConnection": max_connection,
+            "RegionId": region_id,
             "CookieTimeout": cookie_timeout,
             "StickySessionType": sticky_session_type,
             "VpcIds": vpc_ids,
-            "VServerGroupId": v_server_group_id,
+            "VServerGroupId": vserver_group_id,
             "AclId": acl_id,
             "ListenerPort": listener_port,
             "Cookie": cookie,
@@ -2277,11 +2459,11 @@ class SlbClient(AlibabaCloudClient):
             "Tags": tags,
             "IdleTimeout": idle_timeout,
             "LoadBalancerId": load_balancer_id,
-            "XForwardedFor_SLBIP": x_forwarded_for__slbip,
+            "XForwardedFor_SLBIP": xforwarded_for__slbip,
             "BackendServerPort": backend_server_port,
             "HealthCheckInterval": health_check_interval,
-            "XForwardedFor_proto": x_forwarded_for_proto,
-            "XForwardedFor_SLBID": x_forwarded_for__slbid,
+            "XForwardedFor_proto": xforwarded_for_proto,
+            "XForwardedFor_SLBID": xforwarded_for__slbid,
             "HealthCheckConnectPort": health_check_connect_port,
             "HealthCheckHttpCode": health_check_http_code}
         return self._handle_request(api_request).result
@@ -2296,8 +2478,10 @@ class SlbClient(AlibabaCloudClient):
             duration=None,
             resource_group_id=None,
             load_balancer_name=None,
+            region_id=None,
             address_type=None,
             slave_zone_id=None,
+            delete_protection=None,
             load_balancer_spec=None,
             auto_pay=None,
             address=None,
@@ -2306,7 +2490,7 @@ class SlbClient(AlibabaCloudClient):
             owner_account=None,
             owner_id=None,
             tags=None,
-            v_switch_id=None,
+            vswitch_id=None,
             enable_vpc_vip_flow=None,
             internet_charge_type=None,
             vpc_id=None,
@@ -2323,8 +2507,10 @@ class SlbClient(AlibabaCloudClient):
             "Duration": duration,
             "ResourceGroupId": resource_group_id,
             "LoadBalancerName": load_balancer_name,
+            "RegionId": region_id,
             "AddressType": address_type,
             "SlaveZoneId": slave_zone_id,
+            "DeleteProtection": delete_protection,
             "LoadBalancerSpec": load_balancer_spec,
             "AutoPay": auto_pay,
             "Address": address,
@@ -2333,7 +2519,7 @@ class SlbClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Tags": tags,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "EnableVpcVipFlow": enable_vpc_vip_flow,
             "InternetChargeType": internet_charge_type,
             "VpcId": vpc_id,
@@ -2349,6 +2535,7 @@ class SlbClient(AlibabaCloudClient):
             listener_port=None,
             load_balancer_id=None,
             source_items=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2361,6 +2548,7 @@ class SlbClient(AlibabaCloudClient):
             "ListenerPort": listener_port,
             "LoadBalancerId": load_balancer_id,
             "SourceItems": source_items,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2373,6 +2561,7 @@ class SlbClient(AlibabaCloudClient):
             access_key_id=None,
             resource_owner_id=None,
             load_balancer_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2383,6 +2572,7 @@ class SlbClient(AlibabaCloudClient):
             "access_key_id": access_key_id,
             "ResourceOwnerId": resource_owner_id,
             "LoadBalancerId": load_balancer_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,

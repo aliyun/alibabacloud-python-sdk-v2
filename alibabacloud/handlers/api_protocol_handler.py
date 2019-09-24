@@ -15,14 +15,14 @@
 import json
 import platform
 
+import jmespath
+
 from alibabacloud.compat import urlencode
 from alibabacloud.exceptions import ParamTypeInvalidException, ClientException
 from alibabacloud.handlers import RequestHandler
 from alibabacloud.utils import format_type
 from alibabacloud.vendored.requests.structures import CaseInsensitiveDict
 from alibabacloud.vendored.requests.structures import OrderedDict
-
-DEPTH = 0
 
 
 def _user_agent_header():
@@ -44,6 +44,12 @@ def _default_user_agent():
         ['vendored', 'requests', '__version__'], 0).__version__
 
     return CaseInsensitiveDict(default_agent)
+
+
+class _SearchableDict(dict):
+
+    def search(self, expression):
+        return jmespath.search(expression, self)
 
 
 def _merge_user_agent(default_agent, extra_agent):
@@ -106,16 +112,20 @@ class APIProtocolHandler(RequestHandler):
         http_request.accept_format = 'JSON'
 
         # handle params to body_params or query_params
+        parse_params = {
+            "query": (api_request._query_params, "QueryParams"),
+            "body": (api_request._body_params, "BodyParams"),
+            "path": (api_request.path_params, "PathParams"),
+            "header": (api_request._headers, "Headers")
+        }
+        # TODO default params is query_params
         if api_request.params:
-            # TODO default params is query_params
-            if api_request._param_position == "query":
-                api_request._query_params.update(self._filter_params(api_request.params))
-            elif api_request._param_position == "body":
-                api_request._body_params.update(self._filter_params(api_request.params))
-            elif api_request._param_position == "path":
-                api_request.path_params.update(self._filter_params(api_request.params))
-            elif api_request._param_position == "header":
-                api_request._headers.update(self._filter_params(api_request.params))
+            key = api_request._param_position
+            if key in parse_params:
+                params, position = parse_params[key]
+                params.update(self._filter_params(api_request.params))
+                context.client.logger.debug('Request received. Product:%s %s: %s',
+                                            context.client.product_code, position, str(params))
 
         # handle api_request region_id, rpc and roa must
         if 'RegionId' not in api_request._query_params:
@@ -155,10 +165,12 @@ class APIProtocolHandler(RequestHandler):
         else:
             http_request.port = context.config.http_port
 
+        http_request.verify = context.config.verify
+
     def handle_response(self, context):
         if not context.exception:
             try:
-                context.result = json.loads(context.http_response.text)
+                context.result = json.loads(context.http_response.text, object_hook=_SearchableDict)
             except ValueError:
                 # failed to parse body as json format
                 raise ClientException(

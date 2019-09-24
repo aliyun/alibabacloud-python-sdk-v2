@@ -12,31 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
 import json
-from tests.base import SDKTestBase
-from aliyunsdkcore.acs_exception.exceptions import ClientException
-from aliyunsdkcore.acs_exception.exceptions import ServerException
-from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
-from aliyunsdkcore.vendored.six import iteritems
+import time
 
 import alibabacloud
+from alibabacloud.exceptions import ClientException
+from alibabacloud.exceptions import ServerException
 from alibabacloud.services.ecs import ECSInstanceResource
-import alibabacloud.errors as errors
+from alibabacloud.vendored.six import iteritems
 from tests import epoch_time_to_timestamp, timestamp_to_epoch_time
+from tests.base import SDKTestBase
 
 
 class EcsResourceTest(SDKTestBase):
+    _created = False
 
     def __init__(self, *args, **kwargs):
         SDKTestBase.__init__(self, *args, **kwargs)
         self.image_id = "coreos_1745_7_0_64_30G_alibase_20180705.vhd"
-        self._created = False
 
     def setUp(self):
-        if not self._created:
+        if not EcsResourceTest._created:
             self._create_a_lot_instances(4)
-            self._created = True
+            EcsResourceTest._created = True
 
     def _env_clean_up(self):
         print("clean up all instances if any")
@@ -65,10 +63,11 @@ class EcsResourceTest(SDKTestBase):
         return instance
 
     def status_verify(self, instance):
-        request = DescribeInstancesRequest()
-        request.set_InstanceIds(json.dumps([instance.instance_id]))
-        response = self.client.do_action_with_exception(request)
-        obj = json.loads(response.decode('utf-8'))['Instances']['Instance'][0]
+        client = alibabacloud.get_client(service_name='ecs', access_key_id=self.access_key_id,
+                                         access_key_secret=self.access_key_secret,
+                                         region_id=self.region_id)
+        response = client.describe_instances(instance_ids=json.dumps([instance.instance_id]))
+        obj = response['Instances']['Instance'][0]
         for key, value in iteritems(obj):
             attr_name = self._convert_camel_to_snake(key)
             self.assertTrue(hasattr(instance, attr_name), "instance has no " + attr_name)
@@ -171,7 +170,7 @@ class EcsResourceTest(SDKTestBase):
         instances = list(ecs.instances.all())
         self.assertEqual(16, len(instances))
         instance_ids = self._get_ids(instances)
-        self.assertEqual(16, len(set(instance_ids)))   # make sure all instance ids are identical
+        self.assertEqual(16, len(set(instance_ids)))  # make sure all instance ids are identical
         for instance in instances:
             self.status_verify(instance)
 
@@ -199,7 +198,7 @@ class EcsResourceTest(SDKTestBase):
 
         all_ids = self._get_ids(ecs.instances.all())
         instance_id = all_ids[-1]
-        instances = list(ecs.instances.filter(instance_id=instance_id))
+        instances = list(ecs.instances.filter(instance_ids=[instance_id,]))
         self.assertEqual(1, len(instances))
         self.assertEqual(instance_id, instances[0].instance_id)
 
@@ -237,7 +236,7 @@ class EcsResourceTest(SDKTestBase):
                 pass
             assert False
         except ServerException as e:
-            self.assertEqual("InvalidParameter", e.get_error_code())
+            self.assertEqual("InvalidParameter", e.error_code)
 
         all_ids = self._get_ids(ecs.instances.all())
         instances = list(ecs.instances.page_size(100))
@@ -310,6 +309,7 @@ class EcsResourceTest(SDKTestBase):
         name = "RandomName" + str(seed)
         instance = self._find_instance(1, "Running", "ecs.n2.small")[0]
         instance.modify_attributes(InstanceName=name)
+        instance.refresh()
         self.assertEqual(name, instance.instance_name)
 
     def test_instance_filter_params_alias(self):
@@ -323,7 +323,7 @@ class EcsResourceTest(SDKTestBase):
             self.assertEqual(set(expected_instance_ids), set([x.instance_id for x in items]))
 
         _iterator_assert(
-            self.ecs.instances.filter(instance_id=instance_ids[0]),
+            self.ecs.instances.filter(instance_ids=[instance_ids[0],]),
             1, instance_ids[:1])
         _iterator_assert(
             self.ecs.instances.filter(instance_ids=instance_ids),
@@ -353,25 +353,41 @@ class EcsResourceTest(SDKTestBase):
                 func()
                 assert False
             except ClientException as e:
-                self.assertEqual("SDK.InvalidParameter", e.get_error_code())
-                self.assertEqual(error_message, e.get_error_msg())
+                self.assertEqual(error_message, e.error_message)
 
         def bad_filter_param():
             for i in ecs.instances.filter(InvalidParameter=1):
                 pass
 
-        test_func(bad_filter_param,
-                  "DescribeInstancesRequest has no parameter named InvalidParameter.")
+        def test_type_error(func, error_message):
+            try:
+                func()
+                assert False
+            except TypeError as e:
+                self.assertEqual(error_message, e.args[0])
+
+        # test_func(bad_filter_param,
+        #           "DescribeInstancesRequest has no parameter named InvalidParameter.")
+        test_type_error(bad_filter_param,
+                        "describe_instances() got an unexpected keyword argument 'invalid_parameter'")
+
         test_func(lambda: ecs.instances.limit(0),
                   "count must be a positive integer.")
         test_func(lambda: ecs.instances.page_size(0),
                   "count must be a positive integer.")
         test_func(lambda: ecs.instances.page_size("blah"),
                   "count must be a positive integer.")
-        test_func(lambda: ecs.run_instances(ImageId="blah", InvalidParameter=1),
-                  "RunInstancesRequest has no parameter named InvalidParameter.")
-        test_func(lambda: ecs.create_instance(InvalidParameter=1),
-                  "CreateInstanceRequest has no parameter named InvalidParameter.")
+
+        # test_func(lambda: ecs.run_instances(ImageId="blah", InvalidParameter=1),
+        #           "RunInstancesRequest has no parameter named InvalidParameter.")
+
+        test_type_error(lambda: ecs.run_instances(ImageId="blah", InvalidParameter=1),
+                        "run_instances() got an unexpected keyword argument 'invalid_parameter'")
+
+        # test_func(lambda: ecs.create_instance(InvalidParameter=1),
+        #           "CreateInstanceRequest has no parameter named InvalidParameter.")
+        test_type_error(lambda: ecs.create_instance(InvalidParameter=1),
+                        "create_instance() got an unexpected keyword argument 'invalid_parameter'")
 
     def test_resource_refresh_failed(self):
         res = self._get_resource("ecs.instance", "BadId")
@@ -379,20 +395,18 @@ class EcsResourceTest(SDKTestBase):
             res.refresh()
             assert False
         except ClientException as e:
-            self.assertEqual(errors.ERROR_INVALID_SERVER_RESPONSE, e.get_error_code())
             self.assertEqual("Failed to find instance data from DescribeInstances response. "
                              "InstanceId = BadId",
-                             e.get_error_msg())
+                             e.error_message)
 
         res = self._get_resource("ecs.system_event", "BadId")
         try:
             res.refresh()
             assert False
         except ClientException as e:
-            self.assertEqual(errors.ERROR_INVALID_SERVER_RESPONSE, e.get_error_code())
             self.assertEqual("Failed to find event data from "
                              "DescribeInstanceHistoryEventsRequest response. EventId = BadId",
-                             e.get_error_msg())
+                             e.error_message)
 
     def test_events(self):
         # create simulated events
@@ -446,14 +460,14 @@ class EcsResourceTest(SDKTestBase):
 
         # test get events by region id
         event_ids = []
-        for event in self.ecs.system_events.filter(RegionId=self.region_id,
-                                                   NotBeforeStart=start_time_str,
+        for event in self.ecs.system_events.filter(NotBeforeStart=start_time_str,
+                                                   RegionId=self.region_id,
                                                    NotBeforeEnd=end_time_str):
             event_ids.append(event.event_id)
         self.assertEqual(set(created_event_ids), set(event_ids))
 
-        self.assertEqual(0, len(list(self.ecs.system_events.filter(RegionId="cn-shanghai",
-                                                                   NotBeforeStart=start_time_str,
+        self.assertEqual(0, len(list(self.ecs.system_events.filter(NotBeforeStart=start_time_str,
+                                                                   RegionId="cn-shanghai",
                                                                    NotBeforeEnd=end_time_str))))
 
         # test get event by id
@@ -516,4 +530,5 @@ class EcsResourceTest(SDKTestBase):
 
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

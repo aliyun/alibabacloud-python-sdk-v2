@@ -11,15 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from alibabacloud.client import ClientConfig, AlibabaCloudClient
+from alibabacloud import get_client
+from alibabacloud.client import AlibabaCloudClient
+from alibabacloud.client import ClientConfig
 from alibabacloud.credentials import AccessKeyCredentials
 from alibabacloud.credentials.provider import RamRoleCredentialsProvider
 from alibabacloud.exceptions import ServerException, InvalidRegionIDException
 from alibabacloud.request import APIRequest
 from base import SDKTestBase
-
-from alibabacloud.clients.ecs_20140526 import EcsClient
 
 
 class ROSClient(AlibabaCloudClient):
@@ -40,16 +39,25 @@ class ROSClient(AlibabaCloudClient):
 
 class CloudLevelTest(SDKTestBase):
 
+    def _init_client(self, service_name, api_version=None, region_id='cn-hangzhou'):
+        client = get_client(service_name=service_name, api_version=api_version,
+                            region_id=region_id,
+                            access_key_id=self.access_key_id,
+                            access_key_secret=self.access_key_secret,
+                            config=self.init_client_config())
+        return client
+
     def test_rpc_with_regions_request(self):
-        
-        ecs_client = EcsClient(self.client_config)
+
+        ecs_client = self._init_client('ecs')
         response = ecs_client.describe_regions()
         self.assertTrue(response.get("Regions"))
         self.assertTrue(response.get("RequestId"))
 
     def test_roa_with_resource_types_request(self):
-        
-        ros_client = ROSClient(self.client_config)
+
+        ros_client = ROSClient(self.client_config,
+                               credentials_provider=self.init_credentials_provider())
         response = ros_client.describe_resource_types()
         self.assertTrue(response.get("ResourceTypes"))
 
@@ -114,27 +122,36 @@ class CloudLevelTest(SDKTestBase):
 
     def test_rpc_regions_request_with_error(self):
         self.client_config.region_id = 'abc'
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = get_client(service_name='ecs',
+                                access_key_id=self.access_key_id,
+                                access_key_secret=self.access_key_secret,
+                                config=self.client_config)
+
         with self.assertRaises(InvalidRegionIDException) as e:
             ecs_client.describe_regions()
         self.assertEqual(e.exception.error_message, "No such region 'abc'."
                                                     " Please check your region ID.")
 
     def test_rpc_regions_request_with_unicode(self):
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = self._init_client('ecs')
         try:
             ecs_client.describe_regions(owner_account="&#111;&#119;&#110;&#101;")
+            assert False
+
         except ServerException as e:
             self.assertEqual(e.error_code, "InvalidParameter.OwnerAccount")
             self.assertEqual(e.error_message, "OwnerAccount is Invalid.")
 
     def test_roa_regions_types_request_with_unicode(self):
-        ros_client = ROSClient(self.client_config)
+        ros_client = ROSClient(self.client_config,
+                               credentials_provider=self.init_credentials_provider())
+
         response = ros_client.describe_resource_types(support_status='&#114;&#101;')
         self.assertTrue(response.get("ResourceTypes") == [])
 
     def test_rpc_regions_request_with_query(self):
-        ecs_client = EcsClient(self.client_config)
+        ecs_client = self._init_client('ecs')
+
         with self.assertRaises(ServerException) as e:
             ecs_client.describe_regions(owner_account="owner&account")
 
@@ -142,8 +159,8 @@ class CloudLevelTest(SDKTestBase):
         self.assertEqual(e.exception.error_message, "OwnerAccount is Invalid.")
 
     def test_roa_regions_types_request_with_query(self):
-        
-        ros_client = ROSClient(self.client_config)
+
+        ros_client = ROSClient(self.client_config,
+                               credentials_provider=self.init_credentials_provider())
         response = ros_client.describe_resource_types(support_status='resource&types;')
         self.assertTrue(response.get("ResourceTypes") == [])
-

@@ -19,12 +19,417 @@ from alibabacloud.utils.parameter_validation import verify_params
 
 class EcsClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider)
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config,
+                                    credentials_provider=credentials_provider,
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'Ecs'
         self.api_version = '2014-05-26'
         self.location_service_code = 'ecs'
         self.location_endpoint_type = 'openAPI'
+
+    def delete_instances(
+            self,
+            resource_owner_id=None,
+            list_of_instance_id=None,
+            dry_run=None,
+            resource_owner_account=None,
+            client_token=None,
+            owner_account=None,
+            terminate_subscription=None,
+            force=None,
+            owner_id=None):
+        api_request = APIRequest('DeleteInstances', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "InstanceId": list_of_instance_id,
+            "DryRun": dry_run,
+            "ResourceOwnerAccount": resource_owner_account,
+            "ClientToken": client_token,
+            "OwnerAccount": owner_account,
+            "TerminateSubscription": terminate_subscription,
+            "Force": force,
+            "OwnerId": owner_id}
+        repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
+                       }
+        verify_params(api_request._params, repeat_info)
+        return self._handle_request(api_request).result
+
+    def modify_storage_set_attribute(
+            self,
+            resource_owner_id=None,
+            client_token=None,
+            description=None,
+            region_id=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            storage_set_id=None,
+            storage_set_name=None):
+        api_request = APIRequest('ModifyStorageSetAttribute', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ClientToken": client_token,
+            "Description": description,
+            "RegionId": region_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "StorageSetId": storage_set_id,
+            "StorageSetName": storage_set_name}
+        return self._handle_request(api_request).result
+
+    def describe_storage_sets(
+            self,
+            resource_owner_id=None,
+            client_token=None,
+            storage_set_ids=None,
+            page_number=None,
+            region_id=None,
+            page_size=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            zone_id=None,
+            storage_set_name=None):
+        api_request = APIRequest('DescribeStorageSets', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ClientToken": client_token,
+            "StorageSetIds": storage_set_ids,
+            "PageNumber": page_number,
+            "RegionId": region_id,
+            "PageSize": page_size,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "ZoneId": zone_id,
+            "StorageSetName": storage_set_name}
+        return self._handle_request(api_request).result
+
+    def describe_storage_set_details(
+            self,
+            resource_owner_id=None,
+            client_token=None,
+            page_number=None,
+            region_id=None,
+            page_size=None,
+            storage_set_partition_number=None,
+            disk_ids=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            storage_set_id=None):
+        api_request = APIRequest('DescribeStorageSetDetails', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ClientToken": client_token,
+            "PageNumber": page_number,
+            "RegionId": region_id,
+            "PageSize": page_size,
+            "StorageSetPartitionNumber": storage_set_partition_number,
+            "DiskIds": disk_ids,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "StorageSetId": storage_set_id}
+        return self._handle_request(api_request).result
+
+    def delete_storage_set(
+            self,
+            resource_owner_id=None,
+            client_token=None,
+            region_id=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            storage_set_id=None):
+        api_request = APIRequest('DeleteStorageSet', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ClientToken": client_token,
+            "RegionId": region_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "StorageSetId": storage_set_id}
+        return self._handle_request(api_request).result
+
+    def create_storage_set(
+            self,
+            resource_owner_id=None,
+            client_token=None,
+            max_partition_number=None,
+            description=None,
+            region_id=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            zone_id=None,
+            storage_set_name=None):
+        api_request = APIRequest('CreateStorageSet', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "ClientToken": client_token,
+            "MaxPartitionNumber": max_partition_number,
+            "Description": description,
+            "RegionId": region_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "ZoneId": zone_id,
+            "StorageSetName": storage_set_name}
+        return self._handle_request(api_request).result
+
+    def modify_disk_spec(
+            self,
+            resource_owner_id=None,
+            disk_id=None,
+            resource_owner_account=None,
+            performance_level=None,
+            owner_account=None,
+            owner_id=None):
+        api_request = APIRequest('ModifyDiskSpec', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "DiskId": disk_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "PerformanceLevel": performance_level,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id}
+        return self._handle_request(api_request).result
+
+    def modify_auto_provisioning_group(
+            self,
+            resource_owner_id=None,
+            terminate_instances_with_expiration=None,
+            region_id=None,
+            default_target_capacity_type=None,
+            excess_capacity_termination_policy=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            auto_provisioning_group_id=None,
+            pay_as_you_go_target_capacity=None,
+            total_target_capacity=None,
+            spot_target_capacity=None,
+            max_spot_price=None,
+            auto_provisioning_group_name=None):
+        api_request = APIRequest('ModifyAutoProvisioningGroup', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "TerminateInstancesWithExpiration": terminate_instances_with_expiration,
+            "RegionId": region_id,
+            "DefaultTargetCapacityType": default_target_capacity_type,
+            "ExcessCapacityTerminationPolicy": excess_capacity_termination_policy,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "AutoProvisioningGroupId": auto_provisioning_group_id,
+            "PayAsYouGoTargetCapacity": pay_as_you_go_target_capacity,
+            "TotalTargetCapacity": total_target_capacity,
+            "SpotTargetCapacity": spot_target_capacity,
+            "MaxSpotPrice": max_spot_price,
+            "AutoProvisioningGroupName": auto_provisioning_group_name}
+        return self._handle_request(api_request).result
+
+    def describe_auto_provisioning_groups(
+            self,
+            resource_owner_id=None,
+            page_number=None,
+            region_id=None,
+            page_size=None,
+            list_of_auto_provisioning_group_status=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            list_of_auto_provisioning_group_id=None,
+            auto_provisioning_group_name=None):
+        api_request = APIRequest('DescribeAutoProvisioningGroups', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "PageNumber": page_number,
+            "RegionId": region_id,
+            "PageSize": page_size,
+            "AutoProvisioningGroupStatus": list_of_auto_provisioning_group_status,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "AutoProvisioningGroupId": list_of_auto_provisioning_group_id,
+            "AutoProvisioningGroupName": auto_provisioning_group_name}
+        repeat_info = {
+            "AutoProvisioningGroupStatus": (
+                'AutoProvisioningGroupStatus',
+                'list',
+                'str',
+                None),
+            "AutoProvisioningGroupId": (
+                'AutoProvisioningGroupId',
+                'list',
+                'str',
+                None),
+             }
+        verify_params(api_request._params, repeat_info)
+        return self._handle_request(api_request).result
+
+    def describe_auto_provisioning_group_instances(
+            self,
+            resource_owner_id=None,
+            page_number=None,
+            region_id=None,
+            page_size=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            auto_provisioning_group_id=None):
+        api_request = APIRequest('DescribeAutoProvisioningGroupInstances',
+                                 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "PageNumber": page_number,
+            "RegionId": region_id,
+            "PageSize": page_size,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "AutoProvisioningGroupId": auto_provisioning_group_id}
+        return self._handle_request(api_request).result
+
+    def delete_auto_provisioning_group(
+            self,
+            resource_owner_id=None,
+            region_id=None,
+            terminate_instances=None,
+            resource_owner_account=None,
+            owner_account=None,
+            owner_id=None,
+            auto_provisioning_group_id=None):
+        api_request = APIRequest('DeleteAutoProvisioningGroup', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
+            "TerminateInstances": terminate_instances,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "OwnerId": owner_id,
+            "AutoProvisioningGroupId": auto_provisioning_group_id}
+        return self._handle_request(api_request).result
+
+    def create_auto_provisioning_group(
+            self,
+            resource_owner_id=None,
+            auto_provisioning_group_type=None,
+            description=None,
+            terminate_instances_with_expiration=None,
+            resource_group_id=None,
+            spot_allocation_strategy=None,
+            region_id=None,
+            terminate_instances=None,
+            pay_as_you_go_allocation_strategy=None,
+            default_target_capacity_type=None,
+            excess_capacity_termination_policy=None,
+            list_of_launch_template_config=None,
+            valid_until=None,
+            spot_instance_interruption_behavior=None,
+            launch_template_id=None,
+            resource_owner_account=None,
+            owner_account=None,
+            spot_instance_pools_to_use_count=None,
+            owner_id=None,
+            launch_template_version=None,
+            pay_as_you_go_target_capacity=None,
+            total_target_capacity=None,
+            spot_target_capacity=None,
+            valid_from=None,
+            auto_provisioning_group_name=None,
+            max_spot_price=None):
+        api_request = APIRequest('CreateAutoProvisioningGroup', 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "AutoProvisioningGroupType": auto_provisioning_group_type,
+            "Description": description,
+            "TerminateInstancesWithExpiration": terminate_instances_with_expiration,
+            "ResourceGroupId": resource_group_id,
+            "SpotAllocationStrategy": spot_allocation_strategy,
+            "RegionId": region_id,
+            "TerminateInstances": terminate_instances,
+            "PayAsYouGoAllocationStrategy": pay_as_you_go_allocation_strategy,
+            "DefaultTargetCapacityType": default_target_capacity_type,
+            "ExcessCapacityTerminationPolicy": excess_capacity_termination_policy,
+            "LaunchTemplateConfig": list_of_launch_template_config,
+            "ValidUntil": valid_until,
+            "SpotInstanceInterruptionBehavior": spot_instance_interruption_behavior,
+            "LaunchTemplateId": launch_template_id,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "SpotInstancePoolsToUseCount": spot_instance_pools_to_use_count,
+            "OwnerId": owner_id,
+            "LaunchTemplateVersion": launch_template_version,
+            "PayAsYouGoTargetCapacity": pay_as_you_go_target_capacity,
+            "TotalTargetCapacity": total_target_capacity,
+            "SpotTargetCapacity": spot_target_capacity,
+            "ValidFrom": valid_from,
+            "AutoProvisioningGroupName": auto_provisioning_group_name,
+            "MaxSpotPrice": max_spot_price}
+        repeat_info = {
+            "LaunchTemplateConfig": (
+                'LaunchTemplateConfig',
+                'list',
+                'dict',
+                [
+                    ('InstanceType',
+                     'str',
+                     None,
+                     None),
+                    ('MaxPrice',
+                     'str',
+                     None,
+                     None),
+                    ('VSwitchId',
+                     'str',
+                     None,
+                     None),
+                    ('WeightedCapacity',
+                     'str',
+                     None,
+                     None),
+                    ('Priority',
+                     'str',
+                     None,
+                     None),
+                    ]),
+             }
+        verify_params(api_request._params, repeat_info)
+        return self._handle_request(api_request).result
+
+    def describe_auto_provisioning_group_history(
+            self,
+            resource_owner_id=None,
+            start_time=None,
+            page_number=None,
+            region_id=None,
+            page_size=None,
+            resource_owner_account=None,
+            owner_account=None,
+            end_time=None,
+            owner_id=None,
+            auto_provisioning_group_id=None):
+        api_request = APIRequest('DescribeAutoProvisioningGroupHistory',
+                                 'GET', 'http', 'RPC', 'query')
+        api_request._params = {
+            "ResourceOwnerId": resource_owner_id,
+            "StartTime": start_time,
+            "PageNumber": page_number,
+            "RegionId": region_id,
+            "PageSize": page_size,
+            "ResourceOwnerAccount": resource_owner_account,
+            "OwnerAccount": owner_account,
+            "EndTime": end_time,
+            "OwnerId": owner_id,
+            "AutoProvisioningGroupId": auto_provisioning_group_id}
+        return self._handle_request(api_request).result
 
     def report_instances_status(
             self,
@@ -32,26 +437,28 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             description=None,
             start_time=None,
-            disk_id=None,
+            region_id=None,
+            list_of_disk_id=None,
             resource_owner_account=None,
             owner_account=None,
             end_time=None,
             owner_id=None,
-            instance_id=None,
-            device=None):
+            list_of_instance_id=None,
+            list_of_device=None):
         api_request = APIRequest('ReportInstancesStatus', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "Reason": reason,
             "ResourceOwnerId": resource_owner_id,
             "Description": description,
             "StartTime": start_time,
-            "DiskId": disk_id,
+            "RegionId": region_id,
+            "DiskId": list_of_disk_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "EndTime": end_time,
             "OwnerId": owner_id,
-            "InstanceId": instance_id,
-            "Device": device}
+            "InstanceId": list_of_instance_id,
+            "Device": list_of_device}
         repeat_info = {"DiskId": ('DiskId', 'list', 'str', None),
                        "InstanceId": ('InstanceId', 'list', 'str', None),
                        "Device": ('Device', 'list', 'str', None),
@@ -64,6 +471,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             terminate_instances_with_expiration=None,
             on_demand_target_capacity=None,
+            region_id=None,
             default_target_capacity_type=None,
             excess_capacity_termination_policy=None,
             resource_owner_account=None,
@@ -78,6 +486,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "TerminateInstancesWithExpiration": terminate_instances_with_expiration,
             "OnDemandTargetCapacity": on_demand_target_capacity,
+            "RegionId": region_id,
             "DefaultTargetCapacityType": default_target_capacity_type,
             "ExcessCapacityTerminationPolicy": excess_capacity_termination_policy,
             "ResourceOwnerAccount": resource_owner_account,
@@ -94,23 +503,25 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             page_number=None,
             fleet_name=None,
-            fleet_status=None,
+            list_of_fleet_status=None,
+            region_id=None,
             page_size=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            fleet_id=None):
+            list_of_fleet_id=None):
         api_request = APIRequest('DescribeFleets', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
             "FleetName": fleet_name,
-            "FleetStatus": fleet_status,
+            "FleetStatus": list_of_fleet_status,
+            "RegionId": region_id,
             "PageSize": page_size,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "FleetId": fleet_id}
+            "FleetId": list_of_fleet_id}
         repeat_info = {"FleetStatus": ('FleetStatus', 'list', 'str', None),
                        "FleetId": ('FleetId', 'list', 'str', None),
                        }
@@ -121,6 +532,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             resource_owner_account=None,
             owner_account=None,
@@ -130,6 +542,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -140,6 +553,7 @@ class EcsClient(AlibabaCloudClient):
     def describe_fleet_history(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -147,6 +561,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DescribeFleetHistory', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -156,6 +571,7 @@ class EcsClient(AlibabaCloudClient):
     def delete_fleet(
             self,
             resource_owner_id=None,
+            region_id=None,
             terminate_instances=None,
             resource_owner_account=None,
             owner_account=None,
@@ -164,6 +580,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteFleet', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "TerminateInstances": terminate_instances,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -180,10 +597,11 @@ class EcsClient(AlibabaCloudClient):
             on_demand_target_capacity=None,
             fleet_name=None,
             spot_allocation_strategy=None,
+            region_id=None,
             terminate_instances=None,
             default_target_capacity_type=None,
             excess_capacity_termination_policy=None,
-            launch_template_config=None,
+            list_of_launch_template_config=None,
             valid_until=None,
             fill_gap_with_on_demand=None,
             spot_instance_interruption_behavior=None,
@@ -207,10 +625,11 @@ class EcsClient(AlibabaCloudClient):
             "OnDemandTargetCapacity": on_demand_target_capacity,
             "FleetName": fleet_name,
             "SpotAllocationStrategy": spot_allocation_strategy,
+            "RegionId": region_id,
             "TerminateInstances": terminate_instances,
             "DefaultTargetCapacityType": default_target_capacity_type,
             "ExcessCapacityTerminationPolicy": excess_capacity_termination_policy,
-            "LaunchTemplateConfig": launch_template_config,
+            "LaunchTemplateConfig": list_of_launch_template_config,
             "ValidUntil": valid_until,
             "FillGapWithOnDemand": fill_gap_with_on_demand,
             "SpotInstanceInterruptionBehavior": spot_instance_interruption_behavior,
@@ -260,6 +679,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             description=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -269,6 +689,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "Description": description,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -282,6 +703,7 @@ class EcsClient(AlibabaCloudClient):
             client_token=None,
             description=None,
             resource_group_id=None,
+            region_id=None,
             scope=None,
             instance_type=None,
             period=None,
@@ -299,6 +721,7 @@ class EcsClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "Description": description,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "Scope": scope,
             "InstanceType": instance_type,
             "Period": period,
@@ -315,19 +738,21 @@ class EcsClient(AlibabaCloudClient):
     def modify_reserved_instances(
             self,
             resource_owner_id=None,
-            configuration=None,
+            list_of_configuration=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            reserved_instance_id=None):
+            list_of_reserved_instance_id=None):
         api_request = APIRequest('ModifyReservedInstances', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "Configuration": configuration,
+            "Configuration": list_of_configuration,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "ReservedInstanceId": reserved_instance_id}
+            "ReservedInstanceId": list_of_reserved_instance_id}
         repeat_info = {"Configuration": ('Configuration',
                                          'list',
                                          'dict',
@@ -365,6 +790,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             page_number=None,
             lock_reason=None,
+            region_id=None,
             scope=None,
             page_size=None,
             instance_type=None,
@@ -372,16 +798,17 @@ class EcsClient(AlibabaCloudClient):
             owner_account=None,
             instance_type_family=None,
             owner_id=None,
-            reserved_instance_id=None,
+            list_of_reserved_instance_id=None,
             offering_type=None,
             zone_id=None,
             reserved_instance_name=None,
-            status=None):
+            list_of_status=None):
         api_request = APIRequest('DescribeReservedInstances', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
             "LockReason": lock_reason,
+            "RegionId": region_id,
             "Scope": scope,
             "PageSize": page_size,
             "InstanceType": instance_type,
@@ -389,11 +816,11 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "InstanceTypeFamily": instance_type_family,
             "OwnerId": owner_id,
-            "ReservedInstanceId": reserved_instance_id,
+            "ReservedInstanceId": list_of_reserved_instance_id,
             "OfferingType": offering_type,
             "ZoneId": zone_id,
             "ReservedInstanceName": reserved_instance_name,
-            "Status": status}
+            "Status": list_of_status}
         repeat_info = {"ReservedInstanceId": ('ReservedInstanceId', 'list', 'str', None),
                        "Status": ('Status', 'list', 'str', None),
                        }
@@ -404,31 +831,33 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             instance_type=None,
-            tag=None,
+            list_of_tag=None,
             instance_charge_type=None,
             dry_run=None,
             resource_owner_account=None,
             owner_account=None,
             instance_type_family=None,
             owner_id=None,
-            demand_status=None,
+            list_of_demand_status=None,
             zone_id=None):
         api_request = APIRequest('DescribeDemands', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "InstanceType": instance_type,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "InstanceChargeType": instance_charge_type,
             "DryRun": dry_run,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "InstanceTypeFamily": instance_type_family,
             "OwnerId": owner_id,
-            "DemandStatus": demand_status,
+            "DemandStatus": list_of_demand_status,
             "ZoneId": zone_id}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
                                                        ('Value', 'str', None, None),
@@ -443,6 +872,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             snapshot_name=None,
             oss_object=None,
+            region_id=None,
             oss_bucket=None,
             resource_owner_account=None,
             role_name=None,
@@ -452,6 +882,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "SnapshotName": snapshot_name,
             "OssObject": oss_object,
+            "RegionId": region_id,
             "OssBucket": oss_bucket,
             "ResourceOwnerAccount": resource_owner_account,
             "RoleName": role_name,
@@ -462,6 +893,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             snapshot_id=None,
+            region_id=None,
             oss_bucket=None,
             resource_owner_account=None,
             role_name=None,
@@ -470,6 +902,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "SnapshotId": snapshot_id,
+            "RegionId": region_id,
             "OssBucket": oss_bucket,
             "ResourceOwnerAccount": resource_owner_account,
             "RoleName": role_name,
@@ -479,23 +912,25 @@ class EcsClient(AlibabaCloudClient):
     def untag_resources(
             self,
             resource_owner_id=None,
+            region_id=None,
             all_=None,
-            resource_id=None,
+            list_of_resource_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
             resource_type=None,
-            tag_key=None):
+            list_of_tag_key=None):
         api_request = APIRequest('UntagResources', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "All": all_,
-            "ResourceId": resource_id,
+            "ResourceId": list_of_resource_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ResourceType": resource_type,
-            "TagKey": tag_key}
+            "TagKey": list_of_tag_key}
         repeat_info = {"ResourceId": ('ResourceId', 'list', 'str', None),
                        "TagKey": ('TagKey', 'list', 'str', None),
                        }
@@ -504,16 +939,18 @@ class EcsClient(AlibabaCloudClient):
 
     def tag_resources(
             self,
-            tag=None,
-            resource_id=None,
+            region_id=None,
+            list_of_tag=None,
+            list_of_resource_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
             resource_type=None):
         api_request = APIRequest('TagResources', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Tag": tag,
-            "ResourceId": resource_id,
+            "RegionId": region_id,
+            "Tag": list_of_tag,
+            "ResourceId": list_of_resource_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -529,9 +966,10 @@ class EcsClient(AlibabaCloudClient):
     def list_tag_resources(
             self,
             resource_owner_id=None,
+            region_id=None,
             next_token=None,
-            tag=None,
-            resource_id=None,
+            list_of_tag=None,
+            list_of_resource_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -539,9 +977,10 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('ListTagResources', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "NextToken": next_token,
-            "Tag": tag,
-            "ResourceId": resource_id,
+            "Tag": list_of_tag,
+            "ResourceId": list_of_resource_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -558,6 +997,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             event_id=None,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None):
@@ -565,6 +1005,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "EventId": event_id,
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -591,19 +1032,21 @@ class EcsClient(AlibabaCloudClient):
     def unassign_ipv6_addresses(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
             network_interface_id=None,
-            ipv6_address=None):
+            list_of_ipv6_address=None):
         api_request = APIRequest('UnassignIpv6Addresses', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "NetworkInterfaceId": network_interface_id,
-            "Ipv6Address": ipv6_address}
+            "Ipv6Address": list_of_ipv6_address}
         repeat_info = {"Ipv6Address": ('Ipv6Address', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
@@ -612,21 +1055,23 @@ class EcsClient(AlibabaCloudClient):
     def assign_ipv6_addresses(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             ipv6_address_count=None,
             owner_account=None,
             owner_id=None,
             network_interface_id=None,
-            ipv6_address=None):
+            list_of_ipv6_address=None):
         api_request = APIRequest('AssignIpv6Addresses', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "Ipv6AddressCount": ipv6_address_count,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "NetworkInterfaceId": network_interface_id,
-            "Ipv6Address": ipv6_address}
+            "Ipv6Address": list_of_ipv6_address}
         repeat_info = {"Ipv6Address": ('Ipv6Address', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
@@ -636,12 +1081,14 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             instance_ids=None,
             owner_id=None):
         api_request = APIRequest('DescribeInstanceTopology', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "InstanceIds": instance_ids,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -651,6 +1098,7 @@ class EcsClient(AlibabaCloudClient):
             dedicated_host_ids=None,
             resource_owner_id=None,
             client_token=None,
+            region_id=None,
             period=None,
             resource_owner_account=None,
             owner_account=None,
@@ -661,6 +1109,7 @@ class EcsClient(AlibabaCloudClient):
             "DedicatedHostIds": dedicated_host_ids,
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "Period": period,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -671,6 +1120,7 @@ class EcsClient(AlibabaCloudClient):
     def release_dedicated_host(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             dedicated_host_id=None,
@@ -678,6 +1128,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('ReleaseDedicatedHost', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "DedicatedHostId": dedicated_host_id,
@@ -687,6 +1138,7 @@ class EcsClient(AlibabaCloudClient):
     def modify_instance_deployment(
             self,
             resource_owner_id=None,
+            region_id=None,
             deployment_set_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -695,10 +1147,12 @@ class EcsClient(AlibabaCloudClient):
             owner_id=None,
             instance_id=None,
             force=None,
+            migration_type=None,
             affinity=None):
         api_request = APIRequest('ModifyInstanceDeployment', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "DeploymentSetId": deployment_set_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -707,6 +1161,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "InstanceId": instance_id,
             "Force": force,
+            "MigrationType": migration_type,
             "Affinity": affinity}
         return self._handle_request(api_request).result
 
@@ -718,6 +1173,7 @@ class EcsClient(AlibabaCloudClient):
             period_unit=None,
             auto_renew=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             renewal_status=None,
             owner_id=None):
@@ -730,6 +1186,7 @@ class EcsClient(AlibabaCloudClient):
             "PeriodUnit": period_unit,
             "AutoRenew": auto_renew,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "RenewalStatus": renewal_status,
             "OwnerId": owner_id}
@@ -739,6 +1196,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             auto_release_time=None,
             dedicated_host_id=None,
@@ -748,6 +1206,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AutoReleaseTime": auto_release_time,
             "DedicatedHostId": dedicated_host_id,
@@ -758,6 +1217,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             description=None,
+            region_id=None,
             action_on_maintenance=None,
             dedicated_host_name=None,
             resource_owner_account=None,
@@ -771,6 +1231,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "Description": description,
+            "RegionId": region_id,
             "ActionOnMaintenance": action_on_maintenance,
             "DedicatedHostName": dedicated_host_name,
             "ResourceOwnerAccount": resource_owner_account,
@@ -793,10 +1254,11 @@ class EcsClient(AlibabaCloudClient):
             page_number=None,
             resource_group_id=None,
             lock_reason=None,
+            region_id=None,
             page_size=None,
             zone_id=None,
             dedicated_host_type=None,
-            tag=None,
+            list_of_tag=None,
             status=None):
         api_request = APIRequest('DescribeDedicatedHosts', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -809,10 +1271,11 @@ class EcsClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "ResourceGroupId": resource_group_id,
             "LockReason": lock_reason,
+            "RegionId": region_id,
             "PageSize": page_size,
             "ZoneId": zone_id,
             "DedicatedHostType": dedicated_host_type,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "Status": status}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
@@ -825,6 +1288,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             supported_instance_type_family=None,
+            region_id=None,
             dedicated_host_type=None,
             resource_owner_account=None,
             owner_account=None,
@@ -833,6 +1297,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "SupportedInstanceTypeFamily": supported_instance_type_family,
+            "RegionId": region_id,
             "DedicatedHostType": dedicated_host_type,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -844,6 +1309,7 @@ class EcsClient(AlibabaCloudClient):
             dedicated_host_ids=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DescribeDedicatedHostAutoRenew', 'GET', 'http', 'RPC', 'query')
@@ -851,6 +1317,7 @@ class EcsClient(AlibabaCloudClient):
             "DedicatedHostIds": dedicated_host_ids,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -861,8 +1328,9 @@ class EcsClient(AlibabaCloudClient):
             client_token=None,
             description=None,
             resource_group_id=None,
+            region_id=None,
             action_on_maintenance=None,
-            tag=None,
+            list_of_tag=None,
             dedicated_host_type=None,
             auto_renew_period=None,
             period=None,
@@ -885,8 +1353,9 @@ class EcsClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "Description": description,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "ActionOnMaintenance": action_on_maintenance,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "DedicatedHostType": dedicated_host_type,
             "AutoRenewPeriod": auto_renew_period,
             "Period": period,
@@ -914,19 +1383,21 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             not_before=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            instance_id=None,
+            list_of_instance_id=None,
             event_type=None):
         api_request = APIRequest('CreateSimulatedSystemEvents', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "NotBefore": not_before,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "InstanceId": instance_id,
+            "InstanceId": list_of_instance_id,
             "EventType": event_type}
         repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
@@ -935,15 +1406,17 @@ class EcsClient(AlibabaCloudClient):
 
     def cancel_simulated_system_events(
             self,
-            event_id=None,
+            list_of_event_id=None,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('CancelSimulatedSystemEvents', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "EventId": event_id,
+            "EventId": list_of_event_id,
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -956,6 +1429,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             start_time=None,
+            region_id=None,
             period=None,
             resource_owner_account=None,
             owner_account=None,
@@ -967,6 +1441,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "StartTime": start_time,
+            "RegionId": region_id,
             "Period": period,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -979,14 +1454,16 @@ class EcsClient(AlibabaCloudClient):
     def describe_account_attributes(
             self,
             resource_owner_id=None,
-            attribute_name=None,
+            list_of_attribute_name=None,
+            region_id=None,
             resource_owner_account=None,
             owner_id=None,
             zone_id=None):
         api_request = APIRequest('DescribeAccountAttributes', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "AttributeName": attribute_name,
+            "AttributeName": list_of_attribute_name,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
             "ZoneId": zone_id}
@@ -999,6 +1476,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             launch_template_name=None,
             resource_owner_id=None,
+            region_id=None,
             launch_template_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1009,6 +1487,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "LaunchTemplateName": launch_template_name,
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "LaunchTemplateId": launch_template_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1018,24 +1497,26 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_launch_templates(
             self,
-            launch_template_name=None,
+            list_of_launch_template_name=None,
             resource_owner_id=None,
             page_number=None,
+            region_id=None,
             page_size=None,
-            template_tag=None,
-            launch_template_id=None,
+            list_of_template_tag=None,
+            list_of_launch_template_id=None,
             resource_owner_account=None,
             owner_account=None,
             template_resource_group_id=None,
             owner_id=None):
         api_request = APIRequest('DescribeLaunchTemplates', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "LaunchTemplateName": launch_template_name,
+            "LaunchTemplateName": list_of_launch_template_name,
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
-            "TemplateTag": template_tag,
-            "LaunchTemplateId": launch_template_id,
+            "TemplateTag": list_of_template_tag,
+            "LaunchTemplateId": list_of_launch_template_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "TemplateResourceGroupId": template_resource_group_id,
@@ -1057,12 +1538,13 @@ class EcsClient(AlibabaCloudClient):
             default_version=None,
             min_version=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             launch_template_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            launch_template_version=None,
+            list_of_launch_template_version=None,
             detail_flag=None):
         api_request = APIRequest('DescribeLaunchTemplateVersions', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -1072,12 +1554,13 @@ class EcsClient(AlibabaCloudClient):
             "DefaultVersion": default_version,
             "MinVersion": min_version,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "LaunchTemplateId": launch_template_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "LaunchTemplateVersion": launch_template_version,
+            "LaunchTemplateVersion": list_of_launch_template_version,
             "DetailFlag": detail_flag}
         repeat_info = {"LaunchTemplateVersion": ('LaunchTemplateVersion', 'list', 'str', None),
                        }
@@ -1088,7 +1571,8 @@ class EcsClient(AlibabaCloudClient):
             self,
             launch_template_name=None,
             resource_owner_id=None,
-            delete_version=None,
+            list_of_delete_version=None,
+            region_id=None,
             launch_template_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1097,7 +1581,8 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "LaunchTemplateName": launch_template_name,
             "ResourceOwnerId": resource_owner_id,
-            "DeleteVersion": delete_version,
+            "DeleteVersion": list_of_delete_version,
+            "RegionId": region_id,
             "LaunchTemplateId": launch_template_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1111,6 +1596,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             launch_template_name=None,
             resource_owner_id=None,
+            region_id=None,
             launch_template_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1119,6 +1605,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "LaunchTemplateName": launch_template_name,
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "LaunchTemplateId": launch_template_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1137,11 +1624,11 @@ class EcsClient(AlibabaCloudClient):
             resource_group_id=None,
             host_name=None,
             system_disk_iops=None,
-            tag=None,
+            list_of_tag=None,
             period=None,
             launch_template_id=None,
             owner_id=None,
-            v_switch_id=None,
+            vswitch_id=None,
             spot_strategy=None,
             instance_name=None,
             internet_charge_type=None,
@@ -1156,17 +1643,18 @@ class EcsClient(AlibabaCloudClient):
             system_disk_category=None,
             user_data=None,
             password_inherit=None,
+            region_id=None,
             instance_type=None,
             instance_charge_type=None,
             enable_vm_os_config=None,
-            network_interface=None,
+            list_of_network_interface=None,
             resource_owner_account=None,
             owner_account=None,
             system_disk_disk_name=None,
             ram_role_name=None,
             auto_release_time=None,
             spot_duration=None,
-            data_disk=None,
+            list_of_data_disk=None,
             system_disk_size=None,
             vpc_id=None,
             system_disk_description=None):
@@ -1182,11 +1670,11 @@ class EcsClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "HostName": host_name,
             "SystemDisk.Iops": system_disk_iops,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "Period": period,
             "LaunchTemplateId": launch_template_id,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "SpotStrategy": spot_strategy,
             "InstanceName": instance_name,
             "InternetChargeType": internet_charge_type,
@@ -1201,17 +1689,18 @@ class EcsClient(AlibabaCloudClient):
             "SystemDisk.Category": system_disk_category,
             "UserData": user_data,
             "PasswordInherit": password_inherit,
+            "RegionId": region_id,
             "InstanceType": instance_type,
             "InstanceChargeType": instance_charge_type,
             "EnableVmOsConfig": enable_vm_os_config,
-            "NetworkInterface": network_interface,
+            "NetworkInterface": list_of_network_interface,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "SystemDisk.DiskName": system_disk_disk_name,
             "RamRoleName": ram_role_name,
             "AutoReleaseTime": auto_release_time,
             "SpotDuration": spot_duration,
-            "DataDisk": data_disk,
+            "DataDisk": list_of_data_disk,
             "SystemDisk.Size": system_disk_size,
             "VpcId": vpc_id,
             "SystemDisk.Description": system_disk_description}
@@ -1249,12 +1738,12 @@ class EcsClient(AlibabaCloudClient):
             resource_group_id=None,
             host_name=None,
             system_disk_iops=None,
-            template_tag=None,
-            tag=None,
+            list_of_template_tag=None,
+            list_of_tag=None,
             period=None,
             template_resource_group_id=None,
             owner_id=None,
-            v_switch_id=None,
+            vswitch_id=None,
             spot_strategy=None,
             instance_name=None,
             internet_charge_type=None,
@@ -1269,17 +1758,18 @@ class EcsClient(AlibabaCloudClient):
             system_disk_category=None,
             user_data=None,
             password_inherit=None,
+            region_id=None,
             instance_type=None,
             instance_charge_type=None,
             enable_vm_os_config=None,
-            network_interface=None,
+            list_of_network_interface=None,
             resource_owner_account=None,
             owner_account=None,
             system_disk_disk_name=None,
             ram_role_name=None,
             auto_release_time=None,
             spot_duration=None,
-            data_disk=None,
+            list_of_data_disk=None,
             system_disk_size=None,
             vpc_id=None,
             system_disk_description=None):
@@ -1295,12 +1785,12 @@ class EcsClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "HostName": host_name,
             "SystemDisk.Iops": system_disk_iops,
-            "TemplateTag": template_tag,
-            "Tag": tag,
+            "TemplateTag": list_of_template_tag,
+            "Tag": list_of_tag,
             "Period": period,
             "TemplateResourceGroupId": template_resource_group_id,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "SpotStrategy": spot_strategy,
             "InstanceName": instance_name,
             "InternetChargeType": internet_charge_type,
@@ -1315,17 +1805,18 @@ class EcsClient(AlibabaCloudClient):
             "SystemDisk.Category": system_disk_category,
             "UserData": user_data,
             "PasswordInherit": password_inherit,
+            "RegionId": region_id,
             "InstanceType": instance_type,
             "InstanceChargeType": instance_charge_type,
             "EnableVmOsConfig": enable_vm_os_config,
-            "NetworkInterface": network_interface,
+            "NetworkInterface": list_of_network_interface,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "SystemDisk.DiskName": system_disk_disk_name,
             "RamRoleName": ram_role_name,
             "AutoReleaseTime": auto_release_time,
             "SpotDuration": spot_duration,
-            "DataDisk": data_disk,
+            "DataDisk": list_of_data_disk,
             "SystemDisk.Size": system_disk_size,
             "VpcId": vpc_id,
             "SystemDisk.Description": system_disk_description}
@@ -1357,17 +1848,19 @@ class EcsClient(AlibabaCloudClient):
     def install_cloud_assistant(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            instance_id=None):
+            list_of_instance_id=None):
         api_request = APIRequest('InstallCloudAssistant', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "InstanceId": instance_id}
+            "InstanceId": list_of_instance_id}
         repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
@@ -1376,17 +1869,19 @@ class EcsClient(AlibabaCloudClient):
     def describe_cloud_assistant_status(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            instance_id=None):
+            list_of_instance_id=None):
         api_request = APIRequest('DescribeCloudAssistantStatus', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "InstanceId": instance_id}
+            "InstanceId": list_of_instance_id}
         repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
@@ -1395,18 +1890,20 @@ class EcsClient(AlibabaCloudClient):
     def unassign_private_ip_addresses(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            private_ip_address=None,
+            list_of_private_ip_address=None,
             network_interface_id=None):
         api_request = APIRequest('UnassignPrivateIpAddresses', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "PrivateIpAddress": private_ip_address,
+            "PrivateIpAddress": list_of_private_ip_address,
             "NetworkInterfaceId": network_interface_id}
         repeat_info = {"PrivateIpAddress": ('PrivateIpAddress', 'list', 'str', None),
                        }
@@ -1417,19 +1914,21 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             secondary_private_ip_address_count=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            private_ip_address=None,
+            list_of_private_ip_address=None,
             network_interface_id=None):
         api_request = APIRequest('AssignPrivateIpAddresses', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "SecondaryPrivateIpAddressCount": secondary_private_ip_address_count,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "PrivateIpAddress": private_ip_address,
+            "PrivateIpAddress": list_of_private_ip_address,
             "NetworkInterfaceId": network_interface_id}
         repeat_info = {"PrivateIpAddress": ('PrivateIpAddress', 'list', 'str', None),
                        }
@@ -1440,8 +1939,9 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             page_number=None,
+            region_id=None,
             page_size=None,
-            network_interface_permission_id=None,
+            list_of_network_interface_permission_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1451,8 +1951,9 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
-            "NetworkInterfacePermissionId": network_interface_permission_id,
+            "NetworkInterfacePermissionId": list_of_network_interface_permission_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1470,6 +1971,7 @@ class EcsClient(AlibabaCloudClient):
     def delete_network_interface_permission(
             self,
             resource_owner_id=None,
+            region_id=None,
             network_interface_permission_id=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1478,6 +1980,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteNetworkInterfacePermission', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "NetworkInterfacePermissionId": network_interface_permission_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1489,6 +1992,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             account_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             permission=None,
@@ -1498,6 +2002,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "AccountId": account_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "Permission": permission,
@@ -1508,6 +2013,7 @@ class EcsClient(AlibabaCloudClient):
     def get_instance_screenshot(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             wake_up=None,
             owner_account=None,
@@ -1516,6 +2022,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('GetInstanceScreenshot', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "WakeUp": wake_up,
             "OwnerAccount": owner_account,
@@ -1526,6 +2033,7 @@ class EcsClient(AlibabaCloudClient):
     def get_instance_console_output(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1533,6 +2041,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('GetInstanceConsoleOutput', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1544,6 +2053,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             memory=None,
             cores=None,
+            region_id=None,
             migrate_across_zone=None,
             instance_type=None,
             resource_id=None,
@@ -1557,6 +2067,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "Memory": memory,
             "Cores": cores,
+            "RegionId": region_id,
             "MigrateAcrossZone": migrate_across_zone,
             "InstanceType": instance_type,
             "ResourceId": resource_id,
@@ -1570,6 +2081,7 @@ class EcsClient(AlibabaCloudClient):
     def describe_bandwidth_limitation(
             self,
             resource_owner_id=None,
+            region_id=None,
             instance_type=None,
             instance_charge_type=None,
             resource_id=None,
@@ -1581,6 +2093,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DescribeBandwidthLimitation', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "InstanceType": instance_type,
             "InstanceChargeType": instance_charge_type,
             "ResourceId": resource_id,
@@ -1598,6 +2111,7 @@ class EcsClient(AlibabaCloudClient):
             io_optimized=None,
             data_disk_category=None,
             cores=None,
+            region_id=None,
             system_disk_category=None,
             scope=None,
             instance_type=None,
@@ -1618,6 +2132,7 @@ class EcsClient(AlibabaCloudClient):
             "IoOptimized": io_optimized,
             "DataDiskCategory": data_disk_category,
             "Cores": cores,
+            "RegionId": region_id,
             "SystemDiskCategory": system_disk_category,
             "Scope": scope,
             "InstanceType": instance_type,
@@ -1633,11 +2148,12 @@ class EcsClient(AlibabaCloudClient):
             "ZoneId": zone_id}
         return self._handle_request(api_request).result
 
-    def re_activate_instances(
+    def reactivate_instances(
             self,
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('ReActivateInstances', 'GET', 'http', 'RPC', 'query')
@@ -1645,42 +2161,45 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
     def describe_instances_full_status(
             self,
-            event_id=None,
+            list_of_event_id=None,
             resource_owner_id=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             event_publish_time_end=None,
-            instance_event_type=None,
+            list_of_instance_event_type=None,
             resource_owner_account=None,
             owner_account=None,
             not_before_start=None,
             owner_id=None,
             event_publish_time_start=None,
-            instance_id=None,
+            list_of_instance_id=None,
             not_before_end=None,
             health_status=None,
             event_type=None,
             status=None):
         api_request = APIRequest('DescribeInstancesFullStatus', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "EventId": event_id,
+            "EventId": list_of_event_id,
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "EventPublishTime.End": event_publish_time_end,
-            "InstanceEventType": instance_event_type,
+            "InstanceEventType": list_of_instance_event_type,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "NotBefore.Start": not_before_start,
             "OwnerId": owner_id,
             "EventPublishTime.Start": event_publish_time_start,
-            "InstanceId": instance_id,
+            "InstanceId": list_of_instance_id,
             "NotBefore.End": not_before_end,
             "HealthStatus": health_status,
             "EventType": event_type,
@@ -1694,14 +2213,15 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_instance_history_events(
             self,
-            event_id=None,
+            list_of_event_id=None,
             resource_owner_id=None,
             event_cycle_status=None,
             page_number=None,
+            region_id=None,
             page_size=None,
-            instance_event_cycle_status=None,
+            list_of_instance_event_cycle_status=None,
             event_publish_time_end=None,
-            instance_event_type=None,
+            list_of_instance_event_type=None,
             resource_owner_account=None,
             owner_account=None,
             not_before_start=None,
@@ -1712,14 +2232,15 @@ class EcsClient(AlibabaCloudClient):
             event_type=None):
         api_request = APIRequest('DescribeInstanceHistoryEvents', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "EventId": event_id,
+            "EventId": list_of_event_id,
             "ResourceOwnerId": resource_owner_id,
             "EventCycleStatus": event_cycle_status,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
-            "InstanceEventCycleStatus": instance_event_cycle_status,
+            "InstanceEventCycleStatus": list_of_instance_event_cycle_status,
             "EventPublishTime.End": event_publish_time_end,
-            "InstanceEventType": instance_event_type,
+            "InstanceEventType": list_of_instance_event_type,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "NotBefore.Start": not_before_start,
@@ -1738,12 +2259,13 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_disks_full_status(
             self,
-            event_id=None,
+            list_of_event_id=None,
             resource_owner_id=None,
             page_number=None,
             event_time_start=None,
+            region_id=None,
             page_size=None,
-            disk_id=None,
+            list_of_disk_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1753,12 +2275,13 @@ class EcsClient(AlibabaCloudClient):
             status=None):
         api_request = APIRequest('DescribeDisksFullStatus', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "EventId": event_id,
+            "EventId": list_of_event_id,
             "ResourceOwnerId": resource_owner_id,
             "PageNumber": page_number,
             "EventTime.Start": event_time_start,
+            "RegionId": region_id,
             "PageSize": page_size,
-            "DiskId": disk_id,
+            "DiskId": list_of_disk_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1775,6 +2298,7 @@ class EcsClient(AlibabaCloudClient):
     def modify_user_business_behavior(
             self,
             resource_owner_id=None,
+            region_id=None,
             status_value=None,
             resource_owner_account=None,
             owner_account=None,
@@ -1783,6 +2307,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('ModifyUserBusinessBehavior', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "statusValue": status_value,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -1793,6 +2318,7 @@ class EcsClient(AlibabaCloudClient):
     def describe_user_business_behavior(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1800,6 +2326,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DescribeUserBusinessBehavior', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1820,7 +2347,8 @@ class EcsClient(AlibabaCloudClient):
             resource_group_id=None,
             host_name=None,
             password=None,
-            tag=None,
+            storage_set_partition_number=None,
+            list_of_tag=None,
             auto_renew_period=None,
             period=None,
             dry_run=None,
@@ -1828,7 +2356,7 @@ class EcsClient(AlibabaCloudClient):
             ipv6_address_count=None,
             owner_id=None,
             capacity_reservation_preference=None,
-            v_switch_id=None,
+            vswitch_id=None,
             spot_strategy=None,
             private_ip_address=None,
             period_unit=None,
@@ -1836,7 +2364,7 @@ class EcsClient(AlibabaCloudClient):
             auto_renew=None,
             internet_charge_type=None,
             zone_id=None,
-            ipv6_address=None,
+            list_of_ipv6_address=None,
             internet_max_bandwidth_in=None,
             affinity=None,
             image_id=None,
@@ -1848,12 +2376,14 @@ class EcsClient(AlibabaCloudClient):
             description=None,
             system_disk_category=None,
             capacity_reservation_id=None,
+            system_disk_performance_level=None,
             user_data=None,
             password_inherit=None,
+            region_id=None,
             instance_type=None,
             hibernation_configured=None,
             instance_charge_type=None,
-            network_interface=None,
+            list_of_network_interface=None,
             deployment_set_id=None,
             amount=None,
             resource_owner_account=None,
@@ -1864,9 +2394,10 @@ class EcsClient(AlibabaCloudClient):
             auto_release_time=None,
             dedicated_host_id=None,
             credit_specification=None,
-            security_group_ids=None,
-            data_disk=None,
+            list_of_security_group_ids=None,
+            list_of_data_disk=None,
             launch_template_version=None,
+            storage_set_id=None,
             system_disk_size=None,
             system_disk_description=None):
         api_request = APIRequest('RunInstances', 'GET', 'http', 'RPC', 'query')
@@ -1883,7 +2414,8 @@ class EcsClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "HostName": host_name,
             "Password": password,
-            "Tag": tag,
+            "StorageSetPartitionNumber": storage_set_partition_number,
+            "Tag": list_of_tag,
             "AutoRenewPeriod": auto_renew_period,
             "Period": period,
             "DryRun": dry_run,
@@ -1891,7 +2423,7 @@ class EcsClient(AlibabaCloudClient):
             "Ipv6AddressCount": ipv6_address_count,
             "OwnerId": owner_id,
             "CapacityReservationPreference": capacity_reservation_preference,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "SpotStrategy": spot_strategy,
             "PrivateIpAddress": private_ip_address,
             "PeriodUnit": period_unit,
@@ -1899,7 +2431,7 @@ class EcsClient(AlibabaCloudClient):
             "AutoRenew": auto_renew,
             "InternetChargeType": internet_charge_type,
             "ZoneId": zone_id,
-            "Ipv6Address": ipv6_address,
+            "Ipv6Address": list_of_ipv6_address,
             "InternetMaxBandwidthIn": internet_max_bandwidth_in,
             "Affinity": affinity,
             "ImageId": image_id,
@@ -1911,12 +2443,14 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "SystemDisk.Category": system_disk_category,
             "CapacityReservationId": capacity_reservation_id,
+            "SystemDisk.PerformanceLevel": system_disk_performance_level,
             "UserData": user_data,
             "PasswordInherit": password_inherit,
+            "RegionId": region_id,
             "InstanceType": instance_type,
             "HibernationConfigured": hibernation_configured,
             "InstanceChargeType": instance_charge_type,
-            "NetworkInterface": network_interface,
+            "NetworkInterface": list_of_network_interface,
             "DeploymentSetId": deployment_set_id,
             "Amount": amount,
             "ResourceOwnerAccount": resource_owner_account,
@@ -1927,9 +2461,10 @@ class EcsClient(AlibabaCloudClient):
             "AutoReleaseTime": auto_release_time,
             "DedicatedHostId": dedicated_host_id,
             "CreditSpecification": credit_specification,
-            "SecurityGroupIds": security_group_ids,
-            "DataDisk": data_disk,
+            "SecurityGroupIds": list_of_security_group_ids,
+            "DataDisk": list_of_data_disk,
             "LaunchTemplateVersion": launch_template_version,
+            "StorageSetId": storage_set_id,
             "SystemDisk.Size": system_disk_size,
             "SystemDisk.Description": system_disk_description}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
@@ -1952,6 +2487,7 @@ class EcsClient(AlibabaCloudClient):
                                                                  ('Description', 'str', None, None),
                                                                  ('Device', 'str', None, None),
                                                                  ('DeleteWithInstance', 'str', None, None),
+                                                                 ('PerformanceLevel', 'str', None, None),
                                                                  ]),
                        }
         verify_params(api_request._params, repeat_info)
@@ -1960,12 +2496,14 @@ class EcsClient(AlibabaCloudClient):
     def convert_nat_public_ip_to_eip(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_id=None,
             instance_id=None):
         api_request = APIRequest('ConvertNatPublicIpToEip', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerId": owner_id,
             "InstanceId": instance_id}
@@ -1977,6 +2515,7 @@ class EcsClient(AlibabaCloudClient):
             hpc_cluster_id=None,
             client_token=None,
             description=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -1987,6 +2526,7 @@ class EcsClient(AlibabaCloudClient):
             "HpcClusterId": hpc_cluster_id,
             "ClientToken": client_token,
             "Description": description,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -1998,6 +2538,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             client_token=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             resource_owner_account=None,
             owner_account=None,
@@ -2008,6 +2549,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -2020,6 +2562,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             hpc_cluster_id=None,
             client_token=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None):
@@ -2028,6 +2571,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "HpcClusterId": hpc_cluster_id,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -2038,6 +2582,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             client_token=None,
             description=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2047,6 +2592,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ClientToken": client_token,
             "Description": description,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2056,12 +2602,14 @@ class EcsClient(AlibabaCloudClient):
     def describe_snapshots_usage(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DescribeSnapshotsUsage', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -2073,6 +2621,7 @@ class EcsClient(AlibabaCloudClient):
             io_optimized=None,
             network_type=None,
             start_time=None,
+            region_id=None,
             instance_type=None,
             offset=None,
             resource_owner_account=None,
@@ -2087,6 +2636,7 @@ class EcsClient(AlibabaCloudClient):
             "IoOptimized": io_optimized,
             "NetworkType": network_type,
             "StartTime": start_time,
+            "RegionId": region_id,
             "InstanceType": instance_type,
             "Offset": offset,
             "ResourceOwnerAccount": resource_owner_account,
@@ -2100,19 +2650,21 @@ class EcsClient(AlibabaCloudClient):
     def stop_invocation(
             self,
             resource_owner_id=None,
+            region_id=None,
             invoke_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            instance_id=None):
+            list_of_instance_id=None):
         api_request = APIRequest('StopInvocation', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "InvokeId": invoke_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "InstanceId": instance_id}
+            "InstanceId": list_of_instance_id}
         repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
@@ -2126,6 +2678,7 @@ class EcsClient(AlibabaCloudClient):
             command_id=None,
             command_content=None,
             timeout=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2138,6 +2691,7 @@ class EcsClient(AlibabaCloudClient):
             "CommandId": command_id,
             "CommandContent": command_content,
             "Timeout": timeout,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2149,22 +2703,24 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             command_id=None,
             frequency=None,
+            region_id=None,
             timed=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            instance_id=None,
+            list_of_instance_id=None,
             parameters=None):
         api_request = APIRequest('InvokeCommand', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "CommandId": command_id,
             "Frequency": frequency,
+            "RegionId": region_id,
             "Timed": timed,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "InstanceId": instance_id,
+            "InstanceId": list_of_instance_id,
             "Parameters": parameters}
         repeat_info = {"InstanceId": ('InstanceId', 'list', 'str', None),
                        }
@@ -2177,6 +2733,7 @@ class EcsClient(AlibabaCloudClient):
             invoke_status=None,
             command_id=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             invoke_id=None,
             timed=None,
@@ -2192,6 +2749,7 @@ class EcsClient(AlibabaCloudClient):
             "InvokeStatus": invoke_status,
             "CommandId": command_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "InvokeId": invoke_id,
             "Timed": timed,
@@ -2208,25 +2766,29 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             command_id=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             invoke_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
             instance_id=None,
-            invoke_record_status=None):
+            invoke_record_status=None,
+            include_history=None):
         api_request = APIRequest('DescribeInvocationResults', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "CommandId": command_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "InvokeId": invoke_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "InstanceId": instance_id,
-            "InvokeRecordStatus": invoke_record_status}
+            "InvokeRecordStatus": invoke_record_status,
+            "IncludeHistory": include_history}
         return self._handle_request(api_request).result
 
     def describe_commands(
@@ -2236,6 +2798,7 @@ class EcsClient(AlibabaCloudClient):
             type_=None,
             command_id=None,
             page_number=None,
+            region_id=None,
             page_size=None,
             resource_owner_account=None,
             owner_account=None,
@@ -2248,6 +2811,7 @@ class EcsClient(AlibabaCloudClient):
             "Type": type_,
             "CommandId": command_id,
             "PageNumber": page_number,
+            "RegionId": region_id,
             "PageSize": page_size,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -2259,6 +2823,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             command_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None):
@@ -2266,6 +2831,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "CommandId": command_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -2279,6 +2845,7 @@ class EcsClient(AlibabaCloudClient):
             type_=None,
             command_content=None,
             timeout=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2292,6 +2859,7 @@ class EcsClient(AlibabaCloudClient):
             "Type": type_,
             "CommandContent": command_content,
             "Timeout": timeout,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2307,6 +2875,7 @@ class EcsClient(AlibabaCloudClient):
             client_token=None,
             security_group_id=None,
             description=None,
+            region_id=None,
             ipv6_dest_cidr_ip=None,
             ipv6_source_cidr_ip=None,
             policy=None,
@@ -2329,6 +2898,7 @@ class EcsClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "SecurityGroupId": security_group_id,
             "Description": description,
+            "RegionId": region_id,
             "Ipv6DestCidrIp": ipv6_dest_cidr_ip,
             "Ipv6SourceCidrIp": ipv6_source_cidr_ip,
             "Policy": policy,
@@ -2352,6 +2922,7 @@ class EcsClient(AlibabaCloudClient):
             instance_id=None,
             auto_pay=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             disk_ids=None,
@@ -2363,6 +2934,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "AutoPay": auto_pay,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "DiskIds": disk_ids,
@@ -2372,8 +2944,9 @@ class EcsClient(AlibabaCloudClient):
     def modify_network_interface_attribute(
             self,
             resource_owner_id=None,
-            security_group_id=None,
+            list_of_security_group_id=None,
             description=None,
+            region_id=None,
             network_interface_name=None,
             resource_owner_account=None,
             owner_account=None,
@@ -2382,8 +2955,9 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('ModifyNetworkInterfaceAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "SecurityGroupId": security_group_id,
+            "SecurityGroupId": list_of_security_group_id,
             "Description": description,
+            "RegionId": region_id,
             "NetworkInterfaceName": network_interface_name,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -2397,6 +2971,7 @@ class EcsClient(AlibabaCloudClient):
     def detach_network_interface(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2405,6 +2980,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DetachNetworkInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2420,17 +2996,19 @@ class EcsClient(AlibabaCloudClient):
             type_=None,
             page_number=None,
             resource_group_id=None,
+            region_id=None,
             page_size=None,
-            tag=None,
+            list_of_tag=None,
             network_interface_name=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            v_switch_id=None,
+            vswitch_id=None,
+            list_of_private_ip_address=None,
             instance_id=None,
             vpc_id=None,
             primary_ip_address=None,
-            network_interface_id=None):
+            list_of_network_interface_id=None):
         api_request = APIRequest('DescribeNetworkInterfaces', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
@@ -2439,20 +3017,23 @@ class EcsClient(AlibabaCloudClient):
             "Type": type_,
             "PageNumber": page_number,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "PageSize": page_size,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "NetworkInterfaceName": network_interface_name,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
+            "PrivateIpAddress": list_of_private_ip_address,
             "InstanceId": instance_id,
             "VpcId": vpc_id,
             "PrimaryIpAddress": primary_ip_address,
-            "NetworkInterfaceId": network_interface_id}
+            "NetworkInterfaceId": list_of_network_interface_id}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
                                                        ('Value', 'str', None, None),
                                                        ]),
+                       "PrivateIpAddress": ('PrivateIpAddress', 'list', 'str', None),
                        "NetworkInterfaceId": ('NetworkInterfaceId', 'list', 'str', None),
                        }
         verify_params(api_request._params, repeat_info)
@@ -2461,6 +3042,7 @@ class EcsClient(AlibabaCloudClient):
     def delete_network_interface(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2468,6 +3050,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteNetworkInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2482,13 +3065,14 @@ class EcsClient(AlibabaCloudClient):
             description=None,
             business_type=None,
             resource_group_id=None,
-            tag=None,
+            region_id=None,
+            list_of_tag=None,
             network_interface_name=None,
             visible=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
-            v_switch_id=None,
+            vswitch_id=None,
             primary_ip_address=None):
         api_request = APIRequest('CreateNetworkInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -2498,13 +3082,14 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "BusinessType": business_type,
             "ResourceGroupId": resource_group_id,
-            "Tag": tag,
+            "RegionId": region_id,
+            "Tag": list_of_tag,
             "NetworkInterfaceName": network_interface_name,
             "Visible": visible,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrimaryIpAddress": primary_ip_address}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Key', 'str', None, None),
                                                        ('Value', 'str', None, None),
@@ -2516,6 +3101,7 @@ class EcsClient(AlibabaCloudClient):
     def attach_network_interface(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
@@ -2524,6 +3110,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('AttachNetworkInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -2542,6 +3129,7 @@ class EcsClient(AlibabaCloudClient):
             operator=None,
             token=None,
             scene=None,
+            region_id=None,
             instance_type=None,
             proxy_id=None):
         api_request = APIRequest('DescribeRecommendInstanceType', 'GET', 'http', 'RPC', 'query')
@@ -2555,6 +3143,7 @@ class EcsClient(AlibabaCloudClient):
             "operator": operator,
             "token": token,
             "Scene": scene,
+            "RegionId": region_id,
             "InstanceType": instance_type,
             "proxyId": proxy_id}
         return self._handle_request(api_request).result
@@ -2572,6 +3161,7 @@ class EcsClient(AlibabaCloudClient):
             system_disk_category=None,
             reboot_time=None,
             instance_id=None,
+            region_id=None,
             migrate_across_zone=None,
             instance_type=None):
         api_request = APIRequest('ModifyPrepayInstanceSpec', 'GET', 'http', 'RPC', 'query')
@@ -2587,6 +3177,7 @@ class EcsClient(AlibabaCloudClient):
             "SystemDisk.Category": system_disk_category,
             "RebootTime": reboot_time,
             "InstanceId": instance_id,
+            "RegionId": region_id,
             "MigrateAcrossZone": migrate_across_zone,
             "InstanceType": instance_type}
         return self._handle_request(api_request).result
@@ -2604,6 +3195,8 @@ class EcsClient(AlibabaCloudClient):
             owner_id=None,
             period_unit=None,
             instance_ids=None,
+            region_id=None,
+            is_detail_fee=None,
             instance_charge_type=None):
         api_request = APIRequest('ModifyInstanceChargeType', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -2618,6 +3211,8 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PeriodUnit": period_unit,
             "InstanceIds": instance_ids,
+            "RegionId": region_id,
+            "IsDetailFee": is_detail_fee,
             "InstanceChargeType": instance_charge_type}
         return self._handle_request(api_request).result
 
@@ -2627,6 +3222,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             resource_type=None):
@@ -2636,6 +3232,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceId": resource_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "ResourceType": resource_type}
@@ -2644,6 +3241,7 @@ class EcsClient(AlibabaCloudClient):
     def modify_security_group_policy(
             self,
             resource_owner_id=None,
+            region_id=None,
             client_token=None,
             resource_owner_account=None,
             owner_account=None,
@@ -2653,6 +3251,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('ModifySecurityGroupPolicy', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -2664,16 +3263,18 @@ class EcsClient(AlibabaCloudClient):
     def describe_security_group_references(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             owner_account=None,
-            security_group_id=None,
+            list_of_security_group_id=None,
             owner_id=None):
         api_request = APIRequest('DescribeSecurityGroupReferences', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
-            "SecurityGroupId": security_group_id,
+            "SecurityGroupId": list_of_security_group_id,
             "OwnerId": owner_id}
         repeat_info = {"SecurityGroupId": ('SecurityGroupId', 'list', 'str', None),
                        }
@@ -2685,6 +3286,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             owner_id=None):
         api_request = APIRequest('DetachClassicLinkVpc', 'GET', 'http', 'RPC', 'query')
@@ -2692,6 +3294,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -2701,6 +3304,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             page_size=None,
             owner_id=None,
@@ -2710,6 +3314,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -2721,6 +3326,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             owner_id=None):
         api_request = APIRequest('AttachClassicLinkVpc', 'GET', 'http', 'RPC', 'query')
@@ -2728,6 +3334,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -2736,6 +3343,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             instance_ids=None,
             ram_role_name=None,
             owner_id=None):
@@ -2743,6 +3351,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "InstanceIds": instance_ids,
             "RamRoleName": ram_role_name,
             "OwnerId": owner_id}
@@ -2752,6 +3361,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             instance_ids=None,
             page_size=None,
             ram_role_name=None,
@@ -2761,6 +3371,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "InstanceIds": instance_ids,
             "PageSize": page_size,
             "RamRoleName": ram_role_name,
@@ -2772,6 +3383,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             instance_ids=None,
             ram_role_name=None,
             owner_id=None):
@@ -2779,6 +3391,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "InstanceIds": instance_ids,
             "RamRoleName": ram_role_name,
             "OwnerId": owner_id}
@@ -2788,6 +3401,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
@@ -2796,6 +3410,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -2812,6 +3427,7 @@ class EcsClient(AlibabaCloudClient):
             description=None,
             source_group_owner_id=None,
             source_group_owner_account=None,
+            region_id=None,
             ipv6_source_cidr_ip=None,
             ipv6_dest_cidr_ip=None,
             policy=None,
@@ -2834,6 +3450,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "SourceGroupOwnerId": source_group_owner_id,
             "SourceGroupOwnerAccount": source_group_owner_account,
+            "RegionId": region_id,
             "Ipv6SourceCidrIp": ipv6_source_cidr_ip,
             "Ipv6DestCidrIp": ipv6_dest_cidr_ip,
             "Policy": policy,
@@ -2853,6 +3470,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             period=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             end_time=None,
             start_time=None,
@@ -2862,6 +3480,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "Period": period,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "EndTime": end_time,
             "StartTime": start_time,
@@ -2874,6 +3493,7 @@ class EcsClient(AlibabaCloudClient):
             resource_id=None,
             period=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             price_unit=None,
             owner_id=None,
@@ -2884,6 +3504,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceId": resource_id,
             "Period": period,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PriceUnit": price_unit,
             "OwnerId": owner_id,
@@ -2892,6 +3513,7 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_price(
             self,
+            data_disk3_performance_level=None,
             data_disk3_size=None,
             resource_owner_id=None,
             image_id=None,
@@ -2899,7 +3521,10 @@ class EcsClient(AlibabaCloudClient):
             io_optimized=None,
             internet_max_bandwidth_out=None,
             system_disk_category=None,
+            system_disk_performance_level=None,
             data_disk4_category=None,
+            data_disk4_performance_level=None,
+            region_id=None,
             data_disk4_size=None,
             price_unit=None,
             instance_type=None,
@@ -2910,14 +3535,17 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_account=None,
             owner_account=None,
             data_disk2_size=None,
+            data_disk1_performance_level=None,
             owner_id=None,
             resource_type=None,
             data_disk1_category=None,
+            data_disk2_performance_level=None,
             system_disk_size=None,
             internet_charge_type=None,
             instance_network_type=None):
         api_request = APIRequest('DescribePrice', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
+            "DataDisk.3.PerformanceLevel": data_disk3_performance_level,
             "DataDisk.3.Size": data_disk3_size,
             "ResourceOwnerId": resource_owner_id,
             "ImageId": image_id,
@@ -2925,7 +3553,10 @@ class EcsClient(AlibabaCloudClient):
             "IoOptimized": io_optimized,
             "InternetMaxBandwidthOut": internet_max_bandwidth_out,
             "SystemDisk.Category": system_disk_category,
+            "SystemDisk.PerformanceLevel": system_disk_performance_level,
             "DataDisk.4.Category": data_disk4_category,
+            "DataDisk.4.PerformanceLevel": data_disk4_performance_level,
+            "RegionId": region_id,
             "DataDisk.4.Size": data_disk4_size,
             "PriceUnit": price_unit,
             "InstanceType": instance_type,
@@ -2936,9 +3567,11 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "DataDisk.2.Size": data_disk2_size,
+            "DataDisk.1.PerformanceLevel": data_disk1_performance_level,
             "OwnerId": owner_id,
             "ResourceType": resource_type,
             "DataDisk.1.Category": data_disk1_category,
+            "DataDisk.2.PerformanceLevel": data_disk2_performance_level,
             "SystemDisk.Size": system_disk_size,
             "InternetChargeType": internet_charge_type,
             "InstanceNetworkType": instance_network_type}
@@ -2949,6 +3582,7 @@ class EcsClient(AlibabaCloudClient):
             deployment_set_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             description=None,
             deployment_set_name=None,
@@ -2958,6 +3592,7 @@ class EcsClient(AlibabaCloudClient):
             "DeploymentSetId": deployment_set_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Description": description,
             "DeploymentSetName": deployment_set_name,
@@ -2974,6 +3609,7 @@ class EcsClient(AlibabaCloudClient):
             owner_id=None,
             page_number=None,
             deployment_set_ids=None,
+            region_id=None,
             granularity=None,
             domain=None,
             page_size=None,
@@ -2988,6 +3624,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PageNumber": page_number,
             "DeploymentSetIds": deployment_set_ids,
+            "RegionId": region_id,
             "Granularity": granularity,
             "Domain": domain,
             "PageSize": page_size,
@@ -2999,6 +3636,7 @@ class EcsClient(AlibabaCloudClient):
             deployment_set_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DeleteDeploymentSet', 'GET', 'http', 'RPC', 'query')
@@ -3006,6 +3644,7 @@ class EcsClient(AlibabaCloudClient):
             "DeploymentSetId": deployment_set_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -3019,6 +3658,7 @@ class EcsClient(AlibabaCloudClient):
             description=None,
             deployment_set_name=None,
             owner_id=None,
+            region_id=None,
             on_unable_to_redeploy_failed_instance=None,
             granularity=None,
             domain=None,
@@ -3032,6 +3672,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "DeploymentSetName": deployment_set_name,
             "OwnerId": owner_id,
+            "RegionId": region_id,
             "OnUnableToRedeployFailedInstance": on_unable_to_redeploy_failed_instance,
             "Granularity": granularity,
             "Domain": domain,
@@ -3042,6 +3683,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             public_key_body=None,
             key_pair_name=None,
             owner_id=None):
@@ -3049,6 +3691,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PublicKeyBody": public_key_body,
             "KeyPairName": key_pair_name,
             "OwnerId": owner_id}
@@ -3058,6 +3701,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             instance_ids=None,
             key_pair_name=None,
             owner_id=None):
@@ -3065,6 +3709,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "InstanceIds": instance_ids,
             "KeyPairName": key_pair_name,
             "OwnerId": owner_id}
@@ -3075,10 +3720,11 @@ class EcsClient(AlibabaCloudClient):
             resource_group_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             key_pair_finger_print=None,
             page_size=None,
             key_pair_name=None,
-            tag=None,
+            list_of_tag=None,
             owner_id=None,
             page_number=None):
         api_request = APIRequest('DescribeKeyPairs', 'GET', 'http', 'RPC', 'query')
@@ -3086,10 +3732,11 @@ class EcsClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "KeyPairFingerPrint": key_pair_finger_print,
             "PageSize": page_size,
             "KeyPairName": key_pair_name,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "OwnerId": owner_id,
             "PageNumber": page_number}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
@@ -3103,12 +3750,14 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             key_pair_names=None,
             owner_id=None):
         api_request = APIRequest('DeleteKeyPairs', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "KeyPairNames": key_pair_names,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -3118,16 +3767,18 @@ class EcsClient(AlibabaCloudClient):
             resource_group_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             key_pair_name=None,
-            tag=None,
+            list_of_tag=None,
             owner_id=None):
         api_request = APIRequest('CreateKeyPair', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceGroupId": resource_group_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "KeyPairName": key_pair_name,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "OwnerId": owner_id}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
@@ -3140,6 +3791,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             instance_ids=None,
             key_pair_name=None,
             owner_id=None):
@@ -3147,6 +3799,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "InstanceIds": instance_ids,
             "KeyPairName": key_pair_name,
             "OwnerId": owner_id}
@@ -3160,6 +3813,7 @@ class EcsClient(AlibabaCloudClient):
             instance_id=None,
             auto_renew=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             renewal_status=None,
             owner_id=None):
@@ -3171,6 +3825,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "AutoRenew": auto_renew,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "RenewalStatus": renewal_status,
             "OwnerId": owner_id}
@@ -3181,6 +3836,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             renewal_status=None,
             page_size=None,
@@ -3192,6 +3848,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "RenewalStatus": renewal_status,
             "PageSize": page_size,
@@ -3204,6 +3861,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             disk_ids=None,
@@ -3215,6 +3873,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "DiskIds": disk_ids,
@@ -3228,6 +3887,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             auto_release_time=None,
             owner_id=None):
@@ -3236,6 +3896,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AutoReleaseTime": auto_release_time,
             "OwnerId": owner_id}
@@ -3246,6 +3907,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             period=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             end_time=None,
             allocation_id=None,
@@ -3256,6 +3918,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "Period": period,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "EndTime": end_time,
             "AllocationId": allocation_id,
@@ -3268,30 +3931,34 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None):
         api_request = APIRequest('DescribeUserData', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
     def remove_bandwidth_package_ips(
             self,
-            removed_ip_addresses=None,
+            list_of_removed_ip_addresses=None,
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('RemoveBandwidthPackageIps', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "RemovedIpAddresses": removed_ip_addresses,
+            "RemovedIpAddresses": list_of_removed_ip_addresses,
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -3309,6 +3976,7 @@ class EcsClient(AlibabaCloudClient):
             forward_table_id=None,
             owner_id=None,
             internal_ip=None,
+            region_id=None,
             forward_entry_id=None,
             internal_port=None,
             external_ip=None,
@@ -3322,6 +3990,7 @@ class EcsClient(AlibabaCloudClient):
             "ForwardTableId": forward_table_id,
             "OwnerId": owner_id,
             "InternalIp": internal_ip,
+            "RegionId": region_id,
             "ForwardEntryId": forward_entry_id,
             "InternalPort": internal_port,
             "ExternalIp": external_ip,
@@ -3333,6 +4002,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             bandwidth=None,
             owner_account=None,
             owner_id=None):
@@ -3341,6 +4011,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -3350,6 +4021,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             vpc_id=None,
             page_size=None,
@@ -3360,6 +4032,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "VpcId": vpc_id,
             "PageSize": page_size,
@@ -3372,6 +4045,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             forward_entry_id=None,
             owner_account=None,
             forward_table_id=None,
@@ -3382,6 +4056,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ForwardEntryId": forward_entry_id,
             "OwnerAccount": owner_account,
             "ForwardTableId": forward_table_id,
@@ -3395,6 +4070,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             nat_gateway_id=None,
@@ -3405,6 +4081,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "NatGatewayId": nat_gateway_id,
@@ -3416,6 +4093,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             nat_gateway_id=None,
             owner_id=None):
@@ -3423,6 +4101,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "NatGatewayId": nat_gateway_id,
             "OwnerId": owner_id}
@@ -3432,6 +4111,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             forward_entry_id=None,
             owner_account=None,
             forward_table_id=None,
@@ -3440,6 +4120,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ForwardEntryId": forward_entry_id,
             "OwnerAccount": owner_account,
             "ForwardTableId": forward_table_id,
@@ -3451,6 +4132,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DeleteBandwidthPackage', 'GET', 'http', 'RPC', 'query')
@@ -3458,6 +4140,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -3466,24 +4149,26 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             vpc_id=None,
             name=None,
             description=None,
             owner_id=None,
-            bandwidth_package=None):
+            list_of_bandwidth_package=None):
         api_request = APIRequest('CreateNatGateway', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "VpcId": vpc_id,
             "Name": name,
             "Description": description,
             "OwnerId": owner_id,
-            "BandwidthPackage": bandwidth_package}
+            "BandwidthPackage": list_of_bandwidth_package}
         repeat_info = {
             "BandwidthPackage": (
                 'BandwidthPackage', 'list', 'dict', [
@@ -3495,6 +4180,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             ip_protocol=None,
             internal_port=None,
             owner_account=None,
@@ -3507,6 +4193,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "IpProtocol": ip_protocol,
             "InternalPort": internal_port,
             "OwnerAccount": owner_account,
@@ -3522,6 +4209,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             bandwidth_package_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             owner_id=None,
@@ -3531,6 +4219,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "BandwidthPackageId": bandwidth_package_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
@@ -3601,6 +4290,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             auto_snapshot_policy_id=None,
             time_points=None,
             retention_days=None,
@@ -3611,6 +4301,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "regionId": region_id,
             "autoSnapshotPolicyId": auto_snapshot_policy_id,
             "timePoints": time_points,
             "retentionDays": retention_days,
@@ -3623,6 +4314,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             auto_snapshot_policy_id=None,
             owner_account=None,
             page_size=None,
@@ -3632,6 +4324,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "AutoSnapshotPolicyId": auto_snapshot_policy_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
@@ -3643,12 +4336,14 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             auto_snapshot_policy_id=None,
             owner_id=None):
         api_request = APIRequest('DeleteAutoSnapshotPolicy', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "regionId": region_id,
             "autoSnapshotPolicyId": auto_snapshot_policy_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -3657,6 +4352,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             time_points=None,
             retention_days=None,
             owner_id=None,
@@ -3666,6 +4362,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "regionId": region_id,
             "timePoints": time_points,
             "retentionDays": retention_days,
             "OwnerId": owner_id,
@@ -3677,12 +4374,14 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             disk_ids=None,
             owner_id=None):
         api_request = APIRequest('CancelAutoSnapshotPolicy', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "regionId": region_id,
             "diskIds": disk_ids,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -3691,6 +4390,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             auto_snapshot_policy_id=None,
             disk_ids=None,
             owner_id=None):
@@ -3698,6 +4398,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "regionId": region_id,
             "autoSnapshotPolicyId": auto_snapshot_policy_id,
             "diskIds": disk_ids,
             "OwnerId": owner_id}
@@ -3706,18 +4407,20 @@ class EcsClient(AlibabaCloudClient):
     def describe_image_support_instance_types(
             self,
             action_type=None,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             image_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None):
         api_request = APIRequest('DescribeImageSupportInstanceTypes', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ActionType": action_type,
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ImageId": image_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id}
         repeat_info = {"Filter": ('Filter', 'list', 'dict', [('Value', 'str', None, None),
                                                              ('Key', 'str', None, None),
@@ -3729,6 +4432,7 @@ class EcsClient(AlibabaCloudClient):
     def terminate_virtual_border_router(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -3738,6 +4442,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('TerminateVirtualBorderRouter', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -3749,6 +4454,7 @@ class EcsClient(AlibabaCloudClient):
     def terminate_physical_connection(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -3758,6 +4464,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('TerminatePhysicalConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
@@ -3769,6 +4476,7 @@ class EcsClient(AlibabaCloudClient):
     def recover_virtual_border_router(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -3778,6 +4486,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('RecoverVirtualBorderRouter', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -3799,6 +4508,7 @@ class EcsClient(AlibabaCloudClient):
             owner_id=None,
             peer_gateway_ip=None,
             peering_subnet_mask=None,
+            region_id=None,
             name=None,
             local_gateway_ip=None,
             user_cidr=None):
@@ -3816,6 +4526,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PeerGatewayIp": peer_gateway_ip,
             "PeeringSubnetMask": peering_subnet_mask,
+            "RegionId": region_id,
             "Name": name,
             "LocalGatewayIp": local_gateway_ip,
             "UserCidr": user_cidr}
@@ -3835,6 +4546,7 @@ class EcsClient(AlibabaCloudClient):
             description=None,
             owner_id=None,
             line_operator=None,
+            region_id=None,
             physical_connection_id=None,
             name=None,
             user_cidr=None):
@@ -3852,6 +4564,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
+            "RegionId": region_id,
             "PhysicalConnectionId": physical_connection_id,
             "Name": name,
             "UserCidr": user_cidr}
@@ -3860,6 +4573,7 @@ class EcsClient(AlibabaCloudClient):
     def enable_physical_connection(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -3869,6 +4583,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('EnablePhysicalConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
@@ -3879,9 +4594,10 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_virtual_border_routers_for_physical_connection(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             physical_connection_id=None,
             page_size=None,
             owner_id=None,
@@ -3893,9 +4609,10 @@ class EcsClient(AlibabaCloudClient):
             'RPC',
             'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PhysicalConnectionId": physical_connection_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -3909,17 +4626,19 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_virtual_border_routers(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             page_size=None,
             owner_id=None,
             page_number=None):
         api_request = APIRequest('DescribeVirtualBorderRouters', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
@@ -3932,8 +4651,9 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_physical_connections(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -3943,8 +4663,9 @@ class EcsClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribePhysicalConnections', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -3961,18 +4682,20 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_access_points(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             page_size=None,
             owner_id=None,
             type_=None,
             page_number=None):
         api_request = APIRequest('DescribeAccessPoints', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "Type": type_,
@@ -3987,6 +4710,7 @@ class EcsClient(AlibabaCloudClient):
     def delete_virtual_border_router(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -3996,6 +4720,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteVirtualBorderRouter', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -4007,6 +4732,7 @@ class EcsClient(AlibabaCloudClient):
     def delete_physical_connection(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -4015,6 +4741,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DeletePhysicalConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
@@ -4034,6 +4761,7 @@ class EcsClient(AlibabaCloudClient):
             owner_id=None,
             peer_gateway_ip=None,
             peering_subnet_mask=None,
+            region_id=None,
             physical_connection_id=None,
             name=None,
             local_gateway_ip=None,
@@ -4051,6 +4779,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "PeerGatewayIp": peer_gateway_ip,
             "PeeringSubnetMask": peering_subnet_mask,
+            "RegionId": region_id,
             "PhysicalConnectionId": physical_connection_id,
             "Name": name,
             "LocalGatewayIp": local_gateway_ip,
@@ -4074,6 +4803,7 @@ class EcsClient(AlibabaCloudClient):
             type_=None,
             owner_id=None,
             line_operator=None,
+            region_id=None,
             name=None,
             user_cidr=None):
         api_request = APIRequest('CreatePhysicalConnection', 'GET', 'http', 'RPC', 'query')
@@ -4092,6 +4822,7 @@ class EcsClient(AlibabaCloudClient):
             "Type": type_,
             "OwnerId": owner_id,
             "LineOperator": line_operator,
+            "RegionId": region_id,
             "Name": name,
             "UserCidr": user_cidr}
         return self._handle_request(api_request).result
@@ -4099,6 +4830,7 @@ class EcsClient(AlibabaCloudClient):
     def cancel_physical_connection(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             physical_connection_id=None,
@@ -4108,6 +4840,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('CancelPhysicalConnection', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "PhysicalConnectionId": physical_connection_id,
@@ -4118,26 +4851,30 @@ class EcsClient(AlibabaCloudClient):
 
     def import_image(
             self,
-            disk_device_mapping=None,
+            list_of_disk_device_mapping=None,
             resource_owner_id=None,
+            license_type=None,
             resource_owner_account=None,
             role_name=None,
             description=None,
             os_type=None,
             owner_id=None,
             platform=None,
+            region_id=None,
             image_name=None,
             architecture=None):
         api_request = APIRequest('ImportImage', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "DiskDeviceMapping": disk_device_mapping,
+            "DiskDeviceMapping": list_of_disk_device_mapping,
             "ResourceOwnerId": resource_owner_id,
+            "LicenseType": license_type,
             "ResourceOwnerAccount": resource_owner_account,
             "RoleName": role_name,
             "Description": description,
             "OSType": os_type,
             "OwnerId": owner_id,
             "Platform": platform,
+            "RegionId": region_id,
             "ImageName": image_name,
             "Architecture": architecture}
         repeat_info = {"DiskDeviceMapping": ('DiskDeviceMapping',
@@ -4178,6 +4915,7 @@ class EcsClient(AlibabaCloudClient):
             image_id=None,
             oss_bucket=None,
             resource_owner_account=None,
+            region_id=None,
             oss_prefix=None,
             role_name=None,
             owner_id=None,
@@ -4188,6 +4926,7 @@ class EcsClient(AlibabaCloudClient):
             "ImageId": image_id,
             "OSSBucket": oss_bucket,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OSSPrefix": oss_prefix,
             "RoleName": role_name,
             "OwnerId": owner_id,
@@ -4205,6 +4944,7 @@ class EcsClient(AlibabaCloudClient):
             task_ids=None,
             page_number=None,
             task_status=None,
+            region_id=None,
             page_size=None,
             task_action=None):
         api_request = APIRequest('DescribeTasks', 'GET', 'http', 'RPC', 'query')
@@ -4218,6 +4958,7 @@ class EcsClient(AlibabaCloudClient):
             "TaskIds": task_ids,
             "PageNumber": page_number,
             "TaskStatus": task_status,
+            "RegionId": region_id,
             "PageSize": page_size,
             "TaskAction": task_action}
         return self._handle_request(api_request).result
@@ -4226,12 +4967,14 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None,
             task_id=None):
         api_request = APIRequest('DescribeTaskAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id,
             "TaskId": task_id}
         return self._handle_request(api_request).result
@@ -4240,12 +4983,14 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None,
             task_id=None):
         api_request = APIRequest('CancelTask', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id,
             "TaskId": task_id}
         return self._handle_request(api_request).result
@@ -4255,6 +5000,7 @@ class EcsClient(AlibabaCloudClient):
             generation=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DescribeInstanceTypeFamilies', 'GET', 'http', 'RPC', 'query')
@@ -4262,6 +5008,7 @@ class EcsClient(AlibabaCloudClient):
             "Generation": generation,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -4269,6 +5016,7 @@ class EcsClient(AlibabaCloudClient):
     def modify_router_interface_spec(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -4279,6 +5027,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('ModifyRouterInterfaceSpec', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -4298,6 +5047,7 @@ class EcsClient(AlibabaCloudClient):
             owner_id=None,
             router_interface_id=None,
             opposite_interface_owner_id=None,
+            region_id=None,
             health_check_source_ip=None,
             name=None,
             opposite_router_type=None,
@@ -4312,6 +5062,7 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id,
             "OppositeInterfaceOwnerId": opposite_interface_owner_id,
+            "RegionId": region_id,
             "HealthCheckSourceIp": health_check_source_ip,
             "Name": name,
             "OppositeRouterType": opposite_router_type,
@@ -4320,17 +5071,19 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_router_interfaces(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             page_size=None,
             owner_id=None,
             page_number=None):
         api_request = APIRequest('DescribeRouterInterfaces', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PageSize": page_size,
             "OwnerId": owner_id,
             "PageNumber": page_number}
@@ -4344,6 +5097,7 @@ class EcsClient(AlibabaCloudClient):
     def delete_router_interface(
             self,
             resource_owner_id=None,
+            region_id=None,
             resource_owner_account=None,
             client_token=None,
             owner_account=None,
@@ -4353,6 +5107,7 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DeleteRouterInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
+            "RegionId": region_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
@@ -4365,12 +5120,14 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None,
             router_interface_id=None):
         api_request = APIRequest('DeactivateRouterInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id}
         return self._handle_request(api_request).result
@@ -4386,6 +5143,7 @@ class EcsClient(AlibabaCloudClient):
             health_check_target_ip=None,
             description=None,
             spec=None,
+            region_id=None,
             user_cidr=None,
             opposite_interface_id=None,
             instance_charge_type=None,
@@ -4413,6 +5171,7 @@ class EcsClient(AlibabaCloudClient):
             "HealthCheckTargetIp": health_check_target_ip,
             "Description": description,
             "Spec": spec,
+            "RegionId": region_id,
             "UserCidr": user_cidr,
             "OppositeInterfaceId": opposite_interface_id,
             "InstanceChargeType": instance_charge_type,
@@ -4435,12 +5194,14 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None,
             router_interface_id=None):
         api_request = APIRequest('ConnectRouterInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id}
         return self._handle_request(api_request).result
@@ -4449,12 +5210,14 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_id=None,
             router_interface_id=None):
         api_request = APIRequest('ActivateRouterInterface', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerId": owner_id,
             "RouterInterfaceId": router_interface_id}
         return self._handle_request(api_request).result
@@ -4466,6 +5229,7 @@ class EcsClient(AlibabaCloudClient):
             instance_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             force=None,
             owner_id=None):
@@ -4476,6 +5240,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Force": force,
             "OwnerId": owner_id}
@@ -4487,6 +5252,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             description=None,
             owner_id=None):
@@ -4496,6 +5262,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
@@ -4503,18 +5270,20 @@ class EcsClient(AlibabaCloudClient):
 
     def describe_ha_vips(
             self,
-            filter_=None,
+            list_of_filter_=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
             page_number=None):
         api_request = APIRequest('DescribeHaVips', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -4532,6 +5301,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DeleteHaVip', 'GET', 'http', 'RPC', 'query')
@@ -4540,27 +5310,30 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
     def create_ha_vip(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             ip_address=None,
             resource_owner_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             description=None,
             owner_id=None):
         api_request = APIRequest('CreateHaVip', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "IpAddress": ip_address,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
@@ -4573,6 +5346,7 @@ class EcsClient(AlibabaCloudClient):
             instance_id=None,
             resource_owner_account=None,
             client_token=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('AssociateHaVip', 'GET', 'http', 'RPC', 'query')
@@ -4582,6 +5356,7 @@ class EcsClient(AlibabaCloudClient):
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -4613,7 +5388,8 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_id=None,
             resource_owner_account=None,
-            tag=None,
+            region_id=None,
+            list_of_tag=None,
             owner_id=None,
             resource_type=None):
         api_request = APIRequest('RemoveTags', 'GET', 'http', 'RPC', 'query')
@@ -4621,7 +5397,8 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceId": resource_id,
             "ResourceOwnerAccount": resource_owner_account,
-            "Tag": tag,
+            "RegionId": region_id,
+            "Tag": list_of_tag,
             "OwnerId": owner_id,
             "ResourceType": resource_type}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
@@ -4636,8 +5413,9 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_id=None,
             resource_owner_account=None,
+            region_id=None,
             page_size=None,
-            tag=None,
+            list_of_tag=None,
             owner_id=None,
             category=None,
             resource_type=None,
@@ -4647,8 +5425,9 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceId": resource_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PageSize": page_size,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "OwnerId": owner_id,
             "Category": category,
             "ResourceType": resource_type,
@@ -4664,8 +5443,9 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             page_size=None,
-            tag=None,
+            list_of_tag=None,
             owner_id=None,
             resource_type=None,
             page_number=None):
@@ -4673,8 +5453,9 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "PageSize": page_size,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "OwnerId": owner_id,
             "ResourceType": resource_type,
             "PageNumber": page_number}
@@ -4690,7 +5471,8 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             resource_id=None,
             resource_owner_account=None,
-            tag=None,
+            region_id=None,
+            list_of_tag=None,
             owner_id=None,
             resource_type=None):
         api_request = APIRequest('AddTags', 'GET', 'http', 'RPC', 'query')
@@ -4698,7 +5480,8 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ResourceId": resource_id,
             "ResourceOwnerAccount": resource_owner_account,
-            "Tag": tag,
+            "RegionId": region_id,
+            "Tag": list_of_tag,
             "OwnerId": owner_id,
             "ResourceType": resource_type}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
@@ -4713,6 +5496,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             instance_type=None,
             allocation_id=None,
@@ -4722,6 +5506,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "InstanceType": instance_type,
             "AllocationId": allocation_id,
@@ -4784,6 +5569,7 @@ class EcsClient(AlibabaCloudClient):
             client_token=None,
             security_group_id=None,
             description=None,
+            region_id=None,
             ipv6_dest_cidr_ip=None,
             ipv6_source_cidr_ip=None,
             policy=None,
@@ -4806,6 +5592,7 @@ class EcsClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "SecurityGroupId": security_group_id,
             "Description": description,
+            "RegionId": region_id,
             "Ipv6DestCidrIp": ipv6_dest_cidr_ip,
             "Ipv6SourceCidrIp": ipv6_source_cidr_ip,
             "Policy": policy,
@@ -4832,6 +5619,7 @@ class EcsClient(AlibabaCloudClient):
             description=None,
             source_group_owner_id=None,
             source_group_owner_account=None,
+            region_id=None,
             ipv6_dest_cidr_ip=None,
             ipv6_source_cidr_ip=None,
             policy=None,
@@ -4854,6 +5642,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "SourceGroupOwnerId": source_group_owner_id,
             "SourceGroupOwnerAccount": source_group_owner_account,
+            "RegionId": region_id,
             "Ipv6DestCidrIp": ipv6_dest_cidr_ip,
             "Ipv6SourceCidrIp": ipv6_source_cidr_ip,
             "Policy": policy,
@@ -4968,6 +5757,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             allocation_id=None,
             owner_id=None):
@@ -4975,12 +5765,13 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AllocationId": allocation_id,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def re_init_disk(
+    def reinit_disk(
             self,
             resource_owner_id=None,
             password=None,
@@ -5024,41 +5815,45 @@ class EcsClient(AlibabaCloudClient):
             "ForceStop": force_stop}
         return self._handle_request(api_request).result
 
-    def modify_v_switch_attribute(
+    def modify_vswitch_attribute(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
-            v_switch_name=None,
+            region_id=None,
+            vswitch_name=None,
             owner_account=None,
             description=None,
             owner_id=None):
         api_request = APIRequest('ModifyVSwitchAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
-            "VSwitchName": v_switch_name,
+            "RegionId": region_id,
+            "VSwitchName": vswitch_name,
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def modify_v_router_attribute(
+    def modify_vrouter_attribute(
             self,
-            v_router_name=None,
+            vrouter_name=None,
             resource_owner_id=None,
-            v_router_id=None,
+            vrouter_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             description=None,
             owner_id=None):
         api_request = APIRequest('ModifyVRouterAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VRouterName": v_router_name,
+            "VRouterName": vrouter_name,
             "ResourceOwnerId": resource_owner_id,
-            "VRouterId": v_router_id,
+            "VRouterId": vrouter_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id}
@@ -5069,6 +5864,7 @@ class EcsClient(AlibabaCloudClient):
             vpc_name=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             owner_account=None,
             cidr_block=None,
@@ -5080,6 +5876,7 @@ class EcsClient(AlibabaCloudClient):
             "VpcName": vpc_name,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
             "CidrBlock": cidr_block,
@@ -5112,6 +5909,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             security_group_id=None,
             description=None,
@@ -5121,6 +5919,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "SecurityGroupId": security_group_id,
             "Description": description,
@@ -5130,7 +5929,7 @@ class EcsClient(AlibabaCloudClient):
 
     def modify_instance_vpc_attribute(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             private_ip_address=None,
             resource_owner_id=None,
             instance_id=None,
@@ -5139,7 +5938,7 @@ class EcsClient(AlibabaCloudClient):
             owner_id=None):
         api_request = APIRequest('ModifyInstanceVpcAttribute', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrivateIpAddress": private_ip_address,
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
@@ -5153,6 +5952,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None,
             vnc_password=None):
@@ -5161,6 +5961,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "VncPassword": vnc_password}
@@ -5270,18 +6071,20 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             image_id=None,
-            add_account=None,
+            list_of_add_account=None,
             resource_owner_account=None,
-            remove_account=None,
+            region_id=None,
+            list_of_remove_account=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('ModifyImageSharePermission', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ImageId": image_id,
-            "AddAccount": add_account,
+            "AddAccount": list_of_add_account,
             "ResourceOwnerAccount": resource_owner_account,
-            "RemoveAccount": remove_account,
+            "RegionId": region_id,
+            "RemoveAccount": list_of_remove_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         repeat_info = {"AddAccount": ('AddAccount', 'list', 'str', None),
@@ -5296,6 +6099,7 @@ class EcsClient(AlibabaCloudClient):
             image_id=None,
             add_group1=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             remove_group1=None,
             owner_id=None):
@@ -5305,6 +6109,7 @@ class EcsClient(AlibabaCloudClient):
             "ImageId": image_id,
             "AddGroup.1": add_group1,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "RemoveGroup.1": remove_group1,
             "OwnerId": owner_id}
@@ -5315,6 +6120,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             image_id=None,
             resource_owner_account=None,
+            region_id=None,
             image_name=None,
             owner_account=None,
             description=None,
@@ -5324,6 +6130,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ImageId": image_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ImageName": image_name,
             "OwnerAccount": owner_account,
             "Description": description,
@@ -5334,6 +6141,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             bandwidth=None,
             owner_account=None,
             allocation_id=None,
@@ -5342,6 +6150,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "OwnerAccount": owner_account,
             "AllocationId": allocation_id,
@@ -5463,6 +6272,7 @@ class EcsClient(AlibabaCloudClient):
             spot_strategy=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             accept_language=None,
             owner_id=None,
@@ -5473,6 +6283,7 @@ class EcsClient(AlibabaCloudClient):
             "SpotStrategy": spot_strategy,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "AcceptLanguage": accept_language,
             "OwnerId": owner_id,
@@ -5480,11 +6291,12 @@ class EcsClient(AlibabaCloudClient):
             "Verbose": verbose}
         return self._handle_request(api_request).result
 
-    def describe_v_switches(
+    def describe_vswitches(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             owner_account=None,
             page_size=None,
@@ -5494,9 +6306,10 @@ class EcsClient(AlibabaCloudClient):
             page_number=None):
         api_request = APIRequest('DescribeVSwitches', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
@@ -5506,11 +6319,12 @@ class EcsClient(AlibabaCloudClient):
             "PageNumber": page_number}
         return self._handle_request(api_request).result
 
-    def describe_v_routers(
+    def describe_vrouters(
             self,
             resource_owner_id=None,
-            v_router_id=None,
+            vrouter_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
@@ -5518,8 +6332,9 @@ class EcsClient(AlibabaCloudClient):
         api_request = APIRequest('DescribeVRouters', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "VRouterId": v_router_id,
+            "VRouterId": vrouter_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -5530,6 +6345,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             owner_account=None,
             page_size=None,
@@ -5540,6 +6356,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
@@ -5559,9 +6376,10 @@ class EcsClient(AlibabaCloudClient):
             page_number=None,
             resource_group_id=None,
             filter1_key=None,
+            region_id=None,
             page_size=None,
             disk_id=None,
-            tag=None,
+            list_of_tag=None,
             dry_run=None,
             resource_owner_account=None,
             owner_account=None,
@@ -5585,9 +6403,10 @@ class EcsClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "ResourceGroupId": resource_group_id,
             "Filter.1.Key": filter1_key,
+            "RegionId": region_id,
             "PageSize": page_size,
             "DiskId": disk_id,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "DryRun": dry_run,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
@@ -5622,9 +6441,10 @@ class EcsClient(AlibabaCloudClient):
             security_group_name=None,
             page_number=None,
             resource_group_id=None,
+            region_id=None,
             vpc_id=None,
             page_size=None,
-            tag=None):
+            list_of_tag=None):
         api_request = APIRequest('DescribeSecurityGroups', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
@@ -5640,9 +6460,10 @@ class EcsClient(AlibabaCloudClient):
             "SecurityGroupName": security_group_name,
             "PageNumber": page_number,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "PageSize": page_size,
-            "Tag": tag}
+            "Tag": list_of_tag}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
                                                        ]),
@@ -5655,6 +6476,7 @@ class EcsClient(AlibabaCloudClient):
             nic_type=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             security_group_id=None,
             owner_id=None,
@@ -5664,6 +6486,7 @@ class EcsClient(AlibabaCloudClient):
             "NicType": nic_type,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "SecurityGroupId": security_group_id,
             "OwnerId": owner_id,
@@ -5673,26 +6496,28 @@ class EcsClient(AlibabaCloudClient):
     def describe_route_tables(
             self,
             resource_owner_id=None,
-            v_router_id=None,
+            vrouter_id=None,
             resource_owner_account=None,
             owner_account=None,
             owner_id=None,
             page_number=None,
             router_type=None,
             route_table_name=None,
+            region_id=None,
             router_id=None,
             page_size=None,
             route_table_id=None):
         api_request = APIRequest('DescribeRouteTables', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
-            "VRouterId": v_router_id,
+            "VRouterId": vrouter_id,
             "ResourceOwnerAccount": resource_owner_account,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "PageNumber": page_number,
             "RouterType": router_type,
             "RouteTableName": route_table_name,
+            "RegionId": region_id,
             "RouterId": router_id,
             "PageSize": page_size,
             "RouteTableId": route_table_id}
@@ -5739,6 +6564,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DescribeInstanceVncUrl', 'GET', 'http', 'RPC', 'query')
@@ -5746,6 +6572,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -5755,6 +6582,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DescribeInstanceVncPasswd', 'GET', 'http', 'RPC', 'query')
@@ -5762,6 +6590,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -5786,6 +6615,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             zone_id=None,
@@ -5796,6 +6626,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "ZoneId": zone_id,
@@ -5821,12 +6652,13 @@ class EcsClient(AlibabaCloudClient):
             resource_group_id=None,
             lock_reason=None,
             filter1_key=None,
+            region_id=None,
             rdma_ip_addresses=None,
             device_available=None,
             page_size=None,
             public_ip_addresses=None,
             instance_type=None,
-            tag=None,
+            list_of_tag=None,
             instance_charge_type=None,
             filter3_value=None,
             dry_run=None,
@@ -5837,7 +6669,7 @@ class EcsClient(AlibabaCloudClient):
             need_sale_cycle=None,
             filter2_key=None,
             owner_id=None,
-            v_switch_id=None,
+            vswitch_id=None,
             eip_addresses=None,
             instance_name=None,
             instance_ids=None,
@@ -5864,12 +6696,13 @@ class EcsClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "LockReason": lock_reason,
             "Filter.1.Key": filter1_key,
+            "RegionId": region_id,
             "RdmaIpAddresses": rdma_ip_addresses,
             "DeviceAvailable": device_available,
             "PageSize": page_size,
             "PublicIpAddresses": public_ip_addresses,
             "InstanceType": instance_type,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "InstanceChargeType": instance_charge_type,
             "Filter.3.Value": filter3_value,
             "DryRun": dry_run,
@@ -5880,7 +6713,7 @@ class EcsClient(AlibabaCloudClient):
             "NeedSaleCycle": need_sale_cycle,
             "Filter.2.Key": filter2_key,
             "OwnerId": owner_id,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "EipAddresses": eip_addresses,
             "InstanceName": instance_name,
             "InstanceIds": instance_ids,
@@ -5956,6 +6789,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             image_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             page_size=None,
             owner_id=None,
@@ -5965,6 +6799,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ImageId": image_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "PageSize": page_size,
             "OwnerId": owner_id,
@@ -5982,11 +6817,12 @@ class EcsClient(AlibabaCloudClient):
             image_owner_alias=None,
             resource_group_id=None,
             is_support_io_optimized=None,
+            region_id=None,
             image_name=None,
             is_support_cloudinit=None,
             page_size=None,
             instance_type=None,
-            tag=None,
+            list_of_tag=None,
             architecture=None,
             dry_run=None,
             resource_owner_account=None,
@@ -5994,7 +6830,7 @@ class EcsClient(AlibabaCloudClient):
             show_expired=None,
             os_type=None,
             owner_id=None,
-            filter_=None,
+            list_of_filter_=None,
             status=None):
         api_request = APIRequest('DescribeImages', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -6007,11 +6843,12 @@ class EcsClient(AlibabaCloudClient):
             "ImageOwnerAlias": image_owner_alias,
             "ResourceGroupId": resource_group_id,
             "IsSupportIoOptimized": is_support_io_optimized,
+            "RegionId": region_id,
             "ImageName": image_name,
             "IsSupportCloudinit": is_support_cloudinit,
             "PageSize": page_size,
             "InstanceType": instance_type,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "Architecture": architecture,
             "DryRun": dry_run,
             "ResourceOwnerAccount": resource_owner_account,
@@ -6019,7 +6856,7 @@ class EcsClient(AlibabaCloudClient):
             "ShowExpired": show_expired,
             "OSType": os_type,
             "OwnerId": owner_id,
-            "Filter": filter_,
+            "Filter": list_of_filter_,
             "Status": status}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
@@ -6036,6 +6873,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             period=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             end_time=None,
             allocation_id=None,
@@ -6046,6 +6884,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "Period": period,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "EndTime": end_time,
             "AllocationId": allocation_id,
@@ -6068,6 +6907,7 @@ class EcsClient(AlibabaCloudClient):
             page_number=None,
             lock_reason=None,
             filter1_key=None,
+            region_id=None,
             associated_instance_type=None,
             page_size=None,
             charge_type=None,
@@ -6088,6 +6928,7 @@ class EcsClient(AlibabaCloudClient):
             "PageNumber": page_number,
             "LockReason": lock_reason,
             "Filter.1.Key": filter1_key,
+            "RegionId": region_id,
             "AssociatedInstanceType": associated_instance_type,
             "PageSize": page_size,
             "ChargeType": charge_type,
@@ -6108,9 +6949,10 @@ class EcsClient(AlibabaCloudClient):
             disk_charge_type=None,
             lock_reason=None,
             filter1_key=None,
+            region_id=None,
             page_size=None,
             disk_ids=None,
-            tag=None,
+            list_of_tag=None,
             delete_with_instance=None,
             enable_auto_snapshot=None,
             dry_run=None,
@@ -6122,7 +6964,7 @@ class EcsClient(AlibabaCloudClient):
             filter2_key=None,
             owner_id=None,
             disk_type=None,
-            additional_attributes=None,
+            list_of_additional_attributes=None,
             enable_shared=None,
             instance_id=None,
             encrypted=None,
@@ -6143,9 +6985,10 @@ class EcsClient(AlibabaCloudClient):
             "DiskChargeType": disk_charge_type,
             "LockReason": lock_reason,
             "Filter.1.Key": filter1_key,
+            "RegionId": region_id,
             "PageSize": page_size,
             "DiskIds": disk_ids,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "DeleteWithInstance": delete_with_instance,
             "EnableAutoSnapshot": enable_auto_snapshot,
             "DryRun": dry_run,
@@ -6157,7 +7000,7 @@ class EcsClient(AlibabaCloudClient):
             "Filter.2.Key": filter2_key,
             "OwnerId": owner_id,
             "DiskType": disk_type,
-            "AdditionalAttributes": additional_attributes,
+            "AdditionalAttributes": list_of_additional_attributes,
             "EnableShared": enable_shared,
             "InstanceId": instance_id,
             "Encrypted": encrypted,
@@ -6199,28 +7042,32 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DescribeClusters', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def delete_v_switch(
+    def delete_vswitch(
             self,
-            v_switch_id=None,
+            vswitch_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('DeleteVSwitch', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -6229,6 +7076,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             vpc_id=None,
             owner_account=None,
             owner_id=None):
@@ -6236,6 +7084,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "VpcId": vpc_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
@@ -6263,6 +7112,7 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             security_group_id=None,
             owner_id=None):
@@ -6270,6 +7120,7 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "SecurityGroupId": security_group_id,
             "OwnerId": owner_id}
@@ -6279,21 +7130,23 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             destination_cidr_block=None,
             owner_account=None,
             next_hop_id=None,
             owner_id=None,
-            next_hop_list=None,
+            list_of_next_hop_list=None,
             route_table_id=None):
         api_request = APIRequest('DeleteRouteEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "DestinationCidrBlock": destination_cidr_block,
             "OwnerAccount": owner_account,
             "NextHopId": next_hop_id,
             "OwnerId": owner_id,
-            "NextHopList": next_hop_list,
+            "NextHopList": list_of_next_hop_list,
             "RouteTableId": route_table_id}
         repeat_info = {
             "NextHopList": (
@@ -6327,6 +7180,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             image_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             force=None,
             owner_id=None):
@@ -6335,6 +7189,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ImageId": image_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "Force": force,
             "OwnerId": owner_id}
@@ -6356,13 +7211,14 @@ class EcsClient(AlibabaCloudClient):
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
 
-    def create_v_switch(
+    def create_vswitch(
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             vpc_id=None,
-            v_switch_name=None,
+            vswitch_name=None,
             owner_account=None,
             cidr_block=None,
             zone_id=None,
@@ -6372,9 +7228,10 @@ class EcsClient(AlibabaCloudClient):
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "VpcId": vpc_id,
-            "VSwitchName": v_switch_name,
+            "VSwitchName": vswitch_name,
             "OwnerAccount": owner_account,
             "CidrBlock": cidr_block,
             "ZoneId": zone_id,
@@ -6387,6 +7244,7 @@ class EcsClient(AlibabaCloudClient):
             vpc_name=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             owner_account=None,
             cidr_block=None,
@@ -6398,6 +7256,7 @@ class EcsClient(AlibabaCloudClient):
             "VpcName": vpc_name,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "OwnerAccount": owner_account,
             "CidrBlock": cidr_block,
@@ -6415,7 +7274,8 @@ class EcsClient(AlibabaCloudClient):
             description=None,
             disk_id=None,
             snapshot_name=None,
-            tag=None,
+            retention_days=None,
+            list_of_tag=None,
             owner_id=None):
         api_request = APIRequest('CreateSnapshot', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
@@ -6426,7 +7286,8 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "DiskId": disk_id,
             "SnapshotName": snapshot_name,
-            "Tag": tag,
+            "RetentionDays": retention_days,
+            "Tag": list_of_tag,
             "OwnerId": owner_id}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
@@ -6446,8 +7307,9 @@ class EcsClient(AlibabaCloudClient):
             security_group_name=None,
             security_group_type=None,
             resource_group_id=None,
+            region_id=None,
             vpc_id=None,
-            tag=None):
+            list_of_tag=None):
         api_request = APIRequest('CreateSecurityGroup', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
@@ -6459,8 +7321,9 @@ class EcsClient(AlibabaCloudClient):
             "SecurityGroupName": security_group_name,
             "SecurityGroupType": security_group_type,
             "ResourceGroupId": resource_group_id,
+            "RegionId": region_id,
             "VpcId": vpc_id,
-            "Tag": tag}
+            "Tag": list_of_tag}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
                                                        ('Key', 'str', None, None),
                                                        ]),
@@ -6472,25 +7335,27 @@ class EcsClient(AlibabaCloudClient):
             self,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             client_token=None,
             destination_cidr_block=None,
             owner_account=None,
             next_hop_id=None,
             owner_id=None,
             next_hop_type=None,
-            next_hop_list=None,
+            list_of_next_hop_list=None,
             route_table_id=None):
         api_request = APIRequest('CreateRouteEntry', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "ClientToken": client_token,
             "DestinationCidrBlock": destination_cidr_block,
             "OwnerAccount": owner_account,
             "NextHopId": next_hop_id,
             "OwnerId": owner_id,
             "NextHopType": next_hop_type,
-            "NextHopList": next_hop_list,
+            "NextHopList": list_of_next_hop_list,
             "RouteTableId": route_table_id}
         repeat_info = {
             "NextHopList": (
@@ -6510,14 +7375,15 @@ class EcsClient(AlibabaCloudClient):
             resource_group_id=None,
             host_name=None,
             password=None,
-            tag=None,
+            storage_set_partition_number=None,
+            list_of_tag=None,
             auto_renew_period=None,
             node_controller_id=None,
             period=None,
             dry_run=None,
             owner_id=None,
             capacity_reservation_preference=None,
-            v_switch_id=None,
+            vswitch_id=None,
             private_ip_address=None,
             spot_strategy=None,
             period_unit=None,
@@ -6538,10 +7404,12 @@ class EcsClient(AlibabaCloudClient):
             description=None,
             system_disk_category=None,
             capacity_reservation_id=None,
+            system_disk_performance_level=None,
             user_data=None,
             password_inherit=None,
+            region_id=None,
             instance_type=None,
-            arn=None,
+            list_of_arn=None,
             instance_charge_type=None,
             deployment_set_id=None,
             inner_ip_address=None,
@@ -6553,7 +7421,8 @@ class EcsClient(AlibabaCloudClient):
             dedicated_host_id=None,
             cluster_id=None,
             credit_specification=None,
-            data_disk=None,
+            list_of_data_disk=None,
+            storage_set_id=None,
             system_disk_size=None,
             system_disk_description=None):
         api_request = APIRequest('CreateInstance', 'GET', 'http', 'RPC', 'query')
@@ -6567,14 +7436,15 @@ class EcsClient(AlibabaCloudClient):
             "ResourceGroupId": resource_group_id,
             "HostName": host_name,
             "Password": password,
-            "Tag": tag,
+            "StorageSetPartitionNumber": storage_set_partition_number,
+            "Tag": list_of_tag,
             "AutoRenewPeriod": auto_renew_period,
             "NodeControllerId": node_controller_id,
             "Period": period,
             "DryRun": dry_run,
             "OwnerId": owner_id,
             "CapacityReservationPreference": capacity_reservation_preference,
-            "VSwitchId": v_switch_id,
+            "VSwitchId": vswitch_id,
             "PrivateIpAddress": private_ip_address,
             "SpotStrategy": spot_strategy,
             "PeriodUnit": period_unit,
@@ -6595,10 +7465,12 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "SystemDisk.Category": system_disk_category,
             "CapacityReservationId": capacity_reservation_id,
+            "SystemDisk.PerformanceLevel": system_disk_performance_level,
             "UserData": user_data,
             "PasswordInherit": password_inherit,
+            "RegionId": region_id,
             "InstanceType": instance_type,
-            "Arn": arn,
+            "Arn": list_of_arn,
             "InstanceChargeType": instance_charge_type,
             "DeploymentSetId": deployment_set_id,
             "InnerIpAddress": inner_ip_address,
@@ -6610,7 +7482,8 @@ class EcsClient(AlibabaCloudClient):
             "DedicatedHostId": dedicated_host_id,
             "ClusterId": cluster_id,
             "CreditSpecification": credit_specification,
-            "DataDisk": data_disk,
+            "DataDisk": list_of_data_disk,
+            "StorageSetId": storage_set_id,
             "SystemDisk.Size": system_disk_size,
             "SystemDisk.Description": system_disk_description}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
@@ -6624,6 +7497,7 @@ class EcsClient(AlibabaCloudClient):
                                                                  ('SnapshotId', 'str', None, None),
                                                                  ('Size', 'str', None, None),
                                                                  ('Encrypted', 'str', None, None),
+                                                                 ('PerformanceLevel', 'str', None, None),
                                                                  ('Description', 'str', None, None),
                                                                  ('Category', 'str', None, None),
                                                                  ('KMSKeyId', 'str', None, None),
@@ -6636,7 +7510,7 @@ class EcsClient(AlibabaCloudClient):
 
     def create_image(
             self,
-            disk_device_mapping=None,
+            list_of_disk_device_mapping=None,
             resource_owner_id=None,
             snapshot_id=None,
             resource_owner_account=None,
@@ -6647,13 +7521,14 @@ class EcsClient(AlibabaCloudClient):
             platform=None,
             resource_group_id=None,
             instance_id=None,
+            region_id=None,
             image_name=None,
             image_version=None,
-            tag=None,
+            list_of_tag=None,
             architecture=None):
         api_request = APIRequest('CreateImage', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
-            "DiskDeviceMapping": disk_device_mapping,
+            "DiskDeviceMapping": list_of_disk_device_mapping,
             "ResourceOwnerId": resource_owner_id,
             "SnapshotId": snapshot_id,
             "ResourceOwnerAccount": resource_owner_account,
@@ -6664,9 +7539,10 @@ class EcsClient(AlibabaCloudClient):
             "Platform": platform,
             "ResourceGroupId": resource_group_id,
             "InstanceId": instance_id,
+            "RegionId": region_id,
             "ImageName": image_name,
             "ImageVersion": image_version,
-            "Tag": tag,
+            "Tag": list_of_tag,
             "Architecture": architecture}
         repeat_info = {"DiskDeviceMapping": ('DiskDeviceMapping', 'list', 'dict', [('SnapshotId', 'str', None, None),
                                                                                    ('Size', 'str', None, None),
@@ -6686,18 +7562,22 @@ class EcsClient(AlibabaCloudClient):
             snapshot_id=None,
             resource_owner_account=None,
             client_token=None,
+            performance_level=None,
             owner_account=None,
             description=None,
             owner_id=None,
             disk_name=None,
             resource_group_id=None,
             instance_id=None,
+            storage_set_id=None,
             size=None,
             encrypted=None,
+            region_id=None,
             disk_category=None,
             zone_id=None,
-            tag=None,
-            arn=None,
+            storage_set_partition_number=None,
+            list_of_tag=None,
+            list_of_arn=None,
             kms_key_id=None,
             advanced_features=None):
         api_request = APIRequest('CreateDisk', 'GET', 'http', 'RPC', 'query')
@@ -6706,18 +7586,22 @@ class EcsClient(AlibabaCloudClient):
             "SnapshotId": snapshot_id,
             "ResourceOwnerAccount": resource_owner_account,
             "ClientToken": client_token,
+            "PerformanceLevel": performance_level,
             "OwnerAccount": owner_account,
             "Description": description,
             "OwnerId": owner_id,
             "DiskName": disk_name,
             "ResourceGroupId": resource_group_id,
             "InstanceId": instance_id,
+            "StorageSetId": storage_set_id,
             "Size": size,
             "Encrypted": encrypted,
+            "RegionId": region_id,
             "DiskCategory": disk_category,
             "ZoneId": zone_id,
-            "Tag": tag,
-            "Arn": arn,
+            "StorageSetPartitionNumber": storage_set_partition_number,
+            "Tag": list_of_tag,
+            "Arn": list_of_arn,
             "KMSKeyId": kms_key_id,
             "AdvancedFeatures": advanced_features}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
@@ -6741,7 +7625,8 @@ class EcsClient(AlibabaCloudClient):
             owner_account=None,
             owner_id=None,
             encrypted=None,
-            tag=None,
+            region_id=None,
+            list_of_tag=None,
             kms_key_id=None,
             destination_description=None):
         api_request = APIRequest('CopyImage', 'GET', 'http', 'RPC', 'query')
@@ -6754,7 +7639,8 @@ class EcsClient(AlibabaCloudClient):
             "OwnerAccount": owner_account,
             "OwnerId": owner_id,
             "Encrypted": encrypted,
-            "Tag": tag,
+            "RegionId": region_id,
+            "Tag": list_of_tag,
             "KMSKeyId": kms_key_id,
             "DestinationDescription": destination_description}
         repeat_info = {"Tag": ('Tag', 'list', 'dict', [('Value', 'str', None, None),
@@ -6769,6 +7655,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             image_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             owner_id=None):
         api_request = APIRequest('CancelCopyImage', 'GET', 'http', 'RPC', 'query')
@@ -6776,6 +7663,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "ImageId": image_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "OwnerId": owner_id}
         return self._handle_request(api_request).result
@@ -6788,6 +7676,7 @@ class EcsClient(AlibabaCloudClient):
             client_token=None,
             security_group_id=None,
             description=None,
+            region_id=None,
             ipv6_dest_cidr_ip=None,
             ipv6_source_cidr_ip=None,
             policy=None,
@@ -6810,6 +7699,7 @@ class EcsClient(AlibabaCloudClient):
             "ClientToken": client_token,
             "SecurityGroupId": security_group_id,
             "Description": description,
+            "RegionId": region_id,
             "Ipv6DestCidrIp": ipv6_dest_cidr_ip,
             "Ipv6SourceCidrIp": ipv6_source_cidr_ip,
             "Policy": policy,
@@ -6836,6 +7726,7 @@ class EcsClient(AlibabaCloudClient):
             description=None,
             source_group_owner_id=None,
             source_group_owner_account=None,
+            region_id=None,
             ipv6_source_cidr_ip=None,
             ipv6_dest_cidr_ip=None,
             policy=None,
@@ -6858,6 +7749,7 @@ class EcsClient(AlibabaCloudClient):
             "Description": description,
             "SourceGroupOwnerId": source_group_owner_id,
             "SourceGroupOwnerAccount": source_group_owner_account,
+            "RegionId": region_id,
             "Ipv6SourceCidrIp": ipv6_source_cidr_ip,
             "Ipv6DestCidrIp": ipv6_dest_cidr_ip,
             "Policy": policy,
@@ -6899,6 +7791,7 @@ class EcsClient(AlibabaCloudClient):
             resource_owner_id=None,
             instance_id=None,
             resource_owner_account=None,
+            region_id=None,
             owner_account=None,
             instance_type=None,
             allocation_id=None,
@@ -6908,6 +7801,7 @@ class EcsClient(AlibabaCloudClient):
             "ResourceOwnerId": resource_owner_id,
             "InstanceId": instance_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "OwnerAccount": owner_account,
             "InstanceType": instance_type,
             "AllocationId": allocation_id,
@@ -6936,8 +7830,10 @@ class EcsClient(AlibabaCloudClient):
 
     def allocate_eip_address(
             self,
+            activity_id=None,
             resource_owner_id=None,
             resource_owner_account=None,
+            region_id=None,
             bandwidth=None,
             client_token=None,
             internet_charge_type=None,
@@ -6946,8 +7842,10 @@ class EcsClient(AlibabaCloudClient):
             owner_id=None):
         api_request = APIRequest('AllocateEipAddress', 'GET', 'http', 'RPC', 'query')
         api_request._params = {
+            "ActivityId": activity_id,
             "ResourceOwnerId": resource_owner_id,
             "ResourceOwnerAccount": resource_owner_account,
+            "RegionId": region_id,
             "Bandwidth": bandwidth,
             "ClientToken": client_token,
             "InternetChargeType": internet_charge_type,

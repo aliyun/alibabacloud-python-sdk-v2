@@ -19,44 +19,20 @@ from alibabacloud.utils.parameter_validation import verify_params
 
 class RamClient(AlibabaCloudClient):
 
-    def __init__(self, client_config, credentials_provider=None):
-        AlibabaCloudClient.__init__(self, client_config, credentials_provider)
+    def __init__(self, client_config, credentials_provider=None, retry_policy=None,
+                 endpoint_resolver=None):
+        AlibabaCloudClient.__init__(self, client_config,
+                                    credentials_provider=credentials_provider,
+                                    retry_policy=retry_policy,
+                                    endpoint_resolver=endpoint_resolver)
         self.product_code = 'Ram'
         self.api_version = '2015-05-01'
-        self.location_service_code = 'ram'
+        self.location_service_code = None
         self.location_endpoint_type = 'openAPI'
 
     def get_access_key_last_used(self, user_access_key_id=None, user_name=None):
         api_request = APIRequest('GetAccessKeyLastUsed', 'GET', 'https', 'RPC', 'query')
         api_request._params = {"UserAccessKeyId": user_access_key_id, "UserName": user_name}
-        return self._handle_request(api_request).result
-
-    def upload_public_key(self, public_key_spec=None, user_name=None):
-        api_request = APIRequest('UploadPublicKey', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {"PublicKeySpec": public_key_spec, "UserName": user_name}
-        return self._handle_request(api_request).result
-
-    def update_public_key(self, user_public_key_id=None, user_name=None, status=None):
-        api_request = APIRequest('UpdatePublicKey', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {
-            "UserPublicKeyId": user_public_key_id,
-            "UserName": user_name,
-            "Status": status}
-        return self._handle_request(api_request).result
-
-    def list_public_keys(self, user_name=None):
-        api_request = APIRequest('ListPublicKeys', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {"UserName": user_name}
-        return self._handle_request(api_request).result
-
-    def delete_public_key(self, user_public_key_id=None, user_name=None):
-        api_request = APIRequest('DeletePublicKey', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {"UserPublicKeyId": user_public_key_id, "UserName": user_name}
-        return self._handle_request(api_request).result
-
-    def get_public_key(self, user_public_key_id=None, user_name=None):
-        api_request = APIRequest('GetPublicKey', 'GET', 'https', 'RPC', 'query')
-        api_request._params = {"UserPublicKeyId": user_public_key_id, "UserName": user_name}
         return self._handle_request(api_request).result
 
     def change_password(self, old_password=None, new_password=None):
@@ -356,12 +332,18 @@ class RamClient(AlibabaCloudClient):
         api_request._params = {"VersionId": version_id, "PolicyName": policy_name}
         return self._handle_request(api_request).result
 
-    def create_policy_version(self, set_as_default=None, policy_name=None, policy_document=None):
+    def create_policy_version(
+            self,
+            set_as_default=None,
+            policy_name=None,
+            policy_document=None,
+            rotate_strategy=None):
         api_request = APIRequest('CreatePolicyVersion', 'GET', 'https', 'RPC', 'query')
         api_request._params = {
             "SetAsDefault": set_as_default,
             "PolicyName": policy_name,
-            "PolicyDocument": policy_document}
+            "PolicyDocument": policy_document,
+            "RotateStrategy": rotate_strategy}
         return self._handle_request(api_request).result
 
     def list_policies_for_user(self, user_name=None):
