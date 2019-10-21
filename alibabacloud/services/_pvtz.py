@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _PVTZResource(ServiceResource):
@@ -30,16 +23,17 @@ class _PVTZResource(ServiceResource):
         ServiceResource.__init__(self, 'pvtz', _client=_client)
         self.regions = _create_special_resource_collection(
             _PVTZRegionResource, _client, _client.describe_regions,
-            'Regions.Region', 'RegionId', 
+            'Regions.Region', 'RegionId',
         )
         self.zones = _create_special_resource_collection(
             _PVTZZoneResource, _client, _client.describe_zones,
-            'Zones.Zone', 'ZoneId', 
+            'Zones.Zone', 'ZoneId',
         )
         self.zone_records = _create_special_resource_collection(
             _PVTZZoneRecordResource, _client, _client.describe_zone_records,
-            'Records.Record', 'RecordId', 
+            'Records.Record', 'RecordId',
         )
+
     def add_zone(self, **params):
         _params = _transfer_params(params)
         response = self._client.add_zone(**_params)
@@ -70,22 +64,24 @@ class _PVTZResource(ServiceResource):
         record_id = _new_get_key_in_response(response, 'RecordId')
         return _PVTZZoneRecordResource(record_id, _client=self._client)
 
+
 class _PVTZRegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "pvtz.region", _client=_client)
         self.region_id = region_id
-        
+
         self.local_name = None
         self.region_endpoint = None
         self.region_name = None
+
 
 class _PVTZZoneResource(ServiceResource):
 
     def __init__(self, zone_id, _client=None):
         ServiceResource.__init__(self, "pvtz.zone", _client=_client)
         self.zone_id = zone_id
-        
+
         self.create_time = None
         self.create_timestamp = None
         self.is_ptr = None
@@ -108,12 +104,13 @@ class _PVTZZoneResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_zone_remark(zone_id=self.zone_id, **_params)
 
+
 class _PVTZZoneRecordResource(ServiceResource):
 
     def __init__(self, record_id, _client=None):
         ServiceResource.__init__(self, "pvtz.zone_record", _client=_client)
         self.record_id = record_id
-        
+
         self.priority = None
         self.rr = None
         self.status = None

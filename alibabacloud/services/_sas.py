@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _transfer_params
 
 
 class _SASResource(ServiceResource):
@@ -30,14 +23,16 @@ class _SASResource(ServiceResource):
         ServiceResource.__init__(self, 'sas', _client=_client)
         self.check_warnings = _create_special_resource_collection(
             _SASCheckWarningResource, _client, _client.describe_check_warnings,
-            'CheckWarnings.CheckWarning', 'CheckWarningId', 
+            'CheckWarnings.CheckWarning', 'CheckWarningId',
         )
+
+
 class _SASCheckWarningResource(ServiceResource):
 
     def __init__(self, check_warning_id, _client=None):
         ServiceResource.__init__(self, "sas.check_warning", _client=_client)
         self.check_warning_id = check_warning_id
-        
+
         self.check_id = None
         self.item = None
         self.level = None
@@ -47,4 +42,5 @@ class _SASCheckWarningResource(ServiceResource):
 
     def describe_check_warning_detail(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_check_warning_detail(check_warning_id=self.check_warning_id, **_params)
+        return self._client.describe_check_warning_detail(check_warning_id=self.check_warning_id,
+                                                          **_params)

@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
+from alibabacloud.resources.collection import _create_resource_collection
 from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _CBNResource(ServiceResource):
@@ -30,16 +24,17 @@ class _CBNResource(ServiceResource):
         ServiceResource.__init__(self, 'cbn', _client=_client)
         self.cens = _create_resource_collection(
             _CBNCenResource, _client, _client.describe_cens,
-            'Cens.Cen', 'CenId', 
+            'Cens.Cen', 'CenId',
         )
         self.cen_bandwidth_packages = _create_resource_collection(
             _CBNCenBandwidthPackageResource, _client, _client.describe_cen_bandwidth_packages,
-            'CenBandwidthPackages.CenBandwidthPackage', 'CenBandwidthPackageId', 
+            'CenBandwidthPackages.CenBandwidthPackage', 'CenBandwidthPackageId',
         )
         self.cen_route_maps = _create_resource_collection(
             _CBNCenRouteMapResource, _client, _client.describe_cen_route_maps,
-            'RouteMaps.RouteMap', 'RouteMapId', 
+            'RouteMaps.RouteMap', 'RouteMapId',
         )
+
     def create_cen(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_cen(**_params)
@@ -58,12 +53,13 @@ class _CBNResource(ServiceResource):
         route_map_id = _new_get_key_in_response(response, 'RouteMapId')
         return _CBNCenRouteMapResource(route_map_id, _client=self._client)
 
+
 class _CBNCenResource(ServiceResource):
 
     def __init__(self, cen_id, _client=None):
         ServiceResource.__init__(self, "cbn.cen", _client=_client)
         self.cen_id = cen_id
-        
+
         self.cen_bandwidth_package_ids = None
         self.creation_time = None
         self.description = None
@@ -74,8 +70,10 @@ class _CBNCenResource(ServiceResource):
 
         self.flowlogs = _create_sub_resource_without_page_collection(
             _CBNFlowlogResource, _client, _client.describe_flowlogs,
-            'FlowLogs.FlowLog', 'FlowLogId', parent_identifier="CenId",parent_identifier_value=self.cen_id
+            'FlowLogs.FlowLog', 'FlowLogId', parent_identifier="CenId",
+            parent_identifier_value=self.cen_id
         )
+
     def attach_cen_child_instance(self, **params):
         _params = _transfer_params(params)
         return self._client.attach_cen_child_instance(cen_id=self.cen_id, **_params)
@@ -90,7 +88,8 @@ class _CBNCenResource(ServiceResource):
 
     def describe_cen_attached_child_instance_attribute(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_cen_attached_child_instance_attribute(cen_id=self.cen_id, **_params)
+        return self._client.describe_cen_attached_child_instance_attribute(cen_id=self.cen_id,
+                                                                           **_params)
 
     def describe_cen_attached_child_instances(self, **params):
         _params = _transfer_params(params)
@@ -102,7 +101,8 @@ class _CBNCenResource(ServiceResource):
 
     def describe_cen_geographic_span_remaining_bandwidth(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_cen_geographic_span_remaining_bandwidth(cen_id=self.cen_id, **_params)
+        return self._client.describe_cen_geographic_span_remaining_bandwidth(cen_id=self.cen_id,
+                                                                             **_params)
 
     def describe_cen_private_zone_routes(self, **params):
         _params = _transfer_params(params)
@@ -162,13 +162,14 @@ class _CBNCenResource(ServiceResource):
 
     def create_flowlog(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_flowlog(cen_id=self.cen_id,**_params)
+        response = self._client.create_flowlog(cen_id=self.cen_id, **_params)
         flow_log_id = _new_get_key_in_response(response, 'FlowLogId')
-        return _CBNFlowlogResource(flow_log_id,self.cen_id, _client=self._client)
+        return _CBNFlowlogResource(flow_log_id, self.cen_id, _client=self._client)
+
 
 class _CBNFlowlogResource(ServiceResource):
 
-    def __init__(self, flow_log_id,cen_id, _client=None):
+    def __init__(self, flow_log_id, cen_id, _client=None):
         ServiceResource.__init__(self, "cbn.flowlog", _client=_client)
         self.flow_log_id = flow_log_id
         self.cen_id = cen_id
@@ -182,26 +183,31 @@ class _CBNFlowlogResource(ServiceResource):
 
     def active_flow_log(self, **params):
         _params = _transfer_params(params)
-        return self._client.active_flow_log(flow_log_id=self.flow_log_id,cen_id=self.cen_id, **_params)
+        return self._client.active_flow_log(flow_log_id=self.flow_log_id, cen_id=self.cen_id,
+                                            **_params)
 
     def deactive_flow_log(self, **params):
         _params = _transfer_params(params)
-        return self._client.deactive_flow_log(flow_log_id=self.flow_log_id,cen_id=self.cen_id, **_params)
+        return self._client.deactive_flow_log(flow_log_id=self.flow_log_id, cen_id=self.cen_id,
+                                              **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_flowlog(flow_log_id=self.flow_log_id,cen_id=self.cen_id, **_params)
+        return self._client.delete_flowlog(flow_log_id=self.flow_log_id, cen_id=self.cen_id,
+                                           **_params)
 
     def modify_flow_log_attribute(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_flow_log_attribute(flow_log_id=self.flow_log_id,cen_id=self.cen_id, **_params)
+        return self._client.modify_flow_log_attribute(flow_log_id=self.flow_log_id,
+                                                      cen_id=self.cen_id, **_params)
+
 
 class _CBNCenBandwidthPackageResource(ServiceResource):
 
     def __init__(self, cen_bandwidth_package_id, _client=None):
         ServiceResource.__init__(self, "cbn.cen_bandwidth_package", _client=_client)
         self.cen_bandwidth_package_id = cen_bandwidth_package_id
-        
+
         self.bandwidth = None
         self.bandwidth_package_charge_type = None
         self.business_status = None
@@ -226,30 +232,36 @@ class _CBNCenBandwidthPackageResource(ServiceResource):
 
     def associate(self, **params):
         _params = _transfer_params(params)
-        return self._client.associate_cen_bandwidth_package(cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
+        return self._client.associate_cen_bandwidth_package(
+            cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_cen_bandwidth_package(cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
+        return self._client.delete_cen_bandwidth_package(
+            cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
 
     def modify_attribute(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_cen_bandwidth_package_attribute(cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
+        return self._client.modify_cen_bandwidth_package_attribute(
+            cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
 
     def modify_spec(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_cen_bandwidth_package_spec(cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
+        return self._client.modify_cen_bandwidth_package_spec(
+            cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
 
     def unassociate(self, **params):
         _params = _transfer_params(params)
-        return self._client.unassociate_cen_bandwidth_package(cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
+        return self._client.unassociate_cen_bandwidth_package(
+            cen_bandwidth_package_id=self.cen_bandwidth_package_id, **_params)
+
 
 class _CBNCenRouteMapResource(ServiceResource):
 
     def __init__(self, route_map_id, _client=None):
         ServiceResource.__init__(self, "cbn.cen_route_map", _client=_client)
         self.route_map_id = route_map_id
-        
+
         self.as_path_match_mode = None
         self.cen_id = None
         self.cen_region_id = None

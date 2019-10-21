@@ -12,16 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
 from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _EHPCResource(ServiceResource):
@@ -30,20 +25,21 @@ class _EHPCResource(ServiceResource):
         ServiceResource.__init__(self, 'ehpc', _client=_client)
         self.commands = _create_resource_collection(
             _EHPCCommandResource, _client, _client.list_commands,
-            'Commands.Command', 'CommandId', 
+            'Commands.Command', 'CommandId',
         )
         self.gws_instances = _create_resource_collection(
             _EHPCGWSInstanceResource, _client, _client.describe_gws_instances,
-            'Instances.InstanceInfo', 'InstanceId', 
+            'Instances.InstanceInfo', 'InstanceId',
         )
         self.regions = _create_special_resource_collection(
             _EHPCRegionResource, _client, _client.list_regions,
-            'Regions.RegionInfo', 'RegionId', 
+            'Regions.RegionInfo', 'RegionId',
         )
         self.volumes = _create_resource_collection(
             _EHPCVolumeResource, _client, _client.list_volumes,
-            'Volumes.VolumeInfo', 'VolumeId', 
+            'Volumes.VolumeInfo', 'VolumeId',
         )
+
     def create_cluster(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_cluster(**_params)
@@ -72,17 +68,19 @@ class _EHPCResource(ServiceResource):
         template_id = _new_get_key_in_response(response, 'TemplateId')
         return _EHPCJobFileResource(template_id, _client=self._client)
 
+
 class _EHPCClusterResource(ServiceResource):
 
     def __init__(self, cluster_id, _client=None):
         ServiceResource.__init__(self, "ehpc.cluster", _client=_client)
         self.cluster_id = cluster_id
-        
 
         self.queues = _create_sub_resource_without_page_collection(
             _EHPCQueueResource, _client, _client.list_queues,
-            'Queues.QueueInfo', 'QueueName', parent_identifier="ClusterId",parent_identifier_value=self.cluster_id
+            'Queues.QueueInfo', 'QueueName', parent_identifier="ClusterId",
+            parent_identifier_value=self.cluster_id
         )
+
     def add_local_nodes(self, **params):
         _params = _transfer_params(params)
         return self._client.add_local_nodes(cluster_id=self.cluster_id, **_params)
@@ -308,30 +306,32 @@ class _EHPCClusterResource(ServiceResource):
 
     def submit_job(self, **params):
         _params = _transfer_params(params)
-        response = self._client.submit_job(cluster_id=self.cluster_id,**_params)
+        response = self._client.submit_job(cluster_id=self.cluster_id, **_params)
         job_id = _new_get_key_in_response(response, 'JobId')
-        return _EHPCJobResource(job_id,self.cluster_id, _client=self._client)
+        return _EHPCJobResource(job_id, self.cluster_id, _client=self._client)
 
     def add_queue(self, **params):
         _params = _transfer_params(params)
-        self._client.add_queue(cluster_id=self.cluster_id,**_params)
+        self._client.add_queue(cluster_id=self.cluster_id, **_params)
         queue_name = _params.get("queue_name")
-        return _EHPCQueueResource(queue_name,self.cluster_id, _client=self._client)
+        return _EHPCQueueResource(queue_name, self.cluster_id, _client=self._client)
+
 
 class _EHPCJobResource(ServiceResource):
 
-    def __init__(self, job_id,cluster_id, _client=None):
+    def __init__(self, job_id, cluster_id, _client=None):
         ServiceResource.__init__(self, "ehpc.job", _client=_client)
         self.job_id = job_id
         self.cluster_id = cluster_id
 
     def describe(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_job(job_id=self.job_id,cluster_id=self.cluster_id, **_params)
+        return self._client.describe_job(job_id=self.job_id, cluster_id=self.cluster_id, **_params)
+
 
 class _EHPCQueueResource(ServiceResource):
 
-    def __init__(self, queue_name,cluster_id, _client=None):
+    def __init__(self, queue_name, cluster_id, _client=None):
         ServiceResource.__init__(self, "ehpc.queue", _client=_client)
         self.queue_name = queue_name
         self.cluster_id = cluster_id
@@ -341,36 +341,41 @@ class _EHPCQueueResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_queue(queue_name=self.queue_name,cluster_id=self.cluster_id, **_params)
+        return self._client.delete_queue(queue_name=self.queue_name, cluster_id=self.cluster_id,
+                                         **_params)
 
     def list_nodes_by(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_nodes_by_queue(queue_name=self.queue_name,cluster_id=self.cluster_id, **_params)
+        return self._client.list_nodes_by_queue(queue_name=self.queue_name,
+                                                cluster_id=self.cluster_id, **_params)
 
     def set(self, **params):
         _params = _transfer_params(params)
-        return self._client.set_queue(queue_name=self.queue_name,cluster_id=self.cluster_id, **_params)
+        return self._client.set_queue(queue_name=self.queue_name, cluster_id=self.cluster_id,
+                                      **_params)
 
     def update_queue_config(self, **params):
         _params = _transfer_params(params)
-        return self._client.update_queue_config(queue_name=self.queue_name,cluster_id=self.cluster_id, **_params)
+        return self._client.update_queue_config(queue_name=self.queue_name,
+                                                cluster_id=self.cluster_id, **_params)
+
 
 class _EHPCCommandResource(ServiceResource):
 
     def __init__(self, command_id, _client=None):
         ServiceResource.__init__(self, "ehpc.command", _client=_client)
         self.command_id = command_id
-        
+
         self.command_content = None
         self.timeout = None
         self.working_dir = None
+
 
 class _EHPCContainerAppResource(ServiceResource):
 
     def __init__(self, container_id, _client=None):
         ServiceResource.__init__(self, "ehpc.container_app", _client=_client)
         self.container_id = container_id
-        
 
     def describe(self, **params):
         _params = _transfer_params(params)
@@ -378,14 +383,16 @@ class _EHPCContainerAppResource(ServiceResource):
 
     def modify_attributes(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_container_app_attributes(container_id=self.container_id, **_params)
+        return self._client.modify_container_app_attributes(container_id=self.container_id,
+                                                            **_params)
+
 
 class _EHPCGWSInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "ehpc.gws_instance", _client=_client)
         self.instance_id = instance_id
-        
+
         self.app_list = None
         self.cluster_id = None
         self.create_time = None
@@ -433,31 +440,33 @@ class _EHPCGWSInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.set_gws_instance_user(instance_id=self.instance_id, **_params)
 
+
 class _EHPCJobFileResource(ServiceResource):
 
     def __init__(self, template_id, _client=None):
         ServiceResource.__init__(self, "ehpc.job_file", _client=_client)
         self.template_id = template_id
-        
 
     def edit_job_template(self, **params):
         _params = _transfer_params(params)
         return self._client.edit_job_template(template_id=self.template_id, **_params)
+
 
 class _EHPCRegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "ehpc.region", _client=_client)
         self.region_id = region_id
-        
+
         self.local_name = None
+
 
 class _EHPCVolumeResource(ServiceResource):
 
     def __init__(self, volume_id, _client=None):
         ServiceResource.__init__(self, "ehpc.volume", _client=_client)
         self.volume_id = volume_id
-        
+
         self.additional_volumes = None
         self.cluster_id = None
         self.cluster_name = None

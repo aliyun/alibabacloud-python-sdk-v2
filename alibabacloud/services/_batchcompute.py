@@ -12,28 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _transfer_params
 
 
 class _BATCHCOMPUTEResource(ServiceResource):
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'batchcompute', _client=_client)
+
+
 class _BATCHCOMPUTEJobResource(ServiceResource):
 
     def __init__(self, resource_name, _client=None):
         ServiceResource.__init__(self, "batchcompute.job", _client=_client)
         self.resource_name = resource_name
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)

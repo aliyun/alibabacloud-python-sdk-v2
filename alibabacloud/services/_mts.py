@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _MTSResource(ServiceResource):
@@ -30,20 +24,21 @@ class _MTSResource(ServiceResource):
         ServiceResource.__init__(self, 'mts', _client=_client)
         self.jobs = _create_special_resource_collection(
             _MTSJobResource, _client, _client.list_job,
-            'JobList.Job', 'JobId', 
+            'JobList.Job', 'JobId',
         )
         self.medias = _create_special_resource_collection(
             _MTSMediaResource, _client, _client.search_media,
-            'MediaList.Media', 'MediaId', 
+            'MediaList.Media', 'MediaId',
         )
         self.medias = _create_special_resource_collection(
             _MTSMediaResource, _client, _client.search_media,
-            'MediaList.Media', 'MediaId', 
+            'MediaList.Media', 'MediaId',
         )
         self.media_workflows = _create_resource_collection(
             _MTSMediaWorkflowResource, _client, _client.search_media_workflow,
-            'MediaWorkflowList.MediaWorkflow', 'MediaWorkflowId', 
+            'MediaWorkflowList.MediaWorkflow', 'MediaWorkflowId',
         )
+
     def add_category(self, **params):
         _params = _transfer_params(params)
         response = self._client.add_category(**_params)
@@ -116,12 +111,12 @@ class _MTSResource(ServiceResource):
         water_mark_template_id = _new_get_key_in_response(response, 'WaterMarkTemplateId')
         return _MTSWaterMarkTemplateResource(water_mark_template_id, _client=self._client)
 
+
 class _MTSCategoryResource(ServiceResource):
 
     def __init__(self, cate_id, _client=None):
         ServiceResource.__init__(self, "mts.category", _client=_client)
         self.cate_id = cate_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -131,12 +126,13 @@ class _MTSCategoryResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_category_name(cate_id=self.cate_id, **_params)
 
+
 class _MTSJobResource(ServiceResource):
 
     def __init__(self, job_id, _client=None):
         ServiceResource.__init__(self, "mts.job", _client=_client)
         self.job_id = job_id
-        
+
         self.code = None
         self.creation_time = None
         self.finish_time = None
@@ -200,12 +196,13 @@ class _MTSJobResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.report_video_split_job_result(job_id=self.job_id, **_params)
 
+
 class _MTSMediaResource(ServiceResource):
 
     def __init__(self, media_id, _client=None):
         ServiceResource.__init__(self, "mts.media", _client=_client)
         self.media_id = media_id
-        
+
         self.bitrate = None
         self.cate_id = None
         self.censor_state = None
@@ -261,12 +258,13 @@ class _MTSMediaResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_media_publish_state(media_id=self.media_id, **_params)
 
+
 class _MTSMediaWorkflowResource(ServiceResource):
 
     def __init__(self, media_workflow_id, _client=None):
         ServiceResource.__init__(self, "mts.media_workflow", _client=_client)
         self.media_workflow_id = media_workflow_id
-        
+
         self.creation_time = None
         self.name = None
         self.state = None
@@ -275,14 +273,15 @@ class _MTSMediaWorkflowResource(ServiceResource):
 
     def update_media_workflow_trigger_mode(self, **params):
         _params = _transfer_params(params)
-        return self._client.update_media_workflow_trigger_mode(media_workflow_id=self.media_workflow_id, **_params)
+        return self._client.update_media_workflow_trigger_mode(
+            media_workflow_id=self.media_workflow_id, **_params)
+
 
 class _MTSPipelineResource(ServiceResource):
 
     def __init__(self, pipeline_id, _client=None):
         ServiceResource.__init__(self, "mts.pipeline", _client=_client)
         self.pipeline_id = pipeline_id
-        
 
     def query_asr_pipeline_list(self, **params):
         _params = _transfer_params(params)
@@ -428,19 +427,19 @@ class _MTSPipelineResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_terrorism_pipeline(pipeline_id=self.pipeline_id, **_params)
 
+
 class _MTSSessionResource(ServiceResource):
 
     def __init__(self, session_id, _client=None):
         ServiceResource.__init__(self, "mts.session", _client=_client)
         self.session_id = session_id
-        
+
 
 class _MTSTemplateResource(ServiceResource):
 
     def __init__(self, template_id, _client=None):
         ServiceResource.__init__(self, "mts.template", _client=_client)
         self.template_id = template_id
-        
 
     def query_template_list(self, **params):
         _params = _transfer_params(params)
@@ -466,17 +465,19 @@ class _MTSTemplateResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_mcu_template(template_id=self.template_id, **_params)
 
+
 class _MTSWaterMarkTemplateResource(ServiceResource):
 
     def __init__(self, water_mark_template_id, _client=None):
         ServiceResource.__init__(self, "mts.water_mark_template", _client=_client)
         self.water_mark_template_id = water_mark_template_id
-        
 
     def query_water_mark_template_list(self, **params):
         _params = _transfer_params(params)
-        return self._client.query_water_mark_template_list(water_mark_template_id=self.water_mark_template_id, **_params)
+        return self._client.query_water_mark_template_list(
+            water_mark_template_id=self.water_mark_template_id, **_params)
 
     def update(self, **params):
         _params = _transfer_params(params)
-        return self._client.update_water_mark_template(water_mark_template_id=self.water_mark_template_id, **_params)
+        return self._client.update_water_mark_template(
+            water_mark_template_id=self.water_mark_template_id, **_params)

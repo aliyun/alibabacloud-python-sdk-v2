@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _DOMAIN_INTLResource(ServiceResource):
@@ -30,8 +23,9 @@ class _DOMAIN_INTLResource(ServiceResource):
         ServiceResource.__init__(self, 'domain-intl', _client=_client)
         self.registrant_profiles = _create_special_resource_collection(
             _DOMAIN_INTLRegistrantProfileResource, _client, _client.query_registrant_profiles,
-            'RegistrantProfiles.RegistrantProfile', 'RegistrantProfileId', 
+            'RegistrantProfiles.RegistrantProfile', 'RegistrantProfileId',
         )
+
     def check_domain(self, **params):
         _params = _transfer_params(params)
         response = self._client.check_domain(**_params)
@@ -44,12 +38,12 @@ class _DOMAIN_INTLResource(ServiceResource):
         registrant_profile_id = _new_get_key_in_response(response, 'RegistrantProfileId')
         return _DOMAIN_INTLRegistrantProfileResource(registrant_profile_id, _client=self._client)
 
+
 class _DOMAIN_INTLDomainResource(ServiceResource):
 
     def __init__(self, domain_name, _client=None):
         ServiceResource.__init__(self, "domain-intl.domain", _client=_client)
         self.domain_name = domain_name
-        
 
     def confirm_transfer_in_email(self, **params):
         _params = _transfer_params(params)
@@ -57,31 +51,39 @@ class _DOMAIN_INTLDomainResource(ServiceResource):
 
     def save_batch_task_for_domain_name_proxy_service(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_batch_task_for_domain_name_proxy_service(domain_name=self.domain_name, **_params)
+        return self._client.save_batch_task_for_domain_name_proxy_service(
+            domain_name=self.domain_name, **_params)
 
     def save_batch_task_for_modifying_domain_dns(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_batch_task_for_modifying_domain_dns(domain_name=self.domain_name, **_params)
+        return self._client.save_batch_task_for_modifying_domain_dns(domain_name=self.domain_name,
+                                                                     **_params)
 
     def save_batch_task_for_transfer_prohibition_lock(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_batch_task_for_transfer_prohibition_lock(domain_name=self.domain_name, **_params)
+        return self._client.save_batch_task_for_transfer_prohibition_lock(
+            domain_name=self.domain_name, **_params)
 
     def save_batch_task_for_update_prohibition_lock(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_batch_task_for_update_prohibition_lock(domain_name=self.domain_name, **_params)
+        return self._client.save_batch_task_for_update_prohibition_lock(
+            domain_name=self.domain_name, **_params)
 
     def save_batch_task_for_updating_contact_info_by_new_contact(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_batch_task_for_updating_contact_info_by_new_contact(domain_name=self.domain_name, **_params)
+        return self._client.save_batch_task_for_updating_contact_info_by_new_contact(
+            domain_name=self.domain_name, **_params)
 
-    def save_task_for_submitting_domain_real_name_verification_by_identity_credential(self, **params):
+    def save_task_for_submitting_domain_real_name_verification_by_identity_credential(self,
+                                                                                      **params):
         _params = _transfer_params(params)
-        return self._client.save_task_for_submitting_domain_real_name_verification_by_identity_credential(domain_name=self.domain_name, **_params)
+        return self._client.save_task_for_submitting_domain_real_name_verification_by_identity_credential(
+            domain_name=self.domain_name, **_params)
 
     def save_task_for_updating_registrant_info_by_identity_credential(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_task_for_updating_registrant_info_by_identity_credential(domain_name=self.domain_name, **_params)
+        return self._client.save_task_for_updating_registrant_info_by_identity_credential(
+            domain_name=self.domain_name, **_params)
 
     def check_domain_sunrise_claim(self, **params):
         _params = _transfer_params(params)
@@ -109,7 +111,8 @@ class _DOMAIN_INTLDomainResource(ServiceResource):
 
     def query_domain_real_name_verification_info(self, **params):
         _params = _transfer_params(params)
-        return self._client.query_domain_real_name_verification_info(domain_name=self.domain_name, **_params)
+        return self._client.query_domain_real_name_verification_info(domain_name=self.domain_name,
+                                                                     **_params)
 
     def query_ens_association(self, **params):
         _params = _transfer_params(params)
@@ -117,7 +120,8 @@ class _DOMAIN_INTLDomainResource(ServiceResource):
 
     def query_fail_reason_for_domain_real_name_verification(self, **params):
         _params = _transfer_params(params)
-        return self._client.query_fail_reason_for_domain_real_name_verification(domain_name=self.domain_name, **_params)
+        return self._client.query_fail_reason_for_domain_real_name_verification(
+            domain_name=self.domain_name, **_params)
 
     def query_local_ens_association(self, **params):
         _params = _transfer_params(params)
@@ -129,87 +133,109 @@ class _DOMAIN_INTLDomainResource(ServiceResource):
 
     def save_single_task_for_adding_ds_record(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_adding_ds_record(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_adding_ds_record(domain_name=self.domain_name,
+                                                                  **_params)
 
     def save_single_task_for_approving_transfer_out(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_approving_transfer_out(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_approving_transfer_out(
+            domain_name=self.domain_name, **_params)
 
     def save_single_task_for_associating_ens(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_associating_ens(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_associating_ens(domain_name=self.domain_name,
+                                                                 **_params)
 
     def save_single_task_for_canceling_transfer_in(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_canceling_transfer_in(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_canceling_transfer_in(domain_name=self.domain_name,
+                                                                       **_params)
 
     def save_single_task_for_canceling_transfer_out(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_canceling_transfer_out(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_canceling_transfer_out(
+            domain_name=self.domain_name, **_params)
 
     def save_single_task_for_creating_order_activate(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_creating_order_activate(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_creating_order_activate(
+            domain_name=self.domain_name, **_params)
 
     def save_single_task_for_creating_order_redeem(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_creating_order_redeem(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_creating_order_redeem(domain_name=self.domain_name,
+                                                                       **_params)
 
     def save_single_task_for_creating_order_renew(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_creating_order_renew(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_creating_order_renew(domain_name=self.domain_name,
+                                                                      **_params)
 
     def save_single_task_for_creating_order_transfer(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_creating_order_transfer(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_creating_order_transfer(
+            domain_name=self.domain_name, **_params)
 
     def save_single_task_for_deleting_ds_record(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_deleting_ds_record(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_deleting_ds_record(domain_name=self.domain_name,
+                                                                    **_params)
 
     def save_single_task_for_disassociating_ens(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_disassociating_ens(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_disassociating_ens(domain_name=self.domain_name,
+                                                                    **_params)
 
     def save_single_task_for_domain_name_proxy_service(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_domain_name_proxy_service(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_domain_name_proxy_service(
+            domain_name=self.domain_name, **_params)
 
     def save_single_task_for_modifying_ds_record(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_modifying_ds_record(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_modifying_ds_record(domain_name=self.domain_name,
+                                                                     **_params)
 
     def save_single_task_for_querying_transfer_authorization_code(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_querying_transfer_authorization_code(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_querying_transfer_authorization_code(
+            domain_name=self.domain_name, **_params)
 
     def save_single_task_for_save_art_extension(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_save_art_extension(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_save_art_extension(domain_name=self.domain_name,
+                                                                    **_params)
 
     def save_single_task_for_synchronizing_ds_record(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_synchronizing_ds_record(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_synchronizing_ds_record(
+            domain_name=self.domain_name, **_params)
 
     def save_single_task_for_transfer_prohibition_lock(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_transfer_prohibition_lock(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_transfer_prohibition_lock(
+            domain_name=self.domain_name, **_params)
 
     def save_single_task_for_update_prohibition_lock(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_update_prohibition_lock(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_update_prohibition_lock(
+            domain_name=self.domain_name, **_params)
 
     def save_single_task_for_updating_contact_info(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_single_task_for_updating_contact_info(domain_name=self.domain_name, **_params)
+        return self._client.save_single_task_for_updating_contact_info(domain_name=self.domain_name,
+                                                                       **_params)
 
-    def save_task_for_submitting_domain_real_name_verification_by_registrant_profile_id(self, **params):
+    def save_task_for_submitting_domain_real_name_verification_by_registrant_profile_id(self,
+                                                                                        **params):
         _params = _transfer_params(params)
-        return self._client.save_task_for_submitting_domain_real_name_verification_by_registrant_profile_id(domain_name=self.domain_name, **_params)
+        return self._client.save_task_for_submitting_domain_real_name_verification_by_registrant_profile_id(
+            domain_name=self.domain_name, **_params)
 
     def transfer_in_reenter_transfer_authorization_code(self, **params):
         _params = _transfer_params(params)
-        return self._client.transfer_in_reenter_transfer_authorization_code(domain_name=self.domain_name, **_params)
+        return self._client.transfer_in_reenter_transfer_authorization_code(
+            domain_name=self.domain_name, **_params)
 
     def transfer_in_refetch_whois_email(self, **params):
         _params = _transfer_params(params)
@@ -219,12 +245,13 @@ class _DOMAIN_INTLDomainResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.transfer_in_resend_mail_token(domain_name=self.domain_name, **_params)
 
+
 class _DOMAIN_INTLRegistrantProfileResource(ServiceResource):
 
     def __init__(self, registrant_profile_id, _client=None):
         ServiceResource.__init__(self, "domain-intl.registrant_profile", _client=_client)
         self.registrant_profile_id = registrant_profile_id
-        
+
         self.address = None
         self.city = None
         self.country = None
@@ -246,16 +273,20 @@ class _DOMAIN_INTLRegistrantProfileResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_registrant_profile(registrant_profile_id=self.registrant_profile_id, **_params)
+        return self._client.delete_registrant_profile(
+            registrant_profile_id=self.registrant_profile_id, **_params)
 
     def query_registrant_profile_real_name_verification_info(self, **params):
         _params = _transfer_params(params)
-        return self._client.query_registrant_profile_real_name_verification_info(registrant_profile_id=self.registrant_profile_id, **_params)
+        return self._client.query_registrant_profile_real_name_verification_info(
+            registrant_profile_id=self.registrant_profile_id, **_params)
 
     def save_batch_task_for_updating_contact_info(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_batch_task_for_updating_contact_info(registrant_profile_id=self.registrant_profile_id, **_params)
+        return self._client.save_batch_task_for_updating_contact_info(
+            registrant_profile_id=self.registrant_profile_id, **_params)
 
     def save_task_for_updating_registrant_info_by_registrant_profile_id(self, **params):
         _params = _transfer_params(params)
-        return self._client.save_task_for_updating_registrant_info_by_registrant_profile_id(registrant_profile_id=self.registrant_profile_id, **_params)
+        return self._client.save_task_for_updating_registrant_info_by_registrant_profile_id(
+            registrant_profile_id=self.registrant_profile_id, **_params)

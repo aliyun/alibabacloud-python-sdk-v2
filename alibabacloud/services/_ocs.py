@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _OCSResource(ServiceResource):
@@ -30,28 +24,30 @@ class _OCSResource(ServiceResource):
         ServiceResource.__init__(self, 'ocs', _client=_client)
         self.instances = _create_resource_collection(
             _OCSInstanceResource, _client, _client.describe_instances,
-            'Instances.OcsInstance', 'InstanceId', 
+            'Instances.OcsInstance', 'InstanceId',
         )
         self.regions = _create_special_resource_collection(
             _OCSRegionResource, _client, _client.describe_regions,
-            'RegionIds.OcsRegion', 'RegionId', 
+            'RegionIds.OcsRegion', 'RegionId',
         )
         self.zones = _create_special_resource_collection(
             _OCSZoneResource, _client, _client.describe_zones,
-            'Zones.OcsZone', 'ZoneId', 
+            'Zones.OcsZone', 'ZoneId',
         )
+
     def create_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_instance(**_params)
         instance_id = _new_get_key_in_response(response, 'InstanceId')
         return _OCSInstanceResource(instance_id, _client=self._client)
 
+
 class _OCSInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "ocs.instance", _client=_client)
         self.instance_id = instance_id
-        
+
         self.bandwidth = None
         self.capacity = None
         self.connection_domain = None
@@ -138,20 +134,22 @@ class _OCSInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.verify_password(instance_id=self.instance_id, **_params)
 
+
 class _OCSRegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "ocs.region", _client=_client)
         self.region_id = region_id
-        
+
         self.local_name = None
         self.zone_ids = None
+
 
 class _OCSZoneResource(ServiceResource):
 
     def __init__(self, zone_id, _client=None):
         ServiceResource.__init__(self, "ocs.zone", _client=_client)
         self.zone_id = zone_id
-        
+
         self.description = None
         self.name = None

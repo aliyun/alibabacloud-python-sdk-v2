@@ -23,15 +23,15 @@ class LoadBalancerResource(_SLBLoadBalancerResource):
         _SLBLoadBalancerResource.__init__(self, load_balancer_id, _client=_client)
         self.load_balancer_id = load_balancer_id
 
-    @transfer({"Tags": "list_of_tags",})
+    @transfer({"Tags": "list_of_tags", })
     def refresh(self):
         response = self._client.describe_load_balancers(load_balancer_id=self.load_balancer_id)
         items = _new_get_key_in_response(response, 'LoadBalancers.LoadBalancer')
         if not items:
             raise ClientException(
                 msg="Failed to find load balancer data from DescribeLoadBalancers "
-                "response. "
-                "LoadBalancerId = {0}".format(
+                    "response. "
+                    "LoadBalancerId = {0}".format(
                     self.load_balancer_id))
         self._assign_attributes(items[0])
 

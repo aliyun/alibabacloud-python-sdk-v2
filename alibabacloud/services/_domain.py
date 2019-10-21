@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _transfer_params
 
 
 class _DOMAINResource(ServiceResource):
@@ -30,14 +23,16 @@ class _DOMAINResource(ServiceResource):
         ServiceResource.__init__(self, 'domain', _client=_client)
         self.auctions = _create_special_resource_collection(
             _DOMAINAuctionResource, _client, _client.query_auctions,
-            'Data.AuctionDetail', 'AuctionId', 
+            'Data.AuctionDetail', 'AuctionId',
         )
+
+
 class _DOMAINAuctionResource(ServiceResource):
 
     def __init__(self, auction_id, _client=None):
         ServiceResource.__init__(self, "domain.auction", _client=_client)
         self.auction_id = auction_id
-        
+
         self.auction_end_time = None
         self.book_end_time = None
         self.booked_partner = None

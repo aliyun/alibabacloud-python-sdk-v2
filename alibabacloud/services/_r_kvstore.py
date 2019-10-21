@@ -12,16 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
 from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _R_KVSTOREResource(ServiceResource):
@@ -30,40 +25,43 @@ class _R_KVSTOREResource(ServiceResource):
         ServiceResource.__init__(self, 'r-kvstore', _client=_client)
         self.backups = _create_resource_collection(
             _R_KVSTOREBackupResource, _client, _client.describe_backups,
-            'Backups.Backup', 'BackupId', 
+            'Backups.Backup', 'BackupId',
         )
         self.instances = _create_resource_collection(
             _R_KVSTOREInstanceResource, _client, _client.describe_instances,
-            'Instances.KVStoreInstance', 'InstanceId', 
+            'Instances.KVStoreInstance', 'InstanceId',
         )
         self.parameters = _create_special_resource_collection(
             _R_KVSTOREParameterResource, _client, _client.describe_parameters,
-            'ConfigParameters.Parameter', 'ParameterName', 
+            'ConfigParameters.Parameter', 'ParameterName',
         )
         self.regions = _create_special_resource_collection(
             _R_KVSTORERegionResource, _client, _client.describe_regions,
-            'RegionIds.KVStoreRegion', 'RegionId', 
+            'RegionIds.KVStoreRegion', 'RegionId',
         )
         self.replicas = _create_resource_collection(
             _R_KVSTOREReplicaResource, _client, _client.describe_replicas,
-            'Replicas.Items', 'ReplicaId', key_to_total_count="TotalRecordCount",key_to_page_size="PageRecordCount",key_to_page_number="PageNumber"
+            'Replicas.Items', 'ReplicaId', key_to_total_count="TotalRecordCount",
+            key_to_page_size="PageRecordCount", key_to_page_number="PageNumber"
         )
         self.zones = _create_special_resource_collection(
             _R_KVSTOREZoneResource, _client, _client.describe_zones,
-            'Zones.KVStoreZone', 'ZoneId', 
+            'Zones.KVStoreZone', 'ZoneId',
         )
+
     def create_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_instance(**_params)
         instance_id = _new_get_key_in_response(response, 'InstanceId')
         return _R_KVSTOREInstanceResource(instance_id, _client=self._client)
 
+
 class _R_KVSTOREBackupResource(ServiceResource):
 
     def __init__(self, backup_id, _client=None):
         ServiceResource.__init__(self, "r-kvstore.backup", _client=_client)
         self.backup_id = backup_id
-        
+
         self.backup_db_names = None
         self.backup_download_url = None
         self.backup_end_time = None
@@ -77,12 +75,13 @@ class _R_KVSTOREBackupResource(ServiceResource):
         self.engine_version = None
         self.node_instance_id = None
 
+
 class _R_KVSTOREInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "r-kvstore.instance", _client=_client)
         self.instance_id = instance_id
-        
+
         self.architecture_type = None
         self.bandwidth = None
         self.capacity = None
@@ -119,19 +118,24 @@ class _R_KVSTOREInstanceResource(ServiceResource):
 
         self.accounts = _create_sub_resource_without_page_collection(
             _R_KVSTOREAccountResource, _client, _client.describe_accounts,
-            'Accounts.Account', 'AccountName', parent_identifier="InstanceId",parent_identifier_value=self.instance_id
+            'Accounts.Account', 'AccountName', parent_identifier="InstanceId",
+            parent_identifier_value=self.instance_id
         )
         self.snapshots = _create_sub_resource_without_page_collection(
             _R_KVSTORESnapshotResource, _client, _client.describe_snapshots,
-            'Snapshots.Snapshot', 'SnapshotId', parent_identifier="InstanceId",parent_identifier_value=self.instance_id
+            'Snapshots.Snapshot', 'SnapshotId', parent_identifier="InstanceId",
+            parent_identifier_value=self.instance_id
         )
         self.temp_instances = _create_sub_resource_without_page_collection(
             _R_KVSTORETempInstanceResource, _client, _client.describe_temp_instance,
-            'TempInstances.TempInstance', 'TempInstanceId', parent_identifier="InstanceId",parent_identifier_value=self.instance_id
+            'TempInstances.TempInstance', 'TempInstanceId', parent_identifier="InstanceId",
+            parent_identifier_value=self.instance_id
         )
+
     def allocate_instance_public_connection(self, **params):
         _params = _transfer_params(params)
-        return self._client.allocate_instance_public_connection(instance_id=self.instance_id, **_params)
+        return self._client.allocate_instance_public_connection(instance_id=self.instance_id,
+                                                                **_params)
 
     def create_backup(self, **params):
         _params = _transfer_params(params)
@@ -163,7 +167,8 @@ class _R_KVSTOREInstanceResource(ServiceResource):
 
     def describe_cache_analysis_report_list(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_cache_analysis_report_list(instance_id=self.instance_id, **_params)
+        return self._client.describe_cache_analysis_report_list(instance_id=self.instance_id,
+                                                                **_params)
 
     def describe_certification(self, **params):
         _params = _transfer_params(params)
@@ -199,11 +204,13 @@ class _R_KVSTOREInstanceResource(ServiceResource):
 
     def describe_logic_instance_topology(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_logic_instance_topology(instance_id=self.instance_id, **_params)
+        return self._client.describe_logic_instance_topology(instance_id=self.instance_id,
+                                                             **_params)
 
     def describe_monthly_service_status_detail(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_monthly_service_status_detail(instance_id=self.instance_id, **_params)
+        return self._client.describe_monthly_service_status_detail(instance_id=self.instance_id,
+                                                                   **_params)
 
     def describe_running_log_records(self, **params):
         _params = _transfer_params(params)
@@ -296,7 +303,8 @@ class _R_KVSTOREInstanceResource(ServiceResource):
 
     def release_instance_public_connection(self, **params):
         _params = _transfer_params(params)
-        return self._client.release_instance_public_connection(instance_id=self.instance_id, **_params)
+        return self._client.release_instance_public_connection(instance_id=self.instance_id,
+                                                               **_params)
 
     def renew(self, **params):
         _params = _transfer_params(params)
@@ -328,25 +336,27 @@ class _R_KVSTOREInstanceResource(ServiceResource):
 
     def create_account(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_account(instance_id=self.instance_id,**_params)
+        response = self._client.create_account(instance_id=self.instance_id, **_params)
         account_name = _new_get_key_in_response(response, 'AccountName')
-        return _R_KVSTOREAccountResource(account_name,self.instance_id, _client=self._client)
+        return _R_KVSTOREAccountResource(account_name, self.instance_id, _client=self._client)
 
     def create_snapshot(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_snapshot(instance_id=self.instance_id,**_params)
+        response = self._client.create_snapshot(instance_id=self.instance_id, **_params)
         snapshot_id = _new_get_key_in_response(response, 'SnapshotId')
-        return _R_KVSTORESnapshotResource(snapshot_id,self.instance_id, _client=self._client)
+        return _R_KVSTORESnapshotResource(snapshot_id, self.instance_id, _client=self._client)
 
     def create_temp_instance(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_temp_instance(instance_id=self.instance_id,**_params)
+        response = self._client.create_temp_instance(instance_id=self.instance_id, **_params)
         temp_instance_id = _new_get_key_in_response(response, 'TempInstanceId')
-        return _R_KVSTORETempInstanceResource(temp_instance_id,self.instance_id, _client=self._client)
+        return _R_KVSTORETempInstanceResource(temp_instance_id, self.instance_id,
+                                              _client=self._client)
+
 
 class _R_KVSTOREAccountResource(ServiceResource):
 
-    def __init__(self, account_name,instance_id, _client=None):
+    def __init__(self, account_name, instance_id, _client=None):
         ServiceResource.__init__(self, "r-kvstore.account", _client=_client)
         self.account_name = account_name
         self.instance_id = instance_id
@@ -358,31 +368,38 @@ class _R_KVSTOREAccountResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_account(account_name=self.account_name,instance_id=self.instance_id, **_params)
+        return self._client.delete_account(account_name=self.account_name,
+                                           instance_id=self.instance_id, **_params)
 
     def grant_account_privilege(self, **params):
         _params = _transfer_params(params)
-        return self._client.grant_account_privilege(account_name=self.account_name,instance_id=self.instance_id, **_params)
+        return self._client.grant_account_privilege(account_name=self.account_name,
+                                                    instance_id=self.instance_id, **_params)
 
     def modify_description(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_account_description(account_name=self.account_name,instance_id=self.instance_id, **_params)
+        return self._client.modify_account_description(account_name=self.account_name,
+                                                       instance_id=self.instance_id, **_params)
 
     def reset(self, **params):
         _params = _transfer_params(params)
-        return self._client.reset_account(account_name=self.account_name,instance_id=self.instance_id, **_params)
+        return self._client.reset_account(account_name=self.account_name,
+                                          instance_id=self.instance_id, **_params)
 
     def reset_account_password(self, **params):
         _params = _transfer_params(params)
-        return self._client.reset_account_password(account_name=self.account_name,instance_id=self.instance_id, **_params)
+        return self._client.reset_account_password(account_name=self.account_name,
+                                                   instance_id=self.instance_id, **_params)
 
     def revoke_account_privilege(self, **params):
         _params = _transfer_params(params)
-        return self._client.revoke_account_privilege(account_name=self.account_name,instance_id=self.instance_id, **_params)
+        return self._client.revoke_account_privilege(account_name=self.account_name,
+                                                     instance_id=self.instance_id, **_params)
+
 
 class _R_KVSTORESnapshotResource(ServiceResource):
 
-    def __init__(self, snapshot_id,instance_id, _client=None):
+    def __init__(self, snapshot_id, instance_id, _client=None):
         ServiceResource.__init__(self, "r-kvstore.snapshot", _client=_client)
         self.snapshot_id = snapshot_id
         self.instance_id = instance_id
@@ -397,15 +414,18 @@ class _R_KVSTORESnapshotResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_snapshot(snapshot_id=self.snapshot_id,instance_id=self.instance_id, **_params)
+        return self._client.delete_snapshot(snapshot_id=self.snapshot_id,
+                                            instance_id=self.instance_id, **_params)
 
     def restore(self, **params):
         _params = _transfer_params(params)
-        return self._client.restore_snapshot(snapshot_id=self.snapshot_id,instance_id=self.instance_id, **_params)
+        return self._client.restore_snapshot(snapshot_id=self.snapshot_id,
+                                             instance_id=self.instance_id, **_params)
+
 
 class _R_KVSTORETempInstanceResource(ServiceResource):
 
-    def __init__(self, temp_instance_id,instance_id, _client=None):
+    def __init__(self, temp_instance_id, instance_id, _client=None):
         ServiceResource.__init__(self, "r-kvstore.temp_instance", _client=_client)
         self.temp_instance_id = temp_instance_id
         self.instance_id = instance_id
@@ -418,41 +438,46 @@ class _R_KVSTORETempInstanceResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_temp_instance(temp_instance_id=self.temp_instance_id,instance_id=self.instance_id, **_params)
+        return self._client.delete_temp_instance(temp_instance_id=self.temp_instance_id,
+                                                 instance_id=self.instance_id, **_params)
 
     def switch(self, **params):
         _params = _transfer_params(params)
-        return self._client.switch_temp_instance(temp_instance_id=self.temp_instance_id,instance_id=self.instance_id, **_params)
+        return self._client.switch_temp_instance(temp_instance_id=self.temp_instance_id,
+                                                 instance_id=self.instance_id, **_params)
+
 
 class _R_KVSTOREParameterResource(ServiceResource):
 
     def __init__(self, parameter_name, _client=None):
         ServiceResource.__init__(self, "r-kvstore.parameter", _client=_client)
         self.parameter_name = parameter_name
-        
+
         self.checking_code = None
         self.force_restart = None
         self.modifiable_status = None
         self.parameter_description = None
         self.parameter_value = None
 
+
 class _R_KVSTORERegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "r-kvstore.region", _client=_client)
         self.region_id = region_id
-        
+
         self.local_name = None
         self.region_endpoint = None
         self.zone_id_list = None
         self.zone_ids = None
+
 
 class _R_KVSTOREReplicaResource(ServiceResource):
 
     def __init__(self, replica_id, _client=None):
         ServiceResource.__init__(self, "r-kvstore.replica", _client=_client)
         self.replica_id = replica_id
-        
+
         self.db_instances = None
         self.domain_mode = None
         self.replica_description = None
@@ -523,12 +548,13 @@ class _R_KVSTOREReplicaResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.unlink_replica_instance(replica_id=self.replica_id, **_params)
 
+
 class _R_KVSTOREZoneResource(ServiceResource):
 
     def __init__(self, zone_id, _client=None):
         ServiceResource.__init__(self, "r-kvstore.zone", _client=_client)
         self.zone_id = zone_id
-        
+
         self.disabled = None
         self.is_rds = None
         self.region_id = None

@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _ALIDNSResource(ServiceResource):
@@ -30,24 +24,25 @@ class _ALIDNSResource(ServiceResource):
         ServiceResource.__init__(self, 'alidns', _client=_client)
         self.domains = _create_resource_collection(
             _ALIDNSDomainResource, _client, _client.describe_domains,
-            'Domains.Domain', 'DomainName', 
+            'Domains.Domain', 'DomainName',
         )
         self.domain_groups = _create_resource_collection(
             _ALIDNSDomainGroupResource, _client, _client.describe_domain_groups,
-            'DomainGroups.DomainGroup', 'GroupId', 
+            'DomainGroups.DomainGroup', 'GroupId',
         )
         self.domain_records = _create_resource_collection(
             _ALIDNSDomainRecordResource, _client, _client.describe_domain_records,
-            'DomainRecords.Record', 'RecordId', 
+            'DomainRecords.Record', 'RecordId',
         )
         self.gtm_access_strategies = _create_special_resource_collection(
             _ALIDNSGtmAccessStrategyResource, _client, _client.describe_gtm_access_strategies,
-            'Strategies.Strategy', 'StrategyId', 
+            'Strategies.Strategy', 'StrategyId',
         )
         self.gtm_recovery_plans = _create_special_resource_collection(
             _ALIDNSGtmRecoveryPlanResource, _client, _client.describe_gtm_recovery_plans,
-            'RecoveryPlans.RecoveryPlan', 'RecoveryPlanId', 
+            'RecoveryPlans.RecoveryPlan', 'RecoveryPlanId',
         )
+
     def add_domain(self, **params):
         _params = _transfer_params(params)
         response = self._client.add_domain(**_params)
@@ -114,12 +109,13 @@ class _ALIDNSResource(ServiceResource):
         instance_id = _new_get_key_in_response(response, 'InstanceId')
         return _ALIDNSInstanceResource(instance_id, _client=self._client)
 
+
 class _ALIDNSDomainResource(ServiceResource):
 
     def __init__(self, domain_name, _client=None):
         ServiceResource.__init__(self, "alidns.domain", _client=_client)
         self.domain_name = domain_name
-        
+
         self.ali_domain = None
         self.dns_servers = None
         self.domain_id = None
@@ -173,18 +169,20 @@ class _ALIDNSDomainResource(ServiceResource):
 
     def describe_record_statistics_summary(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_record_statistics_summary(domain_name=self.domain_name, **_params)
+        return self._client.describe_record_statistics_summary(domain_name=self.domain_name,
+                                                               **_params)
 
     def modify_hichina_domain_dns(self, **params):
         _params = _transfer_params(params)
         return self._client.modify_hichina_domain_dns(domain_name=self.domain_name, **_params)
+
 
 class _ALIDNSDomainGroupResource(ServiceResource):
 
     def __init__(self, group_id, _client=None):
         ServiceResource.__init__(self, "alidns.domain_group", _client=_client)
         self.group_id = group_id
-        
+
         self.domain_count = None
         self.group_name = None
 
@@ -196,12 +194,13 @@ class _ALIDNSDomainGroupResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_domain_group(group_id=self.group_id, **_params)
 
+
 class _ALIDNSDomainRecordResource(ServiceResource):
 
     def __init__(self, record_id, _client=None):
         ServiceResource.__init__(self, "alidns.domain_record", _client=_client)
         self.record_id = record_id
-        
+
         self.domain_name = None
         self.line = None
         self.locked = None
@@ -226,12 +225,13 @@ class _ALIDNSDomainRecordResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_dnsslb_weight(record_id=self.record_id, **_params)
 
+
 class _ALIDNSGtmAccessStrategyResource(ServiceResource):
 
     def __init__(self, strategy_id, _client=None):
         ServiceResource.__init__(self, "alidns.gtm_access_strategy", _client=_client)
         self.strategy_id = strategy_id
-        
+
         self.access_mode = None
         self.access_status = None
         self.create_time = None
@@ -261,12 +261,12 @@ class _ALIDNSGtmAccessStrategyResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_gtm_access_strategy(strategy_id=self.strategy_id, **_params)
 
+
 class _ALIDNSGtmAddressPoolResource(ServiceResource):
 
     def __init__(self, addr_pool_id, _client=None):
         ServiceResource.__init__(self, "alidns.gtm_address_pool", _client=_client)
         self.addr_pool_id = addr_pool_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -274,37 +274,41 @@ class _ALIDNSGtmAddressPoolResource(ServiceResource):
 
     def describe_gtm_instance_address_pool(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_gtm_instance_address_pool(addr_pool_id=self.addr_pool_id, **_params)
+        return self._client.describe_gtm_instance_address_pool(addr_pool_id=self.addr_pool_id,
+                                                               **_params)
 
     def update(self, **params):
         _params = _transfer_params(params)
         return self._client.update_gtm_address_pool(addr_pool_id=self.addr_pool_id, **_params)
+
 
 class _ALIDNSGtmMonitorResource(ServiceResource):
 
     def __init__(self, monitor_config_id, _client=None):
         ServiceResource.__init__(self, "alidns.gtm_monitor", _client=_client)
         self.monitor_config_id = monitor_config_id
-        
 
     def describe_gtm_monitor_config(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_gtm_monitor_config(monitor_config_id=self.monitor_config_id, **_params)
+        return self._client.describe_gtm_monitor_config(monitor_config_id=self.monitor_config_id,
+                                                        **_params)
 
     def set_gtm_monitor_status(self, **params):
         _params = _transfer_params(params)
-        return self._client.set_gtm_monitor_status(monitor_config_id=self.monitor_config_id, **_params)
+        return self._client.set_gtm_monitor_status(monitor_config_id=self.monitor_config_id,
+                                                   **_params)
 
     def update(self, **params):
         _params = _transfer_params(params)
         return self._client.update_gtm_monitor(monitor_config_id=self.monitor_config_id, **_params)
+
 
 class _ALIDNSGtmRecoveryPlanResource(ServiceResource):
 
     def __init__(self, recovery_plan_id, _client=None):
         ServiceResource.__init__(self, "alidns.gtm_recovery_plan", _client=_client)
         self.recovery_plan_id = recovery_plan_id
-        
+
         self.create_time = None
         self.create_timestamp = None
         self.fault_addr_pool_num = None
@@ -320,34 +324,40 @@ class _ALIDNSGtmRecoveryPlanResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id, **_params)
+        return self._client.delete_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id,
+                                                     **_params)
 
     def describe(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id, **_params)
+        return self._client.describe_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id,
+                                                       **_params)
 
     def execute(self, **params):
         _params = _transfer_params(params)
-        return self._client.execute_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id, **_params)
+        return self._client.execute_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id,
+                                                      **_params)
 
     def preview(self, **params):
         _params = _transfer_params(params)
-        return self._client.preview_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id, **_params)
+        return self._client.preview_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id,
+                                                      **_params)
 
     def rollback(self, **params):
         _params = _transfer_params(params)
-        return self._client.rollback_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id, **_params)
+        return self._client.rollback_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id,
+                                                       **_params)
 
     def update(self, **params):
         _params = _transfer_params(params)
-        return self._client.update_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id, **_params)
+        return self._client.update_gtm_recovery_plan(recovery_plan_id=self.recovery_plan_id,
+                                                     **_params)
+
 
 class _ALIDNSInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "alidns.instance", _client=_client)
         self.instance_id = instance_id
-        
 
     def change_domain_of_dns_product(self, **params):
         _params = _transfer_params(params)
@@ -363,11 +373,13 @@ class _ALIDNSInstanceResource(ServiceResource):
 
     def describe_gtm_access_strategy_available_config(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_gtm_access_strategy_available_config(instance_id=self.instance_id, **_params)
+        return self._client.describe_gtm_access_strategy_available_config(
+            instance_id=self.instance_id, **_params)
 
     def describe_gtm_instance_address_pools(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_gtm_instance_address_pools(instance_id=self.instance_id, **_params)
+        return self._client.describe_gtm_instance_address_pools(instance_id=self.instance_id,
+                                                                **_params)
 
     def describe_gtm_instance_status(self, **params):
         _params = _transfer_params(params)
@@ -375,8 +387,10 @@ class _ALIDNSInstanceResource(ServiceResource):
 
     def describe_gtm_instance_system_cname(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_gtm_instance_system_cname(instance_id=self.instance_id, **_params)
+        return self._client.describe_gtm_instance_system_cname(instance_id=self.instance_id,
+                                                               **_params)
 
     def update_gtm_instance_global_config(self, **params):
         _params = _transfer_params(params)
-        return self._client.update_gtm_instance_global_config(instance_id=self.instance_id, **_params)
+        return self._client.update_gtm_instance_global_config(instance_id=self.instance_id,
+                                                              **_params)

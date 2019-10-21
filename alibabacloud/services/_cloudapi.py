@@ -12,16 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
 from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _CLOUDAPIResource(ServiceResource):
@@ -30,32 +25,33 @@ class _CLOUDAPIResource(ServiceResource):
         ServiceResource.__init__(self, 'cloudapi', _client=_client)
         self.apis = _create_resource_collection(
             _CLOUDAPIApiResource, _client, _client.describe_apis,
-            'ApiSummarys.ApiSummary', 'ApiId', 
+            'ApiSummarys.ApiSummary', 'ApiId',
         )
         self.api_groups = _create_resource_collection(
             _CLOUDAPIApiGroupResource, _client, _client.describe_api_groups,
-            'ApiGroupAttributes.ApiGroupAttribute', 'GroupId', 
+            'ApiGroupAttributes.ApiGroupAttribute', 'GroupId',
         )
         self.apps = _create_resource_collection(
             _CLOUDAPIAppResource, _client, _client.describe_apps,
-            'Apps.AppItem', 'AppId', 
+            'Apps.AppItem', 'AppId',
         )
         self.ip_controls = _create_resource_collection(
             _CLOUDAPIIpControlResource, _client, _client.describe_ip_controls,
-            'IpControlInfos.IpControlInfo', 'IpControlId', 
+            'IpControlInfos.IpControlInfo', 'IpControlId',
         )
         self.regions = _create_special_resource_collection(
             _CLOUDAPIRegionResource, _client, _client.describe_regions,
-            'Regions.Region', 'RegionId', 
+            'Regions.Region', 'RegionId',
         )
         self.signatures = _create_resource_collection(
             _CLOUDAPISignatureResource, _client, _client.describe_signatures,
-            'SignatureInfos.SignatureInfo', 'SignatureId', 
+            'SignatureInfos.SignatureInfo', 'SignatureId',
         )
         self.traffic_controls = _create_resource_collection(
             _CLOUDAPITrafficControlResource, _client, _client.describe_traffic_controls,
-            'TrafficControls.TrafficControl', 'TrafficControlId', 
+            'TrafficControls.TrafficControl', 'TrafficControlId',
         )
+
     def create_api(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_api(**_params)
@@ -98,12 +94,13 @@ class _CLOUDAPIResource(ServiceResource):
         traffic_control_id = _new_get_key_in_response(response, 'TrafficControlId')
         return _CLOUDAPITrafficControlResource(traffic_control_id, _client=self._client)
 
+
 class _CLOUDAPIApiResource(ServiceResource):
 
     def __init__(self, api_id, _client=None):
         ServiceResource.__init__(self, "cloudapi.api", _client=_client)
         self.api_id = api_id
-        
+
         self.api_name = None
         self.created_time = None
         self.description = None
@@ -177,12 +174,13 @@ class _CLOUDAPIApiResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.switch_api(api_id=self.api_id, **_params)
 
+
 class _CLOUDAPIApiGroupResource(ServiceResource):
 
     def __init__(self, group_id, _client=None):
         ServiceResource.__init__(self, "cloudapi.api_group", _client=_client)
         self.group_id = group_id
-        
+
         self.billing_status = None
         self.created_time = None
         self.description = None
@@ -296,12 +294,13 @@ class _CLOUDAPIApiGroupResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.set_domain_web_socket_status(group_id=self.group_id, **_params)
 
+
 class _CLOUDAPIAppResource(ServiceResource):
 
     def __init__(self, app_id, _client=None):
         ServiceResource.__init__(self, "cloudapi.app", _client=_client)
         self.app_id = app_id
-        
+
         self.app_name = None
         self.description = None
 
@@ -337,12 +336,12 @@ class _CLOUDAPIAppResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.set_apis_authorities(app_id=self.app_id, **_params)
 
+
 class _CLOUDAPIInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "cloudapi.instance", _client=_client)
         self.instance_id = instance_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -356,12 +355,13 @@ class _CLOUDAPIInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.set_vpc_access(instance_id=self.instance_id, **_params)
 
+
 class _CLOUDAPIIpControlResource(ServiceResource):
 
     def __init__(self, ip_control_id, _client=None):
         ServiceResource.__init__(self, "cloudapi.ip_control", _client=_client)
         self.ip_control_id = ip_control_id
-        
+
         self.create_time = None
         self.description = None
         self.ip_control_name = None
@@ -371,8 +371,10 @@ class _CLOUDAPIIpControlResource(ServiceResource):
 
         self.ip_control_policy_items = _create_sub_resource_without_page_collection(
             _CLOUDAPIIpControlPolicyItemResource, _client, _client.describe_ip_control_policy_items,
-            'IpControlPolicyItems.IpControlPolicyItem', 'PolicyItemId', parent_identifier="IpControlId",parent_identifier_value=self.ip_control_id
+            'IpControlPolicyItems.IpControlPolicyItem', 'PolicyItemId',
+            parent_identifier="IpControlId", parent_identifier_value=self.ip_control_id
         )
+
     def delete(self, **params):
         _params = _transfer_params(params)
         return self._client.delete_ip_control(ip_control_id=self.ip_control_id, **_params)
@@ -395,13 +397,16 @@ class _CLOUDAPIIpControlResource(ServiceResource):
 
     def add_ip_control_policy_item(self, **params):
         _params = _transfer_params(params)
-        response = self._client.add_ip_control_policy_item(ip_control_id=self.ip_control_id,**_params)
+        response = self._client.add_ip_control_policy_item(ip_control_id=self.ip_control_id,
+                                                           **_params)
         policy_item_id = _new_get_key_in_response(response, 'PolicyItemId')
-        return _CLOUDAPIIpControlPolicyItemResource(policy_item_id,self.ip_control_id, _client=self._client)
+        return _CLOUDAPIIpControlPolicyItemResource(policy_item_id, self.ip_control_id,
+                                                    _client=self._client)
+
 
 class _CLOUDAPIIpControlPolicyItemResource(ServiceResource):
 
-    def __init__(self, policy_item_id,ip_control_id, _client=None):
+    def __init__(self, policy_item_id, ip_control_id, _client=None):
         ServiceResource.__init__(self, "cloudapi.ip_control_policy_item", _client=_client)
         self.policy_item_id = policy_item_id
         self.ip_control_id = ip_control_id
@@ -412,27 +417,33 @@ class _CLOUDAPIIpControlPolicyItemResource(ServiceResource):
 
     def remove(self, **params):
         _params = _transfer_params(params)
-        return self._client.remove_ip_control_policy_item(policy_item_id=self.policy_item_id,ip_control_id=self.ip_control_id, **_params)
+        return self._client.remove_ip_control_policy_item(policy_item_id=self.policy_item_id,
+                                                          ip_control_id=self.ip_control_id,
+                                                          **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_ip_control_policy_item(policy_item_id=self.policy_item_id,ip_control_id=self.ip_control_id, **_params)
+        return self._client.modify_ip_control_policy_item(policy_item_id=self.policy_item_id,
+                                                          ip_control_id=self.ip_control_id,
+                                                          **_params)
+
 
 class _CLOUDAPIRegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "cloudapi.region", _client=_client)
         self.region_id = region_id
-        
+
         self.local_name = None
         self.region_endpoint = None
+
 
 class _CLOUDAPISignatureResource(ServiceResource):
 
     def __init__(self, signature_id, _client=None):
         ServiceResource.__init__(self, "cloudapi.signature", _client=_client)
         self.signature_id = signature_id
-        
+
         self.created_time = None
         self.modified_time = None
         self.region_id = None
@@ -460,12 +471,13 @@ class _CLOUDAPISignatureResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.set_signature_apis(signature_id=self.signature_id, **_params)
 
+
 class _CLOUDAPITrafficControlResource(ServiceResource):
 
     def __init__(self, traffic_control_id, _client=None):
         ServiceResource.__init__(self, "cloudapi.traffic_control", _client=_client)
         self.traffic_control_id = traffic_control_id
-        
+
         self.api_default = None
         self.app_default = None
         self.created_time = None
@@ -478,32 +490,40 @@ class _CLOUDAPITrafficControlResource(ServiceResource):
 
     def add_traffic_special_control(self, **params):
         _params = _transfer_params(params)
-        return self._client.add_traffic_special_control(traffic_control_id=self.traffic_control_id, **_params)
+        return self._client.add_traffic_special_control(traffic_control_id=self.traffic_control_id,
+                                                        **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_traffic_control(traffic_control_id=self.traffic_control_id, **_params)
+        return self._client.delete_traffic_control(traffic_control_id=self.traffic_control_id,
+                                                   **_params)
 
     def delete_all_traffic_special_control(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_all_traffic_special_control(traffic_control_id=self.traffic_control_id, **_params)
+        return self._client.delete_all_traffic_special_control(
+            traffic_control_id=self.traffic_control_id, **_params)
 
     def delete_traffic_special_control(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_traffic_special_control(traffic_control_id=self.traffic_control_id, **_params)
+        return self._client.delete_traffic_special_control(
+            traffic_control_id=self.traffic_control_id, **_params)
 
     def describe_apis_by(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_apis_by_traffic_control(traffic_control_id=self.traffic_control_id, **_params)
+        return self._client.describe_apis_by_traffic_control(
+            traffic_control_id=self.traffic_control_id, **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_traffic_control(traffic_control_id=self.traffic_control_id, **_params)
+        return self._client.modify_traffic_control(traffic_control_id=self.traffic_control_id,
+                                                   **_params)
 
     def remove_traffic_control_apis(self, **params):
         _params = _transfer_params(params)
-        return self._client.remove_traffic_control_apis(traffic_control_id=self.traffic_control_id, **_params)
+        return self._client.remove_traffic_control_apis(traffic_control_id=self.traffic_control_id,
+                                                        **_params)
 
     def set_traffic_control_apis(self, **params):
         _params = _transfer_params(params)
-        return self._client.set_traffic_control_apis(traffic_control_id=self.traffic_control_id, **_params)
+        return self._client.set_traffic_control_apis(traffic_control_id=self.traffic_control_id,
+                                                     **_params)

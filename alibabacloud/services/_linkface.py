@@ -12,34 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _transfer_params
 
 
 class _LINKFACEResource(ServiceResource):
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'linkface', _client=_client)
+
     def create_group(self, **params):
         _params = _transfer_params(params)
         self._client.create_group(**_params)
         group_name = _params.get("group_name")
         return _LINKFACEGroupResource(group_name, _client=self._client)
 
+
 class _LINKFACEGroupResource(ServiceResource):
 
     def __init__(self, group_name, _client=None):
         ServiceResource.__init__(self, "linkface.group", _client=_client)
         self.group_name = group_name
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)

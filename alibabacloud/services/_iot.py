@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _IOTResource(ServiceResource):
@@ -30,8 +23,9 @@ class _IOTResource(ServiceResource):
         ServiceResource.__init__(self, 'iot', _client=_client)
         self.devices = _create_special_resource_collection(
             _IOTDeviceResource, _client, _client.query_device,
-            'Data.DeviceInfo', 'DeviceName', 
+            'Data.DeviceInfo', 'DeviceName',
         )
+
     def register_device(self, **params):
         _params = _transfer_params(params)
         response = self._client.register_device(**_params)
@@ -98,12 +92,13 @@ class _IOTResource(ServiceResource):
         action_id = _new_get_key_in_response(response, 'ActionId')
         return _IOTRuleActionResource(action_id, _client=self._client)
 
+
 class _IOTDeviceResource(ServiceResource):
 
     def __init__(self, device_name, _client=None):
         ServiceResource.__init__(self, "iot.device", _client=_client)
         self.device_name = device_name
-        
+
         self.device_id = None
         self.device_secret = None
         self.device_status = None
@@ -145,23 +140,23 @@ class _IOTDeviceResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_device_shadow(device_name=self.device_name, **_params)
 
+
 class _IOTDeviceFileResource(ServiceResource):
 
     def __init__(self, file_id, _client=None):
         ServiceResource.__init__(self, "iot.device_file", _client=_client)
         self.file_id = file_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)
         return self._client.delete_device_file(file_id=self.file_id, **_params)
+
 
 class _IOTDeviceGroupResource(ServiceResource):
 
     def __init__(self, group_id, _client=None):
         ServiceResource.__init__(self, "iot.device_group", _client=_client)
         self.group_id = group_id
-        
 
     def batch_add_device_group_relations(self, **params):
         _params = _transfer_params(params)
@@ -199,28 +194,32 @@ class _IOTDeviceGroupResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_device_group(group_id=self.group_id, **_params)
 
+
 class _IOTEdgeInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "iot.edge_instance", _client=_client)
         self.instance_id = instance_id
-        
 
     def batch_clear_edge_instance_device_config(self, **params):
         _params = _transfer_params(params)
-        return self._client.batch_clear_edge_instance_device_config(instance_id=self.instance_id, **_params)
+        return self._client.batch_clear_edge_instance_device_config(instance_id=self.instance_id,
+                                                                    **_params)
 
     def batch_get_edge_instance_device_config(self, **params):
         _params = _transfer_params(params)
-        return self._client.batch_get_edge_instance_device_config(instance_id=self.instance_id, **_params)
+        return self._client.batch_get_edge_instance_device_config(instance_id=self.instance_id,
+                                                                  **_params)
 
     def batch_set_edge_instance_device_config(self, **params):
         _params = _transfer_params(params)
-        return self._client.batch_set_edge_instance_device_config(instance_id=self.instance_id, **_params)
+        return self._client.batch_set_edge_instance_device_config(instance_id=self.instance_id,
+                                                                  **_params)
 
     def batch_unbind_device_from(self, **params):
         _params = _transfer_params(params)
-        return self._client.batch_unbind_device_from_edge_instance(instance_id=self.instance_id, **_params)
+        return self._client.batch_unbind_device_from_edge_instance(instance_id=self.instance_id,
+                                                                   **_params)
 
     def batch_get_device_driver(self, **params):
         _params = _transfer_params(params)
@@ -228,7 +227,8 @@ class _IOTEdgeInstanceResource(ServiceResource):
 
     def batch_get_edge_instance_driver_configs(self, **params):
         _params = _transfer_params(params)
-        return self._client.batch_get_edge_instance_driver_configs(instance_id=self.instance_id, **_params)
+        return self._client.batch_get_edge_instance_driver_configs(instance_id=self.instance_id,
+                                                                   **_params)
 
     def bind_gateway_to(self, **params):
         _params = _transfer_params(params)
@@ -260,7 +260,8 @@ class _IOTEdgeInstanceResource(ServiceResource):
 
     def query_edge_instance_historic_deployment(self, **params):
         _params = _transfer_params(params)
-        return self._client.query_edge_instance_historic_deployment(instance_id=self.instance_id, **_params)
+        return self._client.query_edge_instance_historic_deployment(instance_id=self.instance_id,
+                                                                    **_params)
 
     def update(self, **params):
         _params = _transfer_params(params)
@@ -268,7 +269,8 @@ class _IOTEdgeInstanceResource(ServiceResource):
 
     def batch_bind_device_to_edge_instance_with_driver(self, **params):
         _params = _transfer_params(params)
-        return self._client.batch_bind_device_to_edge_instance_with_driver(instance_id=self.instance_id, **_params)
+        return self._client.batch_bind_device_to_edge_instance_with_driver(
+            instance_id=self.instance_id, **_params)
 
     def bind_driver_to(self, **params):
         _params = _transfer_params(params)
@@ -276,41 +278,49 @@ class _IOTEdgeInstanceResource(ServiceResource):
 
     def clear_edge_instance_driver_configs(self, **params):
         _params = _transfer_params(params)
-        return self._client.clear_edge_instance_driver_configs(instance_id=self.instance_id, **_params)
+        return self._client.clear_edge_instance_driver_configs(instance_id=self.instance_id,
+                                                               **_params)
 
     def set_edge_instance_driver_configs(self, **params):
         _params = _transfer_params(params)
-        return self._client.set_edge_instance_driver_configs(instance_id=self.instance_id, **_params)
+        return self._client.set_edge_instance_driver_configs(instance_id=self.instance_id,
+                                                             **_params)
 
     def unbind_driver_from(self, **params):
         _params = _transfer_params(params)
-        return self._client.unbind_driver_from_edge_instance(instance_id=self.instance_id, **_params)
+        return self._client.unbind_driver_from_edge_instance(instance_id=self.instance_id,
+                                                             **_params)
 
     def create_edge_instance_deployment(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_edge_instance_deployment(instance_id=self.instance_id,**_params)
+        response = self._client.create_edge_instance_deployment(instance_id=self.instance_id,
+                                                                **_params)
         deployment_id = _new_get_key_in_response(response, 'DeploymentId')
-        return _IOTEdgeInstanceDeploymentResource(deployment_id,self.instance_id, _client=self._client)
+        return _IOTEdgeInstanceDeploymentResource(deployment_id, self.instance_id,
+                                                  _client=self._client)
 
     def get_edge_instance_deployment(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_edge_instance_deployment(instance_id=self.instance_id,**_params)
+        response = self._client.get_edge_instance_deployment(instance_id=self.instance_id,
+                                                             **_params)
         deployment_id = _new_get_key_in_response(response, 'DeploymentId')
-        return _IOTEdgeInstanceDeploymentResource(deployment_id,self.instance_id, _client=self._client)
+        return _IOTEdgeInstanceDeploymentResource(deployment_id, self.instance_id,
+                                                  _client=self._client)
+
 
 class _IOTEdgeInstanceDeploymentResource(ServiceResource):
 
-    def __init__(self, deployment_id,instance_id, _client=None):
+    def __init__(self, deployment_id, instance_id, _client=None):
         ServiceResource.__init__(self, "iot.edge_instance_deployment", _client=_client)
         self.deployment_id = deployment_id
         self.instance_id = instance_id
+
 
 class _IOTLoRaNodesTaskResource(ServiceResource):
 
     def __init__(self, task_id, _client=None):
         ServiceResource.__init__(self, "iot.lo_ra_nodes_task", _client=_client)
         self.task_id = task_id
-        
 
     def get_lora_nodes_task(self, **params):
         _params = _transfer_params(params)
@@ -322,34 +332,34 @@ class _IOTLoRaNodesTaskResource(ServiceResource):
         response = self._client.get_nodes_adding_task(task_id=self.task_id, **_params)
         return response
 
+
 class _IOTProductResource(ServiceResource):
 
     def __init__(self, product_name, _client=None):
         ServiceResource.__init__(self, "iot.product", _client=_client)
         self.product_name = product_name
-        
 
     def update(self, **params):
         _params = _transfer_params(params)
         return self._client.update_product(product_name=self.product_name, **_params)
+
 
 class _IOTProductTopicResource(ServiceResource):
 
     def __init__(self, topic_id, _client=None):
         ServiceResource.__init__(self, "iot.product_topic", _client=_client)
         self.topic_id = topic_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)
         return self._client.delete_product_topic(topic_id=self.topic_id, **_params)
+
 
 class _IOTRuleResource(ServiceResource):
 
     def __init__(self, rule_id, _client=None):
         ServiceResource.__init__(self, "iot.rule", _client=_client)
         self.rule_id = rule_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -375,12 +385,12 @@ class _IOTRuleResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_rule(rule_id=self.rule_id, **_params)
 
+
 class _IOTRuleActionResource(ServiceResource):
 
     def __init__(self, action_id, _client=None):
         ServiceResource.__init__(self, "iot.rule_action", _client=_client)
         self.action_id = action_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)

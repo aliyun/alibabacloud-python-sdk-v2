@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _CMSResource(ServiceResource):
@@ -30,12 +23,14 @@ class _CMSResource(ServiceResource):
         ServiceResource.__init__(self, 'cms', _client=_client)
         self.monitor_groups = _create_special_resource_collection(
             _CMSMonitorGroupResource, _client, _client.describe_monitor_groups,
-            'Resources.Resource', 'GroupId', 
+            'Resources.Resource', 'GroupId',
         )
         self.monitoring_agent_processes = _create_special_resource_collection(
-            _CMSMonitoringAgentProcessResource, _client, _client.describe_monitoring_agent_processes,
-            'NodeProcesses.NodeProcess', 'MonitoringAgentProcessName', 
+            _CMSMonitoringAgentProcessResource, _client,
+            _client.describe_monitoring_agent_processes,
+            'NodeProcesses.NodeProcess', 'MonitoringAgentProcessName',
         )
+
     def delete_metric_rule_template(self, **params):
         _params = _transfer_params(params)
         response = self._client.delete_metric_rule_template(**_params)
@@ -52,25 +47,27 @@ class _CMSResource(ServiceResource):
         _params = _transfer_params(params)
         self._client.create_monitoring_agent_process(**_params)
         monitoring_agent_process_name = _params.get("monitoring_agent_process_name")
-        return _CMSMonitoringAgentProcessResource(monitoring_agent_process_name, _client=self._client)
+        return _CMSMonitoringAgentProcessResource(monitoring_agent_process_name,
+                                                  _client=self._client)
+
 
 class _CMSMetricRuleTemplateResource(ServiceResource):
 
     def __init__(self, template_id, _client=None):
         ServiceResource.__init__(self, "cms.metric_rule_template", _client=_client)
         self.template_id = template_id
-        
 
     def modify(self, **params):
         _params = _transfer_params(params)
         return self._client.modify_metric_rule_template(template_id=self.template_id, **_params)
+
 
 class _CMSMonitorGroupResource(ServiceResource):
 
     def __init__(self, group_id, _client=None):
         ServiceResource.__init__(self, "cms.monitor_group", _client=_client)
         self.group_id = group_id
-        
+
         self.bind_url = None
         self.contact_groups = None
         self.gmt_create = None
@@ -125,7 +122,8 @@ class _CMSMonitorGroupResource(ServiceResource):
 
     def describe_monitor_group_instance_attribute(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_monitor_group_instance_attribute(group_id=self.group_id, **_params)
+        return self._client.describe_monitor_group_instance_attribute(group_id=self.group_id,
+                                                                      **_params)
 
     def describe_monitor_group_instances(self, **params):
         _params = _transfer_params(params)
@@ -151,12 +149,13 @@ class _CMSMonitorGroupResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.put_monitor_group_dynamic_rule(group_id=self.group_id, **_params)
 
+
 class _CMSMonitoringAgentProcessResource(ServiceResource):
 
     def __init__(self, monitoring_agent_process_name, _client=None):
         ServiceResource.__init__(self, "cms.monitoring_agent_process", _client=_client)
         self.monitoring_agent_process_name = monitoring_agent_process_name
-        
+
         self.command = None
         self.instance_id = None
         self.process_id = None
@@ -165,16 +164,20 @@ class _CMSMonitoringAgentProcessResource(ServiceResource):
 
     def install_monitoring_agent(self, **params):
         _params = _transfer_params(params)
-        return self._client.install_monitoring_agent(monitoring_agent_process_name=self.monitoring_agent_process_name, **_params)
+        return self._client.install_monitoring_agent(
+            monitoring_agent_process_name=self.monitoring_agent_process_name, **_params)
 
     def create_monitor_agent_process(self, **params):
         _params = _transfer_params(params)
-        return self._client.create_monitor_agent_process(monitoring_agent_process_name=self.monitoring_agent_process_name, **_params)
+        return self._client.create_monitor_agent_process(
+            monitoring_agent_process_name=self.monitoring_agent_process_name, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_monitoring_agent_process(monitoring_agent_process_name=self.monitoring_agent_process_name, **_params)
+        return self._client.delete_monitoring_agent_process(
+            monitoring_agent_process_name=self.monitoring_agent_process_name, **_params)
 
     def uninstall_monitoring_agent(self, **params):
         _params = _transfer_params(params)
-        return self._client.uninstall_monitoring_agent(monitoring_agent_process_name=self.monitoring_agent_process_name, **_params)
+        return self._client.uninstall_monitoring_agent(
+            monitoring_agent_process_name=self.monitoring_agent_process_name, **_params)

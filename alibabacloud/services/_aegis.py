@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _AEGISResource(ServiceResource):
@@ -30,16 +23,17 @@ class _AEGISResource(ServiceResource):
         ServiceResource.__init__(self, 'aegis', _client=_client)
         self.check_warnings = _create_special_resource_collection(
             _AEGISCheckWarningResource, _client, _client.describe_check_warnings,
-            'CheckWarnings.CheckWarning', 'CheckWarningId', 
+            'CheckWarnings.CheckWarning', 'CheckWarningId',
         )
         self.data_sources = _create_special_resource_collection(
             _AEGISDataSourceResource, _client, _client.describe_data_source,
-            'MetaDatas.Data', 'DataSourceId', 
+            'MetaDatas.Data', 'DataSourceId',
         )
         self.risks = _create_special_resource_collection(
             _AEGISRiskResource, _client, _client.describe_risks,
-            'Risks.Risk', 'RiskId', 
+            'Risks.Risk', 'RiskId',
         )
+
     def create_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_instance(**_params)
@@ -52,12 +46,13 @@ class _AEGISResource(ServiceResource):
         file_name = _new_get_key_in_response(response, 'FileName')
         return _AEGISSuspiciousExportResource(file_name, _client=self._client)
 
+
 class _AEGISCheckWarningResource(ServiceResource):
 
     def __init__(self, check_warning_id, _client=None):
         ServiceResource.__init__(self, "aegis.check_warning", _client=_client)
         self.check_warning_id = check_warning_id
-        
+
         self.check_id = None
         self.item = None
         self.level = None
@@ -68,25 +63,27 @@ class _AEGISCheckWarningResource(ServiceResource):
 
     def describe_check_warning_detail(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_check_warning_detail(check_warning_id=self.check_warning_id, **_params)
+        return self._client.describe_check_warning_detail(check_warning_id=self.check_warning_id,
+                                                          **_params)
+
 
 class _AEGISDataSourceResource(ServiceResource):
 
     def __init__(self, data_source_id, _client=None):
         ServiceResource.__init__(self, "aegis.data_source", _client=_client)
         self.data_source_id = data_source_id
-        
+
         self.data_source_name = None
         self.date_source_name = None
         self.description = None
         self.meta_data_fields = None
+
 
 class _AEGISInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "aegis.instance", _client=_client)
         self.instance_id = instance_id
-        
 
     def release(self, **params):
         _params = _transfer_params(params)
@@ -100,12 +97,13 @@ class _AEGISInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.upgrade_instance(instance_id=self.instance_id, **_params)
 
+
 class _AEGISRiskResource(ServiceResource):
 
     def __init__(self, risk_id, _client=None):
         ServiceResource.__init__(self, "aegis.risk", _client=_client)
         self.risk_id = risk_id
-        
+
         self.risk_detail = None
         self.risk_name = None
         self.risk_type = None
@@ -125,9 +123,9 @@ class _AEGISRiskResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.ignore_hc_check_warnings(risk_id=self.risk_id, **_params)
 
+
 class _AEGISSuspiciousExportResource(ServiceResource):
 
     def __init__(self, file_name, _client=None):
         ServiceResource.__init__(self, "aegis.suspicious_export", _client=_client)
         self.file_name = file_name
-        

@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _OOSResource(ServiceResource):
@@ -30,20 +23,21 @@ class _OOSResource(ServiceResource):
         ServiceResource.__init__(self, 'oos', _client=_client)
         self.executions = _create_special_resource_collection(
             _OOSExecutionResource, _client, _client.list_executions,
-            'Executions.Execution', 'ExecutionId', 
+            'Executions.Execution', 'ExecutionId',
         )
         self.regions = _create_special_resource_collection(
             _OOSRegionResource, _client, _client.describe_regions,
-            'Regions.Region', 'RegionId', 
+            'Regions.Region', 'RegionId',
         )
         self.task_executions = _create_special_resource_collection(
             _OOSTaskExecutionResource, _client, _client.list_task_executions,
-            'TaskExecutions.TaskExecution', 'TaskExecutionId', 
+            'TaskExecutions.TaskExecution', 'TaskExecutionId',
         )
         self.templates = _create_special_resource_collection(
             _OOSTemplateResource, _client, _client.list_templates,
-            'Templates.Template', 'TemplateName', 
+            'Templates.Template', 'TemplateName',
         )
+
     def create_template(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_template(**_params)
@@ -62,12 +56,13 @@ class _OOSResource(ServiceResource):
         template_name = _new_get_key_in_response(response, 'TemplateName')
         return _OOSTemplateResource(template_name, _client=self._client)
 
+
 class _OOSExecutionResource(ServiceResource):
 
     def __init__(self, execution_id, _client=None):
         ServiceResource.__init__(self, "oos.execution", _client=_client)
         self.execution_id = execution_id
-        
+
         self.counters = None
         self.create_date = None
         self.current_tasks = None
@@ -111,21 +106,23 @@ class _OOSExecutionResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.notify_execution(execution_id=self.execution_id, **_params)
 
+
 class _OOSRegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "oos.region", _client=_client)
         self.region_id = region_id
-        
+
         self.local_name = None
         self.region_endpoint = None
+
 
 class _OOSTaskExecutionResource(ServiceResource):
 
     def __init__(self, task_execution_id, _client=None):
         ServiceResource.__init__(self, "oos.task_execution", _client=_client)
         self.task_execution_id = task_execution_id
-        
+
         self.child_execution_id = None
         self.create_date = None
         self.end_date = None
@@ -145,12 +142,13 @@ class _OOSTaskExecutionResource(ServiceResource):
         self.template_id = None
         self.update_date = None
 
+
 class _OOSTemplateResource(ServiceResource):
 
     def __init__(self, template_name, _client=None):
         ServiceResource.__init__(self, "oos.template", _client=_client)
         self.template_name = template_name
-        
+
         self.created_by = None
         self.created_date = None
         self.description = None

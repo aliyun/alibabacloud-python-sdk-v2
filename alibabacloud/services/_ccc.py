@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
+from alibabacloud.resources.collection import _create_special_resource_collection
 from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _CCCResource(ServiceResource):
@@ -30,8 +24,9 @@ class _CCCResource(ServiceResource):
         ServiceResource.__init__(self, 'ccc', _client=_client)
         self.roles = _create_special_resource_collection(
             _CCCRoleResource, _client, _client.list_roles,
-            'Roles.Role', 'RoleId', 
+            'Roles.Role', 'RoleId',
         )
+
     def create_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_instance(**_params)
@@ -44,25 +39,29 @@ class _CCCResource(ServiceResource):
         order_id = _new_get_key_in_response(response, 'OrderId')
         return _CCCPostOrderResource(order_id, _client=self._client)
 
+
 class _CCCInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "ccc.instance", _client=_client)
         self.instance_id = instance_id
-        
 
         self.contact_flows = _create_sub_resource_without_page_collection(
             _CCCContactFlowResource, _client, _client.list_contact_flows,
-            'ContactFlows.ContactFlow', 'ContactFlowId', parent_identifier="InstanceId",parent_identifier_value=self.instance_id
+            'ContactFlows.ContactFlow', 'ContactFlowId', parent_identifier="InstanceId",
+            parent_identifier_value=self.instance_id
         )
         self.phone_numbers = _create_sub_resource_without_page_collection(
             _CCCPhoneNumberResource, _client, _client.list_phone_numbers,
-            'PhoneNumbers.PhoneNumber', 'PhoneNumberId', parent_identifier="InstanceId",parent_identifier_value=self.instance_id
+            'PhoneNumbers.PhoneNumber', 'PhoneNumberId', parent_identifier="InstanceId",
+            parent_identifier_value=self.instance_id
         )
         self.skill_groups = _create_sub_resource_without_page_collection(
             _CCCSkillGroupResource, _client, _client.list_skill_groups,
-            'SkillGroups.SkillGroup', 'SkillGroupId', parent_identifier="InstanceId",parent_identifier_value=self.instance_id
+            'SkillGroups.SkillGroup', 'SkillGroupId', parent_identifier="InstanceId",
+            parent_identifier_value=self.instance_id
         )
+
     def add_bulk_phone_numbers(self, **params):
         _params = _transfer_params(params)
         return self._client.add_bulk_phone_numbers(instance_id=self.instance_id, **_params)
@@ -81,7 +80,8 @@ class _CCCInstanceResource(ServiceResource):
 
     def commit_contact_flow_version_modification(self, **params):
         _params = _transfer_params(params)
-        return self._client.commit_contact_flow_version_modification(instance_id=self.instance_id, **_params)
+        return self._client.commit_contact_flow_version_modification(instance_id=self.instance_id,
+                                                                     **_params)
 
     def create_fault(self, **params):
         _params = _transfer_params(params)
@@ -156,12 +156,14 @@ class _CCCInstanceResource(ServiceResource):
 
     def get_contact_identify_by_out_bound_task_id(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_contact_identify_by_out_bound_task_id(instance_id=self.instance_id, **_params)
+        response = self._client.get_contact_identify_by_out_bound_task_id(
+            instance_id=self.instance_id, **_params)
         return response
 
     def get_conversation_detail_by_contact_id(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_conversation_detail_by_contact_id(instance_id=self.instance_id, **_params)
+        response = self._client.get_conversation_detail_by_contact_id(instance_id=self.instance_id,
+                                                                      **_params)
         return response
 
     def get_conversation_list(self, **params):
@@ -181,12 +183,14 @@ class _CCCInstanceResource(ServiceResource):
 
     def get_instance_summary_report_by_interval(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_instance_summary_report_by_interval(instance_id=self.instance_id, **_params)
+        response = self._client.get_instance_summary_report_by_interval(
+            instance_id=self.instance_id, **_params)
         return response
 
     def get_instance_summary_report_since_midnight(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_instance_summary_report_since_midnight(instance_id=self.instance_id, **_params)
+        response = self._client.get_instance_summary_report_since_midnight(
+            instance_id=self.instance_id, **_params)
         return response
 
     def get_job(self, **params):
@@ -275,11 +279,13 @@ class _CCCInstanceResource(ServiceResource):
 
     def list_agent_summary_reports_by_interval(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_agent_summary_reports_by_interval(instance_id=self.instance_id, **_params)
+        return self._client.list_agent_summary_reports_by_interval(instance_id=self.instance_id,
+                                                                   **_params)
 
     def list_agent_summary_reports_since_midnight(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_agent_summary_reports_since_midnight(instance_id=self.instance_id, **_params)
+        return self._client.list_agent_summary_reports_since_midnight(instance_id=self.instance_id,
+                                                                      **_params)
 
     def list_call_detail_records(self, **params):
         _params = _transfer_params(params)
@@ -287,7 +293,8 @@ class _CCCInstanceResource(ServiceResource):
 
     def list_call_event_detail_by_contact_id(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_call_event_detail_by_contact_id(instance_id=self.instance_id, **_params)
+        return self._client.list_call_event_detail_by_contact_id(instance_id=self.instance_id,
+                                                                 **_params)
 
     def list_config(self, **params):
         _params = _transfer_params(params)
@@ -315,7 +322,8 @@ class _CCCInstanceResource(ServiceResource):
 
     def list_privacy_number_call_details(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_privacy_number_call_details(instance_id=self.instance_id, **_params)
+        return self._client.list_privacy_number_call_details(instance_id=self.instance_id,
+                                                             **_params)
 
     def list_privileges_of_user(self, **params):
         _params = _transfer_params(params)
@@ -351,15 +359,18 @@ class _CCCInstanceResource(ServiceResource):
 
     def list_skill_group_summary_reports(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_skill_group_summary_reports(instance_id=self.instance_id, **_params)
+        return self._client.list_skill_group_summary_reports(instance_id=self.instance_id,
+                                                             **_params)
 
     def list_skill_group_summary_reports_by_interval(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_skill_group_summary_reports_by_interval(instance_id=self.instance_id, **_params)
+        return self._client.list_skill_group_summary_reports_by_interval(
+            instance_id=self.instance_id, **_params)
 
     def list_skill_group_summary_reports_since_midnight(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_skill_group_summary_reports_since_midnight(instance_id=self.instance_id, **_params)
+        return self._client.list_skill_group_summary_reports_since_midnight(
+            instance_id=self.instance_id, **_params)
 
     def list_users(self, **params):
         _params = _transfer_params(params)
@@ -383,7 +394,8 @@ class _CCCInstanceResource(ServiceResource):
 
     def modify_privacy_number_call_detail(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_privacy_number_call_detail(instance_id=self.instance_id, **_params)
+        return self._client.modify_privacy_number_call_detail(instance_id=self.instance_id,
+                                                              **_params)
 
     def pick_local_number(self, **params):
         _params = _transfer_params(params)
@@ -467,60 +479,63 @@ class _CCCInstanceResource(ServiceResource):
 
     def add_agent_device(self, **params):
         _params = _transfer_params(params)
-        response = self._client.add_agent_device(instance_id=self.instance_id,**_params)
+        response = self._client.add_agent_device(instance_id=self.instance_id, **_params)
         agent_device_id = _new_get_key_in_response(response, 'AgentDeviceId')
-        return _CCCAgentDeviceResource(agent_device_id,self.instance_id, _client=self._client)
+        return _CCCAgentDeviceResource(agent_device_id, self.instance_id, _client=self._client)
 
     def create_contact_flow(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_contact_flow(instance_id=self.instance_id,**_params)
+        response = self._client.create_contact_flow(instance_id=self.instance_id, **_params)
         contact_flow_id = _new_get_key_in_response(response, 'ContactFlowId')
-        return _CCCContactFlowResource(contact_flow_id,self.instance_id, _client=self._client)
+        return _CCCContactFlowResource(contact_flow_id, self.instance_id, _client=self._client)
 
     def create_job_group(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_job_group(instance_id=self.instance_id,**_params)
+        response = self._client.create_job_group(instance_id=self.instance_id, **_params)
         job_group_id = _new_get_key_in_response(response, 'JobGroupId')
-        return _CCCJobGroupResource(job_group_id,self.instance_id, _client=self._client)
+        return _CCCJobGroupResource(job_group_id, self.instance_id, _client=self._client)
 
     def add_phone_number(self, **params):
         _params = _transfer_params(params)
-        response = self._client.add_phone_number(instance_id=self.instance_id,**_params)
+        response = self._client.add_phone_number(instance_id=self.instance_id, **_params)
         phone_number_id = _new_get_key_in_response(response, 'PhoneNumberId')
-        return _CCCPhoneNumberResource(phone_number_id,self.instance_id, _client=self._client)
+        return _CCCPhoneNumberResource(phone_number_id, self.instance_id, _client=self._client)
 
     def create_scenario(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_scenario(instance_id=self.instance_id,**_params)
+        response = self._client.create_scenario(instance_id=self.instance_id, **_params)
         scenario_id = _new_get_key_in_response(response, 'ScenarioId')
-        return _CCCScenarioResource(scenario_id,self.instance_id, _client=self._client)
+        return _CCCScenarioResource(scenario_id, self.instance_id, _client=self._client)
 
     def create_skill_group(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_skill_group(instance_id=self.instance_id,**_params)
+        response = self._client.create_skill_group(instance_id=self.instance_id, **_params)
         skill_group_id = _new_get_key_in_response(response, 'SkillGroupId')
-        return _CCCSkillGroupResource(skill_group_id,self.instance_id, _client=self._client)
+        return _CCCSkillGroupResource(skill_group_id, self.instance_id, _client=self._client)
 
     def create_user(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_user(instance_id=self.instance_id,**_params)
+        response = self._client.create_user(instance_id=self.instance_id, **_params)
         user_id = _new_get_key_in_response(response, 'UserId')
-        return _CCCUserResource(user_id,self.instance_id, _client=self._client)
+        return _CCCUserResource(user_id, self.instance_id, _client=self._client)
+
 
 class _CCCAgentDeviceResource(ServiceResource):
 
-    def __init__(self, agent_device_id,instance_id, _client=None):
+    def __init__(self, agent_device_id, instance_id, _client=None):
         ServiceResource.__init__(self, "ccc.agent_device", _client=_client)
         self.agent_device_id = agent_device_id
         self.instance_id = instance_id
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_agent_device(agent_device_id=self.agent_device_id,instance_id=self.instance_id, **_params)
+        return self._client.modify_agent_device(agent_device_id=self.agent_device_id,
+                                                instance_id=self.instance_id, **_params)
+
 
 class _CCCContactFlowResource(ServiceResource):
 
-    def __init__(self, contact_flow_id,instance_id, _client=None):
+    def __init__(self, contact_flow_id, instance_id, _client=None):
         ServiceResource.__init__(self, "ccc.contact_flow", _client=_client)
         self.contact_flow_id = contact_flow_id
         self.instance_id = instance_id
@@ -533,68 +548,85 @@ class _CCCContactFlowResource(ServiceResource):
 
     def get_route_point(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_route_point(contact_flow_id=self.contact_flow_id,instance_id=self.instance_id, **_params)
+        response = self._client.get_route_point(contact_flow_id=self.contact_flow_id,
+                                                instance_id=self.instance_id, **_params)
         return response
+
 
 class _CCCJobGroupResource(ServiceResource):
 
-    def __init__(self, job_group_id,instance_id, _client=None):
+    def __init__(self, job_group_id, instance_id, _client=None):
         ServiceResource.__init__(self, "ccc.job_group", _client=_client)
         self.job_group_id = job_group_id
         self.instance_id = instance_id
 
     def cancel_predictive_jobs(self, **params):
         _params = _transfer_params(params)
-        return self._client.cancel_predictive_jobs(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.cancel_predictive_jobs(job_group_id=self.job_group_id,
+                                                   instance_id=self.instance_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_job_group(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.delete_job_group(job_group_id=self.job_group_id,
+                                             instance_id=self.instance_id, **_params)
 
     def download_original_statistics_report(self, **params):
         _params = _transfer_params(params)
-        return self._client.download_original_statistics_report(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.download_original_statistics_report(job_group_id=self.job_group_id,
+                                                                instance_id=self.instance_id,
+                                                                **_params)
 
     def download_unreachable_contacts(self, **params):
         _params = _transfer_params(params)
-        return self._client.download_unreachable_contacts(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.download_unreachable_contacts(job_group_id=self.job_group_id,
+                                                          instance_id=self.instance_id, **_params)
 
     def get(self, **params):
         _params = _transfer_params(params)
-        return self._client.get_job_group(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.get_job_group(job_group_id=self.job_group_id,
+                                          instance_id=self.instance_id, **_params)
 
     def get_job_list(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_job_list(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        response = self._client.get_job_list(job_group_id=self.job_group_id,
+                                             instance_id=self.instance_id, **_params)
         return response
 
     def list_basic_statistics_report_sub_items(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_basic_statistics_report_sub_items(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.list_basic_statistics_report_sub_items(job_group_id=self.job_group_id,
+                                                                   instance_id=self.instance_id,
+                                                                   **_params)
 
     def list_jobs_by_group(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_jobs_by_group(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.list_jobs_by_group(job_group_id=self.job_group_id,
+                                               instance_id=self.instance_id, **_params)
 
     def list_predictive_job_status(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_predictive_job_status(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.list_predictive_job_status(job_group_id=self.job_group_id,
+                                                       instance_id=self.instance_id, **_params)
 
     def list_unreachable_contacts(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_unreachable_contacts(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.list_unreachable_contacts(job_group_id=self.job_group_id,
+                                                      instance_id=self.instance_id, **_params)
 
     def submit_batch_jobs(self, **params):
         _params = _transfer_params(params)
-        return self._client.submit_batch_jobs(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.submit_batch_jobs(job_group_id=self.job_group_id,
+                                              instance_id=self.instance_id, **_params)
 
     def publish_predictive(self, **params):
         _params = _transfer_params(params)
-        return self._client.publish_predictive_job_group(job_group_id=self.job_group_id,instance_id=self.instance_id, **_params)
+        return self._client.publish_predictive_job_group(job_group_id=self.job_group_id,
+                                                         instance_id=self.instance_id, **_params)
+
 
 class _CCCPhoneNumberResource(ServiceResource):
 
-    def __init__(self, phone_number_id,instance_id, _client=None):
+    def __init__(self, phone_number_id, instance_id, _client=None):
         ServiceResource.__init__(self, "ccc.phone_number", _client=_client)
         self.phone_number_id = phone_number_id
         self.instance_id = instance_id
@@ -616,72 +648,89 @@ class _CCCPhoneNumberResource(ServiceResource):
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_phone_number(phone_number_id=self.phone_number_id,instance_id=self.instance_id, **_params)
+        return self._client.modify_phone_number(phone_number_id=self.phone_number_id,
+                                                instance_id=self.instance_id, **_params)
 
     def remove(self, **params):
         _params = _transfer_params(params)
-        return self._client.remove_phone_number(phone_number_id=self.phone_number_id,instance_id=self.instance_id, **_params)
+        return self._client.remove_phone_number(phone_number_id=self.phone_number_id,
+                                                instance_id=self.instance_id, **_params)
+
 
 class _CCCScenarioResource(ServiceResource):
 
-    def __init__(self, scenario_id,instance_id, _client=None):
+    def __init__(self, scenario_id, instance_id, _client=None):
         ServiceResource.__init__(self, "ccc.scenario", _client=_client)
         self.scenario_id = scenario_id
         self.instance_id = instance_id
 
     def assign_jobs(self, **params):
         _params = _transfer_params(params)
-        return self._client.assign_jobs(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.assign_jobs(scenario_id=self.scenario_id, instance_id=self.instance_id,
+                                        **_params)
 
     def create_batch_jobs(self, **params):
         _params = _transfer_params(params)
-        return self._client.create_batch_jobs(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.create_batch_jobs(scenario_id=self.scenario_id,
+                                              instance_id=self.instance_id, **_params)
 
     def create_survey(self, **params):
         _params = _transfer_params(params)
-        return self._client.create_survey(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.create_survey(scenario_id=self.scenario_id,
+                                          instance_id=self.instance_id, **_params)
 
     def delete_survey(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_survey(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.delete_survey(scenario_id=self.scenario_id,
+                                          instance_id=self.instance_id, **_params)
 
     def get(self, **params):
         _params = _transfer_params(params)
-        return self._client.get_scenario(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.get_scenario(scenario_id=self.scenario_id, instance_id=self.instance_id,
+                                         **_params)
 
     def get_job_template_download_params(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_job_template_download_params(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        response = self._client.get_job_template_download_params(scenario_id=self.scenario_id,
+                                                                 instance_id=self.instance_id,
+                                                                 **_params)
         return response
 
     def get_survey(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_survey(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        response = self._client.get_survey(scenario_id=self.scenario_id,
+                                           instance_id=self.instance_id, **_params)
         return response
 
     def list_surveys(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_surveys(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.list_surveys(scenario_id=self.scenario_id, instance_id=self.instance_id,
+                                         **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_scenario(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.modify_scenario(scenario_id=self.scenario_id,
+                                            instance_id=self.instance_id, **_params)
 
     def modify_survey(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_survey(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.modify_survey(scenario_id=self.scenario_id,
+                                          instance_id=self.instance_id, **_params)
 
     def publish_survey(self, **params):
         _params = _transfer_params(params)
-        return self._client.publish_survey(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.publish_survey(scenario_id=self.scenario_id,
+                                           instance_id=self.instance_id, **_params)
 
     def start_job(self, **params):
         _params = _transfer_params(params)
-        return self._client.start_job(scenario_id=self.scenario_id,instance_id=self.instance_id, **_params)
+        return self._client.start_job(scenario_id=self.scenario_id, instance_id=self.instance_id,
+                                      **_params)
+
 
 class _CCCSkillGroupResource(ServiceResource):
 
-    def __init__(self, skill_group_id,instance_id, _client=None):
+    def __init__(self, skill_group_id, instance_id, _client=None):
         ServiceResource.__init__(self, "ccc.skill_group", _client=_client)
         self.skill_group_id = skill_group_id
         self.instance_id = instance_id
@@ -695,102 +744,124 @@ class _CCCSkillGroupResource(ServiceResource):
 
     def pick_global_outbound_numbers(self, **params):
         _params = _transfer_params(params)
-        return self._client.pick_global_outbound_numbers(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.pick_global_outbound_numbers(skill_group_id=self.skill_group_id,
+                                                         instance_id=self.instance_id, **_params)
 
     def pick_outbound_numbers_by_tags(self, **params):
         _params = _transfer_params(params)
-        return self._client.pick_outbound_numbers_by_tags(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.pick_outbound_numbers_by_tags(skill_group_id=self.skill_group_id,
+                                                          instance_id=self.instance_id, **_params)
 
     def add_number_to(self, **params):
         _params = _transfer_params(params)
-        return self._client.add_number_to_skill_group(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.add_number_to_skill_group(skill_group_id=self.skill_group_id,
+                                                      instance_id=self.instance_id, **_params)
 
     def create_predictive_job_group(self, **params):
         _params = _transfer_params(params)
-        return self._client.create_predictive_job_group(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.create_predictive_job_group(skill_group_id=self.skill_group_id,
+                                                        instance_id=self.instance_id, **_params)
 
     def create_predictive_jobs(self, **params):
         _params = _transfer_params(params)
-        return self._client.create_predictive_jobs(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.create_predictive_jobs(skill_group_id=self.skill_group_id,
+                                                   instance_id=self.instance_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_skill_group(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.delete_skill_group(skill_group_id=self.skill_group_id,
+                                               instance_id=self.instance_id, **_params)
 
     def get_contact_info_by_outbound_task_id(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_contact_info_by_outbound_task_id(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        response = self._client.get_contact_info_by_outbound_task_id(
+            skill_group_id=self.skill_group_id, instance_id=self.instance_id, **_params)
         return response
 
     def get_jobs_progress(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_jobs_progress(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        response = self._client.get_jobs_progress(skill_group_id=self.skill_group_id,
+                                                  instance_id=self.instance_id, **_params)
         return response
 
     def list_users_of(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_users_of_skill_group(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.list_users_of_skill_group(skill_group_id=self.skill_group_id,
+                                                      instance_id=self.instance_id, **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_skill_group(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.modify_skill_group(skill_group_id=self.skill_group_id,
+                                               instance_id=self.instance_id, **_params)
 
     def modify_outbound_numbers(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_skill_group_outbound_numbers(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.modify_skill_group_outbound_numbers(skill_group_id=self.skill_group_id,
+                                                                instance_id=self.instance_id,
+                                                                **_params)
 
     def remove_number_from(self, **params):
         _params = _transfer_params(params)
-        return self._client.remove_number_from_skill_group(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.remove_number_from_skill_group(skill_group_id=self.skill_group_id,
+                                                           instance_id=self.instance_id, **_params)
 
     def remove_users_from(self, **params):
         _params = _transfer_params(params)
-        return self._client.remove_users_from_skill_group(skill_group_id=self.skill_group_id,instance_id=self.instance_id, **_params)
+        return self._client.remove_users_from_skill_group(skill_group_id=self.skill_group_id,
+                                                          instance_id=self.instance_id, **_params)
+
 
 class _CCCUserResource(ServiceResource):
 
-    def __init__(self, user_id,instance_id, _client=None):
+    def __init__(self, user_id, instance_id, _client=None):
         ServiceResource.__init__(self, "ccc.user", _client=_client)
         self.user_id = user_id
         self.instance_id = instance_id
 
     def remove(self, **params):
         _params = _transfer_params(params)
-        return self._client.remove_users(user_id=self.user_id,instance_id=self.instance_id, **_params)
+        return self._client.remove_users(user_id=self.user_id, instance_id=self.instance_id,
+                                         **_params)
 
     def get(self, **params):
         _params = _transfer_params(params)
-        return self._client.get_user(user_id=self.user_id,instance_id=self.instance_id, **_params)
+        return self._client.get_user(user_id=self.user_id, instance_id=self.instance_id, **_params)
 
     def list_outbound_phone_number_of(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_outbound_phone_number_of_user(user_id=self.user_id,instance_id=self.instance_id, **_params)
+        return self._client.list_outbound_phone_number_of_user(user_id=self.user_id,
+                                                               instance_id=self.instance_id,
+                                                               **_params)
 
     def list_skill_groups_of(self, **params):
         _params = _transfer_params(params)
-        return self._client.list_skill_groups_of_user(user_id=self.user_id,instance_id=self.instance_id, **_params)
+        return self._client.list_skill_groups_of_user(user_id=self.user_id,
+                                                      instance_id=self.instance_id, **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_user(user_id=self.user_id,instance_id=self.instance_id, **_params)
+        return self._client.modify_user(user_id=self.user_id, instance_id=self.instance_id,
+                                        **_params)
 
     def modify_skill_group_of(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_skill_group_of_user(user_id=self.user_id,instance_id=self.instance_id, **_params)
+        return self._client.modify_skill_group_of_user(user_id=self.user_id,
+                                                       instance_id=self.instance_id, **_params)
+
 
 class _CCCPostOrderResource(ServiceResource):
 
     def __init__(self, order_id, _client=None):
         ServiceResource.__init__(self, "ccc.post_order", _client=_client)
         self.order_id = order_id
-        
+
 
 class _CCCRoleResource(ServiceResource):
 
     def __init__(self, role_id, _client=None):
         ServiceResource.__init__(self, "ccc.role", _client=_client)
         self.role_id = role_id
-        
+
         self.instance_id = None
         self.role_description = None
         self.role_name = None

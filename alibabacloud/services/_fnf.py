@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _FNFResource(ServiceResource):
@@ -30,12 +23,13 @@ class _FNFResource(ServiceResource):
         ServiceResource.__init__(self, 'fnf', _client=_client)
         self.executions = _create_special_resource_collection(
             _FNFExecutionResource, _client, _client.list_executions,
-            'Executions.Executions', 'FlowName', 
+            'Executions.Executions', 'FlowName',
         )
         self.flows = _create_special_resource_collection(
             _FNFFlowResource, _client, _client.list_flows,
-            'Flows.Flows', 'Name', 
+            'Flows.Flows', 'Name',
         )
+
     def create_flow(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_flow(**_params)
@@ -48,12 +42,13 @@ class _FNFResource(ServiceResource):
         name = _new_get_key_in_response(response, 'Name')
         return _FNFFlowResource(name, _client=self._client)
 
+
 class _FNFExecutionResource(ServiceResource):
 
     def __init__(self, flow_name, _client=None):
         ServiceResource.__init__(self, "fnf.execution", _client=_client)
         self.flow_name = flow_name
-        
+
         self.flow_definition = None
         self.input = None
         self.name = None
@@ -79,12 +74,13 @@ class _FNFExecutionResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.stop_execution(flow_name=self.flow_name, **_params)
 
+
 class _FNFFlowResource(ServiceResource):
 
     def __init__(self, name, _client=None):
         ServiceResource.__init__(self, "fnf.flow", _client=_client)
         self.name = name
-        
+
         self.created_time = None
         self.definition = None
         self.description = None

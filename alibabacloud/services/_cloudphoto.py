@@ -12,34 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _transfer_params
 
 
 class _CLOUDPHOTOResource(ServiceResource):
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'cloudphoto', _client=_client)
+
     def create_photo_store(self, **params):
         _params = _transfer_params(params)
         self._client.create_photo_store(**_params)
         photo_store_name = _params.get("photo_store_name")
         return _CLOUDPHOTOPhotoStoreResource(photo_store_name, _client=self._client)
 
+
 class _CLOUDPHOTOPhotoStoreResource(ServiceResource):
 
     def __init__(self, photo_store_name, _client=None):
         ServiceResource.__init__(self, "cloudphoto.photo_store", _client=_client)
         self.photo_store_name = photo_store_name
-        
 
     def activate_photos(self, **params):
         _params = _transfer_params(params)
@@ -99,7 +92,8 @@ class _CLOUDPHOTOPhotoStoreResource(ServiceResource):
 
     def fetch_album_tag_photos(self, **params):
         _params = _transfer_params(params)
-        return self._client.fetch_album_tag_photos(photo_store_name=self.photo_store_name, **_params)
+        return self._client.fetch_album_tag_photos(photo_store_name=self.photo_store_name,
+                                                   **_params)
 
     def fetch_libraries(self, **params):
         _params = _transfer_params(params)
@@ -119,7 +113,8 @@ class _CLOUDPHOTOPhotoStoreResource(ServiceResource):
 
     def get_albums_by_names(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_albums_by_names(photo_store_name=self.photo_store_name, **_params)
+        response = self._client.get_albums_by_names(photo_store_name=self.photo_store_name,
+                                                    **_params)
         return response
 
     def get_download_urls(self, **params):
@@ -134,7 +129,8 @@ class _CLOUDPHOTOPhotoStoreResource(ServiceResource):
 
     def get_framed_photo_urls(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_framed_photo_urls(photo_store_name=self.photo_store_name, **_params)
+        response = self._client.get_framed_photo_urls(photo_store_name=self.photo_store_name,
+                                                      **_params)
         return response
 
     def get_library(self, **params):
@@ -149,17 +145,20 @@ class _CLOUDPHOTOPhotoStoreResource(ServiceResource):
 
     def get_photos_by_md5s(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_photos_by_md5s(photo_store_name=self.photo_store_name, **_params)
+        response = self._client.get_photos_by_md5s(photo_store_name=self.photo_store_name,
+                                                   **_params)
         return response
 
     def get_private_access_urls(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_private_access_urls(photo_store_name=self.photo_store_name, **_params)
+        response = self._client.get_private_access_urls(photo_store_name=self.photo_store_name,
+                                                        **_params)
         return response
 
     def get_public_access_urls(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_public_access_urls(photo_store_name=self.photo_store_name, **_params)
+        response = self._client.get_public_access_urls(photo_store_name=self.photo_store_name,
+                                                       **_params)
         return response
 
     def get_quota(self, **params):
@@ -169,7 +168,8 @@ class _CLOUDPHOTOPhotoStoreResource(ServiceResource):
 
     def get_similar_photos(self, **params):
         _params = _transfer_params(params)
-        response = self._client.get_similar_photos(photo_store_name=self.photo_store_name, **_params)
+        response = self._client.get_similar_photos(photo_store_name=self.photo_store_name,
+                                                   **_params)
         return response
 
     def get_thumbnails(self, **params):

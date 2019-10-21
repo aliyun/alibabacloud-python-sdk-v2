@@ -12,34 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _IVPDResource(ServiceResource):
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'ivpd', _client=_client)
+
     def segment_image(self, **params):
         _params = _transfer_params(params)
         response = self._client.segment_image(**_params)
         url = _new_get_key_in_response(response, 'Url')
         return _IVPDImageResource(url, _client=self._client)
 
+
 class _IVPDImageResource(ServiceResource):
 
     def __init__(self, url, _client=None):
         ServiceResource.__init__(self, "ivpd.image", _client=_client)
         self.url = url
-        
 
     def change_image_size(self, **params):
         _params = _transfer_params(params)

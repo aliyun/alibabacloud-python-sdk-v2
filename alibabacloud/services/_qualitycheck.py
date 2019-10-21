@@ -12,16 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
 
 
 class _QUALITYCHECKResource(ServiceResource):
@@ -30,14 +22,16 @@ class _QUALITYCHECKResource(ServiceResource):
         ServiceResource.__init__(self, 'qualitycheck', _client=_client)
         self.users = _create_special_resource_collection(
             _QUALITYCHECKUserResource, _client, _client.list_users,
-            'Data.User', 'UserName', 
+            'Data.User', 'UserName',
         )
+
+
 class _QUALITYCHECKUserResource(ServiceResource):
 
     def __init__(self, user_name, _client=None):
         ServiceResource.__init__(self, "qualitycheck.user", _client=_client)
         self.user_name = user_name
-        
+
         self.ali_uid = None
         self.create_time = None
         self.description = None

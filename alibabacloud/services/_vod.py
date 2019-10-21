@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _VODResource(ServiceResource):
@@ -30,28 +23,29 @@ class _VODResource(ServiceResource):
         ServiceResource.__init__(self, 'vod', _client=_client)
         self.ai_templates = _create_special_resource_collection(
             _VODAITemplateResource, _client, _client.list_ai_template,
-            'TemplateInfoList.TemplateInfoList', 'TemplateId', 
+            'TemplateInfoList.TemplateInfoList', 'TemplateId',
         )
         self.app_infos = _create_special_resource_collection(
             _VODAppInfoResource, _client, _client.list_app_info,
-            'AppInfoList.AppInfo', 'AppId', 
+            'AppInfoList.AppInfo', 'AppId',
         )
         self.transcode_tasks = _create_special_resource_collection(
             _VODTranscodeTaskResource, _client, _client.list_transcode_task,
-            'TranscodeTaskList.TranscodeTask', 'TranscodeTaskId', 
+            'TranscodeTaskList.TranscodeTask', 'TranscodeTaskId',
         )
         self.transcode_template_groups = _create_special_resource_collection(
             _VODTranscodeTemplateGroupResource, _client, _client.list_transcode_template_group,
-            'TranscodeTemplateGroupList.TranscodeTemplateGroup', 'TranscodeTemplateGroupId', 
+            'TranscodeTemplateGroupList.TranscodeTemplateGroup', 'TranscodeTemplateGroupId',
         )
         self.vod_templates = _create_special_resource_collection(
             _VODVodTemplateResource, _client, _client.list_vod_template,
-            'VodTemplateInfoList.VodTemplateInfo', 'VodTemplateId', 
+            'VodTemplateInfoList.VodTemplateInfo', 'VodTemplateId',
         )
         self.watermarks = _create_special_resource_collection(
             _VODWatermarkResource, _client, _client.list_watermark,
-            'WatermarkInfos.WatermarkInfo', 'WatermarkId', 
+            'WatermarkInfos.WatermarkInfo', 'WatermarkId',
         )
+
     def add_ai_template(self, **params):
         _params = _transfer_params(params)
         response = self._client.add_ai_template(**_params)
@@ -164,12 +158,13 @@ class _VODResource(ServiceResource):
         watermark_id = _new_get_key_in_response(response, 'WatermarkId')
         return _VODWatermarkResource(watermark_id, _client=self._client)
 
+
 class _VODAITemplateResource(ServiceResource):
 
     def __init__(self, template_id, _client=None):
         ServiceResource.__init__(self, "vod.ai_template", _client=_client)
         self.template_id = template_id
-        
+
         self.creation_time = None
         self.is_default = None
         self.modify_time = None
@@ -186,12 +181,13 @@ class _VODAITemplateResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.set_default_ai_template(template_id=self.template_id, **_params)
 
+
 class _VODAppInfoResource(ServiceResource):
 
     def __init__(self, app_id, _client=None):
         ServiceResource.__init__(self, "vod.app_info", _client=_client)
         self.app_id = app_id
-        
+
         self.app_name = None
         self.creation_time = None
         self.description = None
@@ -199,12 +195,12 @@ class _VODAppInfoResource(ServiceResource):
         self.status = None
         self.type_ = None
 
+
 class _VODCategoryResource(ServiceResource):
 
     def __init__(self, cate_id, _client=None):
         ServiceResource.__init__(self, "vod.category", _client=_client)
         self.cate_id = cate_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -214,12 +210,12 @@ class _VODCategoryResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_category(cate_id=self.cate_id, **_params)
 
+
 class _VODEditingProjectResource(ServiceResource):
 
     def __init__(self, project_id, _client=None):
         ServiceResource.__init__(self, "vod.editing_project", _client=_client)
         self.project_id = project_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -238,12 +234,13 @@ class _VODEditingProjectResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_editing_project(project_id=self.project_id, **_params)
 
+
 class _VODTranscodeTaskResource(ServiceResource):
 
     def __init__(self, transcode_task_id, _client=None):
         ServiceResource.__init__(self, "vod.transcode_task", _client=_client)
         self.transcode_task_id = transcode_task_id
-        
+
         self.complete_time = None
         self.creation_time = None
         self.task_status = None
@@ -255,12 +252,13 @@ class _VODTranscodeTaskResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.get_transcode_task(transcode_task_id=self.transcode_task_id, **_params)
 
+
 class _VODTranscodeTemplateGroupResource(ServiceResource):
 
     def __init__(self, transcode_template_group_id, _client=None):
         ServiceResource.__init__(self, "vod.transcode_template_group", _client=_client)
         self.transcode_template_group_id = transcode_template_group_id
-        
+
         self.app_id = None
         self.creation_time = None
         self.is_default = None
@@ -271,22 +269,25 @@ class _VODTranscodeTemplateGroupResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_transcode_template_group(transcode_template_group_id=self.transcode_template_group_id, **_params)
+        return self._client.delete_transcode_template_group(
+            transcode_template_group_id=self.transcode_template_group_id, **_params)
 
     def get(self, **params):
         _params = _transfer_params(params)
-        return self._client.get_transcode_template_group(transcode_template_group_id=self.transcode_template_group_id, **_params)
+        return self._client.get_transcode_template_group(
+            transcode_template_group_id=self.transcode_template_group_id, **_params)
 
     def set_default(self, **params):
         _params = _transfer_params(params)
-        return self._client.set_default_transcode_template_group(transcode_template_group_id=self.transcode_template_group_id, **_params)
+        return self._client.set_default_transcode_template_group(
+            transcode_template_group_id=self.transcode_template_group_id, **_params)
+
 
 class _VODUploadAttachedMediaResource(ServiceResource):
 
     def __init__(self, media_id, _client=None):
         ServiceResource.__init__(self, "vod.upload_attached_media", _client=_client)
         self.media_id = media_id
-        
 
     def delete_multipart_upload(self, **params):
         _params = _transfer_params(params)
@@ -321,16 +322,17 @@ class _VODUploadAttachedMediaResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.submit_ai_media_audit_job(media_id=self.media_id, **_params)
 
+
 class _VODVodDomainResource(ServiceResource):
 
     def __init__(self, vod_domain_name, _client=None):
         ServiceResource.__init__(self, "vod.vod_domain", _client=_client)
         self.vod_domain_name = vod_domain_name
-        
 
     def batch_set_vod_domain_configs(self, **params):
         _params = _transfer_params(params)
-        return self._client.batch_set_vod_domain_configs(vod_domain_name=self.vod_domain_name, **_params)
+        return self._client.batch_set_vod_domain_configs(vod_domain_name=self.vod_domain_name,
+                                                         **_params)
 
     def batch_start(self, **params):
         _params = _transfer_params(params)
@@ -346,19 +348,23 @@ class _VODVodDomainResource(ServiceResource):
 
     def delete_vod_specific_config(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_vod_specific_config(vod_domain_name=self.vod_domain_name, **_params)
+        return self._client.delete_vod_specific_config(vod_domain_name=self.vod_domain_name,
+                                                       **_params)
 
     def describe_vod_domain_certificate_info(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_vod_domain_certificate_info(vod_domain_name=self.vod_domain_name, **_params)
+        return self._client.describe_vod_domain_certificate_info(
+            vod_domain_name=self.vod_domain_name, **_params)
 
     def describe_vod_domain_configs(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_vod_domain_configs(vod_domain_name=self.vod_domain_name, **_params)
+        return self._client.describe_vod_domain_configs(vod_domain_name=self.vod_domain_name,
+                                                        **_params)
 
     def describe_vod_domain_detail(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_vod_domain_detail(vod_domain_name=self.vod_domain_name, **_params)
+        return self._client.describe_vod_domain_detail(vod_domain_name=self.vod_domain_name,
+                                                       **_params)
 
     def describe_vod_domain_log(self, **params):
         _params = _transfer_params(params)
@@ -366,22 +372,25 @@ class _VODVodDomainResource(ServiceResource):
 
     def modify_schdm_by_property(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_vod_domain_schdm_by_property(vod_domain_name=self.vod_domain_name, **_params)
+        return self._client.modify_vod_domain_schdm_by_property(
+            vod_domain_name=self.vod_domain_name, **_params)
 
     def set_vod_domain_certificate(self, **params):
         _params = _transfer_params(params)
-        return self._client.set_vod_domain_certificate(vod_domain_name=self.vod_domain_name, **_params)
+        return self._client.set_vod_domain_certificate(vod_domain_name=self.vod_domain_name,
+                                                       **_params)
 
     def update(self, **params):
         _params = _transfer_params(params)
         return self._client.update_vod_domain(vod_domain_name=self.vod_domain_name, **_params)
+
 
 class _VODVodTemplateResource(ServiceResource):
 
     def __init__(self, vod_template_id, _client=None):
         ServiceResource.__init__(self, "vod.vod_template", _client=_client)
         self.vod_template_id = vod_template_id
-        
+
         self.app_id = None
         self.creation_time = None
         self.is_default = None
@@ -392,12 +401,13 @@ class _VODVodTemplateResource(ServiceResource):
         self.template_config = None
         self.template_type = None
 
+
 class _VODWatermarkResource(ServiceResource):
 
     def __init__(self, watermark_id, _client=None):
         ServiceResource.__init__(self, "vod.watermark", _client=_client)
         self.watermark_id = watermark_id
-        
+
         self.app_id = None
         self.creation_time = None
         self.file_url = None

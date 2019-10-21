@@ -12,16 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
 from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _SMARTAGResource(ServiceResource):
@@ -30,28 +25,29 @@ class _SMARTAGResource(ServiceResource):
         ServiceResource.__init__(self, 'smartag', _client=_client)
         self.acls = _create_resource_collection(
             _SMARTAGACLResource, _client, _client.describe_ac_ls,
-            'Acls.Acl', 'AclId', 
+            'Acls.Acl', 'AclId',
         )
         self.cloud_connect_networks = _create_resource_collection(
             _SMARTAGCloudConnectNetworkResource, _client, _client.describe_cloud_connect_networks,
-            'CloudConnectNetworks.CloudConnectNetwork', 'CcnId', 
+            'CloudConnectNetworks.CloudConnectNetwork', 'CcnId',
         )
         self.flow_logs = _create_resource_collection(
             _SMARTAGFlowLogResource, _client, _client.describe_flow_logs,
-            'FlowLogs.FlowLogSetType', 'FlowLogId', 
+            'FlowLogs.FlowLogSetType', 'FlowLogId',
         )
         self.grant_rules = _create_resource_collection(
             _SMARTAGGrantRuleResource, _client, _client.describe_grant_rules,
-            'GrantRules.GrantRule', 'GrantRuleId', 
+            'GrantRules.GrantRule', 'GrantRuleId',
         )
         self.qoses = _create_resource_collection(
             _SMARTAGQosResource, _client, _client.describe_qoses,
-            'Qoses.Qos', 'QosId', 
+            'Qoses.Qos', 'QosId',
         )
         self.regions = _create_special_resource_collection(
             _SMARTAGRegionResource, _client, _client.describe_regions,
-            'Regions.Region', 'RegionId', 
+            'Regions.Region', 'RegionId',
         )
+
     def create_acl(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_acl(**_params)
@@ -82,12 +78,13 @@ class _SMARTAGResource(ServiceResource):
         qos_id = _new_get_key_in_response(response, 'QosId')
         return _SMARTAGQosResource(qos_id, _client=self._client)
 
+
 class _SMARTAGACLResource(ServiceResource):
 
     def __init__(self, acl_id, _client=None):
         ServiceResource.__init__(self, "smartag.acl", _client=_client)
         self.acl_id = acl_id
-        
+
         self.name = None
         self.sag_count = None
 
@@ -123,12 +120,13 @@ class _SMARTAGACLResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.disassociate_acl(acl_id=self.acl_id, **_params)
 
+
 class _SMARTAGCloudConnectNetworkResource(ServiceResource):
 
     def __init__(self, ccn_id, _client=None):
         ServiceResource.__init__(self, "smartag.cloud_connect_network", _client=_client)
         self.ccn_id = ccn_id
-        
+
         self.associated_cen_id = None
         self.associated_cen_owner_id = None
         self.associated_cloud_box_count = None
@@ -158,12 +156,13 @@ class _SMARTAGCloudConnectNetworkResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.unbind_smart_access_gateway(ccn_id=self.ccn_id, **_params)
 
+
 class _SMARTAGFlowLogResource(ServiceResource):
 
     def __init__(self, flow_log_id, _client=None):
         ServiceResource.__init__(self, "smartag.flow_log", _client=_client)
         self.flow_log_id = flow_log_id
-        
+
         self.active_aging = None
         self.description = None
         self.inactive_aging = None
@@ -202,12 +201,13 @@ class _SMARTAGFlowLogResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.disassociate_flow_log(flow_log_id=self.flow_log_id, **_params)
 
+
 class _SMARTAGGrantRuleResource(ServiceResource):
 
     def __init__(self, grant_rule_id, _client=None):
         ServiceResource.__init__(self, "smartag.grant_rule", _client=_client)
         self.grant_rule_id = grant_rule_id
-        
+
         self.ccn_instance_id = None
         self.ccn_uid = None
         self.cen_instance_id = None
@@ -216,63 +216,75 @@ class _SMARTAGGrantRuleResource(ServiceResource):
         self.gmt_modified = None
         self.region_id = None
 
+
 class _SMARTAGNetworkOptimizationResource(ServiceResource):
 
     def __init__(self, network_opt_id, _client=None):
         ServiceResource.__init__(self, "smartag.network_optimization", _client=_client)
         self.network_opt_id = network_opt_id
-        
 
     def add_network_optimization_setting(self, **params):
         _params = _transfer_params(params)
-        return self._client.add_network_optimization_setting(network_opt_id=self.network_opt_id, **_params)
+        return self._client.add_network_optimization_setting(network_opt_id=self.network_opt_id,
+                                                             **_params)
 
     def attach_network_optimization_sags(self, **params):
         _params = _transfer_params(params)
-        return self._client.attach_network_optimization_sags(network_opt_id=self.network_opt_id, **_params)
+        return self._client.attach_network_optimization_sags(network_opt_id=self.network_opt_id,
+                                                             **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_network_optimization(network_opt_id=self.network_opt_id, **_params)
+        return self._client.delete_network_optimization(network_opt_id=self.network_opt_id,
+                                                        **_params)
 
     def delete_network_optimization_setting(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_network_optimization_setting(network_opt_id=self.network_opt_id, **_params)
+        return self._client.delete_network_optimization_setting(network_opt_id=self.network_opt_id,
+                                                                **_params)
 
     def describe_network_optimization_sags(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_network_optimization_sags(network_opt_id=self.network_opt_id, **_params)
+        return self._client.describe_network_optimization_sags(network_opt_id=self.network_opt_id,
+                                                               **_params)
 
     def describe_network_optimization_settings(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_network_optimization_settings(network_opt_id=self.network_opt_id, **_params)
+        return self._client.describe_network_optimization_settings(
+            network_opt_id=self.network_opt_id, **_params)
 
     def detach_network_optimization_sags(self, **params):
         _params = _transfer_params(params)
-        return self._client.detach_network_optimization_sags(network_opt_id=self.network_opt_id, **_params)
+        return self._client.detach_network_optimization_sags(network_opt_id=self.network_opt_id,
+                                                             **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_network_optimization(network_opt_id=self.network_opt_id, **_params)
+        return self._client.modify_network_optimization(network_opt_id=self.network_opt_id,
+                                                        **_params)
+
 
 class _SMARTAGQosResource(ServiceResource):
 
     def __init__(self, qos_id, _client=None):
         ServiceResource.__init__(self, "smartag.qos", _client=_client)
         self.qos_id = qos_id
-        
+
         self.qos_name = None
         self.sag_count = None
         self.smart_ag_ids = None
 
         self.qos_cars = _create_sub_resource_without_page_collection(
             _SMARTAGQosCarResource, _client, _client.describe_qos_cars,
-            'QosCars.QosCar', 'QosCarId', parent_identifier="QosId",parent_identifier_value=self.qos_id
+            'QosCars.QosCar', 'QosCarId', parent_identifier="QosId",
+            parent_identifier_value=self.qos_id
         )
         self.qos_policies = _create_sub_resource_without_page_collection(
             _SMARTAGQosPolicyResource, _client, _client.describe_qos_policies,
-            'QosPolicies.QosPolicy', 'QosPolicyId', parent_identifier="QosId",parent_identifier_value=self.qos_id
+            'QosPolicies.QosPolicy', 'QosPolicyId', parent_identifier="QosId",
+            parent_identifier_value=self.qos_id
         )
+
     def delete(self, **params):
         _params = _transfer_params(params)
         return self._client.delete_qos(qos_id=self.qos_id, **_params)
@@ -291,19 +303,20 @@ class _SMARTAGQosResource(ServiceResource):
 
     def create_qos_car(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_qos_car(qos_id=self.qos_id,**_params)
+        response = self._client.create_qos_car(qos_id=self.qos_id, **_params)
         qos_car_id = _new_get_key_in_response(response, 'QosCarId')
-        return _SMARTAGQosCarResource(qos_car_id,self.qos_id, _client=self._client)
+        return _SMARTAGQosCarResource(qos_car_id, self.qos_id, _client=self._client)
 
     def create_qos_policy(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_qos_policy(qos_id=self.qos_id,**_params)
+        response = self._client.create_qos_policy(qos_id=self.qos_id, **_params)
         qos_policy_id = _new_get_key_in_response(response, 'QosPolicyId')
-        return _SMARTAGQosPolicyResource(qos_policy_id,self.qos_id, _client=self._client)
+        return _SMARTAGQosPolicyResource(qos_policy_id, self.qos_id, _client=self._client)
+
 
 class _SMARTAGQosCarResource(ServiceResource):
 
-    def __init__(self, qos_car_id,qos_id, _client=None):
+    def __init__(self, qos_car_id, qos_id, _client=None):
         ServiceResource.__init__(self, "smartag.qos_car", _client=_client)
         self.qos_car_id = qos_car_id
         self.qos_id = qos_id
@@ -318,15 +331,18 @@ class _SMARTAGQosCarResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_qos_car(qos_car_id=self.qos_car_id,qos_id=self.qos_id, **_params)
+        return self._client.delete_qos_car(qos_car_id=self.qos_car_id, qos_id=self.qos_id,
+                                           **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_qos_car(qos_car_id=self.qos_car_id,qos_id=self.qos_id, **_params)
+        return self._client.modify_qos_car(qos_car_id=self.qos_car_id, qos_id=self.qos_id,
+                                           **_params)
+
 
 class _SMARTAGQosPolicyResource(ServiceResource):
 
-    def __init__(self, qos_policy_id,qos_id, _client=None):
+    def __init__(self, qos_policy_id, qos_id, _client=None):
         ServiceResource.__init__(self, "smartag.qos_policy", _client=_client)
         self.qos_policy_id = qos_policy_id
         self.qos_id = qos_id
@@ -342,17 +358,20 @@ class _SMARTAGQosPolicyResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_qos_policy(qos_policy_id=self.qos_policy_id,qos_id=self.qos_id, **_params)
+        return self._client.delete_qos_policy(qos_policy_id=self.qos_policy_id, qos_id=self.qos_id,
+                                              **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_qos_policy(qos_policy_id=self.qos_policy_id,qos_id=self.qos_id, **_params)
+        return self._client.modify_qos_policy(qos_policy_id=self.qos_policy_id, qos_id=self.qos_id,
+                                              **_params)
+
 
 class _SMARTAGRegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "smartag.region", _client=_client)
         self.region_id = region_id
-        
+
         self.local_name = None
         self.region_endpoint = None

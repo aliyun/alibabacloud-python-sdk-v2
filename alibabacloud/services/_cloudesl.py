@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _CLOUDESLResource(ServiceResource):
@@ -30,28 +23,30 @@ class _CLOUDESLResource(ServiceResource):
         ServiceResource.__init__(self, 'cloudesl', _client=_client)
         self.alarms = _create_resource_collection(
             _CLOUDESLAlarmResource, _client, _client.describe_alarms,
-            'Alarms.AlarmInfo', 'AlarmId', 
+            'Alarms.AlarmInfo', 'AlarmId',
         )
         self.items = _create_resource_collection(
             _CLOUDESLItemResource, _client, _client.describe_items,
-            'Items.ItemInfo', 'ItemId', 
+            'Items.ItemInfo', 'ItemId',
         )
         self.stores = _create_resource_collection(
             _CLOUDESLStoreResource, _client, _client.describe_stores,
-            'Stores.StoreInfo', 'StoreId', 
+            'Stores.StoreInfo', 'StoreId',
         )
+
     def create_store(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_store(**_params)
         store_id = _new_get_key_in_response(response, 'StoreId')
         return _CLOUDESLStoreResource(store_id, _client=self._client)
 
+
 class _CLOUDESLAlarmResource(ServiceResource):
 
     def __init__(self, alarm_id, _client=None):
         ServiceResource.__init__(self, "cloudesl.alarm", _client=_client)
         self.alarm_id = alarm_id
-        
+
         self.alarm_status = None
         self.alarm_time = None
         self.alarm_type = None
@@ -68,12 +63,13 @@ class _CLOUDESLAlarmResource(ServiceResource):
         self.store_id = None
         self.vendor = None
 
+
 class _CLOUDESLItemResource(ServiceResource):
 
     def __init__(self, item_id, _client=None):
         ServiceResource.__init__(self, "cloudesl.item", _client=_client)
         self.item_id = item_id
-        
+
         self.action_price = None
         self.be_promotion = None
         self.be_source_code = None
@@ -116,12 +112,13 @@ class _CLOUDESLItemResource(ServiceResource):
         self.store_id = None
         self.suggest_price = None
 
+
 class _CLOUDESLStoreResource(ServiceResource):
 
     def __init__(self, store_id, _client=None):
         ServiceResource.__init__(self, "cloudesl.store", _client=_client)
         self.store_id = store_id
-        
+
         self.brand = None
         self.comments = None
         self.company_id = None

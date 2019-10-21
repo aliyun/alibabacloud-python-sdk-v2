@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _CHATBOTResource(ServiceResource):
@@ -30,36 +24,37 @@ class _CHATBOTResource(ServiceResource):
         ServiceResource.__init__(self, 'chatbot', _client=_client)
         self.categories = _create_special_resource_collection(
             _CHATBOTCategoryResource, _client, _client.query_categories,
-            'Categories.Category', 'CategoryId', 
+            'Categories.Category', 'CategoryId',
         )
         self.core_words = _create_resource_collection(
             _CHATBOTCoreWordResource, _client, _client.query_core_words,
-            'CoreWords.CoreWord', 'CoreWordName', 
+            'CoreWords.CoreWord', 'CoreWordName',
         )
         self.dialogs = _create_resource_collection(
             _CHATBOTDialogResource, _client, _client.query_dialogs,
-            'Dialogs.Dialog', 'DialogId', 
+            'Dialogs.Dialog', 'DialogId',
         )
         self.entities = _create_resource_collection(
             _CHATBOTEntityResource, _client, _client.query_entities,
-            'Entities.Entity', 'EntityId', 
+            'Entities.Entity', 'EntityId',
         )
         self.intents = _create_resource_collection(
             _CHATBOTIntentResource, _client, _client.query_intents,
-            'Intents.Intent', 'IntentId', 
+            'Intents.Intent', 'IntentId',
         )
         self.knowledges = _create_resource_collection(
             _CHATBOTKnowledgeResource, _client, _client.query_knowledges,
-            'Knowledges.Knowledge', 'KnowledgeId', 
+            'Knowledges.Knowledge', 'KnowledgeId',
         )
         self.knowledges = _create_resource_collection(
             _CHATBOTKnowledgeResource, _client, _client.query_knowledges,
-            'Knowledges.Knowledge', 'KnowledgeId', 
+            'Knowledges.Knowledge', 'KnowledgeId',
         )
         self.perspectives = _create_special_resource_collection(
             _CHATBOTPerspectiveResource, _client, _client.query_perspectives,
-            'Perspectives.Perspective', 'PerspectiveId', 
+            'Perspectives.Perspective', 'PerspectiveId',
         )
+
     def create_category(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_category(**_params)
@@ -132,12 +127,13 @@ class _CHATBOTResource(ServiceResource):
         perspective_id = _new_get_key_in_response(response, 'PerspectiveId')
         return _CHATBOTPerspectiveResource(perspective_id, _client=self._client)
 
+
 class _CHATBOTCategoryResource(ServiceResource):
 
     def __init__(self, category_id, _client=None):
         ServiceResource.__init__(self, "chatbot.category", _client=_client)
         self.category_id = category_id
-        
+
         self.childrens = None
         self.name = None
         self.parent_category_id = None
@@ -154,12 +150,13 @@ class _CHATBOTCategoryResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_category(category_id=self.category_id, **_params)
 
+
 class _CHATBOTCoreWordResource(ServiceResource):
 
     def __init__(self, core_word_name, _client=None):
         ServiceResource.__init__(self, "chatbot.core_word", _client=_client)
         self.core_word_name = core_word_name
-        
+
         self.core_word_code = None
         self.create_time = None
         self.modify_time = None
@@ -185,12 +182,13 @@ class _CHATBOTCoreWordResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_core_word(core_word_name=self.core_word_name, **_params)
 
+
 class _CHATBOTDialogResource(ServiceResource):
 
     def __init__(self, dialog_id, _client=None):
         ServiceResource.__init__(self, "chatbot.dialog", _client=_client)
         self.dialog_id = dialog_id
-        
+
         self.create_time = None
         self.create_user_id = None
         self.create_user_name = None
@@ -235,12 +233,13 @@ class _CHATBOTDialogResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_dialog_flow(dialog_id=self.dialog_id, **_params)
 
+
 class _CHATBOTEntityResource(ServiceResource):
 
     def __init__(self, entity_id, _client=None):
         ServiceResource.__init__(self, "chatbot.entity", _client=_client)
         self.entity_id = entity_id
-        
+
         self.create_time = None
         self.create_user_id = None
         self.create_user_name = None
@@ -264,12 +263,13 @@ class _CHATBOTEntityResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.remove_entity_member(entity_id=self.entity_id, **_params)
 
+
 class _CHATBOTIntentResource(ServiceResource):
 
     def __init__(self, intent_id, _client=None):
         ServiceResource.__init__(self, "chatbot.intent", _client=_client)
         self.intent_id = intent_id
-        
+
         self.create_time = None
         self.create_user_id = None
         self.create_user_name = None
@@ -285,12 +285,13 @@ class _CHATBOTIntentResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.describe_intent(intent_id=self.intent_id, **_params)
 
+
 class _CHATBOTKnowledgeResource(ServiceResource):
 
     def __init__(self, knowledge_id, _client=None):
         ServiceResource.__init__(self, "chatbot.knowledge", _client=_client)
         self.knowledge_id = knowledge_id
-        
+
         self.outline_id = None
         self.title = None
 
@@ -310,12 +311,13 @@ class _CHATBOTKnowledgeResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.move_knowledge_category(knowledge_id=self.knowledge_id, **_params)
 
+
 class _CHATBOTPerspectiveResource(ServiceResource):
 
     def __init__(self, perspective_id, _client=None):
         ServiceResource.__init__(self, "chatbot.perspective", _client=_client)
         self.perspective_id = perspective_id
-        
+
         self.create_time = None
         self.create_user_name = None
         self.modify_time = None

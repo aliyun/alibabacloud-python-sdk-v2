@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _SAEResource(ServiceResource):
@@ -30,8 +23,9 @@ class _SAEResource(ServiceResource):
         ServiceResource.__init__(self, 'sae', _client=_client)
         self.regions = _create_special_resource_collection(
             _SAERegionResource, _client, _client.describe_regions,
-            'Regions.Region', 'RegionId', 
+            'Regions.Region', 'RegionId',
         )
+
     def create_application(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_application(**_params)
@@ -44,12 +38,12 @@ class _SAEResource(ServiceResource):
         namespace_id = _new_get_key_in_response(response, 'NamespaceId')
         return _SAENamespaceResource(namespace_id, _client=self._client)
 
+
 class _SAEApplicationResource(ServiceResource):
 
     def __init__(self, app_id, _client=None):
         ServiceResource.__init__(self, "sae.application", _client=_client)
         self.app_id = app_id
-        
 
     def bind_slb(self, **params):
         _params = _transfer_params(params)
@@ -127,12 +121,12 @@ class _SAEApplicationResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.unbind_slb(app_id=self.app_id, **_params)
 
+
 class _SAENamespaceResource(ServiceResource):
 
     def __init__(self, namespace_id, _client=None):
         ServiceResource.__init__(self, "sae.namespace", _client=_client)
         self.namespace_id = namespace_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -146,11 +140,12 @@ class _SAENamespaceResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.update_namespace(namespace_id=self.namespace_id, **_params)
 
+
 class _SAERegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "sae.region", _client=_client)
         self.region_id = region_id
-        
+
         self.local_name = None
         self.region_endpoint = None

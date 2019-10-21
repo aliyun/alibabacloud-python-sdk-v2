@@ -12,22 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _VSResource(ServiceResource):
 
     def __init__(self, _client=None):
         ServiceResource.__init__(self, 'vs', _client=_client)
+
     def bind_template(self, **params):
         _params = _transfer_params(params)
         response = self._client.bind_template(**_params)
@@ -40,12 +33,12 @@ class _VSResource(ServiceResource):
         template_id = _new_get_key_in_response(response, 'TemplateId')
         return _VSTemplateResource(template_id, _client=self._client)
 
+
 class _VSTemplateResource(ServiceResource):
 
     def __init__(self, template_id, _client=None):
         ServiceResource.__init__(self, "vs.template", _client=_client)
         self.template_id = template_id
-        
 
     def batch_bind(self, **params):
         _params = _transfer_params(params)

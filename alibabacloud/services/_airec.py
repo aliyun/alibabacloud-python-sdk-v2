@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _AIRECResource(ServiceResource):
@@ -30,12 +23,13 @@ class _AIRECResource(ServiceResource):
         ServiceResource.__init__(self, 'airec', _client=_client)
         self.instances = _create_special_resource_collection(
             _AIRECInstanceResource, _client, _client.list_instance,
-            'Result.Result', 'InstanceId', 
+            'Result.Result', 'InstanceId',
         )
         self.regions = _create_special_resource_collection(
             _AIRECRegionResource, _client, _client.describe_regions,
-            'Result.Item', 'RegionId', 
+            'Result.Item', 'RegionId',
         )
+
     def create_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_instance(**_params)
@@ -48,12 +42,13 @@ class _AIRECResource(ServiceResource):
         instance_id = _new_get_key_in_response(response, 'InstanceId')
         return _AIRECInstanceResource(instance_id, _client=self._client)
 
+
 class _AIRECInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "airec.instance", _client=_client)
         self.instance_id = instance_id
-        
+
         self.charge_type = None
         self.commodity_code = None
         self.data_set_version = None
@@ -192,12 +187,13 @@ class _AIRECInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.validate_instance(instance_id=self.instance_id, **_params)
 
+
 class _AIRECRegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "airec.region", _client=_client)
         self.region_id = region_id
-        
+
         self.console_url = None
         self.endpoint = None
         self.local_name = None

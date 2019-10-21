@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _HPCResource(ServiceResource):
@@ -30,8 +23,9 @@ class _HPCResource(ServiceResource):
         ServiceResource.__init__(self, 'hpc', _client=_client)
         self.instances = _create_special_resource_collection(
             _HPCInstanceResource, _client, _client.describe_instances,
-            'Instances.Instance', 'InstanceId', 
+            'Instances.Instance', 'InstanceId',
         )
+
     def create_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_instance(**_params)
@@ -44,12 +38,13 @@ class _HPCResource(ServiceResource):
         instance_id = _new_get_key_in_response(response, 'InstanceId')
         return _HPCInstanceResource(instance_id, _client=self._client)
 
+
 class _HPCInstanceResource(ServiceResource):
 
     def __init__(self, instance_id, _client=None):
         ServiceResource.__init__(self, "hpc.instance", _client=_client)
         self.instance_id = instance_id
-        
+
         self.inner_ip_address = None
         self.instance_type = None
         self.jump_server_public_ip_address = None

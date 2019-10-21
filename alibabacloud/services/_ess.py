@@ -12,16 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
 from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _ESSResource(ServiceResource):
@@ -30,32 +25,33 @@ class _ESSResource(ServiceResource):
         ServiceResource.__init__(self, 'ess', _client=_client)
         self.alarms = _create_resource_collection(
             _ESSAlarmResource, _client, _client.describe_alarms,
-            'AlarmList.Alarm', 'AlarmTaskId', 
+            'AlarmList.Alarm', 'AlarmTaskId',
         )
         self.regions = _create_special_resource_collection(
             _ESSRegionResource, _client, _client.describe_regions,
-            'Regions.Region', 'RegionId', 
+            'Regions.Region', 'RegionId',
         )
         self.scaling_activities = _create_resource_collection(
             _ESSScalingActivityResource, _client, _client.describe_scaling_activities,
-            'ScalingActivities.ScalingActivity', 'ScalingActivityId', 
+            'ScalingActivities.ScalingActivity', 'ScalingActivityId',
         )
         self.scaling_configurations = _create_resource_collection(
             _ESSScalingConfigurationResource, _client, _client.describe_scaling_configurations,
-            'ScalingConfigurations.ScalingConfiguration', 'ScalingConfigurationId', 
+            'ScalingConfigurations.ScalingConfiguration', 'ScalingConfigurationId',
         )
         self.scaling_groups = _create_resource_collection(
             _ESSScalingGroupResource, _client, _client.describe_scaling_groups,
-            'ScalingGroups.ScalingGroup', 'ScalingGroupId', 
+            'ScalingGroups.ScalingGroup', 'ScalingGroupId',
         )
         self.scaling_rules = _create_resource_collection(
             _ESSScalingRuleResource, _client, _client.describe_scaling_rules,
-            'ScalingRules.ScalingRule', 'ScalingRuleId', 
+            'ScalingRules.ScalingRule', 'ScalingRuleId',
         )
         self.scheduled_tasks = _create_resource_collection(
             _ESSScheduledTaskResource, _client, _client.describe_scheduled_tasks,
-            'ScheduledTasks.ScheduledTask', 'ScheduledTaskId', 
+            'ScheduledTasks.ScheduledTask', 'ScheduledTaskId',
         )
+
     def create_alarm(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_alarm(**_params)
@@ -92,12 +88,13 @@ class _ESSResource(ServiceResource):
         scheduled_task_id = _new_get_key_in_response(response, 'ScheduledTaskId')
         return _ESSScheduledTaskResource(scheduled_task_id, _client=self._client)
 
+
 class _ESSAlarmResource(ServiceResource):
 
     def __init__(self, alarm_task_id, _client=None):
         ServiceResource.__init__(self, "ess.alarm", _client=_client)
         self.alarm_task_id = alarm_task_id
-        
+
         self.alarm_actions = None
         self.comparison_operator = None
         self.description = None
@@ -125,23 +122,25 @@ class _ESSAlarmResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.modify_alarm(alarm_task_id=self.alarm_task_id, **_params)
 
+
 class _ESSRegionResource(ServiceResource):
 
     def __init__(self, region_id, _client=None):
         ServiceResource.__init__(self, "ess.region", _client=_client)
         self.region_id = region_id
-        
+
         self.classic_unavailable = None
         self.local_name = None
         self.region_endpoint = None
         self.vpc_unavailable = None
+
 
 class _ESSScalingActivityResource(ServiceResource):
 
     def __init__(self, scaling_activity_id, _client=None):
         ServiceResource.__init__(self, "ess.scaling_activity", _client=_client)
         self.scaling_activity_id = scaling_activity_id
-        
+
         self.attached_capacity = None
         self.auto_created_capacity = None
         self.cause = None
@@ -155,12 +154,13 @@ class _ESSScalingActivityResource(ServiceResource):
         self.status_message = None
         self.total_capacity = None
 
+
 class _ESSScalingConfigurationResource(ServiceResource):
 
     def __init__(self, scaling_configuration_id, _client=None):
         ServiceResource.__init__(self, "ess.scaling_configuration", _client=_client)
         self.scaling_configuration_id = scaling_configuration_id
-        
+
         self.cpu = None
         self.creation_time = None
         self.data_disks = None
@@ -201,22 +201,26 @@ class _ESSScalingConfigurationResource(ServiceResource):
 
     def deactivate(self, **params):
         _params = _transfer_params(params)
-        return self._client.deactivate_scaling_configuration(scaling_configuration_id=self.scaling_configuration_id, **_params)
+        return self._client.deactivate_scaling_configuration(
+            scaling_configuration_id=self.scaling_configuration_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_scaling_configuration(scaling_configuration_id=self.scaling_configuration_id, **_params)
+        return self._client.delete_scaling_configuration(
+            scaling_configuration_id=self.scaling_configuration_id, **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_scaling_configuration(scaling_configuration_id=self.scaling_configuration_id, **_params)
+        return self._client.modify_scaling_configuration(
+            scaling_configuration_id=self.scaling_configuration_id, **_params)
+
 
 class _ESSScalingGroupResource(ServiceResource):
 
     def __init__(self, scaling_group_id, _client=None):
         ServiceResource.__init__(self, "ess.scaling_group", _client=_client)
         self.scaling_group_id = scaling_group_id
-        
+
         self.active_capacity = None
         self.active_scaling_configuration_id = None
         self.creation_time = None
@@ -254,8 +258,10 @@ class _ESSScalingGroupResource(ServiceResource):
 
         self.lifecycle_hooks = _create_sub_resource_without_page_collection(
             _ESSLifecycleHookResource, _client, _client.describe_lifecycle_hooks,
-            'LifecycleHooks.LifecycleHook', 'LifecycleHookId', parent_identifier="ScalingGroupId",parent_identifier_value=self.scaling_group_id
+            'LifecycleHooks.LifecycleHook', 'LifecycleHookId', parent_identifier="ScalingGroupId",
+            parent_identifier_value=self.scaling_group_id
         )
+
     def attach_db_instances(self, **params):
         _params = _transfer_params(params)
         return self._client.attach_db_instances(scaling_group_id=self.scaling_group_id, **_params)
@@ -274,7 +280,8 @@ class _ESSScalingGroupResource(ServiceResource):
 
     def create_notification_configuration(self, **params):
         _params = _transfer_params(params)
-        return self._client.create_notification_configuration(scaling_group_id=self.scaling_group_id, **_params)
+        return self._client.create_notification_configuration(
+            scaling_group_id=self.scaling_group_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -282,7 +289,8 @@ class _ESSScalingGroupResource(ServiceResource):
 
     def delete_notification_configuration(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_notification_configuration(scaling_group_id=self.scaling_group_id, **_params)
+        return self._client.delete_notification_configuration(
+            scaling_group_id=self.scaling_group_id, **_params)
 
     def describe_alert_config(self, **params):
         _params = _transfer_params(params)
@@ -290,11 +298,13 @@ class _ESSScalingGroupResource(ServiceResource):
 
     def describe_capacity_history(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_capacity_history(scaling_group_id=self.scaling_group_id, **_params)
+        return self._client.describe_capacity_history(scaling_group_id=self.scaling_group_id,
+                                                      **_params)
 
     def describe_notification_configurations(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_notification_configurations(scaling_group_id=self.scaling_group_id, **_params)
+        return self._client.describe_notification_configurations(
+            scaling_group_id=self.scaling_group_id, **_params)
 
     def detach_db_instances(self, **params):
         _params = _transfer_params(params)
@@ -338,7 +348,8 @@ class _ESSScalingGroupResource(ServiceResource):
 
     def modify_notification_configuration(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_notification_configuration(scaling_group_id=self.scaling_group_id, **_params)
+        return self._client.modify_notification_configuration(
+            scaling_group_id=self.scaling_group_id, **_params)
 
     def rebalance_instances(self, **params):
         _params = _transfer_params(params)
@@ -350,17 +361,21 @@ class _ESSScalingGroupResource(ServiceResource):
 
     def set_instances_protection(self, **params):
         _params = _transfer_params(params)
-        return self._client.set_instances_protection(scaling_group_id=self.scaling_group_id, **_params)
+        return self._client.set_instances_protection(scaling_group_id=self.scaling_group_id,
+                                                     **_params)
 
     def create_lifecycle_hook(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_lifecycle_hook(scaling_group_id=self.scaling_group_id,**_params)
+        response = self._client.create_lifecycle_hook(scaling_group_id=self.scaling_group_id,
+                                                      **_params)
         lifecycle_hook_id = _new_get_key_in_response(response, 'LifecycleHookId')
-        return _ESSLifecycleHookResource(lifecycle_hook_id,self.scaling_group_id, _client=self._client)
+        return _ESSLifecycleHookResource(lifecycle_hook_id, self.scaling_group_id,
+                                         _client=self._client)
+
 
 class _ESSLifecycleHookResource(ServiceResource):
 
-    def __init__(self, lifecycle_hook_id,scaling_group_id, _client=None):
+    def __init__(self, lifecycle_hook_id, scaling_group_id, _client=None):
         ServiceResource.__init__(self, "ess.lifecycle_hook", _client=_client)
         self.lifecycle_hook_id = lifecycle_hook_id
         self.scaling_group_id = scaling_group_id
@@ -373,18 +388,23 @@ class _ESSLifecycleHookResource(ServiceResource):
 
     def complete_lifecycle_action(self, **params):
         _params = _transfer_params(params)
-        return self._client.complete_lifecycle_action(lifecycle_hook_id=self.lifecycle_hook_id,scaling_group_id=self.scaling_group_id, **_params)
+        return self._client.complete_lifecycle_action(lifecycle_hook_id=self.lifecycle_hook_id,
+                                                      scaling_group_id=self.scaling_group_id,
+                                                      **_params)
 
     def record_lifecycle_action_heartbeat(self, **params):
         _params = _transfer_params(params)
-        return self._client.record_lifecycle_action_heartbeat(lifecycle_hook_id=self.lifecycle_hook_id,scaling_group_id=self.scaling_group_id, **_params)
+        return self._client.record_lifecycle_action_heartbeat(
+            lifecycle_hook_id=self.lifecycle_hook_id, scaling_group_id=self.scaling_group_id,
+            **_params)
+
 
 class _ESSScalingRuleResource(ServiceResource):
 
     def __init__(self, scaling_rule_id, _client=None):
         ServiceResource.__init__(self, "ess.scaling_rule", _client=_client)
         self.scaling_rule_id = scaling_rule_id
-        
+
         self.adjustment_type = None
         self.adjustment_value = None
         self.alarms = None
@@ -415,12 +435,13 @@ class _ESSScalingRuleResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.modify_scaling_rule(scaling_rule_id=self.scaling_rule_id, **_params)
 
+
 class _ESSScheduledTaskResource(ServiceResource):
 
     def __init__(self, scheduled_task_id, _client=None):
         ServiceResource.__init__(self, "ess.scheduled_task", _client=_client)
         self.scheduled_task_id = scheduled_task_id
-        
+
         self.description = None
         self.launch_expiration_time = None
         self.launch_time = None
@@ -435,8 +456,10 @@ class _ESSScheduledTaskResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_scheduled_task(scheduled_task_id=self.scheduled_task_id, **_params)
+        return self._client.delete_scheduled_task(scheduled_task_id=self.scheduled_task_id,
+                                                  **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_scheduled_task(scheduled_task_id=self.scheduled_task_id, **_params)
+        return self._client.modify_scheduled_task(scheduled_task_id=self.scheduled_task_id,
+                                                  **_params)

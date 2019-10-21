@@ -12,16 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
 from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _NASResource(ServiceResource):
@@ -30,24 +25,25 @@ class _NASResource(ServiceResource):
         ServiceResource.__init__(self, 'nas', _client=_client)
         self.access_groups = _create_resource_collection(
             _NASAccessGroupResource, _client, _client.describe_access_groups,
-            'AccessGroups.AccessGroup', 'AccessGroupName', 
+            'AccessGroups.AccessGroup', 'AccessGroupName',
         )
         self.auto_snapshot_policies = _create_resource_collection(
             _NASAutoSnapshotPolicyResource, _client, _client.describe_auto_snapshot_policies,
-            'AutoSnapshotPolicies.AutoSnapshotPolicy', 'AutoSnapshotPolicyId', 
+            'AutoSnapshotPolicies.AutoSnapshotPolicy', 'AutoSnapshotPolicyId',
         )
         self.file_systems = _create_resource_collection(
             _NASFileSystemResource, _client, _client.describe_file_systems,
-            'FileSystems.FileSystem', 'FileSystemId', 
+            'FileSystems.FileSystem', 'FileSystemId',
         )
         self.snapshots = _create_resource_collection(
             _NASSnapshotResource, _client, _client.describe_snapshots,
-            'Snapshots.Snapshot', 'SnapshotId', 
+            'Snapshots.Snapshot', 'SnapshotId',
         )
         self.zones = _create_special_resource_collection(
             _NASZoneResource, _client, _client.describe_zones,
-            'Zones.Zone', 'ZoneId', 
+            'Zones.Zone', 'ZoneId',
         )
+
     def create_access_group(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_access_group(**_params)
@@ -72,12 +68,13 @@ class _NASResource(ServiceResource):
         snapshot_id = _new_get_key_in_response(response, 'SnapshotId')
         return _NASSnapshotResource(snapshot_id, _client=self._client)
 
+
 class _NASAccessGroupResource(ServiceResource):
 
     def __init__(self, access_group_name, _client=None):
         ServiceResource.__init__(self, "nas.access_group", _client=_client)
         self.access_group_name = access_group_name
-        
+
         self.access_group_type = None
         self.description = None
         self.mount_target_count = None
@@ -85,8 +82,10 @@ class _NASAccessGroupResource(ServiceResource):
 
         self.access_rules = _create_sub_resource_without_page_collection(
             _NASAccessRuleResource, _client, _client.describe_access_rules,
-            'AccessRules.AccessRule', 'AccessRuleId', parent_identifier="AccessGroupName",parent_identifier_value=self.access_group_name
+            'AccessRules.AccessRule', 'AccessRuleId', parent_identifier="AccessGroupName",
+            parent_identifier_value=self.access_group_name
         )
+
     def delete(self, **params):
         _params = _transfer_params(params)
         return self._client.delete_access_group(access_group_name=self.access_group_name, **_params)
@@ -97,13 +96,15 @@ class _NASAccessGroupResource(ServiceResource):
 
     def create_access_rule(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_access_rule(access_group_name=self.access_group_name,**_params)
+        response = self._client.create_access_rule(access_group_name=self.access_group_name,
+                                                   **_params)
         access_rule_id = _new_get_key_in_response(response, 'AccessRuleId')
-        return _NASAccessRuleResource(access_rule_id,self.access_group_name, _client=self._client)
+        return _NASAccessRuleResource(access_rule_id, self.access_group_name, _client=self._client)
+
 
 class _NASAccessRuleResource(ServiceResource):
 
-    def __init__(self, access_rule_id,access_group_name, _client=None):
+    def __init__(self, access_rule_id, access_group_name, _client=None):
         ServiceResource.__init__(self, "nas.access_rule", _client=_client)
         self.access_rule_id = access_rule_id
         self.access_group_name = access_group_name
@@ -114,18 +115,21 @@ class _NASAccessRuleResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_access_rule(access_rule_id=self.access_rule_id,access_group_name=self.access_group_name, **_params)
+        return self._client.delete_access_rule(access_rule_id=self.access_rule_id,
+                                               access_group_name=self.access_group_name, **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_access_rule(access_rule_id=self.access_rule_id,access_group_name=self.access_group_name, **_params)
+        return self._client.modify_access_rule(access_rule_id=self.access_rule_id,
+                                               access_group_name=self.access_group_name, **_params)
+
 
 class _NASAutoSnapshotPolicyResource(ServiceResource):
 
     def __init__(self, auto_snapshot_policy_id, _client=None):
         ServiceResource.__init__(self, "nas.auto_snapshot_policy", _client=_client)
         self.auto_snapshot_policy_id = auto_snapshot_policy_id
-        
+
         self.auto_snapshot_policy_name = None
         self.create_time = None
         self.file_system_nums = None
@@ -137,22 +141,26 @@ class _NASAutoSnapshotPolicyResource(ServiceResource):
 
     def apply(self, **params):
         _params = _transfer_params(params)
-        return self._client.apply_auto_snapshot_policy(auto_snapshot_policy_id=self.auto_snapshot_policy_id, **_params)
+        return self._client.apply_auto_snapshot_policy(
+            auto_snapshot_policy_id=self.auto_snapshot_policy_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_auto_snapshot_policy(auto_snapshot_policy_id=self.auto_snapshot_policy_id, **_params)
+        return self._client.delete_auto_snapshot_policy(
+            auto_snapshot_policy_id=self.auto_snapshot_policy_id, **_params)
 
     def modify(self, **params):
         _params = _transfer_params(params)
-        return self._client.modify_auto_snapshot_policy(auto_snapshot_policy_id=self.auto_snapshot_policy_id, **_params)
+        return self._client.modify_auto_snapshot_policy(
+            auto_snapshot_policy_id=self.auto_snapshot_policy_id, **_params)
+
 
 class _NASFileSystemResource(ServiceResource):
 
     def __init__(self, file_system_id, _client=None):
         ServiceResource.__init__(self, "nas.file_system", _client=_client)
         self.file_system_id = file_system_id
-        
+
         self.auto_snapshot_policy_id = None
         self.bandwidth = None
         self.capacity = None
@@ -171,7 +179,8 @@ class _NASFileSystemResource(ServiceResource):
 
     def cancel_auto_snapshot_policy(self, **params):
         _params = _transfer_params(params)
-        return self._client.cancel_auto_snapshot_policy(file_system_id=self.file_system_id, **_params)
+        return self._client.cancel_auto_snapshot_policy(file_system_id=self.file_system_id,
+                                                        **_params)
 
     def add_client_to_black_list(self, **params):
         _params = _transfer_params(params)
@@ -203,7 +212,8 @@ class _NASFileSystemResource(ServiceResource):
 
     def describe_black_list_clients(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_black_list_clients(file_system_id=self.file_system_id, **_params)
+        return self._client.describe_black_list_clients(file_system_id=self.file_system_id,
+                                                        **_params)
 
     def describe_ldap_config(self, **params):
         _params = _transfer_params(params)
@@ -227,7 +237,8 @@ class _NASFileSystemResource(ServiceResource):
 
     def remove_client_from_black_list(self, **params):
         _params = _transfer_params(params)
-        return self._client.remove_client_from_black_list(file_system_id=self.file_system_id, **_params)
+        return self._client.remove_client_from_black_list(file_system_id=self.file_system_id,
+                                                          **_params)
 
     def remove_tags(self, **params):
         _params = _transfer_params(params)
@@ -237,12 +248,13 @@ class _NASFileSystemResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.reset_file_system(file_system_id=self.file_system_id, **_params)
 
+
 class _NASSnapshotResource(ServiceResource):
 
     def __init__(self, snapshot_id, _client=None):
         ServiceResource.__init__(self, "nas.snapshot", _client=_client)
         self.snapshot_id = snapshot_id
-        
+
         self.create_time = None
         self.description = None
         self.progress = None
@@ -257,11 +269,12 @@ class _NASSnapshotResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.delete_snapshot(snapshot_id=self.snapshot_id, **_params)
 
+
 class _NASZoneResource(ServiceResource):
 
     def __init__(self, zone_id, _client=None):
         ServiceResource.__init__(self, "nas.zone", _client=_client)
         self.zone_id = zone_id
-        
+
         self.capacity = None
         self.performance = None

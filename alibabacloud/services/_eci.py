@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _ECIResource(ServiceResource):
@@ -30,20 +23,22 @@ class _ECIResource(ServiceResource):
         ServiceResource.__init__(self, 'eci', _client=_client)
         self.container_groups = _create_special_resource_collection(
             _ECIContainerGroupResource, _client, _client.describe_container_groups,
-            'ContainerGroups.ContainerGroup', 'ContainerGroupId', 
+            'ContainerGroups.ContainerGroup', 'ContainerGroupId',
         )
+
     def create_container_group(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_container_group(**_params)
         container_group_id = _new_get_key_in_response(response, 'ContainerGroupId')
         return _ECIContainerGroupResource(container_group_id, _client=self._client)
 
+
 class _ECIContainerGroupResource(ServiceResource):
 
     def __init__(self, container_group_id, _client=None):
         ServiceResource.__init__(self, "eci.container_group", _client=_client)
         self.container_group_id = container_group_id
-        
+
         self.container_group_name = None
         self.containers = None
         self.cpu = None
@@ -73,24 +68,30 @@ class _ECIContainerGroupResource(ServiceResource):
 
     def delete(self, **params):
         _params = _transfer_params(params)
-        return self._client.delete_container_group(container_group_id=self.container_group_id, **_params)
+        return self._client.delete_container_group(container_group_id=self.container_group_id,
+                                                   **_params)
 
     def describe_container_group_metric(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_container_group_metric(container_group_id=self.container_group_id, **_params)
+        return self._client.describe_container_group_metric(
+            container_group_id=self.container_group_id, **_params)
 
     def describe_container_log(self, **params):
         _params = _transfer_params(params)
-        return self._client.describe_container_log(container_group_id=self.container_group_id, **_params)
+        return self._client.describe_container_log(container_group_id=self.container_group_id,
+                                                   **_params)
 
     def exec_container_command(self, **params):
         _params = _transfer_params(params)
-        return self._client.exec_container_command(container_group_id=self.container_group_id, **_params)
+        return self._client.exec_container_command(container_group_id=self.container_group_id,
+                                                   **_params)
 
     def restart(self, **params):
         _params = _transfer_params(params)
-        return self._client.restart_container_group(container_group_id=self.container_group_id, **_params)
+        return self._client.restart_container_group(container_group_id=self.container_group_id,
+                                                    **_params)
 
     def update(self, **params):
         _params = _transfer_params(params)
-        return self._client.update_container_group(container_group_id=self.container_group_id, **_params)
+        return self._client.update_container_group(container_group_id=self.container_group_id,
+                                                   **_params)

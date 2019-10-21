@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _EMRResource(ServiceResource):
@@ -30,24 +24,26 @@ class _EMRResource(ServiceResource):
         ServiceResource.__init__(self, 'emr', _client=_client)
         self.flow_instances = _create_special_resource_collection(
             _EMRFlowInstanceResource, _client, _client.describe_flow_instance,
-            'DependencyFlowList.ParentFlow', 'FlowInstanceId', 
+            'DependencyFlowList.ParentFlow', 'FlowInstanceId',
         )
         self.host_pools = _create_resource_collection(
             _EMRHostPoolResource, _client, _client.list_host_pool,
-            'HostPoolList.HostPool', 'BizId', 
+            'HostPoolList.HostPool', 'BizId',
         )
+
     def create_host_pool(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_host_pool(**_params)
         biz_id = _new_get_key_in_response(response, 'BizId')
         return _EMRHostPoolResource(biz_id, _client=self._client)
 
+
 class _EMRFlowInstanceResource(ServiceResource):
 
     def __init__(self, flow_instance_id, _client=None):
         ServiceResource.__init__(self, "emr.flow_instance", _client=_client)
         self.flow_instance_id = flow_instance_id
-        
+
         self.biz_date = None
         self.dependency_flow_id = None
         self.dependency_instance_id = None
@@ -75,12 +71,13 @@ class _EMRFlowInstanceResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.suspend_flow(flow_instance_id=self.flow_instance_id, **_params)
 
+
 class _EMRHostPoolResource(ServiceResource):
 
     def __init__(self, biz_id, _client=None):
         ServiceResource.__init__(self, "emr.host_pool", _client=_client)
         self.biz_id = biz_id
-        
+
         self.description = None
         self.gmt_create = None
         self.host_count = None
@@ -116,12 +113,12 @@ class _EMRHostPoolResource(ServiceResource):
         _params = _transfer_params(params)
         return self._client.modify_cluster_template(biz_id=self.biz_id, **_params)
 
+
 class _EMRScalingRuleResource(ServiceResource):
 
     def __init__(self, scaling_rule_id, _client=None):
         ServiceResource.__init__(self, "emr.scaling_rule", _client=_client)
         self.scaling_rule_id = scaling_rule_id
-        
 
     def delete(self, **params):
         _params = _transfer_params(params)

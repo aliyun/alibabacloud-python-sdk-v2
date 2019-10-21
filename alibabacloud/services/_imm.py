@@ -12,16 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
-from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _IMMResource(ServiceResource):
@@ -30,8 +23,9 @@ class _IMMResource(ServiceResource):
         ServiceResource.__init__(self, 'imm', _client=_client)
         self.porn_batch_detect_jobs = _create_special_resource_collection(
             _IMMPornBatchDetectJobResource, _client, _client.list_porn_batch_detect_jobs,
-            'Jobs.Jobs', 'JobId', 
+            'Jobs.Jobs', 'JobId',
         )
+
     def create_cad_conversion_task(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_cad_conversion_task(**_params)
@@ -50,12 +44,12 @@ class _IMMResource(ServiceResource):
         job_id = _new_get_key_in_response(response, 'JobId')
         return _IMMPornBatchDetectJobResource(job_id, _client=self._client)
 
+
 class _IMMCADConversionTaskResource(ServiceResource):
 
     def __init__(self, task_id, _client=None):
         ServiceResource.__init__(self, "imm.cad_conversion_task", _client=_client)
         self.task_id = task_id
-        
 
     def delete_office_conversion_task(self, **params):
         _params = _transfer_params(params)
@@ -89,12 +83,13 @@ class _IMMCADConversionTaskResource(ServiceResource):
         response = self._client.get_video_task(task_id=self.task_id, **_params)
         return response
 
+
 class _IMMPornBatchDetectJobResource(ServiceResource):
 
     def __init__(self, job_id, _client=None):
         ServiceResource.__init__(self, "imm.porn_batch_detect_job", _client=_client)
         self.job_id = job_id
-        
+
         self.create_time = None
         self.external_id = None
         self.finish_time = None
