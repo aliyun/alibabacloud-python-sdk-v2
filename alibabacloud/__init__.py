@@ -14,7 +14,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 
 from alibabacloud.client import ClientConfig
 from alibabacloud.exceptions import ClientException

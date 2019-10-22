@@ -401,9 +401,9 @@ class _ECSAutoProvisioningGroupResource(ServiceResource):
         items = _new_get_key_in_response(result, 'AutoProvisioningGroups.AutoProvisioningGroup')
         if not items:
             raise ClientException(msg=
-                                  "Failed to find auto_provisioning_group data from DescribeAutoProvisioningGroups response. "
-                                  "AutoProvisioningGroupId = {0}".format(
-                                      self.auto_provisioning_group_id))
+            "Failed to find auto_provisioning_group data from DescribeAutoProvisioningGroups response. "
+            "AutoProvisioningGroupId = {0}".format(
+                self.auto_provisioning_group_id))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_status, timeout=120):
@@ -1402,9 +1402,9 @@ class _ECSNetworkInterfacePermissionResource(ServiceResource):
                                          'NetworkInterfacePermissions.NetworkInterfacePermission')
         if not items:
             raise ClientException(msg=
-                                  "Failed to find network_interface_permission data from DescribeNetworkInterfacePermissions response. "
-                                  "NetworkInterfacePermissionId = {0}".format(
-                                      self.network_interface_permission_id))
+            "Failed to find network_interface_permission data from DescribeNetworkInterfacePermissions response. "
+            "NetworkInterfacePermissionId = {0}".format(
+                self.network_interface_permission_id))
         self._assign_attributes(items[0])
 
 
