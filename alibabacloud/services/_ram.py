@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import time
-
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
-from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
-from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.resources.collection import _create_special_resource_collection
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _RAMResource(ServiceResource):
@@ -111,7 +105,7 @@ class _RAMGroupResource(ServiceResource):
         items = _new_get_key_in_response(result, 'Group')
         if not items:
             raise ClientException(msg="Failed to find group data from GetGroup response. "
-                                  "GroupName = {0}".format(self.group_name))
+                                      "GroupName = {0}".format(self.group_name))
         self._assign_attributes(items[0])
 
 
@@ -190,7 +184,7 @@ class _RAMPolicyResource(ServiceResource):
         items = _new_get_key_in_response(result, 'Policy')
         if not items:
             raise ClientException(msg="Failed to find policy data from GetPolicy response. "
-                                  "PolicyName = {0}".format(self.policy_name))
+                                      "PolicyName = {0}".format(self.policy_name))
         self._assign_attributes(items[0])
 
 
@@ -227,7 +221,7 @@ class _RAMRoleResource(ServiceResource):
         items = _new_get_key_in_response(result, 'Role')
         if not items:
             raise ClientException(msg="Failed to find role data from GetRole response. "
-                                  "RoleName = {0}".format(self.role_name))
+                                      "RoleName = {0}".format(self.role_name))
         self._assign_attributes(items[0])
 
 
@@ -329,7 +323,7 @@ class _RAMUserResource(ServiceResource):
         items = _new_get_key_in_response(result, 'User')
         if not items:
             raise ClientException(msg="Failed to find user data from GetUser response. "
-                                  "UserName = {0}".format(self.user_name))
+                                      "UserName = {0}".format(self.user_name))
         self._assign_attributes(items)
 
 

@@ -12,16 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import time
 
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.base import ServiceResource
-from alibabacloud.resources.collection import _create_resource_collection, _create_special_resource_collection
-from alibabacloud.resources.collection import _create_default_resource_collection
+from alibabacloud.resources.collection import _create_resource_collection, \
+    _create_special_resource_collection
 from alibabacloud.resources.collection import _create_sub_resource_with_page_collection
 from alibabacloud.resources.collection import _create_sub_resource_without_page_collection
-from alibabacloud.utils.utils import _assert_is_not_none, _new_get_key_in_response, _transfer_params
+from alibabacloud.utils.utils import _new_get_key_in_response, _transfer_params
 
 
 class _RDSResource(ServiceResource):
@@ -591,26 +590,26 @@ class _RDSDBInstanceResource(ServiceResource):
 
     def create_account(self, **params):
         _params = _transfer_params(params)
-        self._client.create_account(db_instance_id=self.db_instance_id,**_params)
+        self._client.create_account(db_instance_id=self.db_instance_id, **_params)
         account_name = _params.get("account_name")
-        return _RDSAccountResource(account_name,self.db_instance_id, _client=self._client)
+        return _RDSAccountResource(account_name, self.db_instance_id, _client=self._client)
 
     def create_backup(self, **params):
         _params = _transfer_params(params)
-        response = self._client.create_backup(db_instance_id=self.db_instance_id,**_params)
+        response = self._client.create_backup(db_instance_id=self.db_instance_id, **_params)
         backup_id = _new_get_key_in_response(response, 'BackupJobId')
-        return _RDSBackupResource(backup_id,self.db_instance_id, _client=self._client)
+        return _RDSBackupResource(backup_id, self.db_instance_id, _client=self._client)
 
     def create_database(self, **params):
         _params = _transfer_params(params)
-        self._client.create_database(db_instance_id=self.db_instance_id,**_params)
+        self._client.create_database(db_instance_id=self.db_instance_id, **_params)
         db_name = _params.get("db_name")
-        return _RDSDBResource(db_name,self.db_instance_id, _client=self._client)
+        return _RDSDBResource(db_name, self.db_instance_id, _client=self._client)
 
     def create_temp_db_instance(self, **params):
         _params = _transfer_params(params)
         response = self._client.create_temp_db_instance(
-            db_instance_id=self.db_instance_id,**_params)
+            db_instance_id=self.db_instance_id, **_params)
         temp_db_instance_id = _new_get_key_in_response(response, 'TempDBInstanceId')
         return _RDSTempDBInstanceResource(
             temp_db_instance_id,
@@ -623,14 +622,14 @@ class _RDSDBInstanceResource(ServiceResource):
         if not items:
             raise ClientException(
                 msg="Failed to find db_instance data from DescribeDBInstances response. "
-                "DBInstanceId = {0}".format(
+                    "DBInstanceId = {0}".format(
                     self.db_instance_id))
         self._assign_attributes(items[0])
 
 
 class _RDSAccountResource(ServiceResource):
 
-    def __init__(self, account_name,db_instance_id, _client=None):
+    def __init__(self, account_name, db_instance_id, _client=None):
         ServiceResource.__init__(self, "rds.account", _client=_client)
         self.account_name = account_name
         self.db_instance_id = db_instance_id
@@ -703,7 +702,7 @@ class _RDSAccountResource(ServiceResource):
         items = _new_get_key_in_response(result, 'Accounts.DBInstanceAccount')
         if not items:
             raise ClientException(msg="Failed to find account data from DescribeAccounts response. "
-                                  "AccountName = {0}".format(self.account_name))
+                                      "AccountName = {0}".format(self.account_name))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_account_status, timeout=120):
@@ -722,7 +721,7 @@ class _RDSAccountResource(ServiceResource):
 
 class _RDSBackupResource(ServiceResource):
 
-    def __init__(self, backup_id,db_instance_id, _client=None):
+    def __init__(self, backup_id, db_instance_id, _client=None):
         ServiceResource.__init__(self, "rds.backup", _client=_client)
         self.backup_id = backup_id
         self.db_instance_id = db_instance_id
@@ -759,7 +758,7 @@ class _RDSBackupResource(ServiceResource):
         items = _new_get_key_in_response(result, 'Items.Backup')
         if not items:
             raise ClientException(msg="Failed to find backup data from DescribeBackups response. "
-                                  "BackupId = {0}".format(self.backup_id))
+                                      "BackupId = {0}".format(self.backup_id))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_backup_status, timeout=120):
@@ -778,7 +777,7 @@ class _RDSBackupResource(ServiceResource):
 
 class _RDSDBResource(ServiceResource):
 
-    def __init__(self, db_name,db_instance_id, _client=None):
+    def __init__(self, db_name, db_instance_id, _client=None):
         ServiceResource.__init__(self, "rds.db", _client=_client)
         self.db_name = db_name
         self.db_instance_id = db_instance_id
@@ -798,7 +797,7 @@ class _RDSDBResource(ServiceResource):
     def create_migrate_task_for_sql_server(self, **params):
         _params = _transfer_params(params)
         self._client.create_migrate_task_for_sql_server(
-            db_name=self.db_name,db_instance_id=self.db_instance_id, **_params)
+            db_name=self.db_name, db_instance_id=self.db_instance_id, **_params)
 
     def delete(self, **params):
         _params = _transfer_params(params)
@@ -817,15 +816,15 @@ class _RDSDBResource(ServiceResource):
     def create_online_database_task(self, **params):
         _params = _transfer_params(params)
         self._client.create_online_database_task(
-            db_name=self.db_name,db_instance_id=self.db_instance_id, **_params)
+            db_name=self.db_name, db_instance_id=self.db_instance_id, **_params)
 
     def refresh(self):
         result = self._client.describe_databases(
-            db_name=self.db_name,db_instance_id=self.db_instance_id)
+            db_name=self.db_name, db_instance_id=self.db_instance_id)
         items = _new_get_key_in_response(result, 'Databases.Database')
         if not items:
             raise ClientException(msg="Failed to find db data from DescribeDatabases response. "
-                                  "DBName = {0}".format(self.db_name))
+                                      "DBName = {0}".format(self.db_name))
         self._assign_attributes(items[0])
 
     def wait_until(self, target_db_status, timeout=120):
@@ -844,7 +843,7 @@ class _RDSDBResource(ServiceResource):
 
 class _RDSTempDBInstanceResource(ServiceResource):
 
-    def __init__(self, temp_db_instance_id,db_instance_id, _client=None):
+    def __init__(self, temp_db_instance_id, db_instance_id, _client=None):
         ServiceResource.__init__(self, "rds.temp_db_instance", _client=_client)
         self.temp_db_instance_id = temp_db_instance_id
         self.db_instance_id = db_instance_id
@@ -897,7 +896,7 @@ class _RDSRegionResource(ServiceResource):
         items = _new_get_key_in_response(result, 'Regions.Region')
         if not items:
             raise ClientException(msg="Failed to find region data from DescribeRegions response. "
-                                  "RegionId = {0}".format(self.region_id))
+                                      "RegionId = {0}".format(self.region_id))
         self._assign_attributes(items[0])
 
 
@@ -946,5 +945,5 @@ class _RDSTaskResource(ServiceResource):
         items = _new_get_key_in_response(result, 'TaskSet.Task')
         if not items:
             raise ClientException(msg="Failed to find task data from DescribeTasks response. "
-                                  "TaskId = {0}".format(self.task_id))
+                                      "TaskId = {0}".format(self.task_id))
         self._assign_attributes(items[0])

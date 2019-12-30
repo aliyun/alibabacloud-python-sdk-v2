@@ -13,8 +13,8 @@
 # limitations under the License.
 from alibabacloud.exceptions import ClientException
 from alibabacloud.resources.collection import _create_resource_collection
-from alibabacloud.services._vpc import _VPCResource
 from alibabacloud.services._vpc import _VPCEipAddressResource
+from alibabacloud.services._vpc import _VPCResource
 from alibabacloud.utils.utils import transfer, _new_get_key_in_response
 
 
@@ -30,8 +30,8 @@ class VPCEipAddressResource(_VPCEipAddressResource):
         items = _new_get_key_in_response(response, 'EipAddresses.EipAddress')
         if not items:
             raise ClientException(msg="Failed to find EIP Address data from DescribeEipAddresses "
-                                  "response. "
-                                  "AllocationId = {0}".format(self.allocation_id))
+                                      "response. "
+                                      "AllocationId = {0}".format(self.allocation_id))
         self._assign_attributes(items[0])
 
 

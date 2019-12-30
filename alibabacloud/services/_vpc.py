@@ -692,9 +692,9 @@ class _VPCGlobalAccelerationInstanceResource(ServiceResource):
                                          'GlobalAccelerationInstances.GlobalAccelerationInstance')
         if not items:
             raise ClientException(msg=
-                                  "Failed to find global_acceleration_instance data from DescribeGlobalAccelerationInstances response. "
-                                  "GlobalAccelerationInstanceId = {0}".format(
-                                      self.global_acceleration_instance_id))
+            "Failed to find global_acceleration_instance data from DescribeGlobalAccelerationInstances response. "
+            "GlobalAccelerationInstanceId = {0}".format(
+                self.global_acceleration_instance_id))
         self._assign_attributes(items[0])
 
 
@@ -864,9 +864,9 @@ class _VPCIPv6TranslatorEntryResource(ServiceResource):
         items = _new_get_key_in_response(result, 'Ipv6TranslatorEntries.Ipv6TranslatorEntry')
         if not items:
             raise ClientException(msg=
-                                  "Failed to find ipv6_translator_entry data from DescribeIPv6TranslatorEntries response. "
-                                  "Ipv6TranslatorEntryId = {0}".format(
-                                      self.ipv6_translator_entry_id))
+            "Failed to find ipv6_translator_entry data from DescribeIPv6TranslatorEntries response. "
+            "Ipv6TranslatorEntryId = {0}".format(
+                self.ipv6_translator_entry_id))
         self._assign_attributes(items[0])
 
 
@@ -926,9 +926,9 @@ class _VPCIpv6EgressOnlyRuleResource(ServiceResource):
         items = _new_get_key_in_response(result, 'Ipv6EgressOnlyRules.Ipv6EgressOnlyRule')
         if not items:
             raise ClientException(msg=
-                                  "Failed to find ipv6_egress_only_rule data from DescribeIpv6EgressOnlyRules response. "
-                                  "Ipv6EgressOnlyRuleId = {0}".format(
-                                      self.ipv6_egress_only_rule_id))
+            "Failed to find ipv6_egress_only_rule data from DescribeIpv6EgressOnlyRules response. "
+            "Ipv6EgressOnlyRuleId = {0}".format(
+                self.ipv6_egress_only_rule_id))
         self._assign_attributes(items[0])
 
 

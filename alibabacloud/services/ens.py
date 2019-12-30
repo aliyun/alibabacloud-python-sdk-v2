@@ -29,6 +29,6 @@ class ENSInstanceResource(_ENSInstanceResource):
         if not items:
             raise ClientException(
                 msg="Failed to find instance data from DescribeInstances response. "
-                "InstanceId = {0}".format(
+                    "InstanceId = {0}".format(
                     self.instance_id))
         self._assign_attributes(items[0])
