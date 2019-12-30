@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2018 Alibaba Cloud Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# -*- coding: utf-8 -*-
 
 from alibabacloud.endpoint import EndpointResolver
 from alibabacloud.endpoint.chained_endpoint_resolver import ChainedEndpointResolver
@@ -26,7 +26,7 @@ from alibabacloud.endpoint.user_customized_endpoint_resolver import UserCustomiz
 
 class DefaultEndpointResolver(EndpointResolver):
     """
-    `Alibaba Cloud Python` endpoint 解析链
+    `Alibaba Cloud Python` endpoint resolve chain
     
     .. note::
         Deprecated use for add_endpoint and modify_endpoint

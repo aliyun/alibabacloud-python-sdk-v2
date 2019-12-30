@@ -481,6 +481,7 @@ class EcsResourceTest(SDKTestBase):
         self.assertEqual(event.EventType.SYSTEM_MAINTENANCE_REBOOT, event.get_event_type())
         self.assertEqual(event.EventCycleStatus.EXECUTED, event.get_event_cycle_status())
 
+        # FIXME passed 3.7 but failed 2.7
         events = list(self.ecs.system_events.filter(list_of_event_id=[event_id]))
         self.assertEqual(1, len(events))
         event = events[0]

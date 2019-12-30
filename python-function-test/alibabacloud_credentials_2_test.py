@@ -39,7 +39,7 @@ class CredentialsTest(SDKTestBase):
             f.write(credential)
 
     def test_empty(self):
-        # TODO：util describe_regions raise
+        # TODO: util describe_regions raise
         os.environ.pop('ALIBABA_CLOUD_CREDENTIALS_FILE')
         client = get_client('ecs')
         try:

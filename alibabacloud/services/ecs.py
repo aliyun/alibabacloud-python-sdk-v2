@@ -82,9 +82,7 @@ class ECSInstanceResource(_ECSInstanceResource):
 
 class ECSSystemEventResource(_ECSSystemEventResource):
     """
-    ECS 系统事件资源类
-
-    :param event_id: 事件id
+    :param event_id: str
     :type event_id: str
 
     :param _client:  Alibaba Cloud Client
@@ -166,7 +164,6 @@ class ECSDemand(ServiceResource):
 
 
 class ECSInstanceFullStatus(ServiceResource):
-    """ECS 实例状态资源类"""
 
     def _assign_attributes(self, attrs):
         ServiceResource._assign_attributes(self, attrs)

@@ -116,9 +116,6 @@ class ResourceCollection:
 
 
 class NoPageResourceCollection(ResourceCollection):
-    """
-    不分页的处理方法, collection
-    """
 
     def pages(self, **kwargs):
         # prepare parameters
@@ -156,9 +153,7 @@ class NoPageResourceCollection(ResourceCollection):
 
 
 class SubResourceCollection(ResourceCollection):
-    """
-    子资源collection, 有分页
-    """
+    pass
 
 
 def _param_expand_to_json(params, rules, singular=True):
@@ -198,14 +193,8 @@ def _create_resource_collection(resource_class, client, request_class,
                                 singular_param_to_json=None,
                                 plural_param_to_json=None,
                                 param_aliases=None):
-    """
-    创建普通有分页的资源collection， 分页是正常的分页
-    """
 
     def page_handler(params):
-        """
-        处理分页, key_to_total_count, key_to_page_size, key_to_page_number, key_to_resource_items
-        """
         if singular_param_to_json:
             _param_expand_to_json(params, singular_param_to_json)
         if plural_param_to_json:

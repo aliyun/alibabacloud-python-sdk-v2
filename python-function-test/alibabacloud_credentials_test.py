@@ -179,7 +179,7 @@ class CredentialsTest(SDKTestBase):
         response = client._handle_request(api_request)
         response_credentials = response.http_request.credentials
         from alibabacloud.credentials import AccessKeyCredentials
-        self.assertEqual(type(response_credentials), AccessKeyCredentials)
+        self.assertTrue(isinstance(response_credentials, AccessKeyCredentials))
 
         response = response.http_response.content
         ret = self.get_dict_response(response)
@@ -199,7 +199,7 @@ class CredentialsTest(SDKTestBase):
         response = client._handle_request(api_request)
         response_credentials = response.http_request.credentials
         from alibabacloud.credentials import AccessKeyCredentials
-        self.assertEqual(type(response_credentials), AccessKeyCredentials)
+        self.assertTrue(isinstance(response_credentials, AccessKeyCredentials))
 
         response = response.http_response.content
         ret = self.get_dict_response(response)

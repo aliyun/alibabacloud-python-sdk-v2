@@ -24,11 +24,12 @@ CLIENTS_DATA_PATH = os.path.join(ALIBABACLOUD_ROOT, 'clients')
 SERVICES_DATA_PATH = os.path.join(ALIBABACLOUD_ROOT, 'services')
 
 
-def _is_subclass(sub_object, f_object, sub=1):
-    if sub_object is f_object:
+def _is_subclass(object_, class_, sub=1):
+    if isinstance(object_, class_):
         return
-    if sub_object.__mro__[sub] is f_object:
-        return sub_object.__name__
+    mro = inspect.getmro(object_)
+    if len(mro) > sub and mro[sub] is class_:
+        return object_.__name__
 
 
 def _get_client_classes(path):
