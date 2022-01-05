@@ -1,4 +1,4 @@
-# Alibaba Cloud Python SDK 2.0
+# Alibaba Cloud Python SDK 2.0（Deprecated）
 
 [![PyPI Release](https://img.shields.io/pypi/v/alibaba-cloud-python-sdk-v2.svg?style=flat)](https://pypi.org/project/alibaba-cloud-python-sdk-v2)
 [![Build Status](https://api.travis-ci.org/aliyun/alibabacloud-python-sdk-v2.svg?branch=master)](https://travis-ci.org/aliyun/alibabacloud-python-sdk-v2)
