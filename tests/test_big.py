@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+# -*- coding: utf-8 -*-
 import json
 import os
 import re
@@ -145,7 +145,6 @@ class EcsResourceTest(SDKTestBase):
         return credentials_provider
 
     def test_retry_to_create_instance(self):
-
         config = ClientConfig(region_id=self.region_id, connection_timeout=120, endpoint="nowhere")
         client = EcsClient(config, self.init_credentials_provider())
 
@@ -187,7 +186,6 @@ class VPCResourceTest(SDKTestBase):
         for eip in vpc.eip_addresses.filter(status="InUse"):
             eip.unassociate(instance_id=load_balancer.load_balancer_id, instance_type="SlbInstance")
             eip.refresh()
-
         eip_address = list(vpc.eip_addresses.filter(status="Available"))[0]
         self.assertEqual(eip_address.instance_id, "")
         self.assertEqual(eip_address.status, "Available")
